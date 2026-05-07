@@ -54,41 +54,48 @@ function HomePage() {
 function Landing() {
   return (
     <div>
-      <header className="border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-[#1A5336] flex items-center justify-center text-white font-black">
-              L
-            </div>
-            <span className="font-extrabold text-lg tracking-tight">
-              Latino<span className="text-[#1A5336]">NZ</span>
-            </span>
-          </div>
-          <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-gray-600">
-            <a>Sobre</a>
-            <a>Negócios</a>
-            <a>Categorias</a>
-            <a>Contato</a>
+      <header className="bg-white">
+        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+          <span className="font-extrabold text-xl tracking-tight">
+            <span className="text-[#1A5336]">Latino</span>
+            <span className="text-[#EFC64E] ml-1">NZ</span>
+          </span>
+          <nav className="hidden md:flex items-center gap-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-full px-2 py-1.5">
+            <a className="px-4 py-1.5 rounded-full bg-white shadow-sm">Início</a>
+            <a className="px-4 py-1.5 rounded-full">Planos & Preços</a>
+            <a className="px-4 py-1.5 rounded-full">Blog & Notícias</a>
           </nav>
-          <button className="bg-[#1A5336] text-white font-bold text-sm px-4 py-2 rounded-xl">
-            Entrar
+          <button className="bg-[#1A5336] text-white font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-[#123F27] transition-colors">
+            Anunciar Negócio
           </button>
         </div>
       </header>
 
-      <section className="max-w-6xl mx-auto px-6 py-24 text-center">
-        <div className="inline-block bg-[#EFC64E]/20 text-[#8a6a16] text-xs font-bold px-3 py-1 rounded-full mb-5 uppercase tracking-wider">
-          Em breve na Nova Zelândia
+      <section className="px-4">
+        <div className="relative max-w-7xl mx-auto rounded-3xl overflow-hidden bg-[#0F3D24] text-white px-6 py-24 text-center">
+          <div
+            className="absolute inset-0 opacity-60 pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(ellipse at top, rgba(26,83,54,0.8) 0%, rgba(15,61,36,0) 70%)",
+            }}
+          />
+          <div className="relative">
+            <div className="inline-flex items-center gap-2 bg-black/30 backdrop-blur-sm text-white text-xs font-bold px-4 py-2 rounded-full mb-8 uppercase tracking-wider">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#EFC64E]" />
+              Comunidade Latina na NZ
+            </div>
+            <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
+              Encontre negócios
+              <br />
+              <span className="text-[#EFC64E]">latinos</span> na Nova Zelândia
+            </h1>
+            <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">
+              O diretório moderno de profissionais e empresas latinas. De autônomos a grandes
+              negócios, tudo em um só lugar.
+            </p>
+          </div>
         </div>
-        <h1 className="text-5xl md:text-6xl font-black tracking-tight text-gray-900 leading-tight">
-          O diretório da comunidade
-          <br />
-          <span className="text-[#1A5336]">Latina na Nova Zelândia</span>
-        </h1>
-        <p className="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">
-          Encontre restaurantes, serviços e negócios latinos perto de você — ou cadastre seu
-          próprio negócio e alcance milhares de clientes.
-        </p>
       </section>
 
       <section className="max-w-6xl mx-auto px-6 pb-24 grid md:grid-cols-3 gap-6">
