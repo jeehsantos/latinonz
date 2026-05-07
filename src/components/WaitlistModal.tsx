@@ -100,14 +100,16 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
         >
           <Lock size={16} />
         </Link>
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Fechar"
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors"
-        >
-          <X size={20} />
-        </button>
+        {step === "success" && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar"
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors"
+          >
+            <X size={20} />
+          </button>
+        )}
 
         {step === "form" ? (
           <div className="animate-in fade-in duration-300">
