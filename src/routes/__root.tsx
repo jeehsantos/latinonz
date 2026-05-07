@@ -73,20 +73,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Latino NZ" },
-      { name: "description", content: "Encontre negócios
-latinos na Nova Zelândia" },
+      { name: "description", content: "Encontre negócios latinos na Nova Zelândia" },
       { name: "author", content: "Lovable" },
       { property: "og:title", content: "Latino NZ" },
-      { property: "og:description", content: "Encontre negócios
-latinos na Nova Zelândia" },
+      { property: "og:description", content: "Encontre negócios latinos na Nova Zelândia" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "Latino NZ" },
-      { name: "twitter:description", content: "Encontre negócios
-latinos na Nova Zelândia" },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2bcc9843-7477-4269-8218-3b1d1c018ae1/id-preview-e6ad0e5e--8faa8b63-f58e-4f47-b6a4-e6c5e7acb85d.lovable.app-1778162450984.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/2bcc9843-7477-4269-8218-3b1d1c018ae1/id-preview-e6ad0e5e--8faa8b63-f58e-4f47-b6a4-e6c5e7acb85d.lovable.app-1778162450984.png" },
+      { name: "twitter:description", content: "Encontre negócios latinos na Nova Zelândia" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/Dc509jqtf3SxVQ3jneAhAxV5TOe2/social-images/social-1778162784460-Screenshot_3.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/Dc509jqtf3SxVQ3jneAhAxV5TOe2/social-images/social-1778162784460-Screenshot_3.webp" },
     ],
     links: [
       {
