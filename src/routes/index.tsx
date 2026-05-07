@@ -62,7 +62,7 @@ function Landing() {
           </span>
           <nav className="hidden md:flex items-center gap-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-full px-2 py-1.5">
             <a className="px-4 py-1.5 rounded-full bg-white shadow-sm">Início</a>
-            <a className="px-4 py-1.5 rounded-full">Planos & Preços</a>
+            <a className="px-4 py-1.5 rounded-full">Preços</a>
             <a className="px-4 py-1.5 rounded-full">Blog & Notícias</a>
           </nav>
           <button className="bg-[#1A5336] text-white font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-[#123F27] transition-colors">
