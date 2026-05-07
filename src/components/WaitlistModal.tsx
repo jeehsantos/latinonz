@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCircle2, Lock, X, Loader2 } from "lucide-react";
+import { CheckCircle2, Lock, X, Loader2, AlertCircle } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { submitWaitlist } from "@/lib/waitlist.functions";
@@ -9,27 +9,66 @@ interface WaitlistModalProps {
   onClose: () => void;
 }
 
+type FormState = {
+  business_name: string;
+  owner_name: string;
+  whatsapp_number: string;
+  email: string;
+  service_category: string;
+  service_category_other: string;
+};
+
 export function WaitlistModal({ onClose }: WaitlistModalProps) {
   const [step, setStep] = useState<"form" | "success">("form");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [form, setForm] = useState({
+  const [attempted, setAttempted] = useState(false);
+  const [form, setForm] = useState<FormState>({
     business_name: "",
     owner_name: "",
     whatsapp_number: "+64 ",
     email: "",
     service_category: "",
+    service_category_other: "",
   });
 
   const submit = useServerFn(submitWaitlist);
 
+  const isOther = form.service_category === "Outro";
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim());
+  const whatsappValid = form.whatsapp_number.replace(/\D/g, "").length >= 8;
+
+  const errors = {
+    business_name: !form.business_name.trim(),
+    owner_name: !form.owner_name.trim(),
+    whatsapp_number: !form.whatsapp_number.trim() || !whatsappValid,
+    email: !form.email.trim() || !emailValid,
+    service_category: !form.service_category,
+    service_category_other: isOther && !form.service_category_other.trim(),
+  };
+  const hasErrors = Object.values(errors).some(Boolean);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (submitting) return;
+    setAttempted(true);
     setError(null);
+    if (hasErrors) {
+      setError("Preencha todos os campos corretamente.");
+      return;
+    }
     setSubmitting(true);
     try {
-      const res = await submit({ data: form });
+      const payload = {
+        business_name: form.business_name.trim(),
+        owner_name: form.owner_name.trim(),
+        whatsapp_number: form.whatsapp_number.trim(),
+        email: form.email.trim(),
+        service_category: isOther
+          ? form.service_category_other.trim()
+          : form.service_category,
+      };
+      const res = await submit({ data: payload });
       if (res?.ok) {
         setStep("success");
       } else {
@@ -51,6 +90,8 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
     if (submitting) return;
     onClose();
   };
+
+  const showErr = (key: keyof typeof errors) => attempted && errors[key];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -87,57 +128,52 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-3">
-              <Field label="Nome do Negócio">
+            <form onSubmit={handleSubmit} noValidate className="space-y-3">
+              <Field label="Nome do Negócio" invalid={showErr("business_name")} message="Informe o nome do negócio.">
                 <input
-                  required
                   maxLength={200}
                   type="text"
                   value={form.business_name}
                   onChange={(e) => setForm({ ...form, business_name: e.target.value })}
-                  className={inputCls}
+                  className={inputCls(showErr("business_name"))}
                   placeholder="Ex: Sabor Latino Café"
                 />
               </Field>
-              <Field label="Nome do Responsável">
+              <Field label="Nome do Responsável" invalid={showErr("owner_name")} message="Informe o nome do responsável.">
                 <input
-                  required
                   maxLength={200}
                   type="text"
                   value={form.owner_name}
                   onChange={(e) => setForm({ ...form, owner_name: e.target.value })}
-                  className={inputCls}
+                  className={inputCls(showErr("owner_name"))}
                   placeholder="Seu nome completo"
                 />
               </Field>
-              <Field label="WhatsApp">
+              <Field label="WhatsApp" invalid={showErr("whatsapp_number")} message="Informe um número de WhatsApp válido.">
                 <input
-                  required
                   type="tel"
                   maxLength={32}
                   value={form.whatsapp_number}
                   onChange={(e) => setForm({ ...form, whatsapp_number: e.target.value })}
-                  className={inputCls}
+                  className={inputCls(showErr("whatsapp_number"))}
                   placeholder="+64 21 000 0000"
                 />
               </Field>
-              <Field label="E-mail">
+              <Field label="E-mail" invalid={showErr("email")} message="Informe um e-mail válido.">
                 <input
-                  required
                   type="email"
                   maxLength={320}
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className={inputCls}
+                  className={inputCls(showErr("email"))}
                   placeholder="seu@email.com"
                 />
               </Field>
-              <Field label="Categoria do Negócio">
+              <Field label="Categoria do Negócio" invalid={showErr("service_category")} message="Selecione uma categoria.">
                 <select
-                  required
                   value={form.service_category}
                   onChange={(e) => setForm({ ...form, service_category: e.target.value })}
-                  className={inputCls}
+                  className={inputCls(showErr("service_category"))}
                 >
                   <option value="" disabled>
                     Selecione uma categoria
@@ -149,6 +185,26 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
                   ))}
                 </select>
               </Field>
+
+              {isOther && (
+                <Field
+                  label="Qual categoria?"
+                  invalid={showErr("service_category_other")}
+                  message="Descreva a categoria do seu negócio."
+                >
+                  <input
+                    maxLength={100}
+                    type="text"
+                    value={form.service_category_other}
+                    onChange={(e) =>
+                      setForm({ ...form, service_category_other: e.target.value })
+                    }
+                    className={inputCls(showErr("service_category_other"))}
+                    placeholder="Descreva sua categoria"
+                    autoFocus
+                  />
+                </Field>
+              )}
 
               {error && (
                 <p className="text-xs font-semibold text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
@@ -189,14 +245,35 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
   );
 }
 
-const inputCls =
-  "w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1A5336] focus:ring-1 focus:ring-[#1A5336] transition-all";
+const inputCls = (invalid?: boolean) =>
+  [
+    "w-full bg-gray-50 border rounded-xl px-4 py-2.5 text-sm outline-none transition-all",
+    invalid
+      ? "border-red-400 ring-1 ring-red-200 bg-red-50/40 focus:border-red-500 focus:ring-red-300 animate-shake"
+      : "border-gray-200 focus:border-[#1A5336] focus:ring-1 focus:ring-[#1A5336]",
+  ].join(" ");
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  children,
+  invalid,
+  message,
+}: {
+  label: string;
+  children: React.ReactNode;
+  invalid?: boolean;
+  message?: string;
+}) {
   return (
     <div>
       <label className="block text-xs font-bold text-gray-700 mb-1">{label}</label>
       {children}
+      {invalid && message && (
+        <p className="mt-1 flex items-center gap-1 text-[11px] font-semibold text-red-600 animate-in fade-in slide-in-from-top-1 duration-200">
+          <AlertCircle size={12} />
+          {message}
+        </p>
+      )}
     </div>
   );
 }
