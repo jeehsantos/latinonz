@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { CheckCircle2, Lock, X, Loader2, AlertCircle } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { CheckCircle2, X, Loader2, AlertCircle } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { submitWaitlist } from "@/lib/waitlist.functions";
 import { SERVICE_CATEGORIES } from "@/lib/categories";
@@ -93,13 +92,6 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
       <div className="absolute inset-0 bg-black/50" />
 
       <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 animate-in zoom-in-95 fade-in duration-300">
-        <Link
-          to="/admin"
-          aria-label="Acesso administrativo"
-          className="absolute top-4 left-4 text-gray-300 hover:text-gray-500 transition-colors"
-        >
-          <Lock size={16} />
-        </Link>
         {step === "success" && (
           <button
             type="button"
