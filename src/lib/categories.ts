@@ -1,0 +1,18 @@
+export const SERVICE_CATEGORIES = [
+  "Restaurante / Café",
+  "Mercado Latino",
+  "Beleza & Estética",
+  "Saúde & Bem-estar",
+  "Serviços Profissionais",
+  "Construção & Reformas",
+  "Transporte & Mudanças",
+  "Limpeza",
+  "Educação & Aulas",
+  "Eventos & Entretenimento",
+  "Imobiliária",
+  "Turismo & Viagens",
+  "Tecnologia",
+  "Moda & Vestuário",
+  "Automotivo",
+  "Outro",
+] as const;
