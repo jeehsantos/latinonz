@@ -1,0 +1,1 @@
+DROP POLICY "Anyone can insert to waitlist" ON public.waitlist_signups;
