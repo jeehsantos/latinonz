@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { CheckCircle2, Lock, X, Loader2, AlertCircle } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { CheckCircle2, X, Loader2, AlertCircle } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { submitWaitlist } from "@/lib/waitlist.functions";
 import { SERVICE_CATEGORIES } from "@/lib/categories";
