@@ -215,7 +215,7 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-xl transition-colors shadow-lg mt-2 flex items-center justify-center gap-2"
+                className="w-full bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 disabled:cursor-not-allowed disabled:animate-none text-white font-bold py-3.5 rounded-xl transition-colors mt-2 flex items-center justify-center gap-2 animate-inflate"
               >
                 {submitting && <Loader2 size={16} className="animate-spin" />}
                 Entrar para a Lista de Espera

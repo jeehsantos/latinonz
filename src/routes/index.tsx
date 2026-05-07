@@ -41,7 +41,7 @@ function HomePage() {
       {!isWaitlistOpen && (
         <button
           onClick={() => setIsWaitlistOpen(true)}
-          className="fixed bottom-8 right-8 z-40 bg-[#1A5336] text-white font-bold px-6 py-4 rounded-full shadow-2xl hover:bg-[#123F27] hover:scale-105 transition-all animate-in slide-in-from-bottom-10 duration-500"
+          className="fixed bottom-8 right-8 z-40 bg-[#1A5336] text-white font-bold px-6 py-4 rounded-full hover:bg-[#123F27] transition-colors animate-inflate"
         >
           Entrar na Lista de Espera
         </button>
