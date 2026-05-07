@@ -14,8 +14,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "LatinoNZ — Negócios latinos na Nova Zelândia" },
       {
         property: "og:description",
-        content:
-          "Cadastre seu negócio latino e tenha acesso antecipado à plataforma LatinoNZ.",
+        content: "Cadastre seu negócio latino e tenha acesso antecipado à plataforma LatinoNZ.",
       },
       { property: "og:type", content: "website" },
     ],
@@ -62,12 +61,9 @@ function Landing() {
           </span>
           <nav className="hidden md:flex items-center gap-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-full px-2 py-1.5">
             <a className="px-4 py-1.5 rounded-full bg-white shadow-sm">Início</a>
-            <a className="px-4 py-1.5 rounded-full">Preços</a>
+            <a className="px-4 py-1.5 rounded-full"> </a>
             <a className="px-4 py-1.5 rounded-full">Blog & Notícias</a>
           </nav>
-          <button className="bg-[#1A5336] text-white font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-[#123F27] transition-colors">
-            Anunciar Negócio
-          </button>
         </div>
       </header>
 
@@ -76,8 +72,7 @@ function Landing() {
           <div
             className="absolute inset-0 opacity-60 pointer-events-none"
             style={{
-              background:
-                "radial-gradient(ellipse at top, rgba(26,83,54,0.8) 0%, rgba(15,61,36,0) 70%)",
+              background: "radial-gradient(ellipse at top, rgba(26,83,54,0.8) 0%, rgba(15,61,36,0) 70%)",
             }}
           />
           <div className="relative">
@@ -91,8 +86,8 @@ function Landing() {
               <span className="text-[#EFC64E]">latinos</span> na Nova Zelândia
             </h1>
             <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">
-              O diretório moderno de profissionais e empresas latinas. De autônomos a grandes
-              negócios, tudo em um só lugar.
+              O diretório moderno de profissionais e empresas latinas. De autônomos a grandes negócios, tudo em um só
+              lugar.
             </p>
           </div>
         </div>
@@ -113,10 +108,7 @@ function Landing() {
             body: "Faça parte de uma rede que valoriza e apoia negócios latinos.",
           },
         ].map((f) => (
-          <div
-            key={f.title}
-            className="rounded-2xl border border-gray-100 p-6 bg-gray-50/50"
-          >
+          <div key={f.title} className="rounded-2xl border border-gray-100 p-6 bg-gray-50/50">
             <div className="w-10 h-10 rounded-xl bg-[#1A5336]/10 text-[#1A5336] flex items-center justify-center font-black mb-4">
               ★
             </div>
