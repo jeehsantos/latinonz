@@ -25,26 +25,36 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
     setError(null);
     setSubmitting(true);
     try {
       const res = await submit({ data: form });
-      if (res.ok) {
+      if (res?.ok) {
         setStep("success");
       } else {
-        setError(res.error);
+        setError(res?.error ?? "Não foi possível enviar. Verifique os dados.");
       }
     } catch (err) {
-      console.error(err);
-      setError("Verifique os dados e tente novamente.");
+      console.error("waitlist submit error", err);
+      const message =
+        err instanceof Error && err.message
+          ? err.message
+          : "Verifique os dados e tente novamente.";
+      setError(message);
     } finally {
       setSubmitting(false);
     }
   };
 
+  const handleBackdropClick = () => {
+    if (submitting) return;
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/50" onClick={handleBackdropClick} />
 
       <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 animate-in zoom-in-95 fade-in duration-300">
         <Link
