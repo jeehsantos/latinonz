@@ -67,12 +67,13 @@ function Landing() {
         </div>
       </header>
 
-      <section className="px-4">
-        <div className="relative max-w-7xl mx-auto rounded-3xl overflow-hidden bg-[#0F3D24] text-white px-6 py-24 text-center">
+      <section>
+        <div className="relative w-full overflow-hidden bg-[#0F3D24] text-white px-6 py-24 text-center">
           <div
-            className="absolute inset-0 opacity-60 pointer-events-none"
+            className="absolute inset-0 pointer-events-none"
             style={{
-              background: "radial-gradient(ellipse at top, rgba(26,83,54,0.8) 0%, rgba(15,61,36,0) 70%)",
+              background:
+                "radial-gradient(circle at top left, rgba(239,198,78,0.25) 0%, rgba(15,61,36,0) 45%), radial-gradient(circle at bottom right, rgba(26,83,54,0.9) 0%, rgba(15,61,36,0) 55%), radial-gradient(ellipse at top, rgba(26,83,54,0.6) 0%, rgba(15,61,36,0) 70%)",
             }}
           />
           <div className="relative">
