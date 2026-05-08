@@ -1,0 +1,56 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "blog": "Blog & Noticias"
+  },
+  "hero": {
+    "badge": "Comunidad Latina en NZ",
+    "headline_1": "Encuentra negocios",
+    "headline_2": "en Nueva Zelanda",
+    "headline_highlight": "latinos",
+    "subheadline": "El directorio moderno de profesionales y empresas latinas. Desde autónomos hasta grandes negocios, todo en un solo lugar."
+  },
+  "features": {
+    "visibility_title": "Más visibilidad",
+    "visibility_body": "Aparece en búsquedas locales y sé encontrado por la comunidad latina en toda NZ.",
+    "leads_title": "Leads calificados",
+    "leads_body": "Recibe contactos directos por WhatsApp de personas buscando tu servicio.",
+    "community_title": "Comunidad fuerte",
+    "community_body": "Forma parte de una red que valora y apoya los negocios latinos."
+  },
+  "footer": "LatinoNZ — Hecho para la comunidad latina en Nueva Zelanda.",
+  "waitlist_button": "Unirse a la Lista de Espera",
+  "modal": {
+    "social_proof": "+25 negocios ya aseguraron su lugar —",
+    "social_proof_cta": "¡no te quedes fuera!",
+    "badge": "Acceso Anticipado",
+    "title": "Únete a la Lista de Espera",
+    "subtitle": "Registra tu negocio para ser uno de los primeros en acceder a la plataforma LatinoNZ.",
+    "field_business_name": "Nombre del Negocio",
+    "field_business_name_placeholder": "Ej: Sabor Latino Café",
+    "field_business_name_error": "Ingresa el nombre del negocio.",
+    "field_owner_name": "Nombre del Responsable",
+    "field_owner_name_placeholder": "Tu nombre completo",
+    "field_owner_name_error": "Ingresa el nombre del responsable.",
+    "field_whatsapp": "WhatsApp",
+    "field_whatsapp_placeholder": "+64 21 000 0000",
+    "field_whatsapp_error": "Ingresa un número de WhatsApp válido.",
+    "field_email": "Correo electrónico",
+    "field_email_placeholder": "tu@correo.com",
+    "field_email_error": "Ingresa un correo electrónico válido.",
+    "field_category": "Categoría del Negocio",
+    "field_category_placeholder": "Selecciona una categoría",
+    "field_category_error": "Selecciona una categoría.",
+    "field_category_other_label": "¿Cuál categoría?",
+    "field_category_other_placeholder": "Describe tu categoría",
+    "field_category_other_error": "Describe la categoría de tu negocio.",
+    "submit_error": "Completa todos los campos correctamente.",
+    "submit_button": "Unirse a la Lista de Espera",
+    "success_title": "¡Todo listo!",
+    "success_body": "Tu negocio fue agregado a nuestra lista. ¡Te avisaremos por WhatsApp y correo cuando la plataforma sea lanzada!",
+    "success_back": "Volver a la página principal",
+    "error_duplicate": "Este correo ya está en nuestra lista. 🎉",
+    "error_rate_limit": "Demasiados intentos. Inténtalo de nuevo en unos minutos.",
+    "error_generic": "No fue posible guardar ahora. Inténtalo de nuevo."
+  }
+}

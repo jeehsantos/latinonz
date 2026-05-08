@@ -1,0 +1,56 @@
+{
+  "nav": {
+    "home": "Home",
+    "blog": "Blog & News"
+  },
+  "hero": {
+    "badge": "Latin Community in NZ",
+    "headline_1": "Find Latin",
+    "headline_2": "businesses in New Zealand",
+    "headline_highlight": "Latin",
+    "subheadline": "The modern directory of Latin professionals and businesses. From freelancers to large companies, all in one place."
+  },
+  "features": {
+    "visibility_title": "More visibility",
+    "visibility_body": "Show up in local searches and get found by the Latin community across NZ.",
+    "leads_title": "Qualified leads",
+    "leads_body": "Receive direct WhatsApp contacts from people looking for your service.",
+    "community_title": "Strong community",
+    "community_body": "Be part of a network that values and supports Latin businesses."
+  },
+  "footer": "LatinoNZ — Made for the Latin community in New Zealand.",
+  "waitlist_button": "Join the Waitlist",
+  "modal": {
+    "social_proof": "+25 businesses have already secured their spot —",
+    "social_proof_cta": "don't miss out!",
+    "badge": "Early Access",
+    "title": "Join the Waitlist",
+    "subtitle": "Register your business to be one of the first to access the LatinoNZ platform.",
+    "field_business_name": "Business Name",
+    "field_business_name_placeholder": "E.g: Latino Flavour Café",
+    "field_business_name_error": "Please enter the business name.",
+    "field_owner_name": "Owner Name",
+    "field_owner_name_placeholder": "Your full name",
+    "field_owner_name_error": "Please enter the owner's name.",
+    "field_whatsapp": "WhatsApp",
+    "field_whatsapp_placeholder": "+64 21 000 0000",
+    "field_whatsapp_error": "Please enter a valid WhatsApp number.",
+    "field_email": "Email",
+    "field_email_placeholder": "your@email.com",
+    "field_email_error": "Please enter a valid email address.",
+    "field_category": "Business Category",
+    "field_category_placeholder": "Select a category",
+    "field_category_error": "Please select a category.",
+    "field_category_other_label": "Which category?",
+    "field_category_other_placeholder": "Describe your category",
+    "field_category_other_error": "Please describe your business category.",
+    "submit_error": "Please fill in all fields correctly.",
+    "submit_button": "Join the Waitlist",
+    "success_title": "You're in!",
+    "success_body": "Your business has been added to our list. We'll notify you via WhatsApp and email when the platform launches!",
+    "success_back": "Back to homepage",
+    "error_duplicate": "This email is already on our list. 🎉",
+    "error_rate_limit": "Too many attempts. Please try again in a few minutes.",
+    "error_generic": "Could not save right now. Please try again."
+  }
+}

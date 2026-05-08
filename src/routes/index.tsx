@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { WaitlistModal } from "@/components/WaitlistModal";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(true);
+  const { t } = useI18n();
 
   return (
     <div className="relative min-h-screen bg-white font-sans text-gray-800">
@@ -43,7 +45,7 @@ function HomePage() {
           onClick={() => setIsWaitlistOpen(true)}
           className="fixed bottom-8 right-8 z-40 bg-[#1A5336] text-white font-bold px-6 py-4 rounded-full hover:bg-[#123F27] transition-colors animate-inflate"
         >
-          Entrar na Lista de Espera
+          {t("waitlist_button")}
         </button>
       )}
     </div>
@@ -51,6 +53,14 @@ function HomePage() {
 }
 
 function Landing() {
+  const { t } = useI18n();
+
+  const features = [
+    { title: t("features.visibility_title"), body: t("features.visibility_body") },
+    { title: t("features.leads_title"), body: t("features.leads_body") },
+    { title: t("features.community_title"), body: t("features.community_body") },
+  ];
+
   return (
     <div>
       <header className="bg-white">
@@ -60,9 +70,9 @@ function Landing() {
             <span className="text-[#EFC64E] ml-1">NZ</span>
           </span>
           <nav className="hidden md:flex items-center gap-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-full px-2 py-1.5">
-            <a className="px-4 py-1.5 rounded-full bg-white shadow-sm">Início</a>
+            <a className="px-4 py-1.5 rounded-full bg-white shadow-sm">{t("nav.home")}</a>
             <a className="px-4 py-1.5 rounded-full"> </a>
-            <a className="px-4 py-1.5 rounded-full">Blog & Notícias</a>
+            <a className="px-4 py-1.5 rounded-full">{t("nav.blog")}</a>
           </nav>
         </div>
       </header>
@@ -79,36 +89,23 @@ function Landing() {
           <div className="relative">
             <div className="inline-flex items-center gap-2 bg-black/30 backdrop-blur-sm text-white text-xs font-bold px-4 py-2 rounded-full mb-8 uppercase tracking-wider">
               <span className="w-1.5 h-1.5 rounded-full bg-[#EFC64E]" />
-              Comunidade Latina na NZ
+              {t("hero.badge")}
             </div>
             <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
-              Encontre negócios
+              {t("hero.headline_1")}
               <br />
-              <span className="text-[#EFC64E]">latinos</span> na Nova Zelândia
+              <span className="text-[#EFC64E]">{t("hero.headline_highlight")}</span>{" "}
+              {t("hero.headline_2")}
             </h1>
             <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">
-              O diretório moderno de profissionais e empresas latinas. De autônomos a grandes negócios, tudo em um só
-              lugar.
+              {t("hero.subheadline")}
             </p>
           </div>
         </div>
       </section>
 
       <section className="max-w-6xl mx-auto px-6 pb-24 grid md:grid-cols-3 gap-6">
-        {[
-          {
-            title: "Mais visibilidade",
-            body: "Apareça em buscas locais e seja encontrado pela comunidade latina em toda a NZ.",
-          },
-          {
-            title: "Leads qualificados",
-            body: "Receba contatos diretos via WhatsApp de pessoas procurando seu serviço.",
-          },
-          {
-            title: "Comunidade forte",
-            body: "Faça parte de uma rede que valoriza e apoia negócios latinos.",
-          },
-        ].map((f) => (
+        {features.map((f) => (
           <div key={f.title} className="rounded-2xl border border-gray-100 p-6 bg-gray-50/50">
             <div className="w-10 h-10 rounded-xl bg-[#1A5336]/10 text-[#1A5336] flex items-center justify-center font-black mb-4">
               ★
@@ -120,7 +117,7 @@ function Landing() {
       </section>
 
       <footer className="border-t border-gray-100 py-8 text-center text-xs text-gray-400">
-        © {new Date().getFullYear()} LatinoNZ — Feito para a comunidade latina na Nova Zelândia.
+        © {new Date().getFullYear()} {t("footer")}
       </footer>
     </div>
   );
