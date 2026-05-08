@@ -82,8 +82,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "Latino NZ" },
       { name: "twitter:description", content: "Encontre negócios latinos na Nova Zelândia" },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/Dc509jqtf3SxVQ3jneAhAxV5TOe2/social-images/social-1778162784460-Screenshot_3.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/Dc509jqtf3SxVQ3jneAhAxV5TOe2/social-images/social-1778162784460-Screenshot_3.webp" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/Dc509jqtf3SxVQ3jneAhAxV5TOe2/social-images/social-1778216929161-Latino_Connecthub.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/Dc509jqtf3SxVQ3jneAhAxV5TOe2/social-images/social-1778216929161-Latino_Connecthub.webp" },
     ],
     links: [
       {
