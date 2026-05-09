@@ -93,7 +93,7 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50" />
 
-      <div className="relative w-full max-w-sm max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl p-6 animate-in zoom-in-95 fade-in duration-300">
+      <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-3xl shadow-2xl p-6 animate-in zoom-in-95 fade-in duration-300">
         {step === "success" && (
           <button
             type="button"
@@ -108,7 +108,7 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
         {step === "form" ? (
           <div className="animate-in fade-in duration-300">
             {/* Social proof bar */}
-            <div className="flex items-center justify-center gap-2 bg-[#1A5336]/8 border border-[#1A5336]/15 rounded-2xl px-4 py-2.5 mb-5">
+            <div className="flex items-center justify-center gap-2 bg-[#1A5336]/8 border border-[#1A5336]/15 rounded-2xl px-3 py-2 mb-3">
               <span className="relative flex h-2 w-2 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -119,19 +119,19 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
               </p>
             </div>
 
-            <div className="text-center mb-6">
-              <div className="inline-block bg-[#EFC64E]/20 text-[#8a6a16] text-xs font-bold px-3 py-1 rounded-full mb-3 uppercase tracking-wider">
+            <div className="text-center mb-4">
+              <div className="inline-block bg-[#EFC64E]/20 text-[#8a6a16] text-[10px] font-bold px-3 py-0.5 rounded-full mb-2 uppercase tracking-wider">
                 {t("modal.badge")}
               </div>
-              <h2 className="text-2xl font-extrabold text-gray-900 mb-2">
+              <h2 className="text-xl font-extrabold text-gray-900 mb-1">
                 {t("modal.title")}
               </h2>
-              <p className="text-sm text-gray-500">
+              <p className="text-xs text-gray-500">
                 {t("modal.subtitle")}
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} noValidate className="space-y-3">
+            <form onSubmit={handleSubmit} noValidate className="space-y-2.5">
               <Field label={t("modal.field_business_name")} invalid={showErr("business_name")} message={t("modal.field_business_name_error")}>
                 <input
                   maxLength={200}
