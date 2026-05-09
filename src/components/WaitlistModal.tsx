@@ -93,7 +93,7 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50" />
 
-      <div className="relative w-full max-w-sm max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl p-6 animate-in zoom-in-95 fade-in duration-300">
+      <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-3xl shadow-2xl p-6 animate-in zoom-in-95 fade-in duration-300">
         {step === "success" && (
           <button
             type="button"
