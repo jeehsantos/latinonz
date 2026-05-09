@@ -6,10 +6,7 @@ import { listWaitlist } from "@/lib/waitlist.functions";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
-    meta: [
-      { title: "Admin — LatinoNZ" },
-      { name: "robots", content: "noindex,nofollow" },
-    ],
+    meta: [{ title: "Admin — Latino Connect" }, { name: "robots", content: "noindex,nofollow" }],
   }),
   component: AdminPage,
 });
@@ -98,12 +95,8 @@ function AdminPage() {
           <div className="w-12 h-12 rounded-2xl bg-[#1A5336]/10 text-[#1A5336] flex items-center justify-center mx-auto mb-4">
             <Lock size={20} />
           </div>
-          <h1 className="text-xl font-extrabold text-center text-gray-900 mb-1">
-            Painel administrativo
-          </h1>
-          <p className="text-sm text-gray-500 text-center mb-6">
-            Digite a senha para acessar a lista de espera.
-          </p>
+          <h1 className="text-xl font-extrabold text-center text-gray-900 mb-1">Painel administrativo</h1>
+          <p className="text-sm text-gray-500 text-center mb-6">Digite a senha para acessar a lista de espera.</p>
           <input
             type="password"
             required
@@ -113,9 +106,7 @@ function AdminPage() {
             placeholder="Senha"
             className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1A5336] focus:ring-1 focus:ring-[#1A5336]"
           />
-          {error && (
-            <p className="text-xs font-semibold text-red-600 mt-2">{error}</p>
-          )}
+          {error && <p className="text-xs font-semibold text-red-600 mt-2">{error}</p>}
           <button
             type="submit"
             disabled={loading}
@@ -124,10 +115,7 @@ function AdminPage() {
             {loading && <Loader2 size={16} className="animate-spin" />}
             Entrar
           </button>
-          <Link
-            to="/"
-            className="block text-center text-xs text-gray-400 hover:text-gray-600 mt-4"
-          >
+          <Link to="/" className="block text-center text-xs text-gray-400 hover:text-gray-600 mt-4">
             ← Voltar ao site
           </Link>
         </form>
@@ -148,7 +136,7 @@ function AdminPage() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
             <h1 className="text-3xl font-extrabold text-gray-900">Admin Dashboard</h1>
-            <p className="text-gray-500">Gerenciamento da Lista de Espera LatinoNZ</p>
+            <p className="text-gray-500">Gerenciamento da Lista de Espera Latino Connect</p>
           </div>
           <div className="bg-white px-4 py-3 rounded-xl border border-gray-200 shadow-sm flex items-center gap-3">
             <div className="p-2 bg-emerald-50 rounded-lg">

@@ -6,16 +6,16 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LatinoNZ — Diretório de negócios latinos na Nova Zelândia" },
+      { title: "Latino Connect — Diretório de negócios latinos na Nova Zelândia" },
       {
         name: "description",
         content:
           "A plataforma que conecta a comunidade latina aos melhores negócios e serviços em Nova Zelândia. Entre na lista de espera.",
       },
-      { property: "og:title", content: "LatinoNZ — Negócios latinos na Nova Zelândia" },
+      { property: "og:title", content: "Latino Connect — Negócios latinos na Nova Zelândia" },
       {
         property: "og:description",
-        content: "Cadastre seu negócio latino e tenha acesso antecipado à plataforma LatinoNZ.",
+        content: "Cadastre seu negócio latino e tenha acesso antecipado à plataforma Latino Connect.",
       },
       { property: "og:type", content: "website" },
     ],
@@ -94,12 +94,9 @@ function Landing() {
             <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
               {t("hero.headline_1")}
               <br />
-              <span className="text-[#EFC64E]">{t("hero.headline_highlight")}</span>{" "}
-              {t("hero.headline_2")}
+              <span className="text-[#EFC64E]">{t("hero.headline_highlight")}</span> {t("hero.headline_2")}
             </h1>
-            <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">
-              {t("hero.subheadline")}
-            </p>
+            <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">{t("hero.subheadline")}</p>
           </div>
         </div>
       </section>
