@@ -1,12 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  Outlet,
-  Link,
-  createRootRouteWithContext,
-  useRouter,
-  HeadContent,
-  Scripts,
-} from "@tanstack/react-router";
+import { Outlet, Link, createRootRouteWithContext, useRouter, HeadContent, Scripts } from "@tanstack/react-router";
 import { I18nProvider } from "@/lib/i18n";
 
 import appCss from "../styles.css?url";
@@ -40,9 +33,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
-        </h1>
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">This page didn't load</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Something went wrong on our end. You can try refreshing or head back home.
         </p>
@@ -83,8 +74,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "Latino Connect" },
       { name: "twitter:description", content: "Encontre negócios latinos na Nova Zelândia" },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/Dc509jqtf3SxVQ3jneAhAxV5TOe2/social-images/social-1778216929161-Latino_Connecthub.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/Dc509jqtf3SxVQ3jneAhAxV5TOe2/social-images/social-1778216929161-Latino_Connecthub.webp" },
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/Dc509jqtf3SxVQ3jneAhAxV5TOe2/social-images/social-1778216929161-Latino_Connecthub.webp",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/Dc509jqtf3SxVQ3jneAhAxV5TOe2/social-images/social-1778216929161-Latino_Connecthub.webp",
+      },
     ],
     links: [
       {
