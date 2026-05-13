@@ -66,10 +66,8 @@ function Landing() {
     <div>
       <header className="bg-white">
         <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-          <span className="font-extrabold text-xl tracking-tight">
-            <span className="text-[#1A5336]">Latino</span>
-            <span className="text-[#EFC64E] ml-1">NZ</span>
-          </span>
+          <img src={logo} alt="Latino Connect Hub" className="h-12 md:h-14 w-auto" />
+
           <nav className="hidden md:flex items-center gap-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-full px-2 py-1.5">
             <a className="px-4 py-1.5 rounded-full bg-white shadow-sm">{t("nav.home")}</a>
             <a className="px-4 py-1.5 rounded-full"> </a>
