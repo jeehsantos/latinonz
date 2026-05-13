@@ -66,7 +66,7 @@ function Landing() {
     <div>
       <header className="bg-white">
         <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-          <img src={logo} alt="Latino Connect Hub" className="h-8 md:h-16 w-auto" />
+          <img src={logo} alt="Latino Connect Hub" className="h-6 md:h-12 w-auto" />
 
           <nav className="hidden md:flex items-center gap-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-full px-2 py-1.5">
             <a className="px-4 py-1.5 rounded-full bg-white shadow-sm">{t("nav.home")}</a>
