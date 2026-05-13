@@ -79,22 +79,11 @@ function Landing() {
 
       <section>
         <div className="relative w-full overflow-hidden bg-[#0F3D24] text-white px-6 py-24 text-center">
-          <video
-            className="absolute inset-0 w-full h-full object-cover"
-            src="/hero-cover.mp4"
-            poster="/hero-cover-poster.jpg"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-hidden="true"
-          />
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
               background:
-                "linear-gradient(180deg, rgba(15,61,36,0.55) 0%, rgba(15,61,36,0.65) 100%), radial-gradient(circle at top left, rgba(239,198,78,0.18) 0%, rgba(15,61,36,0) 45%), radial-gradient(circle at bottom right, rgba(26,83,54,0.7) 0%, rgba(15,61,36,0) 55%)",
+                "radial-gradient(circle at top left, rgba(239,198,78,0.25) 0%, rgba(15,61,36,0) 45%), radial-gradient(circle at bottom right, rgba(26,83,54,0.9) 0%, rgba(15,61,36,0) 55%), radial-gradient(ellipse at top, rgba(26,83,54,0.6) 0%, rgba(15,61,36,0) 70%)",
             }}
           />
           <div className="relative">
