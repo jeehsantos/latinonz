@@ -91,9 +91,9 @@ function Landing() {
               {t("hero.badge")}
             </div>
             <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
-              {t("hero.headline_1")}
+              {t("hero.headline_1")} <span className="text-[#EFC64E]">{t("hero.headline_highlight")}</span>
               <br />
-              <span className="text-[#EFC64E]">{t("hero.headline_highlight")}</span> {t("hero.headline_2")}
+              {t("hero.headline_2")}
             </h1>
             <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">{t("hero.subheadline")}</p>
           </div>
