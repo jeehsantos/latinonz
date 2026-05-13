@@ -78,7 +78,7 @@ function Landing() {
       </header>
 
       <section>
-        <div className="relative w-full overflow-hidden bg-[#0F3D24] text-white px-6 py-24 md:py-32 text-center min-h-[480px] md:min-h-[600px] flex items-center justify-center">
+        <div className="relative w-full overflow-hidden bg-[#0F3D24] text-white px-6 py-24 text-center">
           <video
             className="absolute inset-0 w-full h-full object-cover"
             src="/hero-cover.mp4"
