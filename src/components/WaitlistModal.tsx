@@ -77,11 +77,7 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
       }
     } catch (err) {
       console.error("waitlist submit error", err);
-      const message =
-        err instanceof Error && err.message
-          ? err.message
-          : t("modal.error_generic");
-      setError(message);
+      setError(t("modal.error_generic"));
     } finally {
       setSubmitting(false);
     }
