@@ -2,7 +2,7 @@ import { useState } from "react";
 import { CheckCircle2, X, Loader2, AlertCircle } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { submitWaitlist } from "@/lib/waitlist.functions";
-import { SERVICE_CATEGORIES } from "@/lib/categories";
+import { SERVICE_CATEGORIES, CATEGORY_I18N_KEYS } from "@/lib/categories";
 import { useI18n } from "@/lib/i18n";
 
 interface WaitlistModalProps {
