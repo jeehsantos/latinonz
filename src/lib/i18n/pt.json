@@ -51,6 +51,24 @@
     "success_back": "Voltar para a página inicial",
     "error_duplicate": "Este e-mail já está na nossa lista. 🎉",
     "error_rate_limit": "Muitas tentativas. Tente novamente em alguns minutos.",
-    "error_generic": "Não foi possível salvar agora. Tente novamente."
+    "error_generic": "Não foi possível salvar agora. Tente novamente.",
+    "categories": {
+      "restaurant": "Restaurante / Café",
+      "market": "Mercado Latino",
+      "beauty": "Beleza & Estética",
+      "health": "Saúde & Bem-estar",
+      "professional": "Serviços Profissionais",
+      "construction": "Construção & Reformas",
+      "transport": "Transporte & Mudanças",
+      "cleaning": "Limpeza",
+      "education": "Educação & Aulas",
+      "events": "Eventos & Entretenimento",
+      "realestate": "Imobiliária",
+      "tourism": "Turismo & Viagens",
+      "technology": "Tecnologia",
+      "fashion": "Moda & Vestuário",
+      "automotive": "Automotivo",
+      "other": "Outro"
+    }
   }
 }
