@@ -179,7 +179,7 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
                   </option>
                   {SERVICE_CATEGORIES.map((c) => (
                     <option key={c} value={c}>
-                      {c}
+                      {t(`modal.categories.${CATEGORY_I18N_KEYS[c]}` as Parameters<typeof t>[0])}
                     </option>
                   ))}
                 </select>
