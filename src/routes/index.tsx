@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { WaitlistModal } from "@/components/WaitlistModal";
 import { useI18n } from "@/lib/i18n";
+import { useSiteMode } from "@/lib/site-mode";
+import { DirectoryHome } from "@/components/directory/DirectoryHome";
 import logo from "@/assets/logo.png";
 
 export const Route = createFileRoute("/")({
@@ -25,6 +27,12 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
+  const { mode } = useSiteMode();
+  if (mode === "live") return <DirectoryHome />;
+  return <WaitlistLanding />;
+}
+
+function WaitlistLanding() {
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(true);
   const { t } = useI18n();
 
