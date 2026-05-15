@@ -24,15 +24,26 @@ export function setStoredSiteMode(mode: SiteMode) {
   window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY, newValue: mode }));
 }
 
+const PREVIEW_SESSION_KEY = "latinonz_preview_session";
+
 function hasPreviewOverride(): boolean {
   if (typeof window === "undefined") return false;
-  return new URLSearchParams(window.location.search).get(PREVIEW_QS) === PREVIEW_VALUE;
+  if (window.sessionStorage.getItem(PREVIEW_SESSION_KEY) === "1") return true;
+  const fromQs = new URLSearchParams(window.location.search).get(PREVIEW_QS) === PREVIEW_VALUE;
+  if (fromQs) window.sessionStorage.setItem(PREVIEW_SESSION_KEY, "1");
+  return fromQs;
+}
+
+export function clearPreviewOverride() {
+  if (typeof window === "undefined") return;
+  window.sessionStorage.removeItem(PREVIEW_SESSION_KEY);
 }
 
 /**
  * Effective mode the visitor experiences.
  * - Admin can set "live" via the dashboard panel.
- * - Anyone can preview the live platform locally with `?preview=platform`.
+ * - Anyone can preview the live platform locally with `?preview=platform`
+ *   (persisted in sessionStorage so navigation keeps the override).
  */
 export function useSiteMode(): { mode: SiteMode; isPreview: boolean } {
   const [mode, setMode] = useState<SiteMode>("waitlist");

@@ -1,0 +1,18 @@
+import type { PlanTier } from "@/lib/plans";
+import { PLAN_LABELS } from "@/lib/plans";
+
+const STYLES: Record<PlanTier, string> = {
+  starter: "bg-gray-100 text-gray-700 border-gray-200",
+  premium: "bg-amber-50 text-amber-700 border-amber-200",
+  ultra: "bg-[#1A5336]/10 text-[#1A5336] border-[#1A5336]/20",
+};
+
+export function PlanBadge({ plan, className = "" }: { plan: PlanTier; className?: string }) {
+  return (
+    <span
+      className={`inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${STYLES[plan]} ${className}`}
+    >
+      {PLAN_LABELS[plan]}
+    </span>
+  );
+}
