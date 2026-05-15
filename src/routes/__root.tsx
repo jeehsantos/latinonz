@@ -1,6 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Outlet, Link, createRootRouteWithContext, useRouter, HeadContent, Scripts } from "@tanstack/react-router";
+import { Outlet, Link, createRootRouteWithContext, useRouter, useRouterState, useNavigate, HeadContent, Scripts } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { I18nProvider } from "@/lib/i18n";
+import { useSiteMode } from "@/lib/site-mode";
 
 import appCss from "../styles.css?url";
 
@@ -118,8 +120,26 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
-        <Outlet />
+        <SiteGate>
+          <Outlet />
+        </SiteGate>
       </I18nProvider>
     </QueryClientProvider>
   );
+}
+
+const ALLOWED_IN_WAITLIST = ["/", "/admin"];
+
+function SiteGate({ children }: { children: React.ReactNode }) {
+  const { mode } = useSiteMode();
+  const path = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (mode === "waitlist" && !ALLOWED_IN_WAITLIST.includes(path)) {
+      navigate({ to: "/" });
+    }
+  }, [mode, path, navigate]);
+
+  return <>{children}</>;
 }
