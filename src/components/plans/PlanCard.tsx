@@ -1,0 +1,55 @@
+import { Check } from "lucide-react";
+import type { PlanTier } from "@/lib/plans";
+import { PLAN_LABELS, PLAN_PRICES_NZD } from "@/lib/plans";
+
+export function PlanCard({
+  plan,
+  highlight,
+  features,
+  ctaLabel = "Escolher plano",
+  onSelect,
+}: {
+  plan: PlanTier;
+  highlight?: boolean;
+  features: string[];
+  ctaLabel?: string;
+  onSelect?: () => void;
+}) {
+  const price = PLAN_PRICES_NZD[plan];
+  return (
+    <div
+      className={`relative rounded-3xl border p-8 flex flex-col bg-white ${
+        highlight ? "border-[#1A5336] shadow-2xl scale-[1.02]" : "border-gray-200"
+      }`}
+    >
+      {highlight && (
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1A5336] text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full">
+          Mais escolhido
+        </span>
+      )}
+      <p className="text-sm font-bold uppercase tracking-wider text-gray-500">{PLAN_LABELS[plan]}</p>
+      <p className="mt-3 text-4xl font-black text-gray-900">
+        {price === 0 ? "Grátis" : `NZ$ ${price}`}
+        {price > 0 && <span className="text-base font-bold text-gray-400">/mês</span>}
+      </p>
+      <ul className="mt-6 space-y-3 text-sm text-gray-700 flex-1">
+        {features.map((f) => (
+          <li key={f} className="flex items-start gap-2">
+            <Check size={16} className="text-[#1A5336] mt-0.5 flex-shrink-0" />
+            <span>{f}</span>
+          </li>
+        ))}
+      </ul>
+      <button
+        onClick={onSelect}
+        className={`mt-8 w-full font-bold rounded-2xl py-3 text-sm ${
+          highlight
+            ? "bg-[#1A5336] hover:bg-[#123F27] text-white"
+            : "bg-gray-100 hover:bg-gray-200 text-gray-900"
+        }`}
+      >
+        {ctaLabel}
+      </button>
+    </div>
+  );
+}
