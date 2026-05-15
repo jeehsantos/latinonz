@@ -53,11 +53,11 @@ export function DashboardLayout() {
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="p-6 flex items-center justify-between">
+        <div className="bg-white p-6 flex items-center justify-between border-b" style={{ borderColor: borderCol }}>
           <Link to="/" className="flex items-center">
             <img src={logo} alt="Latino Connect" className="h-10 w-auto" />
           </Link>
-          <button className="lg:hidden text-white/70" onClick={() => setMobileOpen(false)}>
+          <button className="lg:hidden text-gray-700" onClick={() => setMobileOpen(false)}>
             <X size={20} />
           </button>
         </div>
