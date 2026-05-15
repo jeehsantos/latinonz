@@ -1,6 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCurrentPlan } from "@/lib/dev-plan";
 import { PLAN_LABELS } from "@/lib/plans";
+import { useSidebarColor, DEFAULT_SIDEBAR_COLOR } from "@/lib/sidebar-color";
+
+const PRESET_COLORS = [
+  { name: "Verde Latino", value: "#1A5336" },
+  { name: "Azul Oceano", value: "#1E3A8A" },
+  { name: "Vinho", value: "#7F1D1D" },
+  { name: "Roxo", value: "#5B21B6" },
+  { name: "Grafite", value: "#1F2937" },
+  { name: "Âmbar", value: "#92400E" },
+];
 
 export const Route = createFileRoute("/dashboard/settings")({
   component: SettingsPage,
