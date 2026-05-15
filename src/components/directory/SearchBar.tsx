@@ -32,20 +32,26 @@ export function SearchBar({
       <select
         value={value.category}
         onChange={(e) => onChange({ ...value, category: e.target.value })}
-        className="md:col-span-3 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#1A5336]"
+        className="md:col-span-3 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#1A5336] text-gray-900"
       >
         <option value="">Todas as Áreas</option>
         {CATEGORIES.map((c) => (
-          <option key={c.key} value={c.name}>{c.name}</option>
+          <option key={c.key} value={c.name}>
+            {c.name}
+          </option>
         ))}
       </select>
       <select
         value={value.city}
         onChange={(e) => onChange({ ...value, city: e.target.value })}
-        className="md:col-span-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#1A5336]"
+        className="md:col-span-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#1A5336] text-gray-900"
       >
         <option value="">Em toda NZ</option>
-        {NZ_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+        {NZ_CITIES.map((c) => (
+          <option key={c} value={c}>
+            {c}
+          </option>
+        ))}
       </select>
       <button
         type="submit"
