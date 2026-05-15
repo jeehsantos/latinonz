@@ -8,7 +8,15 @@ import { useCurrentPlan } from "./PlanContext";
 import { PLAN_LABELS, type PlanTier } from "@/lib/plans";
 import logo from "@/assets/logo.png";
 
-const NAV = [
+type NavItem = {
+  to: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  exact?: boolean;
+  badge?: number;
+};
+
+const NAV: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/dashboard/profile", label: "Meu Perfil", icon: User },
   { to: "/dashboard/gallery", label: "Galeria", icon: ImageIcon },
@@ -16,7 +24,7 @@ const NAV = [
   { to: "/dashboard/coupons", label: "Cupons", icon: Tag },
   { to: "/dashboard/analytics", label: "Análises", icon: BarChart2 },
   { to: "/dashboard/settings", label: "Configurações", icon: Settings },
-] as const;
+];
 
 const MOBILE = [NAV[0], NAV[1], NAV[3], NAV[4]] as const;
 
