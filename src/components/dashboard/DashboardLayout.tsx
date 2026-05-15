@@ -9,7 +9,8 @@ import { useCurrentPlan } from "@/lib/dev-plan";
 import { PLAN_LABELS, type PlanTier } from "@/lib/plans";
 import { PlanBadge } from "@/components/PlanBadge";
 
-const NAV = [
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
+const NAV: NavItem[] = [
   { to: "/dashboard", label: "Visão geral", icon: LayoutDashboard, exact: true },
   { to: "/dashboard/profile", label: "Perfil do negócio", icon: Building2 },
   { to: "/dashboard/gallery", label: "Galeria", icon: ImageIcon },
@@ -17,7 +18,7 @@ const NAV = [
   { to: "/dashboard/coupons", label: "Cupons", icon: Ticket },
   { to: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/dashboard/settings", label: "Configurações", icon: Settings },
-] as const;
+];
 
 export function DashboardLayout() {
   const path = useRouterState({ select: (s) => s.location.pathname });
