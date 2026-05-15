@@ -1,6 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCurrentPlan } from "@/lib/dev-plan";
 import { PLAN_LABELS } from "@/lib/plans";
+import { useSidebarColor, DEFAULT_SIDEBAR_COLOR } from "@/lib/sidebar-color";
+
+const PRESET_COLORS = [
+  { name: "Verde Latino", value: "#1A5336" },
+  { name: "Azul Oceano", value: "#1E3A8A" },
+  { name: "Vinho", value: "#7F1D1D" },
+  { name: "Roxo", value: "#5B21B6" },
+  { name: "Grafite", value: "#1F2937" },
+  { name: "Âmbar", value: "#92400E" },
+];
 
 export const Route = createFileRoute("/dashboard/settings")({
   component: SettingsPage,
@@ -8,6 +18,7 @@ export const Route = createFileRoute("/dashboard/settings")({
 
 function SettingsPage() {
   const [plan] = useCurrentPlan();
+  const [sidebarColor, setSidebarColor] = useSidebarColor();
   return (
     <div className="max-w-3xl space-y-6">
       <div>
@@ -20,6 +31,57 @@ function SettingsPage() {
         <Link to="/dashboard/upgrade" className="inline-flex mt-4 bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-xl px-5 py-2.5 text-sm">
           Mudar plano
         </Link>
+      </div>
+
+      <div className="bg-white border border-gray-200 rounded-3xl p-8 space-y-5">
+        <div>
+          <h2 className="font-extrabold text-gray-900">Aparência do painel</h2>
+          <p className="text-sm text-gray-500 mt-1">
+            Personalize a cor da barra lateral do seu dashboard.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+          {PRESET_COLORS.map((c) => {
+            const active = sidebarColor.toLowerCase() === c.value.toLowerCase();
+            return (
+              <button
+                key={c.value}
+                type="button"
+                onClick={() => setSidebarColor(c.value)}
+                title={c.name}
+                style={{ backgroundColor: c.value }}
+                className={`h-10 w-10 rounded-full border-2 transition ${
+                  active ? "border-gray-900 ring-2 ring-offset-2 ring-gray-900" : "border-white shadow"
+                }`}
+                aria-label={c.name}
+              />
+            );
+          })}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          <label className="text-xs font-bold uppercase text-gray-500">Cor personalizada</label>
+          <input
+            type="color"
+            value={sidebarColor}
+            onChange={(e) => setSidebarColor(e.target.value)}
+            className="h-10 w-14 rounded-lg border border-gray-200 cursor-pointer bg-transparent"
+          />
+          <input
+            type="text"
+            value={sidebarColor}
+            onChange={(e) => setSidebarColor(e.target.value)}
+            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm font-mono text-gray-900 w-32"
+          />
+          <button
+            type="button"
+            onClick={() => setSidebarColor(DEFAULT_SIDEBAR_COLOR)}
+            className="text-sm font-bold text-gray-600 hover:text-gray-900"
+          >
+            Restaurar padrão
+          </button>
+        </div>
       </div>
       <div className="bg-white border border-gray-200 rounded-3xl p-8 space-y-4">
         <h2 className="font-extrabold text-gray-900">Conta</h2>
