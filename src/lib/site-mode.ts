@@ -45,13 +45,15 @@ export function clearPreviewOverride() {
  * - Anyone can preview the live platform locally with `?preview=platform`
  *   (persisted in sessionStorage so navigation keeps the override).
  */
-export function useSiteMode(): { mode: SiteMode; isPreview: boolean } {
+export function useSiteMode(): { mode: SiteMode; isPreview: boolean; ready: boolean } {
   const [mode, setMode] = useState<SiteMode>("waitlist");
   const [isPreview, setIsPreview] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     setMode(getStoredSiteMode());
     setIsPreview(hasPreviewOverride());
+    setReady(true);
 
     const onStorage = (e: StorageEvent) => {
       if (e.key === STORAGE_KEY) setMode(getStoredSiteMode());
@@ -61,5 +63,5 @@ export function useSiteMode(): { mode: SiteMode; isPreview: boolean } {
   }, []);
 
   const effective: SiteMode = isPreview ? "live" : mode;
-  return { mode: effective, isPreview };
+  return { mode: effective, isPreview, ready };
 }

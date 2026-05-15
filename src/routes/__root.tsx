@@ -131,15 +131,16 @@ function RootComponent() {
 const ALLOWED_IN_WAITLIST = ["/", "/admin"];
 
 function SiteGate({ children }: { children: React.ReactNode }) {
-  const { mode } = useSiteMode();
+  const { mode, ready } = useSiteMode();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!ready) return;
     if (mode === "waitlist" && !ALLOWED_IN_WAITLIST.includes(path)) {
       navigate({ to: "/" });
     }
-  }, [mode, path, navigate]);
+  }, [ready, mode, path, navigate]);
 
   return <>{children}</>;
 }
