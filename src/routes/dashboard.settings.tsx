@@ -18,6 +18,7 @@ export const Route = createFileRoute("/dashboard/settings")({
 
 function SettingsPage() {
   const [plan] = useCurrentPlan();
+  const [sidebarColor, setSidebarColor] = useSidebarColor();
   return (
     <div className="max-w-3xl space-y-6">
       <div>
