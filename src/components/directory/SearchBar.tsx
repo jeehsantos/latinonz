@@ -25,7 +25,7 @@ export function SearchBar({
         <input
           value={value.q}
           onChange={(e) => onChange({ ...value, q: e.target.value })}
-          placeholder="Ex: DJ, Mecânico, Psicólogo, Empregos..."
+          placeholder="Ex: Mecânico, Caipirinha, Cafe..."
           className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-3 text-sm outline-none focus:border-[#1A5336] text-gray-900"
         />
       </div>
