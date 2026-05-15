@@ -1,37 +1,55 @@
 import { Link, Outlet, useRouterState } from "@tanstack/react-router";
 import {
-  LayoutDashboard, Building2, Image as ImageIcon, Inbox, Ticket, BarChart3,
-  Settings, Sparkles, Menu, X,
+  LayoutDashboard, User, Image as ImageIcon, MessageSquare, Tag, BarChart2,
+  Settings, CreditCard, Menu, X,
 } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/logo.png";
 import { useCurrentPlan } from "@/lib/dev-plan";
-import { PLAN_LABELS, type PlanTier } from "@/lib/plans";
+import { type PlanTier } from "@/lib/plans";
 import { PlanBadge } from "@/components/PlanBadge";
+import { LEADS } from "@/lib/mock/leads";
+import { useSidebarColor, darken, lighten } from "@/lib/sidebar-color";
 
-type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
-const NAV: NavItem[] = [
-  { to: "/dashboard", label: "Visão geral", icon: LayoutDashboard, exact: true },
-  { to: "/dashboard/profile", label: "Perfil do negócio", icon: Building2 },
-  { to: "/dashboard/gallery", label: "Galeria", icon: ImageIcon },
-  { to: "/dashboard/leads", label: "Leads", icon: Inbox },
-  { to: "/dashboard/coupons", label: "Cupons", icon: Ticket },
-  { to: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
-  { to: "/dashboard/settings", label: "Configurações", icon: Settings },
-];
+type NavItem = {
+  to: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  exact?: boolean;
+  badge?: number;
+};
 
 export function DashboardLayout() {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [plan, setPlan] = useCurrentPlan();
+  const [sidebarColor] = useSidebarColor();
   const showDevSwitch = typeof window !== "undefined" &&
     new URLSearchParams(window.location.search).get("dev") === "1";
 
+  const pendingLeads = LEADS.filter((l) => l.status === "Pendente").length;
+
+  const NAV: NavItem[] = [
+    { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
+    { to: "/dashboard/profile", label: "Meu Perfil", icon: User },
+    { to: "/dashboard/gallery", label: "Galeria", icon: ImageIcon },
+    { to: "/dashboard/leads", label: "Leads", icon: MessageSquare, badge: pendingLeads },
+    { to: "/dashboard/coupons", label: "Cupons", icon: Tag },
+    { to: "/dashboard/analytics", label: "Análises", icon: BarChart2 },
+    { to: "/dashboard/settings", label: "Configurações", icon: Settings },
+  ];
+
+  const bg = darken(sidebarColor, 0.45);
+  const activeBg = sidebarColor;
+  const hoverBg = darken(sidebarColor, 0.25);
+  const borderCol = darken(sidebarColor, 0.6);
+  const mutedText = lighten(sidebarColor, 0.55);
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-40 w-72 bg-white border-r border-gray-200 transform transition-transform lg:translate-x-0 ${
+        style={{ backgroundColor: bg, borderColor: borderCol }}
+        className={`fixed lg:static inset-y-0 left-0 z-40 w-72 border-r flex flex-col transform transition-transform lg:translate-x-0 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -39,11 +57,12 @@ export function DashboardLayout() {
           <Link to="/" className="flex items-center">
             <img src={logo} alt="Latino Connect" className="h-10 w-auto" />
           </Link>
-          <button className="lg:hidden text-gray-500" onClick={() => setMobileOpen(false)}>
+          <button className="lg:hidden text-white/70" onClick={() => setMobileOpen(false)}>
             <X size={20} />
           </button>
         </div>
-        <nav className="px-3 space-y-1">
+
+        <nav className="px-3 space-y-1 flex-1">
           {NAV.map((n) => {
             const Icon = n.icon;
             const active = n.exact ? path === n.to : path.startsWith(n.to);
@@ -52,27 +71,42 @@ export function DashboardLayout() {
                 key={n.to}
                 to={n.to}
                 onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition ${
-                  active ? "bg-[#1A5336] text-white" : "text-gray-700 hover:bg-gray-100"
+                style={
+                  active
+                    ? { backgroundColor: activeBg, color: "#fff" }
+                    : { color: mutedText }
+                }
+                onMouseEnter={(e) => {
+                  if (!active) e.currentTarget.style.backgroundColor = hoverBg;
+                }}
+                onMouseLeave={(e) => {
+                  if (!active) e.currentTarget.style.backgroundColor = "transparent";
+                }}
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition ${
+                  active ? "font-bold" : "font-medium"
                 }`}
               >
-                <Icon size={16} /> {n.label}
+                <Icon size={18} />
+                <span className="flex-1">{n.label}</span>
+                {n.badge ? (
+                  <span className="bg-amber-400 text-[#0F3D24] text-[11px] font-bold rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center">
+                    {n.badge}
+                  </span>
+                ) : null}
               </Link>
             );
           })}
         </nav>
-        <div className="p-4 mt-6">
-          <div className="rounded-2xl bg-gradient-to-br from-[#1A5336] to-[#0F3D24] text-white p-5">
-            <Sparkles size={18} />
-            <p className="font-bold mt-2 text-sm">Plano atual</p>
-            <p className="text-xs text-white/70">{PLAN_LABELS[plan]}</p>
-            <Link
-              to="/dashboard/upgrade"
-              className="mt-3 block text-center bg-white text-[#1A5336] font-bold text-xs rounded-lg py-2"
-            >
-              Ver planos
-            </Link>
-          </div>
+
+        <div className="p-4">
+          <Link
+            to="/dashboard/upgrade"
+            style={{ backgroundColor: darken(sidebarColor, 0.6), borderColor: borderCol }}
+            className="flex items-center gap-3 border rounded-xl px-4 py-3 text-sm font-bold text-amber-300 hover:text-amber-200 transition"
+          >
+            <CreditCard size={18} />
+            <span>Mudar de Plano</span>
+          </Link>
         </div>
       </aside>
 
