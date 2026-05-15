@@ -13,11 +13,20 @@ import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DirectoryRouteImport } from './routes/directory'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as CadastroRouteImport } from './routes/cadastro'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardUpgradeRouteImport } from './routes/dashboard.upgrade'
+import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settings'
+import { Route as DashboardProfileRouteImport } from './routes/dashboard.profile'
+import { Route as DashboardLeadsRouteImport } from './routes/dashboard.leads'
+import { Route as DashboardGalleryRouteImport } from './routes/dashboard.gallery'
+import { Route as DashboardCouponsRouteImport } from './routes/dashboard.coupons'
+import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 import { Route as BusinessSlugRouteImport } from './routes/business.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 
@@ -39,6 +48,11 @@ const LoginRoute = LoginRouteImport.update({
 const DirectoryRoute = DirectoryRouteImport.update({
   id: '/directory',
   path: '/directory',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContatoRoute = ContatoRouteImport.update({
@@ -66,6 +80,46 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardUpgradeRoute = DashboardUpgradeRouteImport.update({
+  id: '/upgrade',
+  path: '/upgrade',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardProfileRoute = DashboardProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardLeadsRoute = DashboardLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardGalleryRoute = DashboardGalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardCouponsRoute = DashboardCouponsRouteImport.update({
+  id: '/coupons',
+  path: '/coupons',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAnalyticsRoute = DashboardAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const BusinessSlugRoute = BusinessSlugRouteImport.update({
   id: '/business/$slug',
   path: '/business/$slug',
@@ -83,12 +137,21 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRouteWithChildren
   '/cadastro': typeof CadastroRoute
   '/contato': typeof ContatoRoute
+  '/dashboard': typeof DashboardRouteWithChildren
   '/directory': typeof DirectoryRoute
   '/login': typeof LoginRoute
   '/planos': typeof PlanosRoute
   '/sobre': typeof SobreRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/business/$slug': typeof BusinessSlugRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/coupons': typeof DashboardCouponsRoute
+  '/dashboard/gallery': typeof DashboardGalleryRoute
+  '/dashboard/leads': typeof DashboardLeadsRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/upgrade': typeof DashboardUpgradeRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -102,6 +165,14 @@ export interface FileRoutesByTo {
   '/sobre': typeof SobreRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/business/$slug': typeof BusinessSlugRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/coupons': typeof DashboardCouponsRoute
+  '/dashboard/gallery': typeof DashboardGalleryRoute
+  '/dashboard/leads': typeof DashboardLeadsRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/upgrade': typeof DashboardUpgradeRoute
+  '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -110,12 +181,21 @@ export interface FileRoutesById {
   '/blog': typeof BlogRouteWithChildren
   '/cadastro': typeof CadastroRoute
   '/contato': typeof ContatoRoute
+  '/dashboard': typeof DashboardRouteWithChildren
   '/directory': typeof DirectoryRoute
   '/login': typeof LoginRoute
   '/planos': typeof PlanosRoute
   '/sobre': typeof SobreRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/business/$slug': typeof BusinessSlugRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/coupons': typeof DashboardCouponsRoute
+  '/dashboard/gallery': typeof DashboardGalleryRoute
+  '/dashboard/leads': typeof DashboardLeadsRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/settings': typeof DashboardSettingsRoute
+  '/dashboard/upgrade': typeof DashboardUpgradeRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -125,12 +205,21 @@ export interface FileRouteTypes {
     | '/blog'
     | '/cadastro'
     | '/contato'
+    | '/dashboard'
     | '/directory'
     | '/login'
     | '/planos'
     | '/sobre'
     | '/blog/$slug'
     | '/business/$slug'
+    | '/dashboard/analytics'
+    | '/dashboard/coupons'
+    | '/dashboard/gallery'
+    | '/dashboard/leads'
+    | '/dashboard/profile'
+    | '/dashboard/settings'
+    | '/dashboard/upgrade'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +233,14 @@ export interface FileRouteTypes {
     | '/sobre'
     | '/blog/$slug'
     | '/business/$slug'
+    | '/dashboard/analytics'
+    | '/dashboard/coupons'
+    | '/dashboard/gallery'
+    | '/dashboard/leads'
+    | '/dashboard/profile'
+    | '/dashboard/settings'
+    | '/dashboard/upgrade'
+    | '/dashboard'
   id:
     | '__root__'
     | '/'
@@ -151,12 +248,21 @@ export interface FileRouteTypes {
     | '/blog'
     | '/cadastro'
     | '/contato'
+    | '/dashboard'
     | '/directory'
     | '/login'
     | '/planos'
     | '/sobre'
     | '/blog/$slug'
     | '/business/$slug'
+    | '/dashboard/analytics'
+    | '/dashboard/coupons'
+    | '/dashboard/gallery'
+    | '/dashboard/leads'
+    | '/dashboard/profile'
+    | '/dashboard/settings'
+    | '/dashboard/upgrade'
+    | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -165,6 +271,7 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRouteWithChildren
   CadastroRoute: typeof CadastroRoute
   ContatoRoute: typeof ContatoRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
   DirectoryRoute: typeof DirectoryRoute
   LoginRoute: typeof LoginRoute
   PlanosRoute: typeof PlanosRoute
@@ -202,6 +309,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DirectoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contato': {
       id: '/contato'
       path: '/contato'
@@ -237,6 +351,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/upgrade': {
+      id: '/dashboard/upgrade'
+      path: '/upgrade'
+      fullPath: '/dashboard/upgrade'
+      preLoaderRoute: typeof DashboardUpgradeRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/settings': {
+      id: '/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/profile': {
+      id: '/dashboard/profile'
+      path: '/profile'
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof DashboardProfileRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/leads': {
+      id: '/dashboard/leads'
+      path: '/leads'
+      fullPath: '/dashboard/leads'
+      preLoaderRoute: typeof DashboardLeadsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/gallery': {
+      id: '/dashboard/gallery'
+      path: '/gallery'
+      fullPath: '/dashboard/gallery'
+      preLoaderRoute: typeof DashboardGalleryRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/coupons': {
+      id: '/dashboard/coupons'
+      path: '/coupons'
+      fullPath: '/dashboard/coupons'
+      preLoaderRoute: typeof DashboardCouponsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/analytics': {
+      id: '/dashboard/analytics'
+      path: '/analytics'
+      fullPath: '/dashboard/analytics'
+      preLoaderRoute: typeof DashboardAnalyticsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/business/$slug': {
       id: '/business/$slug'
       path: '/business/$slug'
@@ -264,12 +434,39 @@ const BlogRouteChildren: BlogRouteChildren = {
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
+interface DashboardRouteChildren {
+  DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
+  DashboardCouponsRoute: typeof DashboardCouponsRoute
+  DashboardGalleryRoute: typeof DashboardGalleryRoute
+  DashboardLeadsRoute: typeof DashboardLeadsRoute
+  DashboardProfileRoute: typeof DashboardProfileRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+  DashboardUpgradeRoute: typeof DashboardUpgradeRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAnalyticsRoute: DashboardAnalyticsRoute,
+  DashboardCouponsRoute: DashboardCouponsRoute,
+  DashboardGalleryRoute: DashboardGalleryRoute,
+  DashboardLeadsRoute: DashboardLeadsRoute,
+  DashboardProfileRoute: DashboardProfileRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
+  DashboardUpgradeRoute: DashboardUpgradeRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   BlogRoute: BlogRouteWithChildren,
   CadastroRoute: CadastroRoute,
   ContatoRoute: ContatoRoute,
+  DashboardRoute: DashboardRouteWithChildren,
   DirectoryRoute: DirectoryRoute,
   LoginRoute: LoginRoute,
   PlanosRoute: PlanosRoute,
