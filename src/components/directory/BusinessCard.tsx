@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+
 import { Clock, MapPin, MessageCircle, Star } from "lucide-react";
 import type { Business } from "@/lib/mock/types";
 import { PlanBadge } from "@/components/site/PlanBadge";

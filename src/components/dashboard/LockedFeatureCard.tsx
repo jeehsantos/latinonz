@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+
 import { Lock } from "lucide-react";
 import type { PlanTier } from "@/lib/plans";
 import { PLAN_LABELS } from "@/lib/plans";
