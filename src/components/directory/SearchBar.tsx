@@ -25,7 +25,7 @@ export function SearchBar({
         <input
           value={value.q}
           onChange={(e) => onChange({ ...value, q: e.target.value })}
-          placeholder="O que você procura? (ex: restaurante, contador)"
+          placeholder="Ex: DJ, Mecânico, Psicólogo, Empregos..."
           className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-3 text-sm outline-none focus:border-[#1A5336]"
         />
       </div>
@@ -34,7 +34,7 @@ export function SearchBar({
         onChange={(e) => onChange({ ...value, category: e.target.value })}
         className="md:col-span-3 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#1A5336]"
       >
-        <option value="">Todas as categorias</option>
+        <option value="">Todas as Áreas</option>
         {CATEGORIES.map((c) => (
           <option key={c.key} value={c.name}>{c.name}</option>
         ))}
@@ -44,7 +44,7 @@ export function SearchBar({
         onChange={(e) => onChange({ ...value, city: e.target.value })}
         className="md:col-span-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#1A5336]"
       >
-        <option value="">Toda NZ</option>
+        <option value="">Em toda NZ</option>
         {NZ_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
       </select>
       <button

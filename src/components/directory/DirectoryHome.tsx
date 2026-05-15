@@ -14,15 +14,23 @@ export function DirectoryHome() {
   return (
     <SiteShell>
       {/* Hero */}
-      <section className="relative bg-[#0F3D24] text-white overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,#1A5336_0%,transparent_60%)]" />
-        <div className="relative max-w-7xl mx-auto px-6 py-20 md:py-28 text-center">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-300">Latino Connect Hub</p>
-          <h1 className="mt-4 text-4xl md:text-6xl font-black leading-tight max-w-3xl mx-auto">
-            Negócios e serviços latinos em <span className="text-amber-300">Nova Zelândia</span>
+      <section className="relative text-white overflow-hidden" style={{
+        background: "radial-gradient(ellipse at top, #1A5336 0%, #0F3D24 50%, #0A2A19 100%)",
+      }}>
+        <div className="relative max-w-6xl mx-auto px-6 py-20 md:py-28 text-center">
+          <div className="inline-flex items-center gap-2 bg-black/30 backdrop-blur-sm text-white text-[11px] font-bold px-4 py-2 rounded-full mb-8 uppercase tracking-[0.18em]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#EFC64E]" />
+            Conectando a comunidade latina na NZ
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
+            Encontre <span className="text-[#EFC64E]">qualquer negócio</span>
+            <br />
+            latino na Nova Zelândia
           </h1>
-          <p className="mt-5 text-white/70 max-w-2xl mx-auto">
-            Encontre profissionais que falam o seu idioma e entendem a sua cultura. Tudo em um só lugar.
+          <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">
+            De agências de RH e marketing a mecânicos e buffets.
+            <br className="hidden md:block" />
+            O maior diretório de profissionais e serviços latinos num só lugar.
           </p>
           <div className="mt-10 max-w-4xl mx-auto">
             <SearchBar value={search} onChange={setSearch} />
