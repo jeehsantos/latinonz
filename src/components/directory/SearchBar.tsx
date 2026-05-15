@@ -26,7 +26,7 @@ export function SearchBar({
           value={value.q}
           onChange={(e) => onChange({ ...value, q: e.target.value })}
           placeholder="Ex: DJ, Mecânico, Psicólogo, Empregos..."
-          className="md:col-span-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#1A5336] text-slate-950"
+          className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-3 text-sm outline-none focus:border-[#1A5336] text-gray-900"
         />
       </div>
       <select
