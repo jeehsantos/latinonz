@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, Download, Loader2, Lock, Search, Users } from "lucide-react";
+import { ArrowLeft, Download, ExternalLink, Loader2, Lock, Search, ToggleLeft, ToggleRight, Users } from "lucide-react";
 import { listWaitlist } from "@/lib/waitlist.functions";
+import { getStoredSiteMode, setStoredSiteMode, type SiteMode } from "@/lib/site-mode";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -148,6 +149,8 @@ function AdminPage() {
             </div>
           </div>
         </div>
+
+        <SiteModePanel />
 
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
           <div className="p-4 border-b border-gray-200 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 bg-gray-50">
