@@ -46,23 +46,55 @@ export function DashboardLayout() {
   const mutedText = lighten(sidebarColor, 0.55);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      <aside
-        style={{ backgroundColor: bg, borderColor: borderCol }}
-        className={`fixed lg:static inset-y-0 left-0 z-40 w-72 border-r flex flex-col transform transition-transform lg:translate-x-0 ${
-          mobileOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="bg-white p-6 flex items-center justify-between border-b" style={{ borderColor: borderCol }}>
-          <Link to="/" className="flex items-center">
-            <img src={logo} alt="Latino Connect" className="h-10 w-auto" />
-          </Link>
-          <button className="lg:hidden text-gray-700" onClick={() => setMobileOpen(false)}>
-            <X size={20} />
-          </button>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-4 sticky top-0 z-30">
+        <button className="lg:hidden text-gray-700" onClick={() => setMobileOpen(true)}>
+          <Menu size={20} />
+        </button>
+        <Link to="/" className="flex items-center shrink-0">
+          <img src={logo} alt="Latino Connect" className="h-10 w-auto" />
+        </Link>
+        <div className="hidden sm:flex items-center gap-3 ml-2">
+          <PlanBadge plan={plan} />
+          {showDevSwitch && (
+            <select
+              value={plan}
+              onChange={(e) => setPlan(e.target.value as PlanTier)}
+              className="text-xs border border-gray-200 rounded-lg px-2 py-1 bg-amber-50"
+              title="Dev plan switcher (?dev=1)"
+            >
+              <option value="starter">Starter</option>
+              <option value="premium">Premium</option>
+              <option value="ultra">Ultra</option>
+            </select>
+          )}
         </div>
+        <div className="ml-auto flex items-center gap-3">
+          <div className="hidden sm:block text-right">
+            <p className="text-sm font-bold text-gray-900">Tacos do Chef</p>
+            <p className="text-xs text-gray-500">Auckland</p>
+          </div>
+          <div className="w-9 h-9 rounded-full bg-[#1A5336] text-white font-bold flex items-center justify-center">
+            T
+          </div>
+        </div>
+      </header>
 
-        <nav className="px-3 space-y-1 flex-1">
+      <div className="flex flex-1 min-h-0">
+        <aside
+          style={{ backgroundColor: bg, borderColor: borderCol }}
+          className={`fixed lg:static inset-y-0 left-0 z-40 w-72 border-r flex flex-col transform transition-transform lg:translate-x-0 ${
+            mobileOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <div className="lg:hidden flex items-center justify-between p-4 border-b" style={{ borderColor: borderCol }}>
+            <img src={logo} alt="Latino Connect" className="h-8 w-auto bg-white rounded px-2 py-1" />
+            <button className="text-white/80" onClick={() => setMobileOpen(false)}>
+              <X size={20} />
+            </button>
+          </div>
+
+          <nav className="px-3 pt-4 space-y-1 flex-1">
           {NAV.map((n) => {
             const Icon = n.icon;
             const active = n.exact ? path === n.to : path.startsWith(n.to);
