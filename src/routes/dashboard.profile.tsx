@@ -559,3 +559,135 @@ function ProfileEditor() {
     </div>
   );
 }
+
+type ServiceOptionKey = "takeaway" | "dinein" | "delivery" | "booking";
+
+const SERVICE_OPTIONS: {
+  key: ServiceOptionKey;
+  label: string;
+  hint: string;
+  icon: typeof ShoppingBag;
+}[] = [
+  { key: "takeaway", label: "Take Away", hint: "Cliente retira no local", icon: ShoppingBag },
+  { key: "dinein", label: "Dine In", hint: "Consumo no local", icon: UtensilsCrossed },
+  { key: "delivery", label: "Delivery", hint: "Entrega ao cliente", icon: Bike },
+  { key: "booking", label: "Reserva antecipada", hint: "Book in advance", icon: CalendarClock },
+];
+
+function ServiceOptionsSection({ plan }: { plan: "Básico" | "Premium" }) {
+  const [enabled, setEnabled] = useState<Record<ServiceOptionKey, boolean>>({
+    takeaway: true,
+    dinein: true,
+    delivery: false,
+    booking: false,
+  });
+  const [extra, setExtra] = useState("");
+  const isPaid = plan !== "Básico";
+
+  const toggle = (k: ServiceOptionKey) =>
+    setEnabled((p) => ({ ...p, [k]: !p[k] }));
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4">
+        <div className="flex items-center gap-2">
+          <Sparkles size={18} className="text-[#1A5336]" />
+          <div>
+            <h3 className="text-base font-bold text-gray-900">Opções de Atendimento</h3>
+            <p className="text-xs text-gray-500">
+              Aparecem em destaque na sua página pública para os clientes.
+            </p>
+          </div>
+        </div>
+        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-full bg-amber-100 text-amber-800 uppercase tracking-wide">
+          <Sparkles size={11} /> Premium
+        </span>
+      </div>
+
+      {!isPaid ? (
+        <div className="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/60 p-6 text-center">
+          <div className="w-11 h-11 mx-auto rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center">
+            <Lock size={18} />
+          </div>
+          <p className="mt-3 text-sm font-bold text-gray-900">
+            Disponível no plano Premium
+          </p>
+          <p className="text-xs text-gray-500 mt-1 max-w-sm mx-auto">
+            Mostre para seus clientes se você atende com take away, dine in,
+            delivery ou aceita reservas antecipadas.
+          </p>
+          <Link
+            to="/dashboard/upgrade"
+            className="inline-flex mt-4 bg-[#1A5336] hover:bg-[#123F27] text-white text-xs font-bold px-4 py-2 rounded-xl"
+          >
+            Fazer upgrade
+          </Link>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {SERVICE_OPTIONS.map(({ key, label, hint, icon: Icon }) => {
+              const on = enabled[key];
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => toggle(key)}
+                  className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-colors ${
+                    on
+                      ? "border-[#1A5336] bg-emerald-50/60"
+                      : "border-gray-200 bg-white hover:border-gray-300"
+                  }`}
+                >
+                  <span
+                    className={`flex items-center justify-center h-10 w-10 rounded-lg ${
+                      on ? "bg-[#1A5336] text-white" : "bg-gray-100 text-gray-500"
+                    }`}
+                  >
+                    <Icon size={18} />
+                  </span>
+                  <span className="flex-1">
+                    <span className="block text-sm font-bold text-gray-900">
+                      {label}
+                    </span>
+                    <span className="block text-xs text-gray-500">{hint}</span>
+                  </span>
+                  <span className="relative">
+                    <span
+                      className={`block h-5 w-9 rounded-full transition-colors ${
+                        on ? "bg-[#1A5336]" : "bg-gray-300"
+                      }`}
+                    />
+                    <span
+                      className={`absolute top-0.5 left-0.5 h-4 w-4 bg-white rounded-full shadow transition-transform ${
+                        on ? "translate-x-4" : ""
+                      }`}
+                    />
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-1">
+              Outra opção de atendimento
+              <span className="font-normal text-gray-400"> (opcional)</span>
+            </label>
+            <input
+              type="text"
+              value={extra}
+              onChange={(e) => setExtra(e.target.value)}
+              placeholder="Ex: Catering, Drive-thru, Atendimento a domicílio…"
+              maxLength={60}
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Use este campo caso seu modelo de atendimento não esteja nas opções acima.
+            </p>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
