@@ -140,46 +140,17 @@ export function DashboardLayout() {
             <span>Mudar de Plano</span>
           </Link>
         </div>
-      </aside>
+        </aside>
 
-      {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 z-30 bg-black/40" onClick={() => setMobileOpen(false)} />
-      )}
+        {mobileOpen && (
+          <div className="lg:hidden fixed inset-0 z-30 bg-black/40" onClick={() => setMobileOpen(false)} />
+        )}
 
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between gap-4 sticky top-0 z-20">
-          <button className="lg:hidden text-gray-700" onClick={() => setMobileOpen(true)}>
-            <Menu size={20} />
-          </button>
-          <div className="flex items-center gap-3">
-            <PlanBadge plan={plan} />
-            {showDevSwitch && (
-              <select
-                value={plan}
-                onChange={(e) => setPlan(e.target.value as PlanTier)}
-                className="text-xs border border-gray-200 rounded-lg px-2 py-1 bg-amber-50"
-                title="Dev plan switcher (?dev=1)"
-              >
-                <option value="starter">Starter</option>
-                <option value="premium">Premium</option>
-                <option value="ultra">Ultra</option>
-              </select>
-            )}
-          </div>
-          <div className="ml-auto flex items-center gap-3">
-            <div className="hidden sm:block text-right">
-              <p className="text-sm font-bold text-gray-900">Tacos do Chef</p>
-              <p className="text-xs text-gray-500">Auckland</p>
-            </div>
-            <div className="w-9 h-9 rounded-full bg-[#1A5336] text-white font-bold flex items-center justify-center">
-              T
-            </div>
-          </div>
-        </header>
-        <main className="flex-1 p-6 lg:p-10">
+        <main className="flex-1 p-6 lg:p-10 min-w-0">
           <Outlet />
         </main>
       </div>
     </div>
   );
 }
+
