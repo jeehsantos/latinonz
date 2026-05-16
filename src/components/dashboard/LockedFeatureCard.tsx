@@ -13,7 +13,7 @@ export function LockedFeatureCard({
   requiredPlan: PlanTier;
 }) {
   return (
-    <div className="rounded-3xl border-2 border-dashed border-gray-200 bg-gray-50/60 p-10 text-center">
+    <div className="inline-flex mt-5 text-sm font-bold px-5 py-2.5 rounded-xl bg-yellow-500 text-slate-950">
       <div className="w-12 h-12 mx-auto rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center">
         <Lock size={20} />
       </div>
