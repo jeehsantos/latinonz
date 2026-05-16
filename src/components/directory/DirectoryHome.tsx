@@ -47,7 +47,7 @@ export function DirectoryHome() {
         {[
           { icon: Users, value: "600+", label: "Negócios cadastrados" },
           { icon: ShieldCheck, value: "100%", label: "Verificados pela equipe" },
-          { icon: Sparkles, value: "10", label: "Categorias principais" },
+          { icon: Sparkles, value: "9", label: "Categorias principais" },
         ].map(({ icon: Icon, value, label }) => (
           <div
             key={label}
@@ -68,7 +68,7 @@ export function DirectoryHome() {
       <section className="max-w-7xl mx-auto px-6 py-16">
         <div className="flex items-end justify-between mb-6">
           <div>
-            <h2 className="text-2xl md:text-3xl font-black text-gray-900">Explore por categoria</h2>
+            <h2 className="text-2xl md:text-3xl font-black text-gray-900">Qual serviço você procura hoje?</h2>
             <p className="text-gray-500 mt-1">Tudo que você precisa, perto de você.</p>
           </div>
           <Link to="/directory" className="hidden sm:inline-flex text-sm font-bold text-[#1A5336] items-center gap-1">
