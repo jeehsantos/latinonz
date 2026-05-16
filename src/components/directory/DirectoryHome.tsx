@@ -14,9 +14,12 @@ export function DirectoryHome() {
   return (
     <SiteShell>
       {/* Hero */}
-      <section className="relative text-white overflow-hidden" style={{
-        background: "radial-gradient(ellipse at top, #1A5336 0%, #0F3D24 50%, #0A2A19 100%)",
-      }}>
+      <section
+        className="relative text-white overflow-hidden"
+        style={{
+          background: "radial-gradient(ellipse at top, #1A5336 0%, #0F3D24 50%, #0A2A19 100%)",
+        }}
+      >
         <div className="relative max-w-6xl mx-auto px-6 py-20 md:py-28 text-center">
           <div className="inline-flex items-center gap-2 bg-black/30 backdrop-blur-sm text-white text-[11px] font-bold px-4 py-2 rounded-full mb-8 uppercase tracking-[0.18em]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#EFC64E]" />
@@ -28,9 +31,10 @@ export function DirectoryHome() {
             latino na Nova Zelândia
           </h1>
           <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">
-            De agências de RH e marketing a mecânicos e buffets.
+            Do bolo com gosto de casa e do tempero que dá saudade, até o fotógrafo do seu casamento, eventos e serviços
+            profissionais.
             <br className="hidden md:block" />
-            O maior diretório de profissionais e serviços latinos num só lugar.
+            Encontre tudo o que a nossa comunidade constrói e celebra na Nova Zelândia, em um só lugar.
           </p>
           <div className="mt-10 max-w-4xl mx-auto">
             <SearchBar value={search} onChange={setSearch} />
@@ -45,7 +49,10 @@ export function DirectoryHome() {
           { icon: ShieldCheck, value: "100%", label: "Verificados pela equipe" },
           { icon: Sparkles, value: "9", label: "Categorias principais" },
         ].map(({ icon: Icon, value, label }) => (
-          <div key={label} className="bg-white border border-gray-100 rounded-3xl p-5 flex items-center gap-4 shadow-sm">
+          <div
+            key={label}
+            className="bg-white border border-gray-100 rounded-3xl p-5 flex items-center gap-4 shadow-sm"
+          >
             <div className="w-11 h-11 rounded-2xl bg-[#1A5336]/10 text-[#1A5336] flex items-center justify-center">
               <Icon size={20} />
             </div>
@@ -80,7 +87,9 @@ export function DirectoryHome() {
                 <div className={`w-11 h-11 rounded-2xl ${c.bg} ${c.color} flex items-center justify-center`}>
                   <Icon size={20} />
                 </div>
-                <p className="mt-4 font-extrabold text-gray-900 text-sm leading-tight group-hover:text-[#1A5336]">{c.name}</p>
+                <p className="mt-4 font-extrabold text-gray-900 text-sm leading-tight group-hover:text-[#1A5336]">
+                  {c.name}
+                </p>
                 <p className="text-xs text-gray-400 mt-1">{c.count} negócios</p>
               </Link>
             );
@@ -100,7 +109,9 @@ export function DirectoryHome() {
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {featured.map((b) => <BusinessCard key={b.id} business={b} />)}
+          {featured.map((b) => (
+            <BusinessCard key={b.id} business={b} />
+          ))}
         </div>
       </section>
 
