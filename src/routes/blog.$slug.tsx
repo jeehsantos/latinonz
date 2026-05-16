@@ -8,13 +8,32 @@ export const Route = createFileRoute("/blog/$slug")({
     if (!article) throw notFound();
     return { article };
   },
-  head: ({ loaderData }) => ({
+  head: ({ params, loaderData }) => ({
     meta: [
       { title: `${loaderData?.article.title ?? "Artigo"} — Latino Connect` },
       { name: "description", content: loaderData?.article.excerpt ?? "" },
       { property: "og:title", content: loaderData?.article.title ?? "" },
       { property: "og:description", content: loaderData?.article.excerpt ?? "" },
+      { property: "og:type", content: "article" },
+      { property: "og:url", content: `https://latinoconnecthub.co.nz/blog/${params.slug}` },
     ],
+    links: [{ rel: "canonical", href: `https://latinoconnecthub.co.nz/blog/${params.slug}` }],
+    scripts: loaderData
+      ? [
+          {
+            type: "application/ld+json",
+            children: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Article",
+              headline: loaderData.article.title,
+              description: loaderData.article.excerpt,
+              datePublished: loaderData.article.date,
+              author: { "@type": "Organization", name: "Latino Connect" },
+              mainEntityOfPage: `https://latinoconnecthub.co.nz/blog/${params.slug}`,
+            }),
+          },
+        ]
+      : [],
   }),
   notFoundComponent: () => (
     <SiteShell>
