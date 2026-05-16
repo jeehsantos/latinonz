@@ -47,7 +47,7 @@ export function DirectoryHome() {
         {[
           { icon: Users, value: "600+", label: "Negócios cadastrados" },
           { icon: ShieldCheck, value: "100%", label: "Verificados pela equipe" },
-          { icon: Sparkles, value: "9", label: "Categorias principais" },
+          { icon: Sparkles, value: "10", label: "Categorias principais" },
         ].map(({ icon: Icon, value, label }) => (
           <div
             key={label}
