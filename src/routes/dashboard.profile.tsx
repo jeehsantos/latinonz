@@ -574,7 +574,7 @@ const SERVICE_OPTIONS: {
   { key: "booking", label: "Reserva antecipada", hint: "Book in advance", icon: CalendarClock },
 ];
 
-function ServiceOptionsSection({ plan }: { plan: "Básico" | "Premium" }) {
+function ServiceOptionsSection({ plan }: { plan: string }) {
   const [enabled, setEnabled] = useState<Record<ServiceOptionKey, boolean>>({
     takeaway: true,
     dinein: true,
