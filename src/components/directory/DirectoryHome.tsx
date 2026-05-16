@@ -9,7 +9,7 @@ import { getFeaturedBusinesses } from "@/lib/mock/businesses";
 
 export function DirectoryHome() {
   const [search, setSearch] = useState<SearchValue>({ q: "", category: "", city: "" });
-  const featured = getFeaturedBusinesses(8);
+  const featured = getFeaturedBusinesses(4);
 
   return (
     <SiteShell>
