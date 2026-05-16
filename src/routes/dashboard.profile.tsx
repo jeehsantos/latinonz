@@ -267,9 +267,11 @@ function ProfileEditor() {
                 {NZ_CITIES.map((c) => {
                   const checked = cities.includes(c);
                   return (
-                    <label
+                    <button
+                      type="button"
                       key={c}
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-50"
+                      onClick={() => toggleCity(c)}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-50 text-left"
                     >
                       <span
                         className={`h-4 w-4 rounded border flex items-center justify-center ${checked ? "bg-[#1A5336] border-[#1A5336]" : "border-gray-300"}`}
@@ -277,7 +279,7 @@ function ProfileEditor() {
                         {checked && <Check size={12} className="text-white" />}
                       </span>
                       <span className="text-sm text-gray-700">{c}</span>
-                    </label>
+                    </button>
                   );
                 })}
               </div>
