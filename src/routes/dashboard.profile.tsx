@@ -71,7 +71,7 @@ function ProfileEditor() {
   const [logo, setLogo] = useState<string | null>(null);
   const logoRef = useRef<HTMLInputElement>(null);
 
-  const plan: "Básico" | "Premium" = "Básico";
+  const plan: "Básico" | "Premium" = "Premium";
   const activeCategories = CATEGORIES.map((c) => c.name);
 
   const branchSchedule =
