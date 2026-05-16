@@ -7,8 +7,10 @@ export const Route = createFileRoute("/sobre")({
       { title: "Sobre — Latino Connect" },
       { name: "description", content: "Conheça a missão da Latino Connect Hub: conectar a comunidade latina em NZ." },
       { property: "og:title", content: "Sobre a Latino Connect" },
-      { property: "og:description", content: "Missão, visão e valores da plataforma." },
+      { property: "og:description", content: "Missão, visão e valores da plataforma que conecta a comunidade latina na Nova Zelândia." },
+      { property: "og:url", content: "https://latinoconnecthub.co.nz/sobre" },
     ],
+    links: [{ rel: "canonical", href: "https://latinoconnecthub.co.nz/sobre" }],
   }),
   component: SobrePage,
 });

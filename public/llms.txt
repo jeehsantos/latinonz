@@ -1,0 +1,15 @@
+# Latino Connect
+
+> Diretório de negócios latinos na Nova Zelândia — conectando a comunidade latina aos melhores serviços, restaurantes, profissionais e organizações em NZ.
+
+Latino Connect é uma plataforma que ajuda consumidores a encontrar negócios latinos verificados em toda Nova Zelândia e permite que empresários da comunidade aumentem visibilidade, capturem leads e ofereçam cupons.
+
+## Pages
+
+- [Home](/): Visão geral, busca por categoria e destaques.
+- [Diretório](/directory): Lista completa de negócios por categoria e cidade.
+- [Blog](/blog): Notícias, guias de vistos, finanças e comunidade.
+- [Planos](/planos): Comparação de planos Starter, Premium e Ultra.
+- [Sobre](/sobre): Missão, visão e valores da plataforma.
+- [Contato](/contato): Fale com a equipe.
+- [Cadastrar negócio](/cadastro): Registre seu negócio na plataforma.

@@ -7,10 +7,12 @@ export const Route = createFileRoute("/contato")({
   head: () => ({
     meta: [
       { title: "Contato — Latino Connect" },
-      { name: "description", content: "Fale com a equipe Latino Connect." },
+      { name: "description", content: "Fale com a equipe Latino Connect — tire dúvidas sobre planos, parcerias e cadastro do seu negócio latino na Nova Zelândia." },
       { property: "og:title", content: "Contato — Latino Connect" },
-      { property: "og:description", content: "Envie sua mensagem para a equipe Latino Connect." },
+      { property: "og:description", content: "Envie sua mensagem para a equipe Latino Connect e tire dúvidas sobre planos e parcerias na Nova Zelândia." },
+      { property: "og:url", content: "https://latinoconnecthub.co.nz/contato" },
     ],
+    links: [{ rel: "canonical", href: "https://latinoconnecthub.co.nz/contato" }],
   }),
   component: ContatoPage,
 });

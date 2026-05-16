@@ -6,7 +6,11 @@ export const Route = createFileRoute("/cadastro")({
     meta: [
       { title: "Cadastrar negócio — Latino Connect" },
       { name: "description", content: "Cadastre seu negócio latino na maior plataforma da comunidade em NZ." },
+      { property: "og:title", content: "Cadastrar negócio — Latino Connect" },
+      { property: "og:description", content: "Cadastre seu negócio latino na maior plataforma da comunidade em NZ." },
+      { property: "og:url", content: "https://latinoconnecthub.co.nz/cadastro" },
     ],
+    links: [{ rel: "canonical", href: "https://latinoconnecthub.co.nz/cadastro" }],
   }),
   component: CadastroPage,
 });

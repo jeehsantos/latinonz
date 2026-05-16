@@ -11,13 +11,40 @@ export const Route = createFileRoute("/business/$slug")({
     if (!business) throw notFound();
     return { business };
   },
-  head: ({ loaderData }) => ({
+  head: ({ params, loaderData }) => ({
     meta: [
       { title: `${loaderData?.business.name ?? "Negócio"} — Latino Connect` },
       { name: "description", content: loaderData?.business.description ?? "" },
       { property: "og:title", content: loaderData?.business.name ?? "" },
       { property: "og:description", content: loaderData?.business.description ?? "" },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: `https://latinoconnecthub.co.nz/business/${params.slug}` },
     ],
+    links: [{ rel: "canonical", href: `https://latinoconnecthub.co.nz/business/${params.slug}` }],
+    scripts: loaderData
+      ? [
+          {
+            type: "application/ld+json",
+            children: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              name: loaderData.business.name,
+              description: loaderData.business.description,
+              address: { "@type": "PostalAddress", addressLocality: loaderData.business.location, addressCountry: "NZ" },
+              telephone: loaderData.business.phone,
+              email: loaderData.business.email,
+              url: loaderData.business.website,
+              aggregateRating: loaderData.business.reviewCount
+                ? {
+                    "@type": "AggregateRating",
+                    ratingValue: loaderData.business.rating,
+                    reviewCount: loaderData.business.reviewCount,
+                  }
+                : undefined,
+            }),
+          },
+        ]
+      : [],
   }),
   notFoundComponent: () => (
     <SiteShell>

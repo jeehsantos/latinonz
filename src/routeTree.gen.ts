@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DirectoryRouteImport } from './routes/directory'
@@ -33,6 +34,11 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlanosRoute = PlanosRouteImport.update({
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/directory': typeof DirectoryRoute
   '/login': typeof LoginRoute
   '/planos': typeof PlanosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/business/$slug': typeof BusinessSlugRoute
@@ -162,6 +169,7 @@ export interface FileRoutesByTo {
   '/directory': typeof DirectoryRoute
   '/login': typeof LoginRoute
   '/planos': typeof PlanosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/business/$slug': typeof BusinessSlugRoute
@@ -185,6 +193,7 @@ export interface FileRoutesById {
   '/directory': typeof DirectoryRoute
   '/login': typeof LoginRoute
   '/planos': typeof PlanosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/business/$slug': typeof BusinessSlugRoute
@@ -209,6 +218,7 @@ export interface FileRouteTypes {
     | '/directory'
     | '/login'
     | '/planos'
+    | '/sitemap.xml'
     | '/sobre'
     | '/blog/$slug'
     | '/business/$slug'
@@ -230,6 +240,7 @@ export interface FileRouteTypes {
     | '/directory'
     | '/login'
     | '/planos'
+    | '/sitemap.xml'
     | '/sobre'
     | '/blog/$slug'
     | '/business/$slug'
@@ -252,6 +263,7 @@ export interface FileRouteTypes {
     | '/directory'
     | '/login'
     | '/planos'
+    | '/sitemap.xml'
     | '/sobre'
     | '/blog/$slug'
     | '/business/$slug'
@@ -275,6 +287,7 @@ export interface RootRouteChildren {
   DirectoryRoute: typeof DirectoryRoute
   LoginRoute: typeof LoginRoute
   PlanosRoute: typeof PlanosRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   BusinessSlugRoute: typeof BusinessSlugRoute
 }
@@ -286,6 +299,13 @@ declare module '@tanstack/react-router' {
       path: '/sobre'
       fullPath: '/sobre'
       preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/planos': {
@@ -470,6 +490,7 @@ const rootRouteChildren: RootRouteChildren = {
   DirectoryRoute: DirectoryRoute,
   LoginRoute: LoginRoute,
   PlanosRoute: PlanosRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   BusinessSlugRoute: BusinessSlugRoute,
 }

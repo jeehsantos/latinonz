@@ -13,7 +13,9 @@ export const Route = createFileRoute("/directory")({
       { name: "description", content: "Explore negócios e serviços latinos em toda a Nova Zelândia." },
       { property: "og:title", content: "Diretório — Latino Connect" },
       { property: "og:description", content: "Encontre negócios latinos em Auckland, Wellington e toda NZ." },
+      { property: "og:url", content: "https://latinoconnecthub.co.nz/directory" },
     ],
+    links: [{ rel: "canonical", href: "https://latinoconnecthub.co.nz/directory" }],
   }),
   component: DirectoryPage,
 });

@@ -10,7 +10,9 @@ export const Route = createFileRoute("/planos")({
       { name: "description", content: "Escolha o plano ideal para o seu negócio: Starter, Premium ou Ultra." },
       { property: "og:title", content: "Planos — Latino Connect" },
       { property: "og:description", content: "Cadastre seu negócio gratuitamente ou desbloqueie recursos premium." },
+      { property: "og:url", content: "https://latinoconnecthub.co.nz/planos" },
     ],
+    links: [{ rel: "canonical", href: "https://latinoconnecthub.co.nz/planos" }],
   }),
   component: PlanosPage,
 });

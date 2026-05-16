@@ -5,7 +5,7 @@ export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       { title: "Entrar — Latino Connect" },
-      { name: "description", content: "Acesse o painel do seu negócio." },
+      { name: "description", content: "Acesse o painel do seu negócio Latino Connect para gerenciar listagem, leads, cupons e estatísticas." },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
