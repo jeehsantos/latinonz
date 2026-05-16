@@ -12,7 +12,14 @@ import {
   Copy,
   MapPin,
   Clock,
+  ShoppingBag,
+  UtensilsCrossed,
+  Bike,
+  CalendarClock,
+  Sparkles,
+  Lock,
 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { CATEGORIES, NZ_CITIES } from "@/lib/mock/categories";
 
 export const Route = createFileRoute("/dashboard/profile")({
