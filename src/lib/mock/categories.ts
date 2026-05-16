@@ -1,5 +1,5 @@
 import {
-  Briefcase, Car, Hammer, HeartPulse, Music, Scissors, ShoppingBag, Utensils, BookOpen,
+  Briefcase, Car, Hammer, HeartPulse, Music, Scissors, ShoppingBag, Utensils, BookOpen, Users,
 } from "lucide-react";
 import type { Category } from "./types";
 
