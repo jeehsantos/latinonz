@@ -6,9 +6,11 @@ export function SiteFooter() {
     <footer className="bg-[#0F3D24] text-white/80 mt-24">
       <div className="max-w-7xl mx-auto px-6 py-12 grid gap-8 md:grid-cols-4">
         <div>
-          <p className="text-white font-extrabold text-lg">Latino Connect</p>
+          <Link to="/" className="flex items-center">
+            <img src={logo} alt="Latino Connect Hub" className="h-10 md:h-12 w-auto" />
+          </Link>
           <p className="text-sm mt-2 text-white/60">
-            A plataforma que conecta a comunidade latina aos melhores negócios e serviços em Nova Zelândia.
+            A plataforma que conecta a comunidade latina aos melhores negócios e serviços na Nova Zelândia.
           </p>
         </div>
         <div>
