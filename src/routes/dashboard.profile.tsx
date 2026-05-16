@@ -11,7 +11,7 @@ import {
   Check,
   Copy,
   MapPin,
-  Tag,
+  Clock,
 } from "lucide-react";
 import { CATEGORIES, NZ_CITIES } from "@/lib/mock/categories";
 
@@ -326,7 +326,7 @@ function ProfileEditor() {
         <div className="pt-4 border-t border-gray-100">
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
             <div className="flex items-center gap-2">
-              <Tag size={18} className="text-[#1A5336]" />
+              <Clock size={18} className="text-[#1A5336]" />
               <label className="block text-sm font-bold text-gray-700">
                 Horário de Funcionamento
               </label>
