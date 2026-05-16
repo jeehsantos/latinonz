@@ -472,6 +472,8 @@ function ProfileEditor() {
           </div>
         </div>
 
+        <ServiceOptionsSection plan={plan} />
+
         <button className="bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-xl px-6 py-2.5 text-sm">
           Salvar alterações
         </button>
