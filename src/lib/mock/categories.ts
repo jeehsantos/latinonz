@@ -1,5 +1,5 @@
 import {
-  Briefcase, Car, Hammer, HeartPulse, Music, Scissors, ShoppingBag, Utensils, BookOpen,
+  Briefcase, Car, Hammer, HeartPulse, Music, Scissors, ShoppingBag, Utensils, BookOpen, Users,
 } from "lucide-react";
 import type { Category } from "./types";
 
@@ -52,6 +52,11 @@ export const CATEGORIES: Category[] = [
     key: "aulas", name: "Aulas & Mentoria", blurb: "Inglês, Dança, Coaching…",
     subcategories: ["Todos", "Idiomas (Inglês)", "Dança", "Música", "Coaching & Carreira", "Apoio Escolar"],
     count: 32, icon: BookOpen, color: "text-indigo-600", bg: "bg-indigo-50",
+  },
+  {
+    key: "comunidade", name: "Comunidade & Cultura", blurb: "Igrejas, ONGs, Grupos…",
+    subcategories: ["Todos", "Igrejas", "ONGs", "Grupos Culturais", "Associações"],
+    count: 18, icon: Users, color: "text-rose-600", bg: "bg-rose-50",
   },
 ];
 
