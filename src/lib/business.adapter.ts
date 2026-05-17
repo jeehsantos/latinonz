@@ -9,9 +9,9 @@ type DbBusinessRow = {
   macro_category: string;
   subcategory: string | null;
   tags: string[] | null;
-  phone: string | null;
-  email: string | null;
-  website: string | null;
+  phone?: string | null;
+  email?: string | null;
+  website?: string | null;
   locations: string[] | null;
   logo_url?: string | null;
   is_verified?: boolean;
