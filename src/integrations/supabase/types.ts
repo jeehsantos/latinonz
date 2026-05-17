@@ -49,6 +49,41 @@ export type Database = {
           },
         ]
       }
+      business_photos: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: string
+          position: number
+          storage_path: string
+          url: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: string
+          position?: number
+          storage_path: string
+          url: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: string
+          position?: number
+          storage_path?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_photos_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       businesses: {
         Row: {
           created_at: string
