@@ -10,6 +10,7 @@ import { Link } from "@tanstack/react-router";
 import { CATEGORIES, NZ_CITIES } from "@/lib/mock/categories";
 import { useI18n } from "@/lib/i18n";
 import { getMyBusiness, updateMyBusiness } from "@/lib/business.functions";
+import { uploadLogo } from "@/lib/storage.functions";
 
 export const Route = createFileRoute("/dashboard/profile")({
   component: ProfileEditor,
@@ -39,10 +40,13 @@ function ProfileEditor() {
   const { t } = useI18n();
   const fetchMyBusiness = useServerFn(getMyBusiness);
   const saveMyBusiness = useServerFn(updateMyBusiness);
+  const callUploadLogo = useServerFn(uploadLogo);
   const { data: loaded, refetch } = useQuery({
     queryKey: ["my-business"],
     queryFn: () => fetchMyBusiness({}),
   });
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [logoError, setLogoError] = useState<string | null>(null);
 
   const [businessType, setBusinessType] = useState<BusinessType>("Serviço");
   const [name, setName] = useState("");
@@ -163,12 +167,30 @@ function ProfileEditor() {
     setTimeout(() => { setGenerating(false); setQrGenerated(true); }, 700);
   };
 
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => setLogo(ev.target?.result as string);
-    reader.readAsDataURL(file);
+    setLogoError(null);
+    setLogoUploading(true);
+    try {
+      const buf = await file.arrayBuffer();
+      let bin = "";
+      const bytes = new Uint8Array(buf);
+      for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+      const contentBase64 = btoa(bin);
+      const dot = file.name.lastIndexOf(".");
+      const ext = (dot >= 0 ? file.name.slice(dot + 1) : "jpg").toLowerCase();
+      const res = await callUploadLogo({
+        data: { contentBase64, contentType: file.type || "image/jpeg", ext },
+      });
+      setLogo(res.url);
+      await refetch();
+    } catch (err) {
+      setLogoError(err instanceof Error ? err.message : "Falha no upload.");
+    } finally {
+      setLogoUploading(false);
+      if (logoRef.current) logoRef.current.value = "";
+    }
   };
 
   const multiBranch = cities.length > 1;
@@ -422,15 +444,16 @@ function ProfileEditor() {
             </div>
             <input ref={logoRef} type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
             <div className="flex gap-2 w-full">
-              <button onClick={() => logoRef.current?.click()} className="flex-1 inline-flex items-center justify-center gap-2 bg-[#1A5336] hover:bg-[#123F27] text-white font-bold py-2 rounded-xl text-sm transition-colors">
-                <Upload size={14} /> {logo ? t("profile.logo_change") : t("profile.logo_upload")}
+              <button onClick={() => logoRef.current?.click()} disabled={logoUploading} className="flex-1 inline-flex items-center justify-center gap-2 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold py-2 rounded-xl text-sm transition-colors">
+                <Upload size={14} /> {logoUploading ? "..." : logo ? t("profile.logo_change") : t("profile.logo_upload")}
               </button>
               {logo && (
-                <button onClick={() => setLogo(null)} className="inline-flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-3 rounded-xl text-sm transition-colors" aria-label={t("profile.logo_remove")}>
+                <button onClick={() => setLogo(null)} disabled={logoUploading} className="inline-flex items-center justify-center bg-gray-100 hover:bg-gray-200 disabled:opacity-60 text-gray-700 font-bold px-3 rounded-xl text-sm transition-colors" aria-label={t("profile.logo_remove")}>
                   <Trash2 size={14} />
                 </button>
               )}
             </div>
+            {logoError && <p className="text-[11px] text-red-600 mt-2 text-center">{logoError}</p>}
             <p className="text-[11px] text-gray-400 mt-2 text-center">{t("profile.logo_hint")}</p>
           </div>
         </div>
