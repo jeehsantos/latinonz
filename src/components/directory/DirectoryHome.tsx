@@ -1,17 +1,28 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Sparkles, ShieldCheck, Users } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
 import { BusinessCard } from "@/components/directory/BusinessCard";
 import { CATEGORIES } from "@/lib/mock/categories";
-import { getFeaturedBusinesses } from "@/lib/mock/businesses";
+import { getBusinesses } from "@/lib/business.functions";
+import { adaptBusiness } from "@/lib/business.adapter";
 import { useI18n } from "@/lib/i18n";
 
 export function DirectoryHome() {
   const { t } = useI18n();
   const [search, setSearch] = useState<SearchValue>({ q: "", category: "", city: "" });
-  const featured = getFeaturedBusinesses(4);
+  const fetchBusinesses = useServerFn(getBusinesses);
+  const { data } = useQuery({
+    queryKey: ["businesses", "all"],
+    queryFn: () => fetchBusinesses({ data: {} }),
+  });
+  const featured = useMemo(() => {
+    if (!data?.ok) return [];
+    return data.rows.slice(0, 4).map(adaptBusiness);
+  }, [data]);
 
   const trustItems = [
     { icon: Users, value: "600+", label: t("directory.trust_businesses") },

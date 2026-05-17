@@ -1,5 +1,7 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import {
   ChevronDown, QrCode, Download, Plus, Trash2, Upload, X, Check,
   Copy, MapPin, Clock, ShoppingBag, UtensilsCrossed, Bike, CalendarClock, Sparkles, Lock,
@@ -7,6 +9,7 @@ import {
 import { Link } from "@tanstack/react-router";
 import { CATEGORIES, NZ_CITIES } from "@/lib/mock/categories";
 import { useI18n } from "@/lib/i18n";
+import { getMyBusiness, updateMyBusiness } from "@/lib/business.functions";
 
 export const Route = createFileRoute("/dashboard/profile")({
   component: ProfileEditor,
@@ -34,7 +37,19 @@ const cloneSchedule = (s: BranchSchedule): BranchSchedule => JSON.parse(JSON.str
 
 function ProfileEditor() {
   const { t } = useI18n();
+  const fetchMyBusiness = useServerFn(getMyBusiness);
+  const saveMyBusiness = useServerFn(updateMyBusiness);
+  const { data: loaded, refetch } = useQuery({
+    queryKey: ["my-business"],
+    queryFn: () => fetchMyBusiness({}),
+  });
+
   const [businessType, setBusinessType] = useState<BusinessType>("Serviço");
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState<string>(CATEGORIES[0]?.name ?? "");
+  const [phone, setPhone] = useState("");
+  const [keywords, setKeywords] = useState("");
   const [cities, setCities] = useState<string[]>(["Auckland"]);
   const [citiesOpen, setCitiesOpen] = useState(false);
   const [schedules, setSchedules] = useState<Record<string, BranchSchedule>>({ Auckland: DEFAULT_SCHEDULE });
@@ -42,7 +57,32 @@ function ProfileEditor() {
   const [qrGenerated, setQrGenerated] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [logo, setLogo] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const logoRef = useRef<HTMLInputElement>(null);
+
+  // Seed form once business loads
+  useEffect(() => {
+    if (!loaded?.ok || !loaded.business) return;
+    const b = loaded.business;
+    if (b.type === "Serviço" || b.type === "Produto") setBusinessType(b.type as BusinessType);
+    setName(b.name ?? "");
+    setDescription(b.description ?? "");
+    if (b.macro_category) setCategory(b.macro_category);
+    setPhone(b.phone ?? "");
+    setKeywords((b.keywords ?? []).join(", "));
+    if (b.locations && b.locations.length > 0) {
+      setCities(b.locations);
+      setActiveBranch(b.locations[0]);
+      setSchedules((prev) => {
+        const next: Record<string, BranchSchedule> = {};
+        for (const c of b.locations as string[]) next[c] = prev[c] ?? cloneSchedule(DEFAULT_SCHEDULE);
+        return next;
+      });
+    }
+    if (b.logo_url) setLogo(b.logo_url);
+  }, [loaded]);
 
   const plan: string = "Premium";
   const activeCategories = CATEGORIES.map((c) => c.name);
@@ -150,8 +190,10 @@ function ProfileEditor() {
           </div>
           <textarea
             rows={4}
+            maxLength={500}
             className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] resize-none"
-            defaultValue="Autêntica comida mexicana com ingredientes frescos locais. Servindo a comunidade com os melhores tacos e burritos."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
           <p className="text-xs text-gray-500 mt-1">{t("profile.description_hint")}</p>
         </div>
@@ -176,14 +218,18 @@ function ProfileEditor() {
 
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-1">{t("profile.business_name_label")}</label>
-          <input type="text" defaultValue="Tacos do Chef" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] focus:ring-1 focus:ring-[#1A5336]" />
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] focus:ring-1 focus:ring-[#1A5336]" />
         </div>
 
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-1">{t("profile.category_label")}</label>
           <div className="relative">
-            <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] appearance-none">
-              {activeCategories.map((c, i) => <option key={i}>{c}</option>)}
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] appearance-none"
+            >
+              {activeCategories.map((c, i) => <option key={i} value={c}>{c}</option>)}
             </select>
             <ChevronDown size={16} className="absolute right-4 top-4 text-gray-400 pointer-events-none" />
           </div>
@@ -191,7 +237,7 @@ function ProfileEditor() {
 
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-1">{t("profile.phone_label")}</label>
-          <input type="text" placeholder="Ex: 021 000 0000" defaultValue="021 999 8888" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]" />
+          <input type="text" placeholder="Ex: 021 000 0000" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]" />
         </div>
 
         <div>
@@ -239,7 +285,7 @@ function ProfileEditor() {
 
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-1">{t("profile.keywords_label")}</label>
-          <input type="text" placeholder={t("profile.keywords_placeholder")} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]" />
+          <input type="text" value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder={t("profile.keywords_placeholder")} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]" />
           <p className="text-xs text-gray-500 mt-1">{t("profile.keywords_hint")}</p>
         </div>
 
@@ -324,8 +370,44 @@ function ProfileEditor() {
 
         <ServiceOptionsSection plan={plan} />
 
-        <button className="bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-xl px-6 py-2.5 text-sm">
-          {t("profile.save_button")}
+        {saveError && <p className="text-sm text-red-600">{saveError}</p>}
+        {saveSuccess && <p className="text-sm text-emerald-700">{t("profile.save_button")} ✓</p>}
+        <button
+          onClick={async () => {
+            setSaveError(null);
+            setSaveSuccess(false);
+            setSaving(true);
+            try {
+              const res = await saveMyBusiness({
+                data: {
+                  name: name.trim() || undefined,
+                  description: description.trim(),
+                  type: businessType,
+                  macro_category: category,
+                  phone: phone.trim() || null,
+                  locations: cities,
+                  keywords: keywords
+                    .split(",")
+                    .map((k) => k.trim())
+                    .filter(Boolean),
+                },
+              });
+              if (!res.ok) {
+                setSaveError(res.error);
+                return;
+              }
+              setSaveSuccess(true);
+              await refetch();
+            } catch (err) {
+              setSaveError(err instanceof Error ? err.message : "Erro inesperado.");
+            } finally {
+              setSaving(false);
+            }
+          }}
+          disabled={saving}
+          className="bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold rounded-xl px-6 py-2.5 text-sm"
+        >
+          {saving ? "..." : t("profile.save_button")}
         </button>
       </div>
 

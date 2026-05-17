@@ -2,15 +2,17 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { MapPin, Star, Phone, Mail, Globe, MessageCircle, Clock, Ticket, Image as ImageIcon } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { PlanBadge } from "@/components/PlanBadge";
-import { getBusinessBySlug, REVIEWS_BY_BUSINESS, COUPONS_BY_BUSINESS } from "@/lib/mock/businesses";
+import { getBusinessBySlug } from "@/lib/business.functions";
+import { adaptBusiness } from "@/lib/business.adapter";
+import { REVIEWS_BY_BUSINESS, COUPONS_BY_BUSINESS } from "@/lib/mock/businesses";
 import { can, getLimit } from "@/lib/plans";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/business/$slug")({
-  loader: ({ params }) => {
-    const business = getBusinessBySlug(params.slug);
-    if (!business) throw notFound();
-    return { business };
+  loader: async ({ params }) => {
+    const res = await getBusinessBySlug({ data: { slug: params.slug } });
+    if (!res.ok) throw notFound();
+    return { business: adaptBusiness(res.business) };
   },
   head: ({ params, loaderData }) => ({
     meta: [
@@ -68,7 +70,7 @@ export const Route = createFileRoute("/business/$slug")({
 
 function BusinessPage() {
   const { t } = useI18n();
-  const { business } = Route.useLoaderData() as { business: NonNullable<ReturnType<typeof getBusinessBySlug>> };
+  const { business } = Route.useLoaderData();
   const reviews = REVIEWS_BY_BUSINESS[business.slug] ?? [];
   const coupons = can(business.plan, "coupons") ? COUPONS_BY_BUSINESS[business.slug] ?? [] : [];
   const photoLimit = getLimit(business.plan, "photoLimit");
@@ -121,7 +123,7 @@ function BusinessPage() {
             <p className="mt-3 text-gray-600">{business.description}</p>
             {business.tags && (
               <div className="mt-5 flex flex-wrap gap-2">
-                {business.tags.map((tag) => (
+                {business.tags.map((tag: string) => (
                   <span key={tag} className="text-xs font-semibold bg-gray-100 text-gray-700 px-3 py-1 rounded-full">{tag}</span>
                 ))}
               </div>
@@ -231,7 +233,7 @@ function BusinessPage() {
                 <Clock size={16} /> {t("business.hours_title")}
               </h3>
               <div className="mt-3 space-y-2 text-sm">
-                {business.hours.map((h) => (
+                {business.hours.map((h: { label: string; value: string }) => (
                   <div key={h.label} className="flex justify-between">
                     <span className="text-gray-500">{h.label}</span>
                     <span className="font-semibold text-gray-800">{h.value}</span>
