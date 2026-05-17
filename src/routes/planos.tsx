@@ -3,6 +3,7 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { Container } from "@/components/site/Container";
 import { PlanCard } from "@/components/plans/PlanCard";
 import { PlanComparisonTable } from "@/components/plans/PlanComparisonTable";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/planos")({
   head: () => ({
@@ -27,52 +28,29 @@ export const Route = createFileRoute("/planos")({
 });
 
 function PlanosPage() {
+  const { t, raw } = useI18n();
+  const starterFeatures = raw<string[]>("plans.features_starter") ?? [];
+  const premiumFeatures = raw<string[]>("plans.features_premium") ?? [];
+  const ultraFeatures = raw<string[]>("plans.features_ultra") ?? [];
+
   return (
     <SiteShell>
       <Container className="py-16">
         <header className="text-center max-w-2xl mx-auto mb-12">
-          <h1 className="text-4xl md:text-5xl font-black text-gray-900">Escolha o seu plano</h1>
-          <p className="mt-4 text-gray-600">
-            Comece grátis e evolua conforme o seu negócio cresce na comunidade latina da Nova Zelândia.
-          </p>
+          <h1 className="text-4xl md:text-5xl font-black text-gray-900">{t("plans.page_heading")}</h1>
+          <p className="mt-4 text-gray-600">{t("plans.page_subheading")}</p>
         </header>
 
         <div className="grid md:grid-cols-3 gap-6">
-          <PlanCard
-            plan="starter"
-            features={[
-              "Perfil básico no diretório",
-              "Até 3 fotos",
-              "Contatos por email",
-              "Avaliações de clientes",
-            ]}
-          />
-          <PlanCard
-            plan="premium"
-            highlight
-            features={[
-              "Perfil completo destacado",
-              "Galeria ilimitada de fotos",
-              "Leads via WhatsApp",
-              "Cupons e promoções",
-              "QR Code do negócio",
-              "Analytics do perfil",
-            ]}
-          />
-          <PlanCard
-            plan="ultra"
-            features={[
-              "Tudo do Premium",
-              "Destaque no topo do diretório",
-              "Eventos e comunidade",
-              "Publicações em redes sociais",
-              "Suporte prioritário",
-            ]}
-          />
+          <PlanCard plan="starter" features={starterFeatures} />
+          <PlanCard plan="premium" highlight features={premiumFeatures} />
+          <PlanCard plan="ultra" features={ultraFeatures} />
         </div>
 
         <section className="mt-16">
-          <h2 className="text-2xl font-black text-gray-900 mb-6 text-center">Compare os planos</h2>
+          <h2 className="text-2xl font-black text-gray-900 mb-6 text-center">
+            {t("plans.comparison_title")}
+          </h2>
           <PlanComparisonTable />
         </section>
       </Container>

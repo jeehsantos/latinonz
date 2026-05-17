@@ -42,13 +42,12 @@ type I18nContextValue = {
   locale: Locale;
   setLocale: (l: Locale) => void;
   t: (key: TranslationKey) => string;
+  raw: <T = unknown>(path: string) => T;
 };
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  // Initialise synchronously from localStorage/navigator so there's no flash.
-  // Falls back to "pt" on the server (SSR) where neither is available.
   const [locale, setLocaleState] = useState<Locale>(() => detectLocale());
 
   const setLocale = (l: Locale) => {
@@ -61,8 +60,15 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const t = (key: TranslationKey): string =>
     getNestedValue(translations[locale] as Record<string, unknown>, key);
 
+  const raw = <T,>(path: string): T => {
+    return path.split(".").reduce<unknown>((acc, key) => {
+      if (acc && typeof acc === "object") return (acc as Record<string, unknown>)[key];
+      return undefined;
+    }, translations[locale]) as T;
+  };
+
   return (
-    <I18nContext.Provider value={{ locale, setLocale, t }}>
+    <I18nContext.Provider value={{ locale, setLocale, t, raw }}>
       {children}
     </I18nContext.Provider>
   );

@@ -58,11 +58,52 @@
     "badge": "Plans",
     "title": "The right plan to grow",
     "subtitle": "Start free and unlock advanced features as your presence grows.",
-    "comparison_title": "Full comparison",
+    "page_heading": "Choose your plan",
+    "page_subheading": "Start free and scale up as your business grows within the Latin community in New Zealand.",
+    "comparison_title": "Compare the plans",
     "most_popular": "Most popular",
     "free": "Free",
     "per_month": "/month",
-    "cta_default": "Choose plan"
+    "cta_default": "Choose plan",
+    "table_feature": "Feature",
+    "features_starter": [
+      "Basic profile in the directory",
+      "Up to 3 photos",
+      "Email contacts",
+      "Customer reviews"
+    ],
+    "features_premium": [
+      "Full highlighted profile",
+      "Unlimited photo gallery",
+      "WhatsApp leads",
+      "Coupons and promotions",
+      "Business QR code",
+      "Profile analytics"
+    ],
+    "features_ultra": [
+      "Everything in Premium",
+      "Top placement in the directory",
+      "Events and community",
+      "Social media posts",
+      "Priority support"
+    ],
+    "comparison_rows": [
+      { "feature": "Custom profile", "starter": "Basic", "premium": "Full", "ultra": "Full + Highlight" },
+      { "feature": "Photos", "starter": "3 photos", "premium": "Unlimited", "ultra": "Unlimited", "highlight": true },
+      { "feature": "Contact", "starter": "Form", "premium": "WhatsApp", "ultra": "WhatsApp" },
+      { "feature": "Lead notification", "starter": "Email", "premium": "WhatsApp", "ultra": "Email & WhatsApp", "highlight": true },
+      { "feature": "Business hours", "starter": "—", "premium": "✓", "ultra": "✓" },
+      { "feature": "Service options", "starter": "—", "premium": "✓", "ultra": "✓", "highlight": true },
+      { "feature": "Discount coupons", "starter": "—", "premium": "✓", "ultra": "✓" },
+      { "feature": "Direct messages", "starter": "—", "premium": "✓", "ultra": "✓", "highlight": true },
+      { "feature": "Profile QR code", "starter": "—", "premium": "✓", "ultra": "✓" },
+      { "feature": "Profile analytics", "starter": "—", "premium": "✓", "ultra": "✓", "highlight": true },
+      { "feature": "Google Reviews", "starter": "✓", "premium": "✓", "ultra": "✓" },
+      { "feature": "Event creation", "starter": "—", "premium": "—", "ultra": "✓", "highlight": true },
+      { "feature": "Instagram & Facebook posts", "starter": "—", "premium": "—", "ultra": "✓" },
+      { "feature": "Community WhatsApp posts", "starter": "—", "premium": "—", "ultra": "✓", "highlight": true },
+      { "feature": "Top placement in the network", "starter": "—", "premium": "—", "ultra": "✓" }
+    ]
   },
   "about": {
     "badge": "About",

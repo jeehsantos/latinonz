@@ -58,11 +58,52 @@
     "badge": "Planos",
     "title": "O plano certo para crescer",
     "subtitle": "Comece grátis e desbloqueie recursos avançados conforme sua presença cresce.",
-    "comparison_title": "Comparativo completo",
+    "page_heading": "Escolha o seu plano",
+    "page_subheading": "Comece grátis e evolua conforme o seu negócio cresce na comunidade latina da Nova Zelândia.",
+    "comparison_title": "Compare os planos",
     "most_popular": "Mais escolhido",
     "free": "Grátis",
     "per_month": "/mês",
-    "cta_default": "Escolher plano"
+    "cta_default": "Escolher plano",
+    "table_feature": "Recurso",
+    "features_starter": [
+      "Perfil básico no diretório",
+      "Até 3 fotos",
+      "Contatos por e-mail",
+      "Avaliações de clientes"
+    ],
+    "features_premium": [
+      "Perfil completo destacado",
+      "Galeria ilimitada de fotos",
+      "Leads via WhatsApp",
+      "Cupons e promoções",
+      "QR Code do negócio",
+      "Analytics do perfil"
+    ],
+    "features_ultra": [
+      "Tudo do Premium",
+      "Destaque no topo do diretório",
+      "Eventos e comunidade",
+      "Publicações em redes sociais",
+      "Suporte prioritário"
+    ],
+    "comparison_rows": [
+      { "feature": "Perfil personalizado", "starter": "Básico", "premium": "Completo", "ultra": "Completo + Destaque" },
+      { "feature": "Fotos", "starter": "3 fotos", "premium": "Ilimitado", "ultra": "Ilimitado", "highlight": true },
+      { "feature": "Contato", "starter": "Formulário", "premium": "WhatsApp", "ultra": "WhatsApp" },
+      { "feature": "Notificação de lead", "starter": "E-mail", "premium": "WhatsApp", "ultra": "E-mail & WhatsApp", "highlight": true },
+      { "feature": "Horários de funcionamento", "starter": "—", "premium": "✓", "ultra": "✓" },
+      { "feature": "Opções de atendimento", "starter": "—", "premium": "✓", "ultra": "✓", "highlight": true },
+      { "feature": "Cupons de desconto", "starter": "—", "premium": "✓", "ultra": "✓" },
+      { "feature": "Mensagens diretas", "starter": "—", "premium": "✓", "ultra": "✓", "highlight": true },
+      { "feature": "QR Code do perfil", "starter": "—", "premium": "✓", "ultra": "✓" },
+      { "feature": "Analytics do perfil", "starter": "—", "premium": "✓", "ultra": "✓", "highlight": true },
+      { "feature": "Google Reviews", "starter": "✓", "premium": "✓", "ultra": "✓" },
+      { "feature": "Criação de eventos", "starter": "—", "premium": "—", "ultra": "✓", "highlight": true },
+      { "feature": "Post no Instagram & Facebook", "starter": "—", "premium": "—", "ultra": "✓" },
+      { "feature": "Post no WhatsApp da comunidade", "starter": "—", "premium": "—", "ultra": "✓", "highlight": true },
+      { "feature": "Destaque no topo da rede", "starter": "—", "premium": "—", "ultra": "✓" }
+    ]
   },
   "about": {
     "badge": "Sobre",
