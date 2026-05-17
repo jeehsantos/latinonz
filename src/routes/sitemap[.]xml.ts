@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import type {} from "@tanstack/react-start";
 import { NEWS } from "@/lib/mock/news";
 import { BUSINESSES } from "@/lib/mock/businesses";
 
@@ -11,8 +10,13 @@ interface SitemapEntry {
   priority?: string;
 }
 
+// Cast options to bypass a type-only mismatch: two physical copies of
+// @tanstack/router-core exist in node_modules, so the `server` augmentation
+// from @tanstack/start-client-core is not visible to the createFileRoute
+// types pulled in via @tanstack/react-router. Runtime contract is unaffected.
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
+
     handlers: {
       GET: async () => {
         const entries: SitemapEntry[] = [
@@ -60,4 +64,4 @@ export const Route = createFileRoute("/sitemap.xml")({
       },
     },
   },
-});
+} as Parameters<ReturnType<typeof createFileRoute<"/sitemap.xml">>>[0]);
