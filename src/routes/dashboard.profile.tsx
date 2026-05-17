@@ -370,8 +370,44 @@ function ProfileEditor() {
 
         <ServiceOptionsSection plan={plan} />
 
-        <button className="bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-xl px-6 py-2.5 text-sm">
-          {t("profile.save_button")}
+        {saveError && <p className="text-sm text-red-600">{saveError}</p>}
+        {saveSuccess && <p className="text-sm text-emerald-700">{t("profile.save_button")} ✓</p>}
+        <button
+          onClick={async () => {
+            setSaveError(null);
+            setSaveSuccess(false);
+            setSaving(true);
+            try {
+              const res = await saveMyBusiness({
+                data: {
+                  name: name.trim() || undefined,
+                  description: description.trim(),
+                  type: businessType,
+                  macro_category: category,
+                  phone: phone.trim() || null,
+                  locations: cities,
+                  keywords: keywords
+                    .split(",")
+                    .map((k) => k.trim())
+                    .filter(Boolean),
+                },
+              });
+              if (!res.ok) {
+                setSaveError(res.error);
+                return;
+              }
+              setSaveSuccess(true);
+              await refetch();
+            } catch (err) {
+              setSaveError(err instanceof Error ? err.message : "Erro inesperado.");
+            } finally {
+              setSaving(false);
+            }
+          }}
+          disabled={saving}
+          className="bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold rounded-xl px-6 py-2.5 text-sm"
+        >
+          {saving ? "..." : t("profile.save_button")}
         </button>
       </div>
 
