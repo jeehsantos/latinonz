@@ -1,10 +1,13 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { MapPin, Star, Phone, Mail, Globe, MessageCircle, Clock, Ticket, Image as ImageIcon } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { PlanBadge } from "@/components/PlanBadge";
 import { getBusinessBySlug } from "@/lib/business.functions";
 import { adaptBusiness } from "@/lib/business.adapter";
-import { REVIEWS_BY_BUSINESS, COUPONS_BY_BUSINESS } from "@/lib/mock/businesses";
+import { getReviews } from "@/lib/reviews.functions";
+import { COUPONS_BY_BUSINESS } from "@/lib/mock/businesses";
 import { can, getLimit } from "@/lib/plans";
 import { useI18n } from "@/lib/i18n";
 
@@ -71,7 +74,16 @@ export const Route = createFileRoute("/business/$slug")({
 function BusinessPage() {
   const { t } = useI18n();
   const { business } = Route.useLoaderData();
-  const reviews = REVIEWS_BY_BUSINESS[business.slug] ?? [];
+  const fetchReviews = useServerFn(getReviews);
+  const { data: reviewsData } = useQuery({
+    queryKey: ["google-reviews", business.id],
+    queryFn: () => fetchReviews({ data: { businessId: business.id } }),
+  });
+  const reviews = (reviewsData?.ok ? reviewsData.reviews : []).map((r) => ({
+    name: r.author_name,
+    rating: r.rating,
+    text: r.text ?? "",
+  }));
   const coupons = can(business.plan, "coupons") ? COUPONS_BY_BUSINESS[business.slug] ?? [] : [];
   const photoLimit = getLimit(business.plan, "photoLimit");
   const photoCount = Number.isFinite(photoLimit) ? Math.min(photoLimit, 6) : 6;
