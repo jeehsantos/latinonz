@@ -70,7 +70,7 @@ export const Route = createFileRoute("/business/$slug")({
 
 function BusinessPage() {
   const { t } = useI18n();
-  const { business } = Route.useLoaderData() as { business: NonNullable<ReturnType<typeof getBusinessBySlug>> };
+  const { business } = Route.useLoaderData();
   const reviews = REVIEWS_BY_BUSINESS[business.slug] ?? [];
   const coupons = can(business.plan, "coupons") ? COUPONS_BY_BUSINESS[business.slug] ?? [] : [];
   const photoLimit = getLimit(business.plan, "photoLimit");
