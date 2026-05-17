@@ -34,7 +34,9 @@ export function DirectoryHome() {
             {t("directory.home_badge")}
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
-            {t("directory.home_headline")}
+            {t("directory.home_headline_before")}
+            <span className="text-[#EFC64E]">{t("directory.home_headline_highlight")}</span>
+            {t("directory.home_headline_after")}
           </h1>
           <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">
             {t("directory.home_subheadline")}

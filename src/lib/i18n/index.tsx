@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import pt from "./pt.json";
 import es from "./es.json";
 import en from "./en.json";
@@ -25,6 +25,12 @@ function getNestedValue(obj: Record<string, unknown>, path: string): string {
 }
 
 function detectLocale(): Locale {
+  // 1. Check localStorage for a previously set preference
+  if (typeof localStorage !== "undefined") {
+    const stored = localStorage.getItem("locale") as Locale | null;
+    if (stored && ["pt", "es", "en"].includes(stored)) return stored;
+  }
+  // 2. Fall back to browser language
   if (typeof navigator === "undefined") return "pt";
   const lang = navigator.language?.toLowerCase() ?? "";
   if (lang.startsWith("es")) return "es";
@@ -41,11 +47,16 @@ type I18nContextValue = {
 const I18nContext = createContext<I18nContextValue | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>("pt");
+  // Initialise synchronously from localStorage/navigator so there's no flash.
+  // Falls back to "pt" on the server (SSR) where neither is available.
+  const [locale, setLocaleState] = useState<Locale>(() => detectLocale());
 
-  useEffect(() => {
-    setLocale(detectLocale());
-  }, []);
+  const setLocale = (l: Locale) => {
+    setLocaleState(l);
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem("locale", l);
+    }
+  };
 
   const t = (key: TranslationKey): string =>
     getNestedValue(translations[locale] as Record<string, unknown>, key);
