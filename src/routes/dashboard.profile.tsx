@@ -10,6 +10,7 @@ import { Link } from "@tanstack/react-router";
 import { CATEGORIES, NZ_CITIES } from "@/lib/mock/categories";
 import { useI18n } from "@/lib/i18n";
 import { getMyBusiness, updateMyBusiness } from "@/lib/business.functions";
+import { uploadLogo } from "@/lib/storage.functions";
 
 export const Route = createFileRoute("/dashboard/profile")({
   component: ProfileEditor,
