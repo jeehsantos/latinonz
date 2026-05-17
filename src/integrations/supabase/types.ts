@@ -168,6 +168,50 @@ export type Database = {
         }
         Relationships: []
       }
+      google_reviews: {
+        Row: {
+          author_name: string
+          author_photo_url: string | null
+          business_id: string
+          google_review_id: string
+          id: string
+          published_at: string | null
+          rating: number
+          synced_at: string
+          text: string | null
+        }
+        Insert: {
+          author_name: string
+          author_photo_url?: string | null
+          business_id: string
+          google_review_id: string
+          id?: string
+          published_at?: string | null
+          rating: number
+          synced_at?: string
+          text?: string | null
+        }
+        Update: {
+          author_name?: string
+          author_photo_url?: string | null
+          business_id?: string
+          google_review_id?: string
+          id?: string
+          published_at?: string | null
+          rating?: number
+          synced_at?: string
+          text?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "google_reviews_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
