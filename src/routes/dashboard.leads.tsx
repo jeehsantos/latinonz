@@ -1,28 +1,72 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { LEADS } from "@/lib/mock/leads";
-import type { Lead } from "@/lib/mock/types";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getMyLeads, updateLeadStatus } from "@/lib/leads.functions";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/dashboard/leads")({
   component: LeadsPage,
 });
 
+type LeadStatus = "Pendente" | "Contatado" | "Convertido";
+
+type LeadRow = {
+  id: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  message: string | null;
+  source: string;
+  status: LeadStatus;
+  created_at: string;
+};
+
 function LeadsPage() {
   const { t } = useI18n();
-  const [selected, setSelected] = useState<Lead | null>(null);
+  const queryClient = useQueryClient();
+  const fetchLeads = useServerFn(getMyLeads);
+  const updateStatusFn = useServerFn(updateLeadStatus);
 
-  const statusStyles: Record<Lead["status"], string> = {
+  const { data } = useQuery({
+    queryKey: ["my-leads"],
+    queryFn: () => fetchLeads(),
+  });
+
+  const leads: LeadRow[] = (data && (data as { ok?: boolean }).ok
+    ? ((data as { leads: LeadRow[] }).leads ?? [])
+    : []);
+
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selected = leads.find((l) => l.id === selectedId) ?? null;
+
+  const mutation = useMutation({
+    mutationFn: (vars: { leadId: string; status: LeadStatus }) =>
+      updateStatusFn({ data: vars }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-leads"] });
+    },
+  });
+
+  const statusStyles: Record<LeadStatus, string> = {
     Pendente: "bg-amber-100 text-amber-700",
     Contatado: "bg-blue-100 text-blue-700",
     Convertido: "bg-emerald-100 text-emerald-700",
   };
 
-  const statusLabels: Record<Lead["status"], string> = {
+  const statusLabels: Record<LeadStatus, string> = {
     Pendente: t("leads.status_pending"),
     Contatado: t("leads.status_contacted"),
     Convertido: t("leads.status_converted"),
   };
+
+  function formatDateTime(iso: string) {
+    const d = new Date(iso);
+    return {
+      date: d.toLocaleDateString(),
+      time: d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+  }
 
   return (
     <div className="space-y-6">
@@ -42,25 +86,28 @@ function LeadsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {LEADS.map((l) => (
-                <tr
-                  key={l.id}
-                  onClick={() => setSelected(l)}
-                  className={`hover:bg-gray-50 cursor-pointer ${selected?.id === l.id ? "bg-emerald-50" : ""}`}
-                >
-                  <td className="p-4 font-bold text-gray-900">
-                    {l.name}
-                    <div className="text-xs font-normal text-gray-500">{l.phone}</div>
-                  </td>
-                  <td className="p-4 text-gray-600">{l.source}</td>
-                  <td className="p-4 text-gray-500">{l.date} {l.time}</td>
-                  <td className="p-4">
-                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${statusStyles[l.status]}`}>
-                      {statusLabels[l.status]}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+              {leads.map((l) => {
+                const { date, time } = formatDateTime(l.created_at);
+                return (
+                  <tr
+                    key={l.id}
+                    onClick={() => setSelectedId(l.id)}
+                    className={`hover:bg-gray-50 cursor-pointer ${selectedId === l.id ? "bg-emerald-50" : ""}`}
+                  >
+                    <td className="p-4 font-bold text-gray-900">
+                      {l.name}
+                      <div className="text-xs font-normal text-gray-500">{l.phone ?? l.email ?? ""}</div>
+                    </td>
+                    <td className="p-4 text-gray-600">{l.source}</td>
+                    <td className="p-4 text-gray-500">{date} {time}</td>
+                    <td className="p-4">
+                      <span className={`text-xs font-bold px-2 py-1 rounded-full ${statusStyles[l.status]}`}>
+                        {statusLabels[l.status]}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -69,13 +116,21 @@ function LeadsPage() {
             <>
               <p className="text-xs font-bold uppercase tracking-wider text-gray-500">{selected.source}</p>
               <h3 className="font-extrabold text-gray-900 mt-1">{selected.name}</h3>
-              <p className="text-sm text-gray-500">{selected.phone}</p>
-              <p className="mt-4 text-sm text-gray-700">{selected.msg}</p>
+              <p className="text-sm text-gray-500">{selected.phone ?? selected.email ?? ""}</p>
+              <p className="mt-4 text-sm text-gray-700">{selected.message ?? ""}</p>
               <div className="mt-6 flex gap-2">
-                <button className="flex-1 bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-xl py-2 text-sm">
+                <button
+                  disabled={mutation.isPending}
+                  onClick={() => mutation.mutate({ leadId: selected.id, status: "Contatado" })}
+                  className="flex-1 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-50 text-white font-bold rounded-xl py-2 text-sm"
+                >
                   {t("leads.reply_button")}
                 </button>
-                <button className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl py-2 text-sm">
+                <button
+                  disabled={mutation.isPending}
+                  onClick={() => mutation.mutate({ leadId: selected.id, status: "Convertido" })}
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 text-gray-700 font-bold rounded-xl py-2 text-sm"
+                >
                   {t("leads.resolve_button")}
                 </button>
               </div>
