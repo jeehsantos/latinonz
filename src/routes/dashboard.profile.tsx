@@ -573,3 +573,125 @@ function ServiceOptionsSection({ plan }: { plan: string }) {
     </div>
   );
 }
+
+function GoogleReviewsSection({
+  businessId,
+  initialPlaceId,
+  onConnected,
+}: {
+  businessId: string | null;
+  initialPlaceId: string;
+  onConnected: () => void;
+}) {
+  const connect = useServerFn(connectGooglePlace);
+  const sync = useServerFn(syncGoogleReviews);
+  const [placeId, setPlaceId] = useState(initialPlaceId);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
+
+  useEffect(() => {
+    setPlaceId(initialPlaceId);
+  }, [initialPlaceId]);
+
+  const isValid = /^[A-Za-z0-9_-]{10,200}$/.test(placeId.trim());
+
+  const handleConnect = async () => {
+    setMsg(null);
+    setBusy(true);
+    try {
+      const res = await connect({ data: { placeId: placeId.trim() } });
+      if (res.ok) {
+        setMsg({ kind: "ok", text: `Conectado. ${res.synced} avaliações sincronizadas.` });
+        onConnected();
+      } else {
+        setMsg({ kind: "err", text: res.error });
+      }
+    } catch (err) {
+      setMsg({ kind: "err", text: err instanceof Error ? err.message : "Falha ao conectar." });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleSync = async () => {
+    if (!businessId) return;
+    setMsg(null);
+    setBusy(true);
+    try {
+      const res = await sync({ data: { businessId } });
+      setMsg({ kind: "ok", text: `${res.synced} avaliações sincronizadas.` });
+      onConnected();
+    } catch (err) {
+      setMsg({ kind: "err", text: err instanceof Error ? err.message : "Falha ao sincronizar." });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4">
+        <div className="flex items-center gap-2">
+          <Star size={18} className="text-[#1A5336]" />
+          <div>
+            <h3 className="text-base font-bold text-gray-900">Google Reviews</h3>
+            <p className="text-xs text-gray-500">
+              Conecte seu Google Place ID para exibir avaliações reais no seu perfil.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-bold text-gray-700 mb-1">Google Place ID</label>
+        <input
+          type="text"
+          value={placeId}
+          onChange={(e) => setPlaceId(e.target.value)}
+          placeholder="Ex: ChIJN1t_tDeuEmsRUsoyG83frY4"
+          maxLength={200}
+          className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Encontre seu Place ID em{" "}
+          <a
+            href="https://developers.google.com/maps/documentation/places/web-service/place-id"
+            target="_blank"
+            rel="noreferrer"
+            className="text-[#1A5336] font-semibold hover:underline"
+          >
+            developers.google.com
+          </a>
+          .
+        </p>
+      </div>
+
+      {msg && (
+        <p className={`text-sm ${msg.kind === "ok" ? "text-emerald-700" : "text-red-600"}`}>
+          {msg.text}
+        </p>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={handleConnect}
+          disabled={busy || !isValid}
+          className="inline-flex items-center gap-2 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold rounded-xl px-4 py-2 text-sm"
+        >
+          {busy ? "..." : initialPlaceId ? "Atualizar e sincronizar" : "Conectar"}
+        </button>
+        {initialPlaceId && businessId && (
+          <button
+            type="button"
+            onClick={handleSync}
+            disabled={busy}
+            className="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 disabled:opacity-60 text-gray-800 font-bold rounded-xl px-4 py-2 text-sm"
+          >
+            <RefreshCw size={14} /> Sincronizar agora
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
