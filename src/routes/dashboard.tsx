@@ -19,9 +19,5 @@ export const Route = createFileRoute("/dashboard")({
       });
     }
   },
-  component: () => (
-    <DashboardLayout>
-      <Outlet />
-    </DashboardLayout>
-  ),
+  component: () => <DashboardLayout />,
 });
