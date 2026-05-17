@@ -2,15 +2,17 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { MapPin, Star, Phone, Mail, Globe, MessageCircle, Clock, Ticket, Image as ImageIcon } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { PlanBadge } from "@/components/PlanBadge";
-import { getBusinessBySlug, REVIEWS_BY_BUSINESS, COUPONS_BY_BUSINESS } from "@/lib/mock/businesses";
+import { getBusinessBySlug } from "@/lib/business.functions";
+import { adaptBusiness } from "@/lib/business.adapter";
+import { REVIEWS_BY_BUSINESS, COUPONS_BY_BUSINESS } from "@/lib/mock/businesses";
 import { can, getLimit } from "@/lib/plans";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/business/$slug")({
-  loader: ({ params }) => {
-    const business = getBusinessBySlug(params.slug);
-    if (!business) throw notFound();
-    return { business };
+  loader: async ({ params }) => {
+    const res = await getBusinessBySlug({ data: { slug: params.slug } });
+    if (!res.ok) throw notFound();
+    return { business: adaptBusiness(res.business) };
   },
   head: ({ params, loaderData }) => ({
     meta: [
