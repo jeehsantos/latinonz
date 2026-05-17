@@ -444,15 +444,16 @@ function ProfileEditor() {
             </div>
             <input ref={logoRef} type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
             <div className="flex gap-2 w-full">
-              <button onClick={() => logoRef.current?.click()} className="flex-1 inline-flex items-center justify-center gap-2 bg-[#1A5336] hover:bg-[#123F27] text-white font-bold py-2 rounded-xl text-sm transition-colors">
-                <Upload size={14} /> {logo ? t("profile.logo_change") : t("profile.logo_upload")}
+              <button onClick={() => logoRef.current?.click()} disabled={logoUploading} className="flex-1 inline-flex items-center justify-center gap-2 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold py-2 rounded-xl text-sm transition-colors">
+                <Upload size={14} /> {logoUploading ? "..." : logo ? t("profile.logo_change") : t("profile.logo_upload")}
               </button>
               {logo && (
-                <button onClick={() => setLogo(null)} className="inline-flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-3 rounded-xl text-sm transition-colors" aria-label={t("profile.logo_remove")}>
+                <button onClick={() => setLogo(null)} disabled={logoUploading} className="inline-flex items-center justify-center bg-gray-100 hover:bg-gray-200 disabled:opacity-60 text-gray-700 font-bold px-3 rounded-xl text-sm transition-colors" aria-label={t("profile.logo_remove")}>
                   <Trash2 size={14} />
                 </button>
               )}
             </div>
+            {logoError && <p className="text-[11px] text-red-600 mt-2 text-center">{logoError}</p>}
             <p className="text-[11px] text-gray-400 mt-2 text-center">{t("profile.logo_hint")}</p>
           </div>
         </div>
