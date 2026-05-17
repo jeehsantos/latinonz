@@ -40,10 +40,13 @@ function ProfileEditor() {
   const { t } = useI18n();
   const fetchMyBusiness = useServerFn(getMyBusiness);
   const saveMyBusiness = useServerFn(updateMyBusiness);
+  const callUploadLogo = useServerFn(uploadLogo);
   const { data: loaded, refetch } = useQuery({
     queryKey: ["my-business"],
     queryFn: () => fetchMyBusiness({}),
   });
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [logoError, setLogoError] = useState<string | null>(null);
 
   const [businessType, setBusinessType] = useState<BusinessType>("Serviço");
   const [name, setName] = useState("");
