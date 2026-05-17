@@ -1,10 +1,13 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { MapPin, Star, Phone, Mail, Globe, MessageCircle, Clock, Ticket, Image as ImageIcon } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { PlanBadge } from "@/components/PlanBadge";
 import { getBusinessBySlug } from "@/lib/business.functions";
 import { adaptBusiness } from "@/lib/business.adapter";
-import { REVIEWS_BY_BUSINESS, COUPONS_BY_BUSINESS } from "@/lib/mock/businesses";
+import { getReviews } from "@/lib/reviews.functions";
+import { COUPONS_BY_BUSINESS } from "@/lib/mock/businesses";
 import { can, getLimit } from "@/lib/plans";
 import { useI18n } from "@/lib/i18n";
 
