@@ -1,10 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { SiteShell } from "@/components/site/SiteShell";
 import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
 import { BusinessCard } from "@/components/directory/BusinessCard";
 import { CATEGORIES } from "@/lib/mock/categories";
-import { getBusinesses } from "@/lib/mock/businesses";
+import { getBusinesses } from "@/lib/business.functions";
+import { adaptBusiness } from "@/lib/business.adapter";
 import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/directory")({
@@ -24,7 +27,15 @@ export const Route = createFileRoute("/directory")({
 function DirectoryPage() {
   const { t } = useI18n();
   const [search, setSearch] = useState<SearchValue>({ q: "", category: "", city: "" });
-  const businesses = getBusinesses();
+  const fetchBusinesses = useServerFn(getBusinesses);
+  const { data } = useQuery({
+    queryKey: ["businesses", "all"],
+    queryFn: () => fetchBusinesses({ data: {} }),
+  });
+  const businesses = useMemo(
+    () => (data?.ok ? data.rows.map(adaptBusiness) : []),
+    [data],
+  );
 
   const filtered = useMemo(() => {
     return businesses.filter((b) => {
