@@ -263,7 +263,14 @@ function BusinessPage() {
                 <MessageCircle size={16} /> {t("business.whatsapp_cta")}
               </a>
             ) : (
-              <button className="mt-6 w-full bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-2xl py-3 text-sm">
+              <button
+                onClick={() => {
+                  setLeadStatus("idle");
+                  setLeadError(null);
+                  setLeadOpen(true);
+                }}
+                className="mt-6 w-full bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-2xl py-3 text-sm"
+              >
                 {t("business.send_message")}
               </button>
             )}
