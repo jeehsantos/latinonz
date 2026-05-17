@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/sobre")({
   head: () => ({
@@ -16,24 +17,21 @@ export const Route = createFileRoute("/sobre")({
 });
 
 function SobrePage() {
+  const { t } = useI18n();
   return (
     <SiteShell>
       <section className="max-w-3xl mx-auto px-6 py-20">
-        <p className="text-xs font-bold uppercase tracking-wider text-[#1A5336]">Sobre</p>
-        <h1 className="mt-3 text-4xl md:text-5xl font-black text-gray-900">Conectando a comunidade latina em NZ</h1>
-        <p className="mt-6 text-lg text-gray-600 leading-relaxed">
-          A Latino Connect Hub nasceu da vontade de tornar a comunidade latina mais visível,
-          forte e próspera na Nova Zelândia. Conectamos pessoas que buscam serviços
-          aos negócios e profissionais que falam o seu idioma e entendem a sua cultura.
-        </p>
+        <p className="text-xs font-bold uppercase tracking-wider text-[#1A5336]">{t("about.badge")}</p>
+        <h1 className="mt-3 text-4xl md:text-5xl font-black text-gray-900">{t("about.title")}</h1>
+        <p className="mt-6 text-lg text-gray-600 leading-relaxed">{t("about.body")}</p>
         <div className="mt-10 grid sm:grid-cols-2 gap-6">
           <div className="bg-gray-50 border border-gray-200 rounded-3xl p-6">
-            <p className="font-extrabold text-gray-900">Missão</p>
-            <p className="mt-2 text-sm text-gray-600">Empoderar empreendedores latinos e facilitar o acesso a serviços para nossa comunidade.</p>
+            <p className="font-extrabold text-gray-900">{t("about.mission_title")}</p>
+            <p className="mt-2 text-sm text-gray-600">{t("about.mission_body")}</p>
           </div>
           <div className="bg-gray-50 border border-gray-200 rounded-3xl p-6">
-            <p className="font-extrabold text-gray-900">Visão</p>
-            <p className="mt-2 text-sm text-gray-600">Ser a principal referência de negócios latinos em toda a Nova Zelândia.</p>
+            <p className="font-extrabold text-gray-900">{t("about.vision_title")}</p>
+            <p className="mt-2 text-sm text-gray-600">{t("about.vision_body")}</p>
           </div>
         </div>
       </section>

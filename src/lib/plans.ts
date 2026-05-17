@@ -17,20 +17,39 @@ export const PLAN_PRICES_NZD: Record<PlanTier, number> = {
 
 // Boolean / quantitative capabilities, addressable by key.
 export const PLAN_FEATURES = {
+  // Profile level shown in the directory
   profileLevel: { starter: "basic", premium: "full", ultra: "full+highlight" },
-  leadEmail: { starter: true, premium: true, ultra: true },
-  leadWhatsapp: { starter: false, premium: true, ultra: true },
-  reviews: { starter: true, premium: true, ultra: true },
-  directMessages: { starter: false, premium: true, ultra: true },
+
+  // Contact / lead channel shown on the public profile
+  // Starter: form modal → email notification only
+  // Premium: WhatsApp redirect → WhatsApp notification only
+  // Ultra:   WhatsApp redirect → WhatsApp + email notification
+  contactModal: { starter: true,  premium: false, ultra: false },
+  leadWhatsapp: { starter: false, premium: true,  ultra: true  },
+  leadEmail:    { starter: true,  premium: false, ultra: true  },
+
+  // Gallery
   photoLimit: { starter: 3, premium: Infinity, ultra: Infinity },
-  qrCode: { starter: false, premium: true, ultra: true },
-  coupons: { starter: false, premium: true, ultra: true },
-  events: { starter: false, premium: false, ultra: true },
-  socialPosts: { starter: false, premium: false, ultra: true },
-  whatsappCommunity: { starter: false, premium: false, ultra: true },
-  topPlacement: { starter: false, premium: false, ultra: true },
-  analytics: { starter: false, premium: true, ultra: true },
-  whatsappIntegration: { starter: false, premium: true, ultra: true },
+
+  // Profile sections — Premium+ only
+  businessHours:   { starter: false, premium: true, ultra: true },
+  serviceOptions:  { starter: false, premium: true, ultra: true },
+  coupons:         { starter: false, premium: true, ultra: true },
+
+  // Communication
+  directMessages:  { starter: false, premium: true, ultra: true },
+
+  // Tools
+  qrCode:          { starter: false, premium: true, ultra: true },
+  analytics:       { starter: false, premium: true, ultra: true },
+
+  // Ultra only
+  events:             { starter: false, premium: false, ultra: true },
+  socialPosts:        { starter: false, premium: false, ultra: true },
+  whatsappCommunity:  { starter: false, premium: false, ultra: true },
+  topPlacement:       { starter: false, premium: false, ultra: true },
+  // Future feature — product catalogue with CSV import and proximity search
+  productCatalogue:   { starter: false, premium: false, ultra: true },
 } as const;
 
 export type PlanFeatureKey = keyof typeof PLAN_FEATURES;
@@ -39,7 +58,6 @@ export function can(plan: PlanTier, feature: PlanFeatureKey): boolean {
   const v = PLAN_FEATURES[feature][plan];
   if (typeof v === "number") return v > 0;
   if (typeof v === "boolean") return v;
-  // string capability levels are always truthy
   return Boolean(v);
 }
 
@@ -55,7 +73,7 @@ export function requiredPlanFor(feature: PlanFeatureKey): PlanTier | null {
   return null;
 }
 
-// Comparison rows for the pricing page table — labels are i18n-able later.
+// Comparison rows for the pricing page table.
 export const PLAN_COMPARISON: Array<{
   feature: string;
   starter: string;
@@ -63,15 +81,19 @@ export const PLAN_COMPARISON: Array<{
   ultra: string;
   highlight?: boolean;
 }> = [
-  { feature: "Perfil personalizado", starter: "Básico", premium: "Completo", ultra: "Completo + Destaque" },
-  { feature: "Notificação de leads", starter: "E-mail", premium: "WhatsApp", ultra: "E-mail & WhatsApp" },
-  { feature: "Avaliações de clientes", starter: "✓", premium: "✓", ultra: "✓", highlight: true },
-  { feature: "Mensagens diretas", starter: "—", premium: "✓", ultra: "✓" },
-  { feature: "Fotos", starter: "3 fotos", premium: "Ilimitado", ultra: "Ilimitado", highlight: true },
-  { feature: "QR Code do perfil", starter: "—", premium: "✓", ultra: "✓" },
-  { feature: "Criação de cupons", starter: "—", premium: "✓", ultra: "✓", highlight: true },
-  { feature: "Criação de eventos", starter: "—", premium: "—", ultra: "✓" },
-  { feature: "Post no Instagram & Facebook", starter: "—", premium: "—", ultra: "✓", highlight: true },
-  { feature: "Post no WhatsApp da comunidade", starter: "—", premium: "—", ultra: "✓" },
-  { feature: "Destaque no topo do diretório", starter: "—", premium: "—", ultra: "✓", highlight: true },
+  { feature: "Perfil personalizado",           starter: "Básico",    premium: "Completo",   ultra: "Completo + Destaque" },
+  { feature: "Fotos",                          starter: "3 fotos",   premium: "Ilimitado",  ultra: "Ilimitado",           highlight: true },
+  { feature: "Contato",                        starter: "Formulário",premium: "WhatsApp",   ultra: "WhatsApp" },
+  { feature: "Notificação de lead",            starter: "E-mail",    premium: "WhatsApp",   ultra: "E-mail & WhatsApp",   highlight: true },
+  { feature: "Horários de funcionamento",      starter: "—",         premium: "✓",          ultra: "✓" },
+  { feature: "Opções de atendimento",          starter: "—",         premium: "✓",          ultra: "✓",                   highlight: true },
+  { feature: "Cupons de desconto",             starter: "—",         premium: "✓",          ultra: "✓" },
+  { feature: "Mensagens diretas",              starter: "—",         premium: "✓",          ultra: "✓",                   highlight: true },
+  { feature: "QR Code do perfil",              starter: "—",         premium: "✓",          ultra: "✓" },
+  { feature: "Analytics do perfil",            starter: "—",         premium: "✓",          ultra: "✓",                   highlight: true },
+  { feature: "Google Reviews",                 starter: "✓",         premium: "✓",          ultra: "✓" },
+  { feature: "Criação de eventos",             starter: "—",         premium: "—",          ultra: "✓",                   highlight: true },
+  { feature: "Post no Instagram & Facebook",   starter: "—",         premium: "—",          ultra: "✓" },
+  { feature: "Post no WhatsApp da comunidade", starter: "—",         premium: "—",          ultra: "✓",                   highlight: true },
+  { feature: "Destaque no topo da rede",       starter: "—",         premium: "—",          ultra: "✓" },
 ];

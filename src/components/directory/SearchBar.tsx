@@ -1,5 +1,6 @@
 import { Search } from "lucide-react";
 import { CATEGORIES, NZ_CITIES } from "@/lib/mock/categories";
+import { useI18n } from "@/lib/i18n";
 
 export type SearchValue = { q: string; category: string; city: string };
 
@@ -12,6 +13,7 @@ export function SearchBar({
   onChange: (v: SearchValue) => void;
   onSubmit?: () => void;
 }) {
+  const { t } = useI18n();
   return (
     <form
       onSubmit={(e) => {
@@ -25,7 +27,7 @@ export function SearchBar({
         <input
           value={value.q}
           onChange={(e) => onChange({ ...value, q: e.target.value })}
-          placeholder="Ex: Mecânico, Caipirinha, Cafe..."
+          placeholder={t("directory.search_placeholder")}
           className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-3 text-sm outline-none focus:border-[#1A5336] text-gray-900"
         />
       </div>
@@ -34,7 +36,7 @@ export function SearchBar({
         onChange={(e) => onChange({ ...value, category: e.target.value })}
         className="md:col-span-3 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#1A5336] text-gray-900"
       >
-        <option value="">Todas as Áreas</option>
+        <option value="">{t("directory.all_areas")}</option>
         {CATEGORIES.map((c) => (
           <option key={c.key} value={c.name}>
             {c.name}
@@ -46,7 +48,7 @@ export function SearchBar({
         onChange={(e) => onChange({ ...value, city: e.target.value })}
         className="md:col-span-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#1A5336] text-gray-900"
       >
-        <option value="">Em toda NZ</option>
+        <option value="">{t("directory.all_nz")}</option>
         {NZ_CITIES.map((c) => (
           <option key={c} value={c}>
             {c}
@@ -57,7 +59,7 @@ export function SearchBar({
         type="submit"
         className="md:col-span-2 bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-2xl px-4 py-3 text-sm"
       >
-        Buscar
+        {t("directory.search_button")}
       </button>
     </form>
   );

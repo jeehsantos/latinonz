@@ -10,33 +10,36 @@ import { type PlanTier } from "@/lib/plans";
 import { PlanBadge } from "@/components/PlanBadge";
 import { LEADS } from "@/lib/mock/leads";
 import { useSidebarColor, darken, lighten } from "@/lib/sidebar-color";
-
-type NavItem = {
-  to: string;
-  label: string;
-  icon: typeof LayoutDashboard;
-  exact?: boolean;
-  badge?: number;
-};
+import { useI18n } from "@/lib/i18n";
 
 export function DashboardLayout() {
+  const { t } = useI18n();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [plan, setPlan] = useCurrentPlan();
   const [sidebarColor] = useSidebarColor();
-  const showDevSwitch = typeof window !== "undefined" &&
+  const showDevSwitch =
+    typeof window !== "undefined" &&
     new URLSearchParams(window.location.search).get("dev") === "1";
 
   const pendingLeads = LEADS.filter((l) => l.status === "Pendente").length;
 
+  type NavItem = {
+    to: string;
+    label: string;
+    icon: typeof LayoutDashboard;
+    exact?: boolean;
+    badge?: number;
+  };
+
   const NAV: NavItem[] = [
-    { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
-    { to: "/dashboard/profile", label: "Meu Perfil", icon: User },
-    { to: "/dashboard/gallery", label: "Galeria", icon: ImageIcon },
-    { to: "/dashboard/leads", label: "Leads", icon: MessageSquare, badge: pendingLeads },
-    { to: "/dashboard/coupons", label: "Cupons", icon: Tag },
-    { to: "/dashboard/analytics", label: "Análises", icon: BarChart2 },
-    { to: "/dashboard/settings", label: "Configurações", icon: Settings },
+    { to: "/dashboard", label: t("dashboard.nav_dashboard"), icon: LayoutDashboard, exact: true },
+    { to: "/dashboard/profile", label: t("dashboard.nav_profile"), icon: User },
+    { to: "/dashboard/gallery", label: t("dashboard.nav_gallery"), icon: ImageIcon },
+    { to: "/dashboard/leads", label: t("dashboard.nav_leads"), icon: MessageSquare, badge: pendingLeads },
+    { to: "/dashboard/coupons", label: t("dashboard.nav_coupons"), icon: Tag },
+    { to: "/dashboard/analytics", label: t("dashboard.nav_analytics"), icon: BarChart2 },
+    { to: "/dashboard/settings", label: t("dashboard.nav_settings"), icon: Settings },
   ];
 
   const bg = darken(sidebarColor, 0.45);
@@ -87,7 +90,10 @@ export function DashboardLayout() {
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div className="lg:hidden flex items-center justify-between p-4 border-b" style={{ borderColor: borderCol }}>
+          <div
+            className="lg:hidden flex items-center justify-between p-4 border-b"
+            style={{ borderColor: borderCol }}
+          >
             <img src={logo} alt="Latino Connect" className="h-8 w-auto bg-white rounded px-2 py-1" />
             <button className="text-white/80" onClick={() => setMobileOpen(false)}>
               <X size={20} />
@@ -95,55 +101,54 @@ export function DashboardLayout() {
           </div>
 
           <nav className="px-3 pt-4 space-y-1 flex-1">
-          {NAV.map((n) => {
-            const Icon = n.icon;
-            const active = n.exact ? path === n.to : path.startsWith(n.to);
-            return (
-              <Link
-                key={n.to}
-                to={n.to}
-                onClick={() => setMobileOpen(false)}
-                style={
-                  active
-                    ? { backgroundColor: activeBg, color: "#fff" }
-                    : { color: mutedText }
-                }
-                onMouseEnter={(e) => {
-                  if (!active) e.currentTarget.style.backgroundColor = hoverBg;
-                }}
-                onMouseLeave={(e) => {
-                  if (!active) e.currentTarget.style.backgroundColor = "transparent";
-                }}
-                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition ${
-                  active ? "font-bold" : "font-medium"
-                }`}
-              >
-                <Icon size={18} />
-                <span className="flex-1">{n.label}</span>
-                {n.badge ? (
-                  <span className="bg-amber-400 text-[#0F3D24] text-[11px] font-bold rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center">
-                    {n.badge}
-                  </span>
-                ) : null}
-              </Link>
-            );
-          })}
-        </nav>
+            {NAV.map((n) => {
+              const Icon = n.icon;
+              const active = n.exact ? path === n.to : path.startsWith(n.to);
+              return (
+                <Link
+                  key={n.to}
+                  to={n.to}
+                  onClick={() => setMobileOpen(false)}
+                  style={active ? { backgroundColor: activeBg, color: "#fff" } : { color: mutedText }}
+                  onMouseEnter={(e) => {
+                    if (!active) e.currentTarget.style.backgroundColor = hoverBg;
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!active) e.currentTarget.style.backgroundColor = "transparent";
+                  }}
+                  className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition ${
+                    active ? "font-bold" : "font-medium"
+                  }`}
+                >
+                  <Icon size={18} />
+                  <span className="flex-1">{n.label}</span>
+                  {n.badge ? (
+                    <span className="bg-amber-400 text-[#0F3D24] text-[11px] font-bold rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center">
+                      {n.badge}
+                    </span>
+                  ) : null}
+                </Link>
+              );
+            })}
+          </nav>
 
-        <div className="p-4">
-          <Link
-            to="/dashboard/upgrade"
-            style={{ backgroundColor: darken(sidebarColor, 0.6), borderColor: borderCol }}
-            className="flex items-center gap-3 border rounded-xl px-4 py-3 text-sm font-bold text-amber-300 hover:text-amber-200 transition"
-          >
-            <CreditCard size={18} />
-            <span>Mudar de Plano</span>
-          </Link>
-        </div>
+          <div className="p-4">
+            <Link
+              to="/dashboard/upgrade"
+              style={{ backgroundColor: darken(sidebarColor, 0.6), borderColor: borderCol }}
+              className="flex items-center gap-3 border rounded-xl px-4 py-3 text-sm font-bold text-amber-300 hover:text-amber-200 transition"
+            >
+              <CreditCard size={18} />
+              <span>{t("dashboard.upgrade_plan")}</span>
+            </Link>
+          </div>
         </aside>
 
         {mobileOpen && (
-          <div className="lg:hidden fixed inset-0 z-30 bg-black/40" onClick={() => setMobileOpen(false)} />
+          <div
+            className="lg:hidden fixed inset-0 z-30 bg-black/40"
+            onClick={() => setMobileOpen(false)}
+          />
         )}
 
         <main className="flex-1 p-6 lg:p-10 min-w-0">
@@ -153,4 +158,3 @@ export function DashboardLayout() {
     </div>
   );
 }
-

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCurrentPlan } from "@/lib/dev-plan";
 import { PLAN_LABELS } from "@/lib/plans";
 import { useSidebarColor, DEFAULT_SIDEBAR_COLOR } from "@/lib/sidebar-color";
+import { useI18n } from "@/lib/i18n";
 
 const PRESET_COLORS = [
   { name: "Verde Latino", value: "#1A5336" },
@@ -17,30 +18,36 @@ export const Route = createFileRoute("/dashboard/settings")({
 });
 
 function SettingsPage() {
+  const { t } = useI18n();
   const [plan] = useCurrentPlan();
   const [sidebarColor, setSidebarColor] = useSidebarColor();
+
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="text-3xl font-black text-gray-900">Configurações</h1>
-        <p className="text-gray-500 mt-1">Conta, plano e preferências.</p>
+        <h1 className="text-3xl font-black text-gray-900">{t("settings.title")}</h1>
+        <p className="text-gray-500 mt-1">{t("settings.subtitle")}</p>
       </div>
+
       <div className="bg-white border border-gray-200 rounded-3xl p-8">
-        <h2 className="font-extrabold text-gray-900">Plano atual</h2>
-        <p className="text-sm text-gray-500 mt-1">Você está no plano <span className="font-bold text-gray-900">{PLAN_LABELS[plan]}</span>.</p>
-        <Link to="/dashboard/upgrade" className="inline-flex mt-4 bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-xl px-5 py-2.5 text-sm">
-          Mudar plano
+        <h2 className="font-extrabold text-gray-900">{t("settings.current_plan_title")}</h2>
+        <p className="text-sm text-gray-500 mt-1">
+          {t("settings.current_plan_on")}{" "}
+          <span className="font-bold text-gray-900">{PLAN_LABELS[plan]}</span>.
+        </p>
+        <Link
+          to="/dashboard/upgrade"
+          className="inline-flex mt-4 bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-xl px-5 py-2.5 text-sm"
+        >
+          {t("settings.change_plan")}
         </Link>
       </div>
 
       <div className="bg-white border border-gray-200 rounded-3xl p-8 space-y-5">
         <div>
-          <h2 className="font-extrabold text-gray-900">Aparência do painel</h2>
-          <p className="text-sm text-gray-500 mt-1">
-            Personalize a cor da barra lateral do seu dashboard.
-          </p>
+          <h2 className="font-extrabold text-gray-900">{t("settings.appearance_title")}</h2>
+          <p className="text-sm text-gray-500 mt-1">{t("settings.appearance_subtitle")}</p>
         </div>
-
         <div className="flex flex-wrap gap-3">
           {PRESET_COLORS.map((c) => {
             const active = sidebarColor.toLowerCase() === c.value.toLowerCase();
@@ -59,9 +66,8 @@ function SettingsPage() {
             );
           })}
         </div>
-
         <div className="flex flex-wrap items-center gap-3">
-          <label className="text-xs font-bold uppercase text-gray-500">Cor personalizada</label>
+          <label className="text-xs font-bold uppercase text-gray-500">{t("settings.custom_color")}</label>
           <input
             type="color"
             value={sidebarColor}
@@ -79,21 +85,27 @@ function SettingsPage() {
             onClick={() => setSidebarColor(DEFAULT_SIDEBAR_COLOR)}
             className="text-sm font-bold text-gray-600 hover:text-gray-900"
           >
-            Restaurar padrão
+            {t("settings.restore_default")}
           </button>
         </div>
       </div>
+
       <div className="bg-white border border-gray-200 rounded-3xl p-8 space-y-4">
-        <h2 className="font-extrabold text-gray-900">Conta</h2>
+        <h2 className="font-extrabold text-gray-900">{t("settings.account_title")}</h2>
         <div>
-          <label className="text-xs font-bold uppercase text-gray-500">E-mail</label>
-          <input defaultValue="hello@tacosdochef.co.nz" className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm" />
+          <label className="text-xs font-bold uppercase text-gray-500">{t("settings.email_label")}</label>
+          <input
+            defaultValue="hello@tacosdochef.co.nz"
+            className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
+          />
         </div>
         <div>
-          <label className="text-xs font-bold uppercase text-gray-500">Nova senha</label>
+          <label className="text-xs font-bold uppercase text-gray-500">{t("settings.new_password_label")}</label>
           <input type="password" className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm" />
         </div>
-        <button className="bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-xl px-5 py-2.5 text-sm">Salvar</button>
+        <button className="bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-xl px-5 py-2.5 text-sm">
+          {t("settings.save_button")}
+        </button>
       </div>
     </div>
   );

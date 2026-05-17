@@ -1,15 +1,18 @@
 import { Link } from "@tanstack/react-router";
 import logo from "@/assets/logo.png";
-
-const NAV = [
-  { to: "/directory", label: "Diretório" },
-  { to: "/planos", label: "Planos" },
-  { to: "/blog", label: "Blog" },
-  { to: "/sobre", label: "Sobre" },
-  { to: "/contato", label: "Contato" },
-] as const;
+import { useI18n } from "@/lib/i18n";
 
 export function SiteHeader() {
+  const { t } = useI18n();
+
+  const NAV = [
+    { to: "/directory", label: t("nav.directory") },
+    { to: "/planos", label: t("nav.plans") },
+    { to: "/blog", label: t("nav.blog") },
+    { to: "/sobre", label: t("nav.about") },
+    { to: "/contato", label: t("nav.contact") },
+  ] as const;
+
   return (
     <header className="bg-white border-b border-gray-100 sticky top-0 z-30">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-6">
@@ -33,13 +36,13 @@ export function SiteHeader() {
             to="/login"
             className="hidden md:inline-flex text-sm font-semibold text-gray-700 hover:text-[#1A5336] px-3 py-2"
           >
-            Entrar
+            {t("nav.login")}
           </Link>
           <Link
             to="/cadastro"
             className="text-sm font-bold bg-[#1A5336] text-white px-4 py-2 rounded-full hover:bg-[#123F27]"
           >
-            Cadastrar negócio
+            {t("nav.register")}
           </Link>
         </div>
       </div>

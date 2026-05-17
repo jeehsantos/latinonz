@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { NEWS } from "@/lib/mock/news";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/blog")({
   head: () => ({
@@ -17,15 +18,14 @@ export const Route = createFileRoute("/blog")({
 });
 
 function BlogPage() {
+  const { t } = useI18n();
   return (
     <SiteShell>
       <section className="bg-[#0F3D24] text-white">
         <div className="max-w-5xl mx-auto px-6 py-16">
-          <p className="text-xs font-bold uppercase tracking-wider text-amber-300">Blog</p>
-          <h1 className="mt-3 text-4xl md:text-5xl font-black">Notícias da comunidade</h1>
-          <p className="mt-3 text-white/70 max-w-2xl">
-            Vistos, finanças, adaptação e histórias da comunidade latina em NZ.
-          </p>
+          <p className="text-xs font-bold uppercase tracking-wider text-amber-300">{t("blog.badge")}</p>
+          <h1 className="mt-3 text-4xl md:text-5xl font-black">{t("blog.title")}</h1>
+          <p className="mt-3 text-white/70 max-w-2xl">{t("blog.subtitle")}</p>
         </div>
       </section>
 

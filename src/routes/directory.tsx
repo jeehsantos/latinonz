@@ -5,14 +5,15 @@ import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
 import { BusinessCard } from "@/components/directory/BusinessCard";
 import { CATEGORIES } from "@/lib/mock/categories";
 import { getBusinesses } from "@/lib/mock/businesses";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/directory")({
   head: () => ({
     meta: [
-      { title: "Diretório — Latino Connect" },
-      { name: "description", content: "Explore negócios e serviços latinos em toda a Nova Zelândia." },
-      { property: "og:title", content: "Diretório — Latino Connect" },
-      { property: "og:description", content: "Encontre negócios latinos em Auckland, Wellington e toda NZ." },
+      { title: "Nossa Rede — Latino Connect" },
+      { name: "description", content: "Explore negócios, profissionais e organizações latinas em toda a Nova Zelândia." },
+      { property: "og:title", content: "Nossa Rede — Latino Connect" },
+      { property: "og:description", content: "Encontre a comunidade latina em Auckland, Wellington e toda NZ." },
       { property: "og:url", content: "https://latinoconnecthub.co.nz/directory" },
     ],
     links: [{ rel: "canonical", href: "https://latinoconnecthub.co.nz/directory" }],
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/directory")({
 });
 
 function DirectoryPage() {
+  const { t } = useI18n();
   const [search, setSearch] = useState<SearchValue>({ q: "", category: "", city: "" });
   const businesses = getBusinesses();
 
@@ -38,10 +40,8 @@ function DirectoryPage() {
     <SiteShell>
       <section className="bg-[#0F3D24] text-white">
         <div className="max-w-7xl mx-auto px-6 py-16">
-          <h1 className="text-3xl md:text-5xl font-black">Diretório de negócios latinos</h1>
-          <p className="mt-3 text-white/70 max-w-2xl">
-            Mais de 600 negócios e profissionais latinos em toda a Nova Zelândia.
-          </p>
+          <h1 className="text-3xl md:text-5xl font-black">{t("directory.title")}</h1>
+          <p className="mt-3 text-white/70 max-w-2xl">{t("directory.subtitle")}</p>
           <div className="mt-8">
             <SearchBar value={search} onChange={setSearch} />
           </div>
@@ -49,7 +49,7 @@ function DirectoryPage() {
       </section>
 
       <section className="max-w-7xl mx-auto px-6 py-12">
-        <h2 className="text-xs uppercase tracking-wider font-bold text-gray-500">Categorias</h2>
+        <h2 className="text-xs uppercase tracking-wider font-bold text-gray-500">{t("directory.categories_label")}</h2>
         <div className="mt-4 flex flex-wrap gap-2">
           <button
             onClick={() => setSearch({ ...search, category: "" })}
@@ -57,7 +57,7 @@ function DirectoryPage() {
               !search.category ? "bg-[#1A5336] text-white border-[#1A5336]" : "bg-white border-gray-200 hover:border-[#1A5336]"
             }`}
           >
-            Todas
+            {t("directory.all_categories")}
           </button>
           {CATEGORIES.map((c) => (
             <button
@@ -78,15 +78,16 @@ function DirectoryPage() {
       <section className="max-w-7xl mx-auto px-6 pb-20">
         <div className="flex items-center justify-between mb-6">
           <p className="text-sm text-gray-500">
-            <span className="font-bold text-gray-900">{filtered.length}</span> resultado{filtered.length !== 1 && "s"}
+            <span className="font-bold text-gray-900">{filtered.length}</span>{" "}
+            {filtered.length === 1 ? t("directory.results_singular") : t("directory.results_plural")}
           </p>
         </div>
         {filtered.length === 0 ? (
           <div className="bg-white rounded-3xl border border-gray-200 p-12 text-center">
-            <p className="font-extrabold text-gray-900">Nenhum negócio encontrado</p>
-            <p className="text-sm text-gray-500 mt-1">Tente ajustar sua busca ou filtros.</p>
+            <p className="font-extrabold text-gray-900">{t("directory.empty_title")}</p>
+            <p className="text-sm text-gray-500 mt-1">{t("directory.empty_subtitle")}</p>
             <Link to="/cadastro" className="inline-flex mt-5 bg-[#1A5336] text-white font-bold px-5 py-2.5 rounded-xl text-sm">
-              Cadastrar meu negócio
+              {t("directory.empty_cta")}
             </Link>
           </div>
         ) : (
