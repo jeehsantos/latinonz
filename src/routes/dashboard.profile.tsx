@@ -37,7 +37,19 @@ const cloneSchedule = (s: BranchSchedule): BranchSchedule => JSON.parse(JSON.str
 
 function ProfileEditor() {
   const { t } = useI18n();
+  const fetchMyBusiness = useServerFn(getMyBusiness);
+  const saveMyBusiness = useServerFn(updateMyBusiness);
+  const { data: loaded, refetch } = useQuery({
+    queryKey: ["my-business"],
+    queryFn: () => fetchMyBusiness({}),
+  });
+
   const [businessType, setBusinessType] = useState<BusinessType>("Serviço");
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState<string>(CATEGORIES[0]?.name ?? "");
+  const [phone, setPhone] = useState("");
+  const [keywords, setKeywords] = useState("");
   const [cities, setCities] = useState<string[]>(["Auckland"]);
   const [citiesOpen, setCitiesOpen] = useState(false);
   const [schedules, setSchedules] = useState<Record<string, BranchSchedule>>({ Auckland: DEFAULT_SCHEDULE });
@@ -45,7 +57,32 @@ function ProfileEditor() {
   const [qrGenerated, setQrGenerated] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [logo, setLogo] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const logoRef = useRef<HTMLInputElement>(null);
+
+  // Seed form once business loads
+  useEffect(() => {
+    if (!loaded?.ok || !loaded.business) return;
+    const b = loaded.business;
+    if (b.type === "Serviço" || b.type === "Produto") setBusinessType(b.type as BusinessType);
+    setName(b.name ?? "");
+    setDescription(b.description ?? "");
+    if (b.macro_category) setCategory(b.macro_category);
+    setPhone(b.phone ?? "");
+    setKeywords((b.keywords ?? []).join(", "));
+    if (b.locations && b.locations.length > 0) {
+      setCities(b.locations);
+      setActiveBranch(b.locations[0]);
+      setSchedules((prev) => {
+        const next: Record<string, BranchSchedule> = {};
+        for (const c of b.locations as string[]) next[c] = prev[c] ?? cloneSchedule(DEFAULT_SCHEDULE);
+        return next;
+      });
+    }
+    if (b.logo_url) setLogo(b.logo_url);
+  }, [loaded]);
 
   const plan: string = "Premium";
   const activeCategories = CATEGORIES.map((c) => c.name);
