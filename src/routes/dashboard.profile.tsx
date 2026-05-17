@@ -218,14 +218,18 @@ function ProfileEditor() {
 
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-1">{t("profile.business_name_label")}</label>
-          <input type="text" defaultValue="Tacos do Chef" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] focus:ring-1 focus:ring-[#1A5336]" />
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] focus:ring-1 focus:ring-[#1A5336]" />
         </div>
 
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-1">{t("profile.category_label")}</label>
           <div className="relative">
-            <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] appearance-none">
-              {activeCategories.map((c, i) => <option key={i}>{c}</option>)}
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] appearance-none"
+            >
+              {activeCategories.map((c, i) => <option key={i} value={c}>{c}</option>)}
             </select>
             <ChevronDown size={16} className="absolute right-4 top-4 text-gray-400 pointer-events-none" />
           </div>
@@ -233,7 +237,7 @@ function ProfileEditor() {
 
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-1">{t("profile.phone_label")}</label>
-          <input type="text" placeholder="Ex: 021 000 0000" defaultValue="021 999 8888" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]" />
+          <input type="text" placeholder="Ex: 021 000 0000" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]" />
         </div>
 
         <div>
