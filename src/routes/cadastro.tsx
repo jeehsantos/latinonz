@@ -1,6 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState, type FormEvent } from "react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { useI18n } from "@/lib/i18n";
+import { signUp } from "@/lib/auth.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/cadastro")({
   head: () => ({
@@ -18,6 +21,43 @@ export const Route = createFileRoute("/cadastro")({
 
 function CadastroPage() {
   const { t } = useI18n();
+  const navigate = useNavigate();
+  const [businessName, setBusinessName] = useState("");
+  const [ownerName, setOwnerName] = useState("");
+  const [email, setEmail] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await signUp({
+        data: { businessName, ownerName, email, whatsapp, password },
+      });
+      if (!res.ok) {
+        setError(res.error);
+        return;
+      }
+      const { error: sessionErr } = await supabase.auth.setSession({
+        access_token: res.session.access_token,
+        refresh_token: res.session.refresh_token,
+      });
+      if (sessionErr) {
+        setError(sessionErr.message);
+        return;
+      }
+      navigate({ to: "/dashboard" });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro inesperado.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <SiteShell>
       <section className="max-w-2xl mx-auto px-6 py-20">
@@ -25,32 +65,66 @@ function CadastroPage() {
         <h1 className="mt-3 text-3xl md:text-4xl font-black text-gray-900">{t("register.title")}</h1>
         <p className="mt-3 text-gray-600">{t("register.subtitle")}</p>
 
-        <form className="mt-10 bg-white border border-gray-200 rounded-3xl p-8 space-y-4" onSubmit={(e) => e.preventDefault()}>
+        <form className="mt-10 bg-white border border-gray-200 rounded-3xl p-8 space-y-4" onSubmit={onSubmit}>
           <div>
             <label className="text-xs font-bold uppercase text-gray-500">{t("register.business_name")}</label>
-            <input className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm" />
+            <input
+              required
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
+            />
           </div>
           <div>
             <label className="text-xs font-bold uppercase text-gray-500">{t("register.owner_name")}</label>
-            <input className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm" />
+            <input
+              required
+              value={ownerName}
+              onChange={(e) => setOwnerName(e.target.value)}
+              className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
+            />
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="text-xs font-bold uppercase text-gray-500">{t("register.email")}</label>
-              <input type="email" className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm" />
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
+              />
             </div>
             <div>
               <label className="text-xs font-bold uppercase text-gray-500">{t("register.whatsapp")}</label>
-              <input className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm" />
+              <input
+                required
+                value={whatsapp}
+                onChange={(e) => setWhatsapp(e.target.value)}
+                placeholder="+64 21 000 0000"
+                className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
+              />
             </div>
           </div>
           <div>
             <label className="text-xs font-bold uppercase text-gray-500">{t("register.password")}</label>
-            <input type="password" className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm" />
+            <input
+              type="password"
+              required
+              minLength={8}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
+            />
           </div>
-          <Link to="/dashboard" className="block text-center bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-xl py-3 text-sm">
-            {t("register.submit")}
-          </Link>
+          {error && <p className="text-sm text-red-600">{error}</p>}
+          <button
+            type="submit"
+            disabled={loading}
+            className="block w-full text-center bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold rounded-xl py-3 text-sm"
+          >
+            {loading ? "..." : t("register.submit")}
+          </button>
           <p className="text-xs text-gray-500 text-center">
             {t("register.has_account")}{" "}
             <Link to="/login" className="font-bold text-[#1A5336]">{t("register.login_link")}</Link>
