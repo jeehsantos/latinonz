@@ -233,7 +233,7 @@ function BusinessPage() {
                 <Clock size={16} /> {t("business.hours_title")}
               </h3>
               <div className="mt-3 space-y-2 text-sm">
-                {business.hours.map((h) => (
+                {business.hours.map((h: { label: string; value: string }) => (
                   <div key={h.label} className="flex justify-between">
                     <span className="text-gray-500">{h.label}</span>
                     <span className="font-semibold text-gray-800">{h.value}</span>
