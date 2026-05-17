@@ -14,6 +14,125 @@ export type Database = {
   }
   public: {
     Tables: {
+      business_hours: {
+        Row: {
+          business_id: string
+          day_key: string
+          id: string
+          is_closed: boolean
+          location: string
+          slots: Json
+        }
+        Insert: {
+          business_id: string
+          day_key: string
+          id?: string
+          is_closed?: boolean
+          location: string
+          slots?: Json
+        }
+        Update: {
+          business_id?: string
+          day_key?: string
+          id?: string
+          is_closed?: boolean
+          location?: string
+          slots?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_hours_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      businesses: {
+        Row: {
+          created_at: string
+          description: string | null
+          email: string | null
+          fast_responder: boolean
+          google_place_id: string | null
+          id: string
+          is_active: boolean
+          is_verified: boolean
+          keywords: string[] | null
+          locations: string[] | null
+          logo_url: string | null
+          macro_category: string
+          name: string
+          owner_id: string
+          phone: string | null
+          rating: number
+          response_time: string | null
+          review_count: number
+          slug: string
+          subcategory: string | null
+          tags: string[] | null
+          type: string
+          updated_at: string
+          view_count: number
+          website: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          fast_responder?: boolean
+          google_place_id?: string | null
+          id?: string
+          is_active?: boolean
+          is_verified?: boolean
+          keywords?: string[] | null
+          locations?: string[] | null
+          logo_url?: string | null
+          macro_category: string
+          name: string
+          owner_id: string
+          phone?: string | null
+          rating?: number
+          response_time?: string | null
+          review_count?: number
+          slug: string
+          subcategory?: string | null
+          tags?: string[] | null
+          type?: string
+          updated_at?: string
+          view_count?: number
+          website?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          fast_responder?: boolean
+          google_place_id?: string | null
+          id?: string
+          is_active?: boolean
+          is_verified?: boolean
+          keywords?: string[] | null
+          locations?: string[] | null
+          logo_url?: string | null
+          macro_category?: string
+          name?: string
+          owner_id?: string
+          phone?: string | null
+          rating?: number
+          response_time?: string | null
+          review_count?: number
+          slug?: string
+          subcategory?: string | null
+          tags?: string[] | null
+          type?: string
+          updated_at?: string
+          view_count?: number
+          website?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -46,6 +165,41 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      service_options: {
+        Row: {
+          booking: boolean
+          business_id: string
+          delivery: boolean
+          dinein: boolean
+          other: string | null
+          takeaway: boolean
+        }
+        Insert: {
+          booking?: boolean
+          business_id: string
+          delivery?: boolean
+          dinein?: boolean
+          other?: string | null
+          takeaway?: boolean
+        }
+        Update: {
+          booking?: boolean
+          business_id?: string
+          delivery?: boolean
+          dinein?: boolean
+          other?: string | null
+          takeaway?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_options_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: true
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       waitlist_signups: {
         Row: {
