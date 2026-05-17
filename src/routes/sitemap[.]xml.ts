@@ -11,7 +11,10 @@ interface SitemapEntry {
 }
 
 export const Route = createFileRoute("/sitemap.xml")({
+  // Cast: nested duplicate of @tanstack/router-core prevents the server-route
+  // module augmentation from being seen here. Runtime contract is correct.
   server: {
+
     handlers: {
       GET: async () => {
         const entries: SitemapEntry[] = [
