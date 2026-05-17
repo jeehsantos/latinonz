@@ -123,7 +123,7 @@ function BusinessPage() {
             <p className="mt-3 text-gray-600">{business.description}</p>
             {business.tags && (
               <div className="mt-5 flex flex-wrap gap-2">
-                {business.tags.map((tag) => (
+                {business.tags.map((tag: string) => (
                   <span key={tag} className="text-xs font-semibold bg-gray-100 text-gray-700 px-3 py-1 rounded-full">{tag}</span>
                 ))}
               </div>
