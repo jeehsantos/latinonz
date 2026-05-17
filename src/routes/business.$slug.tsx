@@ -315,6 +315,72 @@ function BusinessPage() {
           )}
         </aside>
       </section>
+
+      {leadOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setLeadOpen(false)}>
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between">
+              <h3 className="font-extrabold text-gray-900 text-lg">{t("business.send_message")}</h3>
+              <button onClick={() => setLeadOpen(false)} className="text-gray-400 hover:text-gray-700" aria-label="Close">
+                <X size={20} />
+              </button>
+            </div>
+            {leadStatus === "success" ? (
+              <div className="mt-6 text-center space-y-3">
+                <p className="text-emerald-700 font-bold">Mensagem enviada!</p>
+                <p className="text-sm text-gray-600">O negócio entrará em contato em breve.</p>
+                <button
+                  onClick={() => setLeadOpen(false)}
+                  className="mt-2 bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-2xl py-2 px-5 text-sm"
+                >
+                  Fechar
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleLeadSubmit} className="mt-4 space-y-3">
+                <input
+                  required
+                  type="text"
+                  placeholder="Seu nome"
+                  value={leadForm.name}
+                  onChange={(e) => setLeadForm((f) => ({ ...f, name: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                />
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={leadForm.email}
+                  onChange={(e) => setLeadForm((f) => ({ ...f, email: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                />
+                <input
+                  type="tel"
+                  placeholder="WhatsApp (+64...)"
+                  value={leadForm.phone}
+                  onChange={(e) => setLeadForm((f) => ({ ...f, phone: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                />
+                <textarea
+                  rows={4}
+                  placeholder="Mensagem"
+                  value={leadForm.message}
+                  onChange={(e) => setLeadForm((f) => ({ ...f, message: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm resize-none"
+                />
+                <p className="text-xs text-gray-400">Informe email ou WhatsApp para contato.</p>
+                {leadError && <p className="text-xs text-red-600">{leadError}</p>}
+                <button
+                  type="submit"
+                  disabled={leadStatus === "submitting"}
+                  className="w-full bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-50 text-white font-bold rounded-2xl py-3 text-sm"
+                >
+                  {leadStatus === "submitting" ? "Enviando..." : "Enviar mensagem"}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </SiteShell>
   );
 }
