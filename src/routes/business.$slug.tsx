@@ -74,7 +74,16 @@ export const Route = createFileRoute("/business/$slug")({
 function BusinessPage() {
   const { t } = useI18n();
   const { business } = Route.useLoaderData();
-  const reviews = REVIEWS_BY_BUSINESS[business.slug] ?? [];
+  const fetchReviews = useServerFn(getReviews);
+  const { data: reviewsData } = useQuery({
+    queryKey: ["google-reviews", business.id],
+    queryFn: () => fetchReviews({ data: { businessId: business.id } }),
+  });
+  const reviews = (reviewsData?.ok ? reviewsData.reviews : []).map((r) => ({
+    name: r.author_name,
+    rating: r.rating,
+    text: r.text ?? "",
+  }));
   const coupons = can(business.plan, "coupons") ? COUPONS_BY_BUSINESS[business.slug] ?? [] : [];
   const photoLimit = getLimit(business.plan, "photoLimit");
   const photoCount = Number.isFinite(photoLimit) ? Math.min(photoLimit, 6) : 6;
