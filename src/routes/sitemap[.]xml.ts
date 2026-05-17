@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import "@tanstack/react-start";
+import type { RouteServerOptions } from "@tanstack/start-client-core/serverRoute";
 import { NEWS } from "@/lib/mock/news";
 import { BUSINESSES } from "@/lib/mock/businesses";
 
