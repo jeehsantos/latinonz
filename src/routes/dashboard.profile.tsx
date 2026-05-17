@@ -392,6 +392,12 @@ function ProfileEditor() {
           </div>
         </div>
 
+        <GoogleReviewsSection
+          businessId={loaded?.ok ? loaded.business?.id ?? null : null}
+          initialPlaceId={loaded?.ok ? loaded.business?.google_place_id ?? "" : ""}
+          onConnected={() => refetch()}
+        />
+
         <ServiceOptionsSection plan={plan} />
 
         {saveError && <p className="text-sm text-red-600">{saveError}</p>}
