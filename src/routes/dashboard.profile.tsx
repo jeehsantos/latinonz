@@ -285,7 +285,7 @@ function ProfileEditor() {
 
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-1">{t("profile.keywords_label")}</label>
-          <input type="text" placeholder={t("profile.keywords_placeholder")} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]" />
+          <input type="text" value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder={t("profile.keywords_placeholder")} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]" />
           <p className="text-xs text-gray-500 mt-1">{t("profile.keywords_hint")}</p>
         </div>
 
