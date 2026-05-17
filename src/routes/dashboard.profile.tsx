@@ -167,12 +167,30 @@ function ProfileEditor() {
     setTimeout(() => { setGenerating(false); setQrGenerated(true); }, 700);
   };
 
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => setLogo(ev.target?.result as string);
-    reader.readAsDataURL(file);
+    setLogoError(null);
+    setLogoUploading(true);
+    try {
+      const buf = await file.arrayBuffer();
+      let bin = "";
+      const bytes = new Uint8Array(buf);
+      for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+      const contentBase64 = btoa(bin);
+      const dot = file.name.lastIndexOf(".");
+      const ext = (dot >= 0 ? file.name.slice(dot + 1) : "jpg").toLowerCase();
+      const res = await callUploadLogo({
+        data: { contentBase64, contentType: file.type || "image/jpeg", ext },
+      });
+      setLogo(res.url);
+      await refetch();
+    } catch (err) {
+      setLogoError(err instanceof Error ? err.message : "Falha no upload.");
+    } finally {
+      setLogoUploading(false);
+      if (logoRef.current) logoRef.current.value = "";
+    }
   };
 
   const multiBranch = cities.length > 1;
