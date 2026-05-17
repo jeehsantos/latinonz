@@ -1,5 +1,7 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import {
   ChevronDown, QrCode, Download, Plus, Trash2, Upload, X, Check,
   Copy, MapPin, Clock, ShoppingBag, UtensilsCrossed, Bike, CalendarClock, Sparkles, Lock,
@@ -7,6 +9,7 @@ import {
 import { Link } from "@tanstack/react-router";
 import { CATEGORIES, NZ_CITIES } from "@/lib/mock/categories";
 import { useI18n } from "@/lib/i18n";
+import { getMyBusiness, updateMyBusiness } from "@/lib/business.functions";
 
 export const Route = createFileRoute("/dashboard/profile")({
   component: ProfileEditor,
