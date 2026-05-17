@@ -77,6 +77,7 @@ function BusinessPage() {
   const { t } = useI18n();
   const { business } = Route.useLoaderData();
   const fetchReviews = useServerFn(getReviews);
+  const submitLeadFn = useServerFn(submitLead);
   const { data: reviewsData } = useQuery({
     queryKey: ["google-reviews", business.id],
     queryFn: () => fetchReviews({ data: { businessId: business.id } }),
@@ -86,6 +87,37 @@ function BusinessPage() {
     rating: r.rating,
     text: r.text ?? "",
   }));
+
+  const [leadOpen, setLeadOpen] = useState(false);
+  const [leadForm, setLeadForm] = useState({ name: "", email: "", phone: "", message: "" });
+  const [leadStatus, setLeadStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [leadError, setLeadError] = useState<string | null>(null);
+
+  async function handleLeadSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLeadStatus("submitting");
+    setLeadError(null);
+    try {
+      const res = await submitLeadFn({
+        data: {
+          businessId: business.id,
+          name: leadForm.name.trim(),
+          email: leadForm.email.trim() || null,
+          phone: leadForm.phone.trim() || null,
+          message: leadForm.message.trim() || null,
+          source: "direct",
+        },
+      });
+      if (!(res as { ok?: boolean })?.ok) {
+        throw new Error((res as { error?: string })?.error ?? "Erro ao enviar");
+      }
+      setLeadStatus("success");
+      setLeadForm({ name: "", email: "", phone: "", message: "" });
+    } catch (err) {
+      setLeadStatus("error");
+      setLeadError(err instanceof Error ? err.message : "Erro ao enviar");
+    }
+  }
   const coupons = can(business.plan, "coupons") ? COUPONS_BY_BUSINESS[business.slug] ?? [] : [];
   const photoLimit = getLimit(business.plan, "photoLimit");
   const photoCount = Number.isFinite(photoLimit) ? Math.min(photoLimit, 6) : 6;
