@@ -44,7 +44,7 @@
   "register": {
     "badge": "Sign Up",
     "title": "Join our network",
-    "subtitle": "Start free on the Starter plan. Upgrade whenever you're ready.",
+    "subtitle": "Start free on the Starter package. Upgrade whenever you're ready.",
     "business_name": "Business or organisation name",
     "owner_name": "Your name",
     "email": "Email",
@@ -55,23 +55,18 @@
     "login_link": "Sign In"
   },
   "plans": {
-    "badge": "Plans",
-    "title": "The right plan to grow",
+    "badge": "Packages",
+    "title": "The right package to grow",
     "subtitle": "Start free and unlock advanced features as your presence grows.",
-    "page_heading": "Choose your plan",
+    "page_heading": "Choose your package",
     "page_subheading": "Start free and scale up as your business grows within the Latin community in New Zealand.",
-    "comparison_title": "Compare the plans",
+    "comparison_title": "Compare the packages",
     "most_popular": "Most popular",
     "free": "Free",
     "per_month": "/month",
-    "cta_default": "Choose plan",
+    "cta_default": "Choose package",
     "table_feature": "Feature",
-    "features_starter": [
-      "Basic profile in the directory",
-      "Up to 3 photos",
-      "Email contacts",
-      "Customer reviews"
-    ],
+    "features_starter": ["Basic profile in the directory", "Up to 3 photos", "Email contacts", "Customer reviews"],
     "features_premium": [
       "Full highlighted profile",
       "Unlimited photo gallery",
@@ -91,7 +86,13 @@
       { "feature": "Custom profile", "starter": "Basic", "premium": "Full", "ultra": "Full + Highlight" },
       { "feature": "Photos", "starter": "3 photos", "premium": "Unlimited", "ultra": "Unlimited", "highlight": true },
       { "feature": "Contact", "starter": "Form", "premium": "WhatsApp", "ultra": "WhatsApp" },
-      { "feature": "Lead notification", "starter": "Email", "premium": "WhatsApp", "ultra": "Email & WhatsApp", "highlight": true },
+      {
+        "feature": "Lead notification",
+        "starter": "Email",
+        "premium": "WhatsApp",
+        "ultra": "Email & WhatsApp",
+        "highlight": true
+      },
       { "feature": "Business hours", "starter": "—", "premium": "✓", "ultra": "✓" },
       { "feature": "Service options", "starter": "—", "premium": "✓", "ultra": "✓", "highlight": true },
       { "feature": "Discount coupons", "starter": "—", "premium": "✓", "ultra": "✓" },
@@ -207,7 +208,7 @@
     "coupon_valid_until": "Valid until",
     "not_found_title": "Profile not found",
     "back_to_directory_btn": "Back to network",
-    "plan_starter": "Starter Plan",
+    "plan_starter": "Starter Package",
     "plan_premium": "Premium",
     "plan_ultra": "Ultra",
     "photos_limit": "photos"
@@ -221,7 +222,7 @@
     "stat_rating": "Average rating",
     "recent_leads_title": "Recent leads",
     "see_all_leads": "See all →",
-    "upgrade_plan": "Change Plan",
+    "upgrade_plan": "Change Package",
     "nav_dashboard": "Dashboard",
     "nav_profile": "My Profile",
     "nav_gallery": "Gallery",
@@ -269,9 +270,9 @@
     "qr_download": "Download",
     "service_options_title": "Service Options",
     "service_options_subtitle": "Shown prominently on your public page.",
-    "service_options_locked_title": "Available on the Premium plan",
+    "service_options_locked_title": "Available on the Premium package",
     "service_options_locked_body": "Show how you serve customers: take away, dine in, delivery or advance bookings.",
-    "service_options_upgrade": "Upgrade plan",
+    "service_options_upgrade": "Upgrade package",
     "service_options_other_label": "Other service option",
     "service_options_other_optional": "(optional)",
     "service_options_other_placeholder": "E.g: Catering, Drive-thru, Home visits…",
@@ -308,12 +309,12 @@
     "new_button": "New coupon",
     "active_title": "Active Coupons",
     "locked_title": "Coupons are a Premium feature",
-    "upgrade_button": "Change Plan",
+    "upgrade_button": "Change Package",
     "valid_until": "Valid until"
   },
   "gallery": {
     "title": "Gallery",
-    "subtitle_plan": "Plan",
+    "subtitle_plan": "Package",
     "subtitle_allows": "allows",
     "subtitle_photos": "photos",
     "subtitle_unlimited": "unlimited photos",
@@ -321,10 +322,10 @@
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Account, plan and preferences.",
-    "current_plan_title": "Current plan",
+    "subtitle": "Account, package and preferences.",
+    "current_plan_title": "Current package",
     "current_plan_on": "You are on the",
-    "change_plan": "Change plan",
+    "change_plan": "Change package",
     "appearance_title": "Dashboard appearance",
     "appearance_subtitle": "Customise the sidebar colour of your dashboard.",
     "custom_color": "Custom colour",
@@ -335,12 +336,12 @@
     "save_button": "Save"
   },
   "upgrade": {
-    "title": "Choose your plan",
-    "current_plan": "Current plan:"
+    "title": "Choose your package",
+    "current_plan": "Current package:"
   },
   "locked_feature": {
     "available_from": "Available from the",
-    "upgrade_button": "Upgrade plan"
+    "upgrade_button": "Upgrade package"
   },
   "modal": {
     "social_proof": "+35 profiles have already secured their spot —",
