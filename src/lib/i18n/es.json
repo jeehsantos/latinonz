@@ -58,11 +58,52 @@
     "badge": "Planes",
     "title": "El plan correcto para crecer",
     "subtitle": "Comienza gratis y desbloquea funciones avanzadas a medida que creces.",
-    "comparison_title": "Comparativa completa",
+    "page_heading": "Elige tu plan",
+    "page_subheading": "Empieza gratis y crece a medida que tu negocio se expande en la comunidad latina de Nueva Zelanda.",
+    "comparison_title": "Compara los planes",
     "most_popular": "Más elegido",
     "free": "Gratis",
     "per_month": "/mes",
-    "cta_default": "Elegir plan"
+    "cta_default": "Elegir plan",
+    "table_feature": "Función",
+    "features_starter": [
+      "Perfil básico en el directorio",
+      "Hasta 3 fotos",
+      "Contactos por correo",
+      "Reseñas de clientes"
+    ],
+    "features_premium": [
+      "Perfil completo destacado",
+      "Galería ilimitada de fotos",
+      "Leads por WhatsApp",
+      "Cupones y promociones",
+      "Código QR del negocio",
+      "Analytics del perfil"
+    ],
+    "features_ultra": [
+      "Todo lo del Premium",
+      "Destaque en lo alto del directorio",
+      "Eventos y comunidad",
+      "Publicaciones en redes sociales",
+      "Soporte prioritario"
+    ],
+    "comparison_rows": [
+      { "feature": "Perfil personalizado", "starter": "Básico", "premium": "Completo", "ultra": "Completo + Destaque" },
+      { "feature": "Fotos", "starter": "3 fotos", "premium": "Ilimitado", "ultra": "Ilimitado", "highlight": true },
+      { "feature": "Contacto", "starter": "Formulario", "premium": "WhatsApp", "ultra": "WhatsApp" },
+      { "feature": "Notificación de lead", "starter": "Correo", "premium": "WhatsApp", "ultra": "Correo y WhatsApp", "highlight": true },
+      { "feature": "Horarios de atención", "starter": "—", "premium": "✓", "ultra": "✓" },
+      { "feature": "Opciones de atención", "starter": "—", "premium": "✓", "ultra": "✓", "highlight": true },
+      { "feature": "Cupones de descuento", "starter": "—", "premium": "✓", "ultra": "✓" },
+      { "feature": "Mensajes directos", "starter": "—", "premium": "✓", "ultra": "✓", "highlight": true },
+      { "feature": "Código QR del perfil", "starter": "—", "premium": "✓", "ultra": "✓" },
+      { "feature": "Analytics del perfil", "starter": "—", "premium": "✓", "ultra": "✓", "highlight": true },
+      { "feature": "Google Reviews", "starter": "✓", "premium": "✓", "ultra": "✓" },
+      { "feature": "Creación de eventos", "starter": "—", "premium": "—", "ultra": "✓", "highlight": true },
+      { "feature": "Posts en Instagram y Facebook", "starter": "—", "premium": "—", "ultra": "✓" },
+      { "feature": "Posts en WhatsApp de la comunidad", "starter": "—", "premium": "—", "ultra": "✓", "highlight": true },
+      { "feature": "Destaque en la parte alta de la red", "starter": "—", "premium": "—", "ultra": "✓" }
+    ]
   },
   "about": {
     "badge": "Acerca de",
