@@ -15,58 +15,16 @@ const idSchema = z.object({ couponId: z.string().uuid() });
 
 const PREMIUM_PLANS = new Set(["premium", "ultra"]);
 
-async function getOwnerBusiness(
-  supabase: { from: (t: string) => unknown },
-  userId: string,
-) {
-  // typed locally to avoid leaking the full PostgREST builder types
-  const { data, error } = await (supabase as unknown as {
-    from: (t: string) => {
-      select: (c: string) => {
-        eq: (c: string, v: string) => {
-          maybeSingle: () => Promise<{ data: { id: string } | null; error: { message: string } | null }>;
-        };
-      };
-    };
-  })
-    .from("businesses")
-    .select("id")
-    .eq("owner_id", userId)
-    .maybeSingle();
-  return { biz: data ?? null, error: error?.message ?? null };
-}
-
-async function assertOwnerPlanAllowsCoupons(
-  supabase: { from: (t: string) => unknown },
-  userId: string,
-): Promise<string | null> {
-  const { data, error } = await (supabase as unknown as {
-    from: (t: string) => {
-      select: (c: string) => {
-        eq: (c: string, v: string) => {
-          maybeSingle: () => Promise<{ data: { plan_tier: string } | null; error: { message: string } | null }>;
-        };
-      };
-    };
-  })
-    .from("profiles")
-    .select("plan_tier")
-    .eq("id", userId)
-    .maybeSingle();
-  if (error) return error.message;
-  const plan = (data?.plan_tier ?? "starter").toLowerCase();
-  if (!PREMIUM_PLANS.has(plan)) {
-    return "Cupons disponíveis apenas nos planos Premium e Ultra.";
-  }
-  return null;
-}
-
 export const getMyCoupons = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
-    const { biz, error: bizErr } = await getOwnerBusiness(supabase, userId);
-    if (bizErr) return { ok: false as const, error: bizErr };
+    const { data: biz, error: bizErr } = await supabase
+      .from("businesses")
+      .select("id")
+      .eq("owner_id", userId)
+      .maybeSingle();
+    if (bizErr) return { ok: false as const, error: bizErr.message };
     if (!biz) return { ok: true as const, coupons: [] };
 
     const { data: rows, error } = await supabase
@@ -86,11 +44,23 @@ export const createCoupon = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
 
-    const planError = await assertOwnerPlanAllowsCoupons(supabase, userId);
-    if (planError) return { ok: false as const, error: planError };
+    const { data: profile, error: profileErr } = await supabase
+      .from("profiles")
+      .select("plan_tier")
+      .eq("id", userId)
+      .maybeSingle();
+    if (profileErr) return { ok: false as const, error: profileErr.message };
+    const plan = (profile?.plan_tier ?? "starter").toLowerCase();
+    if (!PREMIUM_PLANS.has(plan)) {
+      return { ok: false as const, error: "Cupons disponíveis apenas nos planos Premium e Ultra." };
+    }
 
-    const { biz, error: bizErr } = await getOwnerBusiness(supabase, userId);
-    if (bizErr) return { ok: false as const, error: bizErr };
+    const { data: biz, error: bizErr } = await supabase
+      .from("businesses")
+      .select("id")
+      .eq("owner_id", userId)
+      .maybeSingle();
+    if (bizErr) return { ok: false as const, error: bizErr.message };
     if (!biz) return { ok: false as const, error: "Crie seu negócio antes de criar cupons." };
 
     const { data: row, error } = await supabase
