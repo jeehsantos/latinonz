@@ -11,6 +11,8 @@ import { CATEGORIES, NZ_CITIES } from "@/lib/mock/categories";
 import { useI18n } from "@/lib/i18n";
 import { getMyBusiness, updateMyBusiness } from "@/lib/business.functions";
 import { uploadLogo } from "@/lib/storage.functions";
+import { connectGooglePlace, syncGoogleReviews } from "@/lib/reviews.functions";
+import { Star, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/profile")({
   component: ProfileEditor,
