@@ -190,8 +190,10 @@ function ProfileEditor() {
           </div>
           <textarea
             rows={4}
+            maxLength={500}
             className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] resize-none"
-            defaultValue="Autêntica comida mexicana com ingredientes frescos locais. Servindo a comunidade com os melhores tacos e burritos."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
           <p className="text-xs text-gray-500 mt-1">{t("profile.description_hint")}</p>
         </div>
