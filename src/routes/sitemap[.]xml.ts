@@ -10,9 +10,11 @@ interface SitemapEntry {
   priority?: string;
 }
 
+// Cast options to bypass a type-only mismatch: two physical copies of
+// @tanstack/router-core exist in node_modules, so the `server` augmentation
+// from @tanstack/start-client-core is not visible to the createFileRoute
+// types pulled in via @tanstack/react-router. Runtime contract is unaffected.
 export const Route = createFileRoute("/sitemap.xml")({
-  // Cast: nested duplicate of @tanstack/router-core prevents the server-route
-  // module augmentation from being seen here. Runtime contract is correct.
   server: {
 
     handlers: {
@@ -62,4 +64,4 @@ export const Route = createFileRoute("/sitemap.xml")({
       },
     },
   },
-});
+} as Parameters<ReturnType<typeof createFileRoute<"/sitemap.xml">>>[0]);
