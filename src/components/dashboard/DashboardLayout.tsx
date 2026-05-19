@@ -25,8 +25,16 @@ export function DashboardLayout() {
   const fetchMyBusiness = useServerFn(getMyBusiness);
   const { data: myBiz } = useQuery({
     queryKey: ["my-business"],
-    queryFn: () => fetchMyBusiness(),
+    queryFn: async () => {
+      try {
+        return await fetchMyBusiness();
+      } catch {
+        return null;
+      }
+    },
     staleTime: 30_000,
+    retry: false,
+    throwOnError: false,
   });
   const business = myBiz?.business;
   const businessName = business?.name ?? "—";
