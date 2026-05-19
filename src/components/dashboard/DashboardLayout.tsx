@@ -1,9 +1,11 @@
-import { Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, User, Image as ImageIcon, MessageSquare, Tag, BarChart2,
-  Settings, CreditCard, Menu, X, Calendar,
+  Settings, CreditCard, Menu, X, Calendar, LogOut,
 } from "lucide-react";
 import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import logo from "@/assets/logo.png";
 import { useCurrentPlan } from "@/lib/dev-plan";
 import { type PlanTier, can } from "@/lib/plans";
@@ -11,11 +13,35 @@ import { PlanBadge } from "@/components/PlanBadge";
 import { LEADS } from "@/lib/mock/leads";
 import { useSidebarColor, darken, lighten } from "@/lib/sidebar-color";
 import { useI18n } from "@/lib/i18n";
+import { getMyBusiness } from "@/lib/business.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export function DashboardLayout() {
   const { t } = useI18n();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const fetchMyBusiness = useServerFn(getMyBusiness);
+  const { data: myBiz } = useQuery({
+    queryKey: ["my-business"],
+    queryFn: () => fetchMyBusiness(),
+    staleTime: 30_000,
+  });
+  const business = myBiz?.business;
+  const businessName = business?.name ?? "—";
+  const businessLocation = Array.isArray(business?.locations) && business?.locations.length
+    ? String(business.locations[0])
+    : "";
+  const logoUrl = business?.logo_url ?? null;
+  const initial = (businessName || "?").trim().charAt(0).toUpperCase();
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    queryClient.clear();
+    navigate({ to: "/login" });
+  };
+
   const [plan, setPlan] = useCurrentPlan();
   const [sidebarColor] = useSidebarColor();
   const showDevSwitch =
@@ -77,12 +103,28 @@ export function DashboardLayout() {
         </div>
         <div className="ml-auto flex items-center gap-3">
           <div className="hidden sm:block text-right">
-            <p className="text-sm font-bold text-gray-900">Tacos do Chef</p>
-            <p className="text-xs text-gray-500">Auckland</p>
+            <p className="text-sm font-bold text-gray-900">{businessName}</p>
+            {businessLocation && <p className="text-xs text-gray-500">{businessLocation}</p>}
           </div>
-          <div className="w-9 h-9 rounded-full bg-[#1A5336] text-white font-bold flex items-center justify-center">
-            T
-          </div>
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={businessName}
+              className="w-9 h-9 rounded-full object-cover border border-gray-200"
+            />
+          ) : (
+            <div className="w-9 h-9 rounded-full bg-[#1A5336] text-white font-bold flex items-center justify-center">
+              {initial}
+            </div>
+          )}
+          <button
+            onClick={handleSignOut}
+            title={t("dashboard.sign_out")}
+            className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 border border-gray-200 rounded-lg px-2.5 py-1.5 hover:bg-gray-50 transition"
+          >
+            <LogOut size={16} />
+            <span className="hidden sm:inline">{t("dashboard.sign_out")}</span>
+          </button>
         </div>
       </header>
 

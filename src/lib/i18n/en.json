@@ -229,7 +229,8 @@
     "nav_leads": "Leads",
     "nav_coupons": "Coupons",
     "nav_analytics": "Analytics",
-    "nav_settings": "Settings"
+    "nav_settings": "Settings",
+    "sign_out": "Sign out"
   },
   "profile": {
     "title": "Basic Information",
