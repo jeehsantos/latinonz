@@ -458,13 +458,16 @@ function ProfileEditor() {
                 },
               });
               if (!res.ok) {
-                const keyMap: Record<string, string> = {
-                  save_generic: "profile.save_error_generic",
-                  save_name_required: "profile.save_error_name_required",
-                  save_not_found: "profile.save_error_not_found",
-                };
                 const errorKey = (res as { errorKey?: string }).errorKey;
-                setSaveError(errorKey && keyMap[errorKey] ? t(keyMap[errorKey]) : res.error);
+                if (errorKey === "save_name_required") {
+                  setSaveError(t("profile.save_error_name_required"));
+                } else if (errorKey === "save_not_found") {
+                  setSaveError(t("profile.save_error_not_found"));
+                } else if (errorKey === "save_generic") {
+                  setSaveError(t("profile.save_error_generic"));
+                } else {
+                  setSaveError(res.error);
+                }
                 return;
               }
               setSaveSuccess(true);
