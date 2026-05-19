@@ -215,6 +215,53 @@ export type Database = {
           },
         ]
       }
+      events: {
+        Row: {
+          business_id: string
+          created_at: string
+          description: string | null
+          ends_at: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          location: string | null
+          starts_at: string
+          title: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          location?: string | null
+          starts_at: string
+          title: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          location?: string | null
+          starts_at?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       google_reviews: {
         Row: {
           author_name: string
