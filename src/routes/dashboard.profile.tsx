@@ -13,6 +13,9 @@ import { getMyBusiness, updateMyBusiness } from "@/lib/business.functions";
 import { uploadLogo } from "@/lib/storage.functions";
 import { connectGooglePlace, syncGoogleReviews } from "@/lib/reviews.functions";
 import { Star, RefreshCw } from "lucide-react";
+import QRCode from "qrcode";
+import { useCurrentPlan } from "@/lib/dev-plan";
+import { can } from "@/lib/plans";
 
 export const Route = createFileRoute("/dashboard/profile")({
   component: ProfileEditor,
@@ -60,8 +63,13 @@ function ProfileEditor() {
   const [citiesOpen, setCitiesOpen] = useState(false);
   const [schedules, setSchedules] = useState<Record<string, BranchSchedule>>({ Auckland: DEFAULT_SCHEDULE });
   const [activeBranch, setActiveBranch] = useState<string>("Auckland");
-  const [qrGenerated, setQrGenerated] = useState(false);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [qrError, setQrError] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
+  const [plan] = useCurrentPlan();
+  const canUseQr = can(plan, "qrCode");
+  const slug = loaded?.business?.slug ?? "";
+  const qrUrl = slug ? `https://latinoconnecthub.co.nz/business/${slug}` : "";
   const [logo, setLogo] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -90,7 +98,6 @@ function ProfileEditor() {
     if (b.logo_url) setLogo(b.logo_url);
   }, [loaded]);
 
-  const plan: string = "Premium";
   const activeCategories = CATEGORIES.map((c) => c.name);
   const branchSchedule = schedules[activeBranch] ?? DEFAULT_SCHEDULE;
 
@@ -164,9 +171,28 @@ function ProfileEditor() {
       };
     });
 
-  const handleGenerateQr = () => {
+  const handleGenerateQr = async () => {
+    if (!canUseQr || !qrUrl) return;
+    setQrError(null);
     setGenerating(true);
-    setTimeout(() => { setGenerating(false); setQrGenerated(true); }, 700);
+    try {
+      const url = await QRCode.toDataURL(qrUrl, { width: 512, margin: 1, errorCorrectionLevel: "M" });
+      setQrDataUrl(url);
+    } catch (err) {
+      setQrError(err instanceof Error ? err.message : "Erro ao gerar QR");
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handleDownloadQr = () => {
+    if (!qrDataUrl) return;
+    const a = document.createElement("a");
+    a.href = qrDataUrl;
+    a.download = `${slug || "qr-code"}.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   };
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -320,7 +346,7 @@ function ProfileEditor() {
               <Clock size={18} className="text-[#1A5336]" />
               <label className="block text-sm font-bold text-gray-700">{t("profile.hours_title")}</label>
             </div>
-            {plan === "Starter" && (
+            {plan === "starter" && (
               <span className="text-[10px] bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded font-bold">
                 {t("profile.hours_upgrade_hint")}
               </span>
@@ -469,20 +495,47 @@ function ProfileEditor() {
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col items-center text-center">
           <h3 className="font-bold text-gray-900 mb-4 w-full text-left">{t("profile.qr_title")}</h3>
           <div className="w-32 h-32 bg-gray-50 border border-gray-200 rounded-xl p-2 mb-4 flex items-center justify-center">
-            {qrGenerated
-              ? <QrCode size={100} className="text-gray-800" strokeWidth={1} />
-              : <span className="text-xs text-gray-400 px-2">{generating ? t("profile.qr_generating") : t("profile.qr_not_generated")}</span>}
+            {qrDataUrl ? (
+              <img src={qrDataUrl} alt="QR code" className="w-full h-full object-contain" />
+            ) : !canUseQr ? (
+              <span className="text-xs text-gray-400 px-2 inline-flex items-center gap-1">
+                <Lock size={12} /> Premium / Ultra
+              </span>
+            ) : (
+              <span className="text-xs text-gray-400 px-2">
+                {generating ? t("profile.qr_generating") : t("profile.qr_not_generated")}
+              </span>
+            )}
           </div>
-          {!qrGenerated ? (
-            <button onClick={handleGenerateQr} disabled={generating} className="w-full flex items-center justify-center gap-2 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold py-2.5 rounded-xl text-sm transition-colors">
+          {!canUseQr ? (
+            <Link
+              to="/dashboard/upgrade"
+              className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-sm transition-colors"
+            >
+              <Sparkles size={16} /> Fazer upgrade
+            </Link>
+          ) : !qrDataUrl ? (
+            <button
+              onClick={handleGenerateQr}
+              disabled={generating || !qrUrl}
+              className="w-full flex items-center justify-center gap-2 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold py-2.5 rounded-xl text-sm transition-colors"
+            >
               {generating ? t("profile.qr_generating") : t("profile.qr_generate")}
             </button>
           ) : (
-            <button className="w-full flex items-center justify-center gap-2 bg-[#0B2C1A] text-white font-bold py-2.5 rounded-xl text-sm hover:bg-[#1A5336] transition-colors">
+            <button
+              onClick={handleDownloadQr}
+              className="w-full flex items-center justify-center gap-2 bg-[#0B2C1A] text-white font-bold py-2.5 rounded-xl text-sm hover:bg-[#1A5336] transition-colors"
+            >
               <Download size={16} /> {t("profile.qr_download")}
             </button>
           )}
+          {qrError && <p className="text-[11px] text-red-600 mt-2">{qrError}</p>}
+          {qrUrl && canUseQr && (
+            <p className="text-[10px] text-gray-400 mt-2 break-all">{qrUrl}</p>
+          )}
         </div>
+
       </div>
     </div>
   );
