@@ -228,7 +228,8 @@
     "nav_leads": "Leads",
     "nav_coupons": "Cupones",
     "nav_analytics": "Análisis",
-    "nav_settings": "Configuración"
+    "nav_settings": "Configuración",
+    "sign_out": "Cerrar sesión"
   },
   "profile": {
     "title": "Información Básica",
