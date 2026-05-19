@@ -536,7 +536,6 @@ function ProfileEditor() {
           )}
         </div>
 
-        </div>
       </div>
     </div>
   );
