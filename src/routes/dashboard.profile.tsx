@@ -495,19 +495,47 @@ function ProfileEditor() {
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col items-center text-center">
           <h3 className="font-bold text-gray-900 mb-4 w-full text-left">{t("profile.qr_title")}</h3>
           <div className="w-32 h-32 bg-gray-50 border border-gray-200 rounded-xl p-2 mb-4 flex items-center justify-center">
-            {qrGenerated
-              ? <QrCode size={100} className="text-gray-800" strokeWidth={1} />
-              : <span className="text-xs text-gray-400 px-2">{generating ? t("profile.qr_generating") : t("profile.qr_not_generated")}</span>}
+            {qrDataUrl ? (
+              <img src={qrDataUrl} alt="QR code" className="w-full h-full object-contain" />
+            ) : !canUseQr ? (
+              <span className="text-xs text-gray-400 px-2 inline-flex items-center gap-1">
+                <Lock size={12} /> Premium / Ultra
+              </span>
+            ) : (
+              <span className="text-xs text-gray-400 px-2">
+                {generating ? t("profile.qr_generating") : t("profile.qr_not_generated")}
+              </span>
+            )}
           </div>
-          {!qrGenerated ? (
-            <button onClick={handleGenerateQr} disabled={generating} className="w-full flex items-center justify-center gap-2 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold py-2.5 rounded-xl text-sm transition-colors">
+          {!canUseQr ? (
+            <Link
+              to="/dashboard/upgrade"
+              className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-sm transition-colors"
+            >
+              <Sparkles size={16} /> Fazer upgrade
+            </Link>
+          ) : !qrDataUrl ? (
+            <button
+              onClick={handleGenerateQr}
+              disabled={generating || !qrUrl}
+              className="w-full flex items-center justify-center gap-2 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold py-2.5 rounded-xl text-sm transition-colors"
+            >
               {generating ? t("profile.qr_generating") : t("profile.qr_generate")}
             </button>
           ) : (
-            <button className="w-full flex items-center justify-center gap-2 bg-[#0B2C1A] text-white font-bold py-2.5 rounded-xl text-sm hover:bg-[#1A5336] transition-colors">
+            <button
+              onClick={handleDownloadQr}
+              className="w-full flex items-center justify-center gap-2 bg-[#0B2C1A] text-white font-bold py-2.5 rounded-xl text-sm hover:bg-[#1A5336] transition-colors"
+            >
               <Download size={16} /> {t("profile.qr_download")}
             </button>
           )}
+          {qrError && <p className="text-[11px] text-red-600 mt-2">{qrError}</p>}
+          {qrUrl && canUseQr && (
+            <p className="text-[10px] text-gray-400 mt-2 break-all">{qrUrl}</p>
+          )}
+        </div>
+
         </div>
       </div>
     </div>
