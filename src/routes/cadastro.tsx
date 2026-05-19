@@ -138,7 +138,8 @@ function CadastroPage() {
             {t("register.has_account")}{" "}
             <Link to="/login" className="font-bold text-[#1A5336]">{t("register.login_link")}</Link>
           </p>
-        </form>
+          </form>
+        </div>
       </section>
     </SiteShell>
   );
