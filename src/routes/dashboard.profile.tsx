@@ -171,9 +171,28 @@ function ProfileEditor() {
       };
     });
 
-  const handleGenerateQr = () => {
+  const handleGenerateQr = async () => {
+    if (!canUseQr || !qrUrl) return;
+    setQrError(null);
     setGenerating(true);
-    setTimeout(() => { setGenerating(false); setQrGenerated(true); }, 700);
+    try {
+      const url = await QRCode.toDataURL(qrUrl, { width: 512, margin: 1, errorCorrectionLevel: "M" });
+      setQrDataUrl(url);
+    } catch (err) {
+      setQrError(err instanceof Error ? err.message : "Erro ao gerar QR");
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handleDownloadQr = () => {
+    if (!qrDataUrl) return;
+    const a = document.createElement("a");
+    a.href = qrDataUrl;
+    a.download = `${slug || "qr-code"}.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   };
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
