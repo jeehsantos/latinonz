@@ -27,6 +27,7 @@ import { Route as DashboardSettingsRouteImport } from './routes/dashboard.settin
 import { Route as DashboardProfileRouteImport } from './routes/dashboard.profile'
 import { Route as DashboardLeadsRouteImport } from './routes/dashboard.leads'
 import { Route as DashboardGalleryRouteImport } from './routes/dashboard.gallery'
+import { Route as DashboardEventsRouteImport } from './routes/dashboard.events'
 import { Route as DashboardCouponsRouteImport } from './routes/dashboard.coupons'
 import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 import { Route as BusinessSlugRouteImport } from './routes/business.$slug'
@@ -127,6 +128,11 @@ const DashboardGalleryRoute = DashboardGalleryRouteImport.update({
   path: '/gallery',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardEventsRoute = DashboardEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardCouponsRoute = DashboardCouponsRouteImport.update({
   id: '/coupons',
   path: '/coupons',
@@ -193,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/business/$slug': typeof BusinessSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/coupons': typeof DashboardCouponsRoute
+  '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/gallery': typeof DashboardGalleryRoute
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
@@ -220,6 +227,7 @@ export interface FileRoutesByTo {
   '/business/$slug': typeof BusinessSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/coupons': typeof DashboardCouponsRoute
+  '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/gallery': typeof DashboardGalleryRoute
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
@@ -250,6 +258,7 @@ export interface FileRoutesById {
   '/business/$slug': typeof BusinessSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/coupons': typeof DashboardCouponsRoute
+  '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/gallery': typeof DashboardGalleryRoute
   '/dashboard/leads': typeof DashboardLeadsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
@@ -281,6 +290,7 @@ export interface FileRouteTypes {
     | '/business/$slug'
     | '/dashboard/analytics'
     | '/dashboard/coupons'
+    | '/dashboard/events'
     | '/dashboard/gallery'
     | '/dashboard/leads'
     | '/dashboard/profile'
@@ -308,6 +318,7 @@ export interface FileRouteTypes {
     | '/business/$slug'
     | '/dashboard/analytics'
     | '/dashboard/coupons'
+    | '/dashboard/events'
     | '/dashboard/gallery'
     | '/dashboard/leads'
     | '/dashboard/profile'
@@ -337,6 +348,7 @@ export interface FileRouteTypes {
     | '/business/$slug'
     | '/dashboard/analytics'
     | '/dashboard/coupons'
+    | '/dashboard/events'
     | '/dashboard/gallery'
     | '/dashboard/leads'
     | '/dashboard/profile'
@@ -491,6 +503,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardGalleryRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/events': {
+      id: '/dashboard/events'
+      path: '/events'
+      fullPath: '/dashboard/events'
+      preLoaderRoute: typeof DashboardEventsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/coupons': {
       id: '/dashboard/coupons'
       path: '/coupons'
@@ -588,6 +607,7 @@ const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 interface DashboardRouteChildren {
   DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
   DashboardCouponsRoute: typeof DashboardCouponsRoute
+  DashboardEventsRoute: typeof DashboardEventsRoute
   DashboardGalleryRoute: typeof DashboardGalleryRoute
   DashboardLeadsRoute: typeof DashboardLeadsRoute
   DashboardProfileRoute: typeof DashboardProfileRoute
@@ -599,6 +619,7 @@ interface DashboardRouteChildren {
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAnalyticsRoute: DashboardAnalyticsRoute,
   DashboardCouponsRoute: DashboardCouponsRoute,
+  DashboardEventsRoute: DashboardEventsRoute,
   DashboardGalleryRoute: DashboardGalleryRoute,
   DashboardLeadsRoute: DashboardLeadsRoute,
   DashboardProfileRoute: DashboardProfileRoute,
