@@ -4,6 +4,7 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { useI18n } from "@/lib/i18n";
 import { signUp } from "@/lib/auth.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 
 export const Route = createFileRoute("/cadastro")({
   head: () => ({
@@ -65,7 +66,15 @@ function CadastroPage() {
         <h1 className="mt-3 text-3xl md:text-4xl font-black text-gray-900">{t("register.title")}</h1>
         <p className="mt-3 text-gray-600">{t("register.subtitle")}</p>
 
-        <form className="mt-10 bg-white border border-gray-200 rounded-3xl p-8 space-y-4" onSubmit={onSubmit}>
+        <div className="mt-10 bg-white border border-gray-200 rounded-3xl p-8">
+          <GoogleAuthButton label="Cadastrar com Google" onError={setError} />
+          <div className="flex items-center gap-3 my-5">
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="text-xs uppercase tracking-wider text-gray-400">ou</span>
+            <div className="flex-1 h-px bg-gray-200" />
+          </div>
+
+          <form className="space-y-4" onSubmit={onSubmit}>
           <div>
             <label className="text-xs font-bold uppercase text-gray-500">{t("register.business_name")}</label>
             <input
