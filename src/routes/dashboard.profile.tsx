@@ -458,13 +458,19 @@ function ProfileEditor() {
                 },
               });
               if (!res.ok) {
-                setSaveError(res.error);
+                const keyMap: Record<string, string> = {
+                  save_generic: "profile.save_error_generic",
+                  save_name_required: "profile.save_error_name_required",
+                  save_not_found: "profile.save_error_not_found",
+                };
+                const errorKey = (res as { errorKey?: string }).errorKey;
+                setSaveError(errorKey && keyMap[errorKey] ? t(keyMap[errorKey]) : res.error);
                 return;
               }
               setSaveSuccess(true);
               await refetch();
             } catch (err) {
-              setSaveError(err instanceof Error ? err.message : "Erro inesperado.");
+              setSaveError(err instanceof Error ? err.message : t("profile.save_error_unexpected"));
             } finally {
               setSaving(false);
             }
