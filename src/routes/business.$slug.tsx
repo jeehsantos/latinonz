@@ -9,6 +9,7 @@ import { getBusinessBySlug } from "@/lib/business.functions";
 import { adaptBusiness } from "@/lib/business.adapter";
 import { getReviews } from "@/lib/reviews.functions";
 import { submitLead } from "@/lib/leads.functions";
+import { logProfileView } from "@/lib/analytics.functions";
 import { COUPONS_BY_BUSINESS } from "@/lib/mock/businesses";
 import { can, getLimit } from "@/lib/plans";
 import { useI18n } from "@/lib/i18n";
@@ -17,6 +18,8 @@ export const Route = createFileRoute("/business/$slug")({
   loader: async ({ params }) => {
     const res = await getBusinessBySlug({ data: { slug: params.slug } });
     if (!res.ok) throw notFound();
+    // Fire-and-forget view log; never block render.
+    logProfileView({ data: { businessId: res.business.id } }).catch(() => {});
     return { business: adaptBusiness(res.business) };
   },
   head: ({ params, loaderData }) => ({
