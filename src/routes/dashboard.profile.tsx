@@ -458,13 +458,22 @@ function ProfileEditor() {
                 },
               });
               if (!res.ok) {
-                setSaveError(res.error);
+                const errorKey = (res as { errorKey?: string }).errorKey;
+                if (errorKey === "save_name_required") {
+                  setSaveError(t("profile.save_error_name_required"));
+                } else if (errorKey === "save_not_found") {
+                  setSaveError(t("profile.save_error_not_found"));
+                } else if (errorKey === "save_generic") {
+                  setSaveError(t("profile.save_error_generic"));
+                } else {
+                  setSaveError(res.error);
+                }
                 return;
               }
               setSaveSuccess(true);
               await refetch();
             } catch (err) {
-              setSaveError(err instanceof Error ? err.message : "Erro inesperado.");
+              setSaveError(err instanceof Error ? err.message : t("profile.save_error_unexpected"));
             } finally {
               setSaving(false);
             }
