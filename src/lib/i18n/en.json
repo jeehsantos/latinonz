@@ -276,7 +276,11 @@
     "service_options_other_label": "Other service option",
     "service_options_other_optional": "(optional)",
     "service_options_other_placeholder": "E.g: Catering, Drive-thru, Home visits…",
-    "service_options_other_hint": "Use this field if your service model isn't listed above."
+    "service_options_other_hint": "Use this field if your service model isn't listed above.",
+    "save_error_generic": "Could not save right now. Please try again.",
+    "save_error_name_required": "Please enter the business name before saving.",
+    "save_error_not_found": "Business not found.",
+    "save_error_unexpected": "Unexpected error. Please try again."
   },
   "leads": {
     "title": "Leads",
