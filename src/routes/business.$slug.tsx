@@ -18,6 +18,8 @@ export const Route = createFileRoute("/business/$slug")({
   loader: async ({ params }) => {
     const res = await getBusinessBySlug({ data: { slug: params.slug } });
     if (!res.ok) throw notFound();
+    // Fire-and-forget view log; never block render.
+    logProfileView({ data: { businessId: res.business.id } }).catch(() => {});
     return { business: adaptBusiness(res.business) };
   },
   head: ({ params, loaderData }) => ({
