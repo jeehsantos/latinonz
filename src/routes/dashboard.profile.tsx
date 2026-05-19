@@ -63,8 +63,13 @@ function ProfileEditor() {
   const [citiesOpen, setCitiesOpen] = useState(false);
   const [schedules, setSchedules] = useState<Record<string, BranchSchedule>>({ Auckland: DEFAULT_SCHEDULE });
   const [activeBranch, setActiveBranch] = useState<string>("Auckland");
-  const [qrGenerated, setQrGenerated] = useState(false);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [qrError, setQrError] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
+  const [plan] = useCurrentPlan();
+  const canUseQr = can(plan, "qrCode");
+  const slug = loaded?.business?.slug ?? "";
+  const qrUrl = slug ? `https://latinoconnecthub.co.nz/business/${slug}` : "";
   const [logo, setLogo] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
