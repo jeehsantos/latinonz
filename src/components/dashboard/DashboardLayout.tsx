@@ -103,12 +103,28 @@ export function DashboardLayout() {
         </div>
         <div className="ml-auto flex items-center gap-3">
           <div className="hidden sm:block text-right">
-            <p className="text-sm font-bold text-gray-900">Tacos do Chef</p>
-            <p className="text-xs text-gray-500">Auckland</p>
+            <p className="text-sm font-bold text-gray-900">{businessName}</p>
+            {businessLocation && <p className="text-xs text-gray-500">{businessLocation}</p>}
           </div>
-          <div className="w-9 h-9 rounded-full bg-[#1A5336] text-white font-bold flex items-center justify-center">
-            T
-          </div>
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={businessName}
+              className="w-9 h-9 rounded-full object-cover border border-gray-200"
+            />
+          ) : (
+            <div className="w-9 h-9 rounded-full bg-[#1A5336] text-white font-bold flex items-center justify-center">
+              {initial}
+            </div>
+          )}
+          <button
+            onClick={handleSignOut}
+            title={t("dashboard.sign_out")}
+            className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 border border-gray-200 rounded-lg px-2.5 py-1.5 hover:bg-gray-50 transition"
+          >
+            <LogOut size={16} />
+            <span className="hidden sm:inline">{t("dashboard.sign_out")}</span>
+          </button>
         </div>
       </header>
 
