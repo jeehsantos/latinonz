@@ -30,7 +30,15 @@ function LeadsPage() {
 
   const { data } = useQuery({
     queryKey: ["my-leads"],
-    queryFn: () => fetchLeads(),
+    queryFn: async () => {
+      try {
+        return await fetchLeads();
+      } catch {
+        return null;
+      }
+    },
+    retry: false,
+    throwOnError: false,
   });
 
   const leads: LeadRow[] = (data && (data as { ok?: boolean }).ok

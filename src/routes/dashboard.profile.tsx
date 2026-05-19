@@ -48,7 +48,15 @@ function ProfileEditor() {
   const callUploadLogo = useServerFn(uploadLogo);
   const { data: loaded, refetch } = useQuery({
     queryKey: ["my-business"],
-    queryFn: () => fetchMyBusiness({}),
+    queryFn: async () => {
+      try {
+        return await fetchMyBusiness({});
+      } catch {
+        return null;
+      }
+    },
+    retry: false,
+    throwOnError: false,
   });
   const [logoUploading, setLogoUploading] = useState(false);
   const [logoError, setLogoError] = useState<string | null>(null);
