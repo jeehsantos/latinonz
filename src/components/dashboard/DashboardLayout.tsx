@@ -1,12 +1,12 @@
 import { Link, Outlet, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, User, Image as ImageIcon, MessageSquare, Tag, BarChart2,
-  Settings, CreditCard, Menu, X,
+  Settings, CreditCard, Menu, X, Calendar,
 } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/logo.png";
 import { useCurrentPlan } from "@/lib/dev-plan";
-import { type PlanTier } from "@/lib/plans";
+import { type PlanTier, can } from "@/lib/plans";
 import { PlanBadge } from "@/components/PlanBadge";
 import { LEADS } from "@/lib/mock/leads";
 import { useSidebarColor, darken, lighten } from "@/lib/sidebar-color";
@@ -38,6 +38,9 @@ export function DashboardLayout() {
     { to: "/dashboard/gallery", label: t("dashboard.nav_gallery"), icon: ImageIcon },
     { to: "/dashboard/leads", label: t("dashboard.nav_leads"), icon: MessageSquare, badge: pendingLeads },
     { to: "/dashboard/coupons", label: t("dashboard.nav_coupons"), icon: Tag },
+    ...(can(plan, "events")
+      ? [{ to: "/dashboard/events", label: "Eventos", icon: Calendar } as NavItem]
+      : []),
     { to: "/dashboard/analytics", label: t("dashboard.nav_analytics"), icon: BarChart2 },
     { to: "/dashboard/settings", label: t("dashboard.nav_settings"), icon: Settings },
   ];
