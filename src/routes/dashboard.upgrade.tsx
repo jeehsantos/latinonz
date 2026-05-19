@@ -1,9 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
 import { PlanCard } from "@/components/plans/PlanCard";
 import { PlanComparisonTable } from "@/components/plans/PlanComparisonTable";
 import { useCurrentPlan } from "@/lib/dev-plan";
 import type { PlanTier } from "@/lib/plans";
 import { useI18n } from "@/lib/i18n";
+import { createCheckoutSession } from "@/lib/stripe.functions";
 
 export const Route = createFileRoute("/dashboard/upgrade")({
   component: UpgradePage,
@@ -11,8 +15,26 @@ export const Route = createFileRoute("/dashboard/upgrade")({
 
 function UpgradePage() {
   const { t } = useI18n();
-  const [plan, setPlan] = useCurrentPlan();
-  const select = (p: PlanTier) => setPlan(p);
+  const [plan] = useCurrentPlan();
+  const checkout = useServerFn(createCheckoutSession);
+  const [loading, setLoading] = useState<PlanTier | null>(null);
+
+  const select = async (p: PlanTier) => {
+    if (p === "starter" || p === plan) return;
+    try {
+      setLoading(p);
+      const res = await checkout({ data: { planTier: p } });
+      if (res?.url) {
+        window.location.href = res.url;
+      } else {
+        toast.error("Não foi possível iniciar o checkout.");
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro no checkout");
+    } finally {
+      setLoading(null);
+    }
+  };
 
   return (
     <div className="space-y-8">
