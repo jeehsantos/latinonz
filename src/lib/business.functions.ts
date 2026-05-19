@@ -155,12 +155,74 @@ export const getMyBusiness = createServerFn({ method: "GET" })
     };
   });
 
-// Authenticated — update own business
+// Authenticated — update own business (auto-creates row on first save)
 export const updateMyBusiness = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => updateBusinessSchema.parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+
+    const { data: existing, error: findError } = await supabase
+      .from("businesses")
+      .select("id")
+      .eq("owner_id", userId)
+      .maybeSingle();
+
+    if (findError) {
+      console.error("updateMyBusiness find error", findError);
+      return { ok: false as const, error: findError.message, errorKey: "save_generic" };
+    }
+
+    if (!existing) {
+      if (!data.name || !data.name.trim()) {
+        return {
+          ok: false as const,
+          error: "Nome do negócio é obrigatório.",
+          errorKey: "save_name_required",
+        };
+      }
+      const baseSlug =
+        data.name
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 60) || "negocio";
+      const slug = `${baseSlug}-${userId.slice(0, 6)}`;
+
+      const { data: created, error: createError } = await supabaseAdmin
+        .from("businesses")
+        .insert({
+          owner_id: userId,
+          slug,
+          name: data.name,
+          description: data.description ?? null,
+          type: data.type ?? "Serviço",
+          macro_category: data.macro_category ?? "Outros",
+          subcategory: data.subcategory ?? null,
+          tags: data.tags ?? [],
+          phone: data.phone ?? null,
+          email: data.email ?? null,
+          website: data.website ?? null,
+          locations: data.locations ?? [],
+          keywords: data.keywords ?? [],
+          google_place_id: data.google_place_id ?? null,
+          response_time: data.response_time ?? null,
+        })
+        .select()
+        .maybeSingle();
+
+      if (createError || !created) {
+        console.error("updateMyBusiness create error", createError);
+        return {
+          ok: false as const,
+          error: createError?.message ?? "Não foi possível criar o negócio.",
+          errorKey: "save_generic",
+        };
+      }
+      return { ok: true as const, business: created };
+    }
 
     const { data: updated, error } = await supabase
       .from("businesses")
@@ -171,10 +233,10 @@ export const updateMyBusiness = createServerFn({ method: "POST" })
 
     if (error) {
       console.error("updateMyBusiness error", error);
-      return { ok: false as const, error: error.message };
+      return { ok: false as const, error: error.message, errorKey: "save_generic" };
     }
     if (!updated) {
-      return { ok: false as const, error: "Negócio não encontrado." };
+      return { ok: false as const, error: "Negócio não encontrado.", errorKey: "save_not_found" };
     }
     return { ok: true as const, business: updated };
   });
