@@ -1,9 +1,11 @@
-import { Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, User, Image as ImageIcon, MessageSquare, Tag, BarChart2,
-  Settings, CreditCard, Menu, X, Calendar,
+  Settings, CreditCard, Menu, X, Calendar, LogOut,
 } from "lucide-react";
 import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import logo from "@/assets/logo.png";
 import { useCurrentPlan } from "@/lib/dev-plan";
 import { type PlanTier, can } from "@/lib/plans";
@@ -11,6 +13,8 @@ import { PlanBadge } from "@/components/PlanBadge";
 import { LEADS } from "@/lib/mock/leads";
 import { useSidebarColor, darken, lighten } from "@/lib/sidebar-color";
 import { useI18n } from "@/lib/i18n";
+import { getMyBusiness } from "@/lib/business.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export function DashboardLayout() {
   const { t } = useI18n();
