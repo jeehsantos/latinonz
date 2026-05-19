@@ -275,7 +275,11 @@
     "service_options_other_label": "Outra opção de atendimento",
     "service_options_other_optional": "(opcional)",
     "service_options_other_placeholder": "Ex: Catering, Drive-thru, Atendimento a domicílio…",
-    "service_options_other_hint": "Use este campo caso seu modelo de atendimento não esteja nas opções acima."
+    "service_options_other_hint": "Use este campo caso seu modelo de atendimento não esteja nas opções acima.",
+    "save_error_generic": "Não foi possível salvar agora. Tente novamente.",
+    "save_error_name_required": "Informe o nome do negócio antes de salvar.",
+    "save_error_not_found": "Negócio não encontrado.",
+    "save_error_unexpected": "Erro inesperado. Tente novamente."
   },
   "leads": {
     "title": "Leads",
