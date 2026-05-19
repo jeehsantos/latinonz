@@ -29,7 +29,7 @@ export const signUp = createServerFn({ method: "POST" })
       await supabaseAdmin.auth.admin.createUser({
         email: data.email,
         password: data.password,
-        email_confirm: false,
+        email_confirm: true,
         user_metadata: {
           business_name: data.businessName,
           owner_name: data.ownerName,
