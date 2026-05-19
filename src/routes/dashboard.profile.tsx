@@ -98,7 +98,6 @@ function ProfileEditor() {
     if (b.logo_url) setLogo(b.logo_url);
   }, [loaded]);
 
-  const plan: string = "Premium";
   const activeCategories = CATEGORIES.map((c) => c.name);
   const branchSchedule = schedules[activeBranch] ?? DEFAULT_SCHEDULE;
 
