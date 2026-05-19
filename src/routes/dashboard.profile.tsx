@@ -339,18 +339,23 @@ function ProfileEditor() {
           <p className="text-xs text-gray-500 mt-1">{t("profile.keywords_hint")}</p>
         </div>
 
-        {/* Hours */}
+        {/* Hours — Premium+ only */}
+        {plan === "starter" ? (
+          <div className="pt-4 border-t border-gray-100">
+            <div className="flex items-center gap-2 mb-2">
+              <Clock size={18} className="text-gray-400" />
+              <label className="block text-sm font-bold text-gray-700">{t("profile.hours_title")}</label>
+              <span className="text-[10px] bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded font-bold">PREMIUM+</span>
+            </div>
+            <p className="text-xs text-gray-500">{t("profile.hours_upgrade_hint")}</p>
+          </div>
+        ) : (
         <div className="pt-4 border-t border-gray-100">
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
             <div className="flex items-center gap-2">
               <Clock size={18} className="text-[#1A5336]" />
               <label className="block text-sm font-bold text-gray-700">{t("profile.hours_title")}</label>
             </div>
-            {plan === "starter" && (
-              <span className="text-[10px] bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded font-bold">
-                {t("profile.hours_upgrade_hint")}
-              </span>
-            )}
           </div>
 
           {multiBranch && (
@@ -417,12 +422,16 @@ function ProfileEditor() {
             })}
           </div>
         </div>
+        )}
 
-        <GoogleReviewsSection
-          businessId={loaded?.ok ? loaded.business?.id ?? null : null}
-          initialPlaceId={loaded?.ok ? loaded.business?.google_place_id ?? "" : ""}
-          onConnected={() => refetch()}
-        />
+        {plan !== "starter" && (
+          <GoogleReviewsSection
+            businessId={loaded?.ok ? loaded.business?.id ?? null : null}
+            initialPlaceId={loaded?.ok ? loaded.business?.google_place_id ?? "" : ""}
+            onConnected={() => refetch()}
+          />
+        )}
+
 
         <ServiceOptionsSection plan={plan} />
 
