@@ -1,40 +1,59 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Search, CheckCircle2, Lock, Unlock, ExternalLink, Filter } from "lucide-react";
-import { BUSINESSES } from "@/lib/mock/businesses";
 import { PlanBadge } from "@/components/PlanBadge";
+import { getAdminBusinesses, approveBusiness, lockBusiness, unlockBusiness } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/businesses")({
   component: AdminBusinessesPage,
 });
 
-type Status = "approved" | "pending" | "locked";
+type FilterValue = "all" | "pending" | "active" | "blocked";
+
+function statusOf(b: { is_active: boolean; is_verified: boolean }): "approved" | "pending" | "locked" {
+  if (!b.is_active) return "locked";
+  if (!b.is_verified) return "pending";
+  return "approved";
+}
+
+function planOf(_b: unknown): "starter" | "premium" | "ultra" {
+  // Plan tier lives on the owner profile; default to starter in this view.
+  return "starter";
+}
 
 function AdminBusinessesPage() {
-  // Mock approval/lock state — front-end only
-  const initial = useMemo<Record<string, Status>>(() => {
-    const map: Record<string, Status> = {};
-    BUSINESSES.forEach((b, i) => {
-      map[b.id] = i % 5 === 0 ? "pending" : i % 7 === 0 ? "locked" : "approved";
-    });
-    return map;
-  }, []);
-  const [statuses, setStatuses] = useState<Record<string, Status>>(initial);
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<Status | "all">("all");
+  const [filter, setFilter] = useState<FilterValue>("all");
 
-  const filtered = BUSINESSES.filter((b) => {
-    const matchesQuery =
-      !query ||
-      b.name.toLowerCase().includes(query.toLowerCase()) ||
-      b.macro.toLowerCase().includes(query.toLowerCase()) ||
-      b.location.toLowerCase().includes(query.toLowerCase());
-    const matchesFilter = filter === "all" || statuses[b.id] === filter;
-    return matchesQuery && matchesFilter;
+  const qc = useQueryClient();
+  const fetchList = useServerFn(getAdminBusinesses);
+  const approveFn = useServerFn(approveBusiness);
+  const lockFn = useServerFn(lockBusiness);
+  const unlockFn = useServerFn(unlockBusiness);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin", "businesses", filter, query],
+    queryFn: () => fetchList({ data: { filter, query } }),
   });
 
-  const setStatus = (id: string, status: Status) =>
-    setStatuses((s) => ({ ...s, [id]: status }));
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["admin", "businesses"] });
+
+  const approveMut = useMutation({
+    mutationFn: (businessId: string) => approveFn({ data: { businessId } }),
+    onSuccess: invalidate,
+  });
+  const lockMut = useMutation({
+    mutationFn: (businessId: string) => lockFn({ data: { businessId } }),
+    onSuccess: invalidate,
+  });
+  const unlockMut = useMutation({
+    mutationFn: (businessId: string) => unlockFn({ data: { businessId } }),
+    onSuccess: invalidate,
+  });
+
+  const businesses = data?.businesses ?? [];
 
   return (
     <div className="space-y-6">
@@ -57,13 +76,13 @@ function AdminBusinessesPage() {
             <Filter size={14} className="absolute left-3 top-2.5 text-gray-400" />
             <select
               value={filter}
-              onChange={(e) => setFilter(e.target.value as Status | "all")}
+              onChange={(e) => setFilter(e.target.value as FilterValue)}
               className="bg-white border border-gray-200 rounded-xl pl-8 pr-3 py-2 text-sm outline-none focus:border-[#1A5336]"
             >
               <option value="all">Todos</option>
-              <option value="approved">Aprovados</option>
+              <option value="active">Aprovados</option>
               <option value="pending">Pendentes</option>
-              <option value="locked">Bloqueados</option>
+              <option value="blocked">Bloqueados</option>
             </select>
           </div>
         </div>
@@ -83,24 +102,22 @@ function AdminBusinessesPage() {
               </tr>
             </thead>
             <tbody className="text-sm divide-y divide-gray-100">
-              {filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-400">
-                    Nenhum negócio encontrado.
-                  </td>
-                </tr>
+              {isLoading ? (
+                <tr><td colSpan={6} className="p-8 text-center text-gray-400">Carregando...</td></tr>
+              ) : businesses.length === 0 ? (
+                <tr><td colSpan={6} className="p-8 text-center text-gray-400">Nenhum negócio encontrado.</td></tr>
               ) : (
-                filtered.map((b) => {
-                  const status = statuses[b.id];
+                businesses.map((b) => {
+                  const status = statusOf(b);
                   return (
                     <tr key={b.id} className="hover:bg-gray-50">
                       <td className="p-4">
                         <p className="font-bold text-gray-900">{b.name}</p>
-                        <p className="text-xs text-gray-400">{b.type}</p>
+                        <p className="text-xs text-gray-400">{b.subcategory ?? ""}</p>
                       </td>
-                      <td className="p-4 text-gray-600">{b.macro}</td>
-                      <td className="p-4 text-gray-600">{b.location}</td>
-                      <td className="p-4"><PlanBadge plan={b.plan} /></td>
+                      <td className="p-4 text-gray-600">{b.macro_category}</td>
+                      <td className="p-4 text-gray-600">—</td>
+                      <td className="p-4"><PlanBadge plan={planOf(b)} /></td>
                       <td className="p-4">
                         {status === "approved" && (
                           <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
@@ -122,23 +139,26 @@ function AdminBusinessesPage() {
                         <div className="flex items-center justify-end gap-2">
                           {status !== "approved" && (
                             <button
-                              onClick={() => setStatus(b.id, "approved")}
-                              className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 px-3 py-1.5 rounded-lg inline-flex items-center gap-1"
+                              disabled={approveMut.isPending}
+                              onClick={() => approveMut.mutate(b.id)}
+                              className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 px-3 py-1.5 rounded-lg inline-flex items-center gap-1 disabled:opacity-50"
                             >
                               <CheckCircle2 size={12} /> Aprovar
                             </button>
                           )}
                           {status !== "locked" ? (
                             <button
-                              onClick={() => setStatus(b.id, "locked")}
-                              className="text-xs font-bold text-red-700 bg-red-50 border border-red-200 hover:bg-red-100 px-3 py-1.5 rounded-lg inline-flex items-center gap-1"
+                              disabled={lockMut.isPending}
+                              onClick={() => lockMut.mutate(b.id)}
+                              className="text-xs font-bold text-red-700 bg-red-50 border border-red-200 hover:bg-red-100 px-3 py-1.5 rounded-lg inline-flex items-center gap-1 disabled:opacity-50"
                             >
                               <Lock size={12} /> Bloquear
                             </button>
                           ) : (
                             <button
-                              onClick={() => setStatus(b.id, "approved")}
-                              className="text-xs font-bold text-gray-700 bg-gray-100 border border-gray-200 hover:bg-gray-200 px-3 py-1.5 rounded-lg inline-flex items-center gap-1"
+                              disabled={unlockMut.isPending}
+                              onClick={() => unlockMut.mutate(b.id)}
+                              className="text-xs font-bold text-gray-700 bg-gray-100 border border-gray-200 hover:bg-gray-200 px-3 py-1.5 rounded-lg inline-flex items-center gap-1 disabled:opacity-50"
                             >
                               <Unlock size={12} /> Desbloquear
                             </button>

@@ -1,43 +1,57 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { UserPlus, Trash2, Shield } from "lucide-react";
+import { getAdminManagers, inviteManager, removeManager } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/managers")({
   component: AdminManagersPage,
 });
 
-type Manager = {
-  id: string;
-  name: string;
-  email: string;
-  role: "manager" | "viewer";
-  createdAt: string;
-};
-
-const SEED: Manager[] = [
-  { id: "1", name: "Ana Silva", email: "ana@latinoconnecthub.co.nz", role: "manager", createdAt: "2026-04-12" },
-  { id: "2", name: "Carlos Mendez", email: "carlos@latinoconnecthub.co.nz", role: "viewer", createdAt: "2026-05-02" },
-];
+type RoleValue = "manager" | "admin";
 
 function AdminManagersPage() {
-  const [list, setList] = useState<Manager[]>(SEED);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState<Manager["role"]>("manager");
+  const [role, setRole] = useState<RoleValue>("manager");
+  const [error, setError] = useState<string | null>(null);
+
+  const qc = useQueryClient();
+  const fetchList = useServerFn(getAdminManagers);
+  const inviteFn = useServerFn(inviteManager);
+  const removeFn = useServerFn(removeManager);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin", "managers"],
+    queryFn: () => fetchList(),
+  });
+
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["admin", "managers"] });
+
+  const inviteMut = useMutation({
+    mutationFn: (payload: { name: string; email: string; role: RoleValue }) =>
+      inviteFn({ data: payload }),
+    onSuccess: () => {
+      setName(""); setEmail(""); setRole("manager"); setError(null);
+      invalidate();
+    },
+    onError: (e: Error) => setError(e.message),
+  });
+
+  const removeMut = useMutation({
+    mutationFn: (userId: string) => removeFn({ data: { userId } }),
+    onSuccess: invalidate,
+    onError: (e: Error) => setError(e.message),
+  });
 
   const add = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !email.trim()) return;
-    setList((l) => [
-      ...l,
-      { id: crypto.randomUUID(), name: name.trim(), email: email.trim(), role, createdAt: new Date().toISOString().slice(0, 10) },
-    ]);
-    setName("");
-    setEmail("");
-    setRole("manager");
+    if (!email.trim()) return;
+    inviteMut.mutate({ name: name.trim(), email: email.trim(), role });
   };
 
-  const remove = (id: string) => setList((l) => l.filter((x) => x.id !== id));
+  const list = data?.managers ?? [];
 
   return (
     <div className="space-y-6">
@@ -62,24 +76,32 @@ function AdminManagersPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           type="email"
+          required
           placeholder="email@exemplo.com"
           className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1A5336]"
         />
         <select
           value={role}
-          onChange={(e) => setRole(e.target.value as Manager["role"])}
+          onChange={(e) => setRole(e.target.value as RoleValue)}
           className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1A5336]"
         >
           <option value="manager">Gerente</option>
-          <option value="viewer">Visualizador</option>
+          <option value="admin">Admin</option>
         </select>
         <button
           type="submit"
-          className="bg-[#1A5336] hover:bg-[#123F27] text-white font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2"
+          disabled={inviteMut.isPending}
+          className="bg-[#1A5336] hover:bg-[#123F27] text-white font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 disabled:opacity-50"
         >
-          <UserPlus size={16} /> Convidar
+          <UserPlus size={16} /> {inviteMut.isPending ? "Convidando..." : "Convidar"}
         </button>
       </form>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
+          {error}
+        </div>
+      )}
 
       <div className="bg-white border border-gray-200 rounded-3xl overflow-hidden">
         <table className="w-full text-left">
@@ -93,41 +115,50 @@ function AdminManagersPage() {
             </tr>
           </thead>
           <tbody className="text-sm divide-y divide-gray-100">
-            {list.map((m) => (
-              <tr key={m.id} className="hover:bg-gray-50">
-                <td className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-[#1A5336] text-white font-bold flex items-center justify-center text-sm">
-                      {m.name[0]}
+            {isLoading ? (
+              <tr><td colSpan={5} className="p-8 text-center text-gray-400">Carregando...</td></tr>
+            ) : list.length === 0 ? (
+              <tr><td colSpan={5} className="p-8 text-center text-gray-400">Nenhum gerente cadastrado.</td></tr>
+            ) : list.map((m) => {
+              const label = m.email ?? m.id;
+              const initial = (m.email ?? "?").charAt(0).toUpperCase();
+              return (
+                <tr key={m.id} className="hover:bg-gray-50">
+                  <td className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-[#1A5336] text-white font-bold flex items-center justify-center text-sm">
+                        {initial}
+                      </div>
+                      <span className="font-bold text-gray-900">{label}</span>
                     </div>
-                    <span className="font-bold text-gray-900">{m.name}</span>
-                  </div>
-                </td>
-                <td className="p-4 text-gray-600">{m.email}</td>
-                <td className="p-4">
-                  <span
-                    className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full border ${
-                      m.role === "manager"
-                        ? "bg-[#1A5336]/10 text-[#1A5336] border-[#1A5336]/20"
-                        : "bg-gray-100 text-gray-700 border-gray-200"
-                    }`}
-                  >
-                    <Shield size={12} /> {m.role === "manager" ? "Gerente" : "Visualizador"}
-                  </span>
-                </td>
-                <td className="p-4 text-gray-400 text-xs">
-                  {new Date(m.createdAt).toLocaleDateString("pt-BR")}
-                </td>
-                <td className="p-4 text-right">
-                  <button
-                    onClick={() => remove(m.id)}
-                    className="text-xs font-bold text-red-700 bg-red-50 border border-red-200 hover:bg-red-100 px-3 py-1.5 rounded-lg inline-flex items-center gap-1"
-                  >
-                    <Trash2 size={12} /> Remover
-                  </button>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="p-4 text-gray-600">{m.email ?? "—"}</td>
+                  <td className="p-4">
+                    <span
+                      className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full border ${
+                        m.role === "admin"
+                          ? "bg-amber-50 text-amber-700 border-amber-200"
+                          : "bg-[#1A5336]/10 text-[#1A5336] border-[#1A5336]/20"
+                      }`}
+                    >
+                      <Shield size={12} /> {m.role === "admin" ? "Admin" : "Gerente"}
+                    </span>
+                  </td>
+                  <td className="p-4 text-gray-400 text-xs">
+                    {new Date(m.createdAt).toLocaleDateString("pt-BR")}
+                  </td>
+                  <td className="p-4 text-right">
+                    <button
+                      disabled={removeMut.isPending}
+                      onClick={() => removeMut.mutate(m.id)}
+                      className="text-xs font-bold text-red-700 bg-red-50 border border-red-200 hover:bg-red-100 px-3 py-1.5 rounded-lg inline-flex items-center gap-1 disabled:opacity-50"
+                    >
+                      <Trash2 size={12} /> Remover
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

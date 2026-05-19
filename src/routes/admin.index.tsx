@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { Briefcase, DollarSign, TrendingUp, Users, Search } from "lucide-react";
-import { BUSINESSES } from "@/lib/mock/businesses";
 import { CATEGORIES } from "@/lib/mock/categories";
+import { getAdminMetrics } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminMetricsPage,
 });
-
-const PLAN_PRICE = { starter: 0, premium: 49, ultra: 99 } as const;
 
 const TOP_SEARCHES = [
   { term: "restaurante brasileiro", count: 1248 },
@@ -38,25 +38,30 @@ function MetricCard({
 }
 
 function AdminMetricsPage() {
-  const total = BUSINESSES.length;
-  const paid = BUSINESSES.filter((b) => b.plan !== "starter").length;
-  const free = total - paid;
-  const monthly = BUSINESSES.reduce((acc, b) => acc + PLAN_PRICE[b.plan], 0);
-  const yearly = monthly * 12;
+  const fetchMetrics = useServerFn(getAdminMetrics);
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin", "metrics"],
+    queryFn: () => fetchMetrics(),
+  });
 
-  const byCategory = CATEGORIES.map((c) => ({
-    name: c.name,
-    count: BUSINESSES.filter((b) => b.macro === c.name).length,
-    fallback: c.count,
-  }));
+  const totals = data?.totals ?? { businesses: 0, activeBusinesses: 0, pendingBusinesses: 0, blockedBusinesses: 0, leads: 0, profileViews: 0, waitlist: 0 };
+  const planCounts = data?.planCounts ?? { starter: 0, premium: 0, ultra: 0 };
+  const monthly = data?.revenue.mrrNzd ?? 0;
+  const yearly = data?.revenue.arrNzd ?? 0;
+  const total = totals.businesses;
+  const paid = (planCounts.premium ?? 0) + (planCounts.ultra ?? 0);
+  const free = planCounts.starter ?? 0;
 
+  const byCategory = CATEGORIES.map((c) => ({ name: c.name, count: 0, fallback: c.count }));
   const maxSearch = Math.max(...TOP_SEARCHES.map((s) => s.count));
 
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-black text-gray-900">Métricas do site</h1>
-        <p className="text-gray-500 mt-1">Visão geral da plataforma Latino Connect.</p>
+        <p className="text-gray-500 mt-1">
+          {isLoading ? "Carregando..." : "Visão geral da plataforma Latino Connect."}
+        </p>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -120,16 +125,16 @@ function AdminMetricsPage() {
       <div className="grid sm:grid-cols-3 gap-4">
         <div className="bg-white border border-gray-200 rounded-3xl p-6">
           <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Plano Starter (grátis)</p>
-          <p className="text-2xl font-black mt-2">{BUSINESSES.filter((b) => b.plan === "starter").length}</p>
+          <p className="text-2xl font-black mt-2">{planCounts.starter ?? 0}</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-3xl p-6">
           <p className="text-xs font-bold uppercase tracking-wider text-amber-700">Plano Premium</p>
-          <p className="text-2xl font-black mt-2">{BUSINESSES.filter((b) => b.plan === "premium").length}</p>
+          <p className="text-2xl font-black mt-2">{planCounts.premium ?? 0}</p>
           <p className="text-xs text-gray-400 mt-1">NZ$ 49 / mês</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-3xl p-6">
           <p className="text-xs font-bold uppercase tracking-wider text-[#1A5336]">Plano Ultra</p>
-          <p className="text-2xl font-black mt-2">{BUSINESSES.filter((b) => b.plan === "ultra").length}</p>
+          <p className="text-2xl font-black mt-2">{planCounts.ultra ?? 0}</p>
           <p className="text-xs text-gray-400 mt-1">NZ$ 99 / mês</p>
         </div>
       </div>
