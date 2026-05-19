@@ -20,6 +20,28 @@ export function DashboardLayout() {
   const { t } = useI18n();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const fetchMyBusiness = useServerFn(getMyBusiness);
+  const { data: myBiz } = useQuery({
+    queryKey: ["my-business"],
+    queryFn: () => fetchMyBusiness(),
+    staleTime: 30_000,
+  });
+  const business = myBiz?.business;
+  const businessName = business?.name ?? "—";
+  const businessLocation = Array.isArray(business?.locations) && business?.locations.length
+    ? String(business.locations[0])
+    : "";
+  const logoUrl = business?.logo_url ?? null;
+  const initial = (businessName || "?").trim().charAt(0).toUpperCase();
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    queryClient.clear();
+    navigate({ to: "/login" });
+  };
+
   const [plan, setPlan] = useCurrentPlan();
   const [sidebarColor] = useSidebarColor();
   const showDevSwitch =
