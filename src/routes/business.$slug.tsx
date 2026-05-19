@@ -9,6 +9,7 @@ import { getBusinessBySlug } from "@/lib/business.functions";
 import { adaptBusiness } from "@/lib/business.adapter";
 import { getReviews } from "@/lib/reviews.functions";
 import { submitLead } from "@/lib/leads.functions";
+import { logProfileView } from "@/lib/analytics.functions";
 import { COUPONS_BY_BUSINESS } from "@/lib/mock/businesses";
 import { can, getLimit } from "@/lib/plans";
 import { useI18n } from "@/lib/i18n";
