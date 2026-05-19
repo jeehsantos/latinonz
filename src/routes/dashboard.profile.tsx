@@ -13,6 +13,9 @@ import { getMyBusiness, updateMyBusiness } from "@/lib/business.functions";
 import { uploadLogo } from "@/lib/storage.functions";
 import { connectGooglePlace, syncGoogleReviews } from "@/lib/reviews.functions";
 import { Star, RefreshCw } from "lucide-react";
+import QRCode from "qrcode";
+import { useCurrentPlan } from "@/lib/dev-plan";
+import { can } from "@/lib/plans";
 
 export const Route = createFileRoute("/dashboard/profile")({
   component: ProfileEditor,
