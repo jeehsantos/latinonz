@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import Stripe from "stripe";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
@@ -7,11 +6,12 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export type StripePlanTier = "premium" | "ultra";
 
-function getStripe(): Stripe {
+export function getStripe(): Stripe {
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) throw new Error("STRIPE_SECRET_KEY is not configured");
-  return new Stripe(key, { apiVersion: "2025-09-30.clover" as Stripe.LatestApiVersion });
+  return new Stripe(key);
 }
+
 
 function priceIdFor(tier: StripePlanTier): string {
   const id =
