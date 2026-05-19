@@ -1,8 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
 import { useCurrentPlan } from "@/lib/dev-plan";
 import { PLAN_LABELS } from "@/lib/plans";
 import { useSidebarColor, DEFAULT_SIDEBAR_COLOR } from "@/lib/sidebar-color";
 import { useI18n } from "@/lib/i18n";
+import { createBillingPortalSession } from "@/lib/stripe.functions";
 
 const PRESET_COLORS = [
   { name: "Verde Latino", value: "#1A5336" },
@@ -21,6 +25,29 @@ function SettingsPage() {
   const { t } = useI18n();
   const [plan] = useCurrentPlan();
   const [sidebarColor, setSidebarColor] = useSidebarColor();
+  const billingPortal = useServerFn(createBillingPortalSession);
+  const [portalLoading, setPortalLoading] = useState(false);
+  const navigate = Route.useNavigate();
+
+  const handleChangePlan = async () => {
+    if (plan === "starter") {
+      navigate({ to: "/dashboard/upgrade" });
+      return;
+    }
+    try {
+      setPortalLoading(true);
+      const res = await billingPortal();
+      if (res.ok && res.url) {
+        window.location.href = res.url;
+      } else {
+        toast.error(res.ok ? "Portal indisponível." : res.error);
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao abrir portal");
+    } finally {
+      setPortalLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -35,12 +62,14 @@ function SettingsPage() {
           {t("settings.current_plan_on")}{" "}
           <span className="font-bold text-gray-900">{PLAN_LABELS[plan]}</span>.
         </p>
-        <Link
-          to="/dashboard/upgrade"
-          className="inline-flex mt-4 bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-xl px-5 py-2.5 text-sm"
+        <button
+          type="button"
+          onClick={handleChangePlan}
+          disabled={portalLoading}
+          className="inline-flex mt-4 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold rounded-xl px-5 py-2.5 text-sm"
         >
-          {t("settings.change_plan")}
-        </Link>
+          {portalLoading ? "Abrindo..." : t("settings.change_plan")}
+        </button>
       </div>
 
       <div className="bg-white border border-gray-200 rounded-3xl p-8 space-y-5">
