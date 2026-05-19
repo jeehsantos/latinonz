@@ -327,7 +327,7 @@ function ProfileEditor() {
               <Clock size={18} className="text-[#1A5336]" />
               <label className="block text-sm font-bold text-gray-700">{t("profile.hours_title")}</label>
             </div>
-            {plan === "Starter" && (
+            {plan === "starter" && (
               <span className="text-[10px] bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded font-bold">
                 {t("profile.hours_upgrade_hint")}
               </span>
