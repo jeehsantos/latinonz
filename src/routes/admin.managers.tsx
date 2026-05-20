@@ -16,6 +16,7 @@ function AdminManagersPage() {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<RoleValue>("manager");
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
 
   const qc = useQueryClient();
   const fetchList = useServerFn(getAdminManagers);
