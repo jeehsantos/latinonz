@@ -399,12 +399,33 @@ export const inviteManager = createServerFn({ method: "POST" })
       throw new Error("Forbidden: only admins can invite managers");
     }
 
+    let userId: string | undefined;
     const { data: invite, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(
       data.email,
       data.name ? { data: { full_name: data.name } } : undefined,
     );
-    if (error) throw new Error(error.message);
-    const userId = invite.user?.id;
+    if (error) {
+      // If the user already exists, look them up and just promote the role.
+      const msg = error.message?.toLowerCase() ?? "";
+      const alreadyExists =
+        msg.includes("already been registered") ||
+        msg.includes("already registered") ||
+        msg.includes("already exists");
+      if (!alreadyExists) throw new Error(error.message);
+
+      const { data: list, error: listErr } = await supabaseAdmin.auth.admin.listUsers({
+        page: 1,
+        perPage: 1000,
+      });
+      if (listErr) throw new Error(listErr.message);
+      const existing = list.users.find(
+        (u) => (u.email ?? "").toLowerCase() === data.email.toLowerCase(),
+      );
+      if (!existing) throw new Error("User already exists but could not be located");
+      userId = existing.id;
+    } else {
+      userId = invite.user?.id;
+    }
     if (!userId) throw new Error("Failed to create user");
 
     // Trigger handle_new_user inserts the profile with role='user'; promote it.
