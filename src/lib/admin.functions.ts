@@ -470,11 +470,11 @@ export const inviteManager = createServerFn({ method: "POST" })
     }
     if (!userId) throw new Error("Failed to create user");
 
-    // Trigger handle_new_user inserts the profile with role='user'; promote it.
+    // Ensure profile exists and force the requested role. Upsert avoids a
+    // silent no-op if .update() races the handle_new_user trigger.
     const { error: roleErr } = await supabaseAdmin
       .from("profiles")
-      .update({ role: data.role })
-      .eq("id", userId);
+      .upsert({ id: userId, role: data.role }, { onConflict: "id" });
     if (roleErr) throw new Error(roleErr.message);
 
     return { ok: true as const, userId, status, warning };

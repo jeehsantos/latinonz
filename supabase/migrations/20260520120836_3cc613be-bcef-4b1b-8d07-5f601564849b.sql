@@ -1,0 +1,1 @@
+UPDATE public.profiles SET role='manager' WHERE id IN ('6fa4d926-fdaf-4b60-b32c-73d8e7819616','6994fa47-799b-4d87-97d7-d85e90b200c5') AND role='user';
