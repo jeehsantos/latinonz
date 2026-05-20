@@ -3,7 +3,9 @@ import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-const nzPhoneRegex = /^\+64[\s\d]{7,15}$/;
+// Accept NZ numbers in flexible formats: +64..., 0064..., or local 0xx...
+// Allows spaces, dashes, and parentheses between digits.
+const nzPhoneRegex = /^(?:\+?64|0)[\s\-()]*\d(?:[\s\-()]*\d){7,11}$/;
 
 const signUpSchema = z.object({
   email: z.string().trim().toLowerCase().email().max(320),
@@ -13,8 +15,8 @@ const signUpSchema = z.object({
   whatsapp: z
     .string()
     .trim()
-    .regex(nzPhoneRegex, "Número NZ inválido (ex: +64 21 000 0000)")
-    .max(32),
+    .max(32)
+    .regex(nzPhoneRegex, "Número NZ inválido (ex: +64 21 000 0000 ou 021 000 0000)"),
 });
 
 const signInSchema = z.object({
