@@ -10,6 +10,9 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 type AdminRole = "admin" | "manager";
 
 async function requireAdminRole(userId: string): Promise<AdminRole> {
+  // Read via admin client (bypasses RLS) so callers without their own RLS
+  // visibility still resolve. Fall back to the implicit auth.uid() match
+  // when needed.
   const { data, error } = await supabaseAdmin
     .from("profiles")
     .select("role")
