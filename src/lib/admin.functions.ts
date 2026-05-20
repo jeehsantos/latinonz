@@ -402,6 +402,9 @@ export const inviteManager = createServerFn({ method: "POST" })
     }
 
     let userId: string | undefined;
+    let status: "invited" | "magic_link_sent" | "promoted_only" = "invited";
+    let warning: string | undefined;
+
     const inviteOptions: { data?: Record<string, unknown>; redirectTo?: string } = {};
     if (data.name) inviteOptions.data = { full_name: data.name };
     if (data.redirectTo) inviteOptions.redirectTo = data.redirectTo;
@@ -410,7 +413,8 @@ export const inviteManager = createServerFn({ method: "POST" })
       inviteOptions,
     );
     if (error) {
-      // If the user already exists, look them up and just promote the role.
+      // If the user already exists, look them up and send a magic-link email
+      // so they can sign in and land on the accept-invite page.
       const msg = error.message?.toLowerCase() ?? "";
       const alreadyExists =
         msg.includes("already been registered") ||
@@ -428,6 +432,33 @@ export const inviteManager = createServerFn({ method: "POST" })
       );
       if (!existing) throw new Error("User already exists but could not be located");
       userId = existing.id;
+
+      // Send a magic-link sign-in email via the anon client so Supabase's
+      // built-in email service actually delivers a message to the recipient.
+      const SUPABASE_URL = process.env.SUPABASE_URL;
+      const SUPABASE_ANON_KEY =
+        process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY;
+      if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+        const anon = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+          auth: { persistSession: false, autoRefreshToken: false },
+        });
+        const { error: otpErr } = await anon.auth.signInWithOtp({
+          email: data.email,
+          options: {
+            shouldCreateUser: false,
+            emailRedirectTo: data.redirectTo,
+          },
+        });
+        if (otpErr) {
+          status = "promoted_only";
+          warning = `User already existed; role promoted but magic-link email failed: ${otpErr.message}`;
+        } else {
+          status = "magic_link_sent";
+        }
+      } else {
+        status = "promoted_only";
+        warning = "User already existed; role promoted but email service is not configured.";
+      }
     } else {
       userId = invite.user?.id;
     }
@@ -440,7 +471,7 @@ export const inviteManager = createServerFn({ method: "POST" })
       .eq("id", userId);
     if (roleErr) throw new Error(roleErr.message);
 
-    return { ok: true as const, userId };
+    return { ok: true as const, userId, status, warning };
   });
 
 export const removeManager = createServerFn({ method: "POST" })
