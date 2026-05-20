@@ -440,7 +440,13 @@ export const inviteManager = createServerFn({ method: "POST" })
         process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY;
       if (SUPABASE_URL && SUPABASE_ANON_KEY) {
         const anon = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-          auth: { persistSession: false, autoRefreshToken: false },
+          auth: {
+            persistSession: false,
+            autoRefreshToken: false,
+            // Server-issued OTP cannot use PKCE (no browser verifier exists),
+            // so force implicit flow so the magic link returns tokens in the URL hash.
+            flowType: "implicit",
+          },
         });
         const { error: otpErr } = await anon.auth.signInWithOtp({
           email: data.email,
