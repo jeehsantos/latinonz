@@ -171,24 +171,51 @@ export type Database = {
       categories: {
         Row: {
           blurb: string | null
+          blurb_en: string | null
+          blurb_es: string | null
+          blurb_pt: string | null
+          color_key: string
           created_at: string
+          icon_key: string
           id: string
           key: string
           name: string
+          name_en: string | null
+          name_es: string | null
+          name_pt: string | null
+          sort_order: number
         }
         Insert: {
           blurb?: string | null
+          blurb_en?: string | null
+          blurb_es?: string | null
+          blurb_pt?: string | null
+          color_key?: string
           created_at?: string
+          icon_key?: string
           id?: string
           key: string
           name: string
+          name_en?: string | null
+          name_es?: string | null
+          name_pt?: string | null
+          sort_order?: number
         }
         Update: {
           blurb?: string | null
+          blurb_en?: string | null
+          blurb_es?: string | null
+          blurb_pt?: string | null
+          color_key?: string
           created_at?: string
+          icon_key?: string
           id?: string
           key?: string
           name?: string
+          name_en?: string | null
+          name_es?: string | null
+          name_pt?: string | null
+          sort_order?: number
         }
         Relationships: []
       }
