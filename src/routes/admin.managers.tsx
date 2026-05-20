@@ -16,6 +16,7 @@ function AdminManagersPage() {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<RoleValue>("manager");
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
 
   const qc = useQueryClient();
   const fetchList = useServerFn(getAdminManagers);
@@ -40,17 +41,24 @@ function AdminManagersPage() {
               : undefined,
         },
       }),
-    onSuccess: () => {
+    onSuccess: (res) => {
       setName(""); setEmail(""); setRole("manager"); setError(null);
+      const msg =
+        res.status === "magic_link_sent"
+          ? "User already had an account — a magic-link sign-in email was sent."
+          : res.status === "promoted_only"
+            ? res.warning ?? "User already existed; role was promoted but no email was sent."
+            : "Invite email sent.";
+      setInfo(msg);
       invalidate();
     },
-    onError: (e: Error) => setError(e.message),
+    onError: (e: Error) => { setInfo(null); setError(e.message); },
   });
 
   const removeMut = useMutation({
     mutationFn: (userId: string) => removeFn({ data: { userId } }),
     onSuccess: invalidate,
-    onError: (e: Error) => setError(e.message),
+    onError: (e: Error) => { setInfo(null); setError(e.message); },
   });
 
   const add = (e: React.FormEvent) => {
@@ -108,6 +116,11 @@ function AdminManagersPage() {
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
           {error}
+        </div>
+      )}
+      {info && (
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3 rounded-xl">
+          {info}
         </div>
       )}
 
