@@ -1,12 +1,11 @@
-import { Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
-  BarChart3, Briefcase, FolderTree, UserCog, Inbox, Lock, Loader2, LogOut,
-  Menu, X,
+  BarChart3, Briefcase, FolderTree, UserCog, Inbox, ShieldAlert, LogOut,
+  Loader2, Menu, X,
 } from "lucide-react";
 import logo from "@/assets/logo.png";
-
-const STORAGE_KEY = "admin-authed";
+import { supabase } from "@/integrations/supabase/client";
 
 type NavItem = { to: string; label: string; icon: typeof BarChart3; exact?: boolean };
 
@@ -18,82 +17,94 @@ const NAV: NavItem[] = [
   { to: "/admin/waitlist", label: "Lista de espera", icon: Inbox },
 ];
 
+type AuthState =
+  | { status: "loading" }
+  | { status: "anonymous" }
+  | { status: "denied"; email: string | null }
+  | { status: "ok"; email: string | null; role: "admin" | "manager" };
+
 export function AdminLayout() {
   const path = useRouterState({ select: (s) => s.location.pathname });
-  const [authed, setAuthed] = useState(false);
-  const [checking, setChecking] = useState(true);
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const [auth, setAuth] = useState<AuthState>({ status: "loading" });
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setAuthed(sessionStorage.getItem(STORAGE_KEY) === "1");
-    }
-    setChecking(false);
+    let cancelled = false;
+    const check = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        if (!cancelled) setAuth({ status: "anonymous" });
+        return;
+      }
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", session.user.id)
+        .maybeSingle();
+      if (cancelled) return;
+      const role = profile?.role;
+      if (role === "admin" || role === "manager") {
+        setAuth({ status: "ok", email: session.user.email ?? null, role });
+      } else {
+        setAuth({ status: "denied", email: session.user.email ?? null });
+      }
+    };
+    check();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      check();
+    });
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-    try {
-      // Same pattern as before — the password is validated server-side when
-      // listing the waitlist. We optimistically accept it here and let any
-      // protected server call surface real auth errors.
-      sessionStorage.setItem(STORAGE_KEY, "1");
-      sessionStorage.setItem("admin-pwd", password);
-      setAuthed(true);
-    } catch {
-      setError("Erro ao conectar.");
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (auth.status === "anonymous") {
+      navigate({ to: "/login", search: { redirect: "/admin" } as never });
     }
+  }, [auth.status, navigate]);
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+    navigate({ to: "/login" });
   };
 
-  const logout = () => {
-    sessionStorage.removeItem(STORAGE_KEY);
-    sessionStorage.removeItem("admin-pwd");
-    setAuthed(false);
-  };
+  if (auth.status === "loading" || auth.status === "anonymous") {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loader2 className="animate-spin text-gray-400" size={24} />
+      </div>
+    );
+  }
 
-  if (checking) return null;
-
-  if (!authed) {
+  if (auth.status === "denied") {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <form
-          onSubmit={handleLogin}
-          className="w-full max-w-sm bg-white rounded-3xl shadow-xl p-8 border border-gray-100"
-        >
-          <div className="w-12 h-12 rounded-2xl bg-[#1A5336]/10 text-[#1A5336] flex items-center justify-center mx-auto mb-4">
-            <Lock size={20} />
+        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 border border-gray-100 text-center">
+          <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mx-auto mb-4">
+            <ShieldAlert size={20} />
           </div>
-          <h1 className="text-xl font-extrabold text-center text-gray-900 mb-1">Painel administrativo</h1>
-          <p className="text-sm text-gray-500 text-center mb-6">Digite a senha para acessar.</p>
-          <input
-            type="password"
-            required
-            autoFocus
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Senha"
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1A5336] focus:ring-1 focus:ring-[#1A5336]"
-          />
-          {error && <p className="text-xs font-semibold text-red-600 mt-2">{error}</p>}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full mt-4 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2"
-          >
-            {loading && <Loader2 size={16} className="animate-spin" />}
-            Entrar
-          </button>
-          <Link to="/" className="block text-center text-xs text-gray-400 hover:text-gray-600 mt-4">
-            ← Voltar ao site
-          </Link>
-        </form>
+          <h1 className="text-xl font-extrabold text-gray-900 mb-1">Acesso negado</h1>
+          <p className="text-sm text-gray-500 mb-1">
+            Sua conta {auth.email ? <span className="font-semibold">{auth.email}</span> : null} não tem permissão para acessar o painel administrativo.
+          </p>
+          <p className="text-xs text-gray-400 mb-6">
+            Solicite a um administrador para conceder acesso.
+          </p>
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={logout}
+              className="w-full bg-[#1A5336] hover:bg-[#123F27] text-white font-bold py-3 rounded-xl inline-flex items-center justify-center gap-2"
+            >
+              <LogOut size={16} /> Sair
+            </button>
+            <Link to="/" className="text-xs text-gray-400 hover:text-gray-600">
+              ← Voltar ao site
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
@@ -108,9 +119,12 @@ export function AdminLayout() {
           <img src={logo} alt="Latino Connect" className="h-9 w-auto" />
         </Link>
         <span className="hidden sm:inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border bg-[#1A5336]/10 text-[#1A5336] border-[#1A5336]/20">
-          Admin
+          {auth.role === "admin" ? "Admin" : "Gerente"}
         </span>
         <div className="ml-auto flex items-center gap-3">
+          {auth.email && (
+            <span className="hidden sm:inline text-xs text-gray-500 font-semibold">{auth.email}</span>
+          )}
           <button
             onClick={logout}
             className="text-sm font-semibold text-gray-600 hover:text-gray-900 inline-flex items-center gap-2"
