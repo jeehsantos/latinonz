@@ -1,6 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+
 
 // NZ phone: starts with +64 then 8-12 digits, spaces allowed
 const nzPhoneRegex = /^\+64[\s\d]{7,15}$/;
