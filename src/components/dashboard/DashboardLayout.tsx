@@ -22,6 +22,14 @@ export function DashboardLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [hasSession, setHasSession] = useState(true);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setHasSession(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setHasSession(!!session);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
   const fetchMyBusiness = useServerFn(getMyBusiness);
   const { data: myBiz } = useQuery({
     queryKey: ["my-business"],
@@ -32,6 +40,7 @@ export function DashboardLayout() {
         return null;
       }
     },
+    enabled: hasSession,
     staleTime: 30_000,
     retry: false,
     throwOnError: false,
