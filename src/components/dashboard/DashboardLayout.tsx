@@ -3,7 +3,7 @@ import {
   LayoutDashboard, User, Image as ImageIcon, MessageSquare, Tag, BarChart2,
   Settings, CreditCard, Menu, X, Calendar, LogOut,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import logo from "@/assets/logo.png";
@@ -22,6 +22,14 @@ export function DashboardLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [hasSession, setHasSession] = useState(true);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setHasSession(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setHasSession(!!session);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
   const fetchMyBusiness = useServerFn(getMyBusiness);
   const { data: myBiz } = useQuery({
     queryKey: ["my-business"],
@@ -32,6 +40,7 @@ export function DashboardLayout() {
         return null;
       }
     },
+    enabled: hasSession,
     staleTime: 30_000,
     retry: false,
     throwOnError: false,
