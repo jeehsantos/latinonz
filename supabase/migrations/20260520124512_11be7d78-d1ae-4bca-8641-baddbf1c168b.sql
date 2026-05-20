@@ -1,0 +1,2 @@
+CREATE POLICY "Admins manage profiles insert" ON public.profiles FOR INSERT TO authenticated WITH CHECK (public.is_admin_or_manager(auth.uid()));
+CREATE POLICY "Admins manage profiles update" ON public.profiles FOR UPDATE TO authenticated USING (public.is_admin_or_manager(auth.uid())) WITH CHECK (public.is_admin_or_manager(auth.uid()));
