@@ -112,8 +112,9 @@ function AdminBusinessesPage() {
                         <p className="text-xs text-gray-400">{b.subcategory ?? ""}</p>
                       </td>
                       <td className="p-4 text-gray-600">{b.macro_category}</td>
-                      <td className="p-4 text-gray-600">—</td>
-                      <td className="p-4"><PlanBadge plan={planOf(b)} /></td>
+                      <td className="p-4 text-gray-600">{b.city ?? "—"}</td>
+                      <td className="p-4"><PlanBadge plan={b.plan_tier} /></td>
+
                       <td className="p-4">
                         {status === "approved" && (
                           <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
