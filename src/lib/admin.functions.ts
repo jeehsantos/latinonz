@@ -40,7 +40,7 @@ export const getAdminBusinesses = createServerFn({ method: "POST" })
     let q = supabaseAdmin
       .from("businesses")
       .select(
-        "id, name, slug, macro_category, subcategory, is_active, is_verified, rating, review_count, view_count, owner_id, created_at, updated_at",
+        "id, name, slug, macro_category, subcategory, locations, is_active, is_verified, rating, review_count, view_count, owner_id, created_at, updated_at",
       )
       .order("created_at", { ascending: false });
 
@@ -65,8 +65,30 @@ export const getAdminBusinesses = createServerFn({ method: "POST" })
 
     const { data: rows, error } = await q.limit(500);
     if (error) throw new Error(error.message);
-    return { businesses: rows ?? [] };
+
+    const ownerIds = Array.from(new Set((rows ?? []).map((r) => r.owner_id).filter(Boolean)));
+    const planByOwner = new Map<string, "starter" | "premium" | "ultra">();
+    if (ownerIds.length > 0) {
+      const { data: profs, error: profErr } = await supabaseAdmin
+        .from("profiles")
+        .select("id, plan_tier")
+        .in("id", ownerIds);
+      if (profErr) throw new Error(profErr.message);
+      for (const p of profs ?? []) {
+        const tier = (p.plan_tier ?? "starter") as "starter" | "premium" | "ultra";
+        planByOwner.set(p.id, tier);
+      }
+    }
+
+    const businesses = (rows ?? []).map((b) => ({
+      ...b,
+      plan_tier: planByOwner.get(b.owner_id) ?? ("starter" as const),
+      city: Array.isArray(b.locations) && b.locations.length > 0 ? String(b.locations[0]) : null,
+    }));
+
+    return { businesses };
   });
+
 
 export const approveBusiness = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
