@@ -9,11 +9,16 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 type AdminRole = "admin" | "manager";
 
-async function requireAdminRole(userId: string): Promise<AdminRole> {
-  // Read via admin client (bypasses RLS) so callers without their own RLS
-  // visibility still resolve. Fall back to the implicit auth.uid() match
-  // when needed.
-  const { data, error } = await supabaseAdmin
+async function requireAdminRole(
+  userId: string,
+  authedClient?: { from: typeof supabaseAdmin.from },
+): Promise<AdminRole> {
+  // Prefer the user's authenticated client: RLS "User reads own profile"
+  // guarantees the caller can read their own role, regardless of whether
+  // the service-role key is correctly configured. Fall back to supabaseAdmin
+  // only when no authenticated client was passed in.
+  const client = authedClient ?? supabaseAdmin;
+  const { data, error } = await client
     .from("profiles")
     .select("role")
     .eq("id", userId)
@@ -23,7 +28,7 @@ async function requireAdminRole(userId: string): Promise<AdminRole> {
   if (role !== "admin" && role !== "manager") {
     throw new Error("Forbidden: admin or manager role required");
   }
-  return role;
+  return role as AdminRole;
 }
 
 // ---------- Businesses ----------
