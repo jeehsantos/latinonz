@@ -491,7 +491,9 @@ export const inviteManager = createServerFn({ method: "POST" })
 
     // Ensure profile exists and force the requested role. Upsert avoids a
     // silent no-op if .update() races the handle_new_user trigger.
-    const { error: roleErr } = await supabaseAdmin
+    // Use the caller's authenticated client so the admin RLS policy applies
+    // reliably (service-role bypass has been observed to fail in this env).
+    const { error: roleErr } = await context.supabase
       .from("profiles")
       .upsert({ id: userId, role: data.role }, { onConflict: "id" });
     if (roleErr) throw new Error(roleErr.message);
