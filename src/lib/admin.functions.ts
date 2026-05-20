@@ -352,18 +352,18 @@ export const getAdminManagers = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await requireAdminRole(context.userId);
 
-    const { data: profiles, error } = await supabaseAdmin
-      .from("profiles")
-      .select("id, role, created_at")
-      .in("role", ["admin", "manager"])
-      .order("created_at", { ascending: false });
+    // Use a SECURITY DEFINER RPC so admins can read all staff profiles
+    // regardless of profiles RLS / service-role key state.
+    const { data: rows, error } = await context.supabase.rpc("list_admin_managers");
     if (error) throw new Error(error.message);
 
-    const ids = (profiles ?? []).map((p) => p.id);
+    type Row = { id: string; role: string; created_at: string };
+    const profiles = (rows ?? []) as unknown as Row[];
+
+    const ids = profiles.map((p) => p.id);
     const emailById = new Map<string, string | null>();
     const nameById = new Map<string, string | null>();
 
-    // Look up auth emails and names via admin API (paginated; cap at 1000 users for safety)
     if (ids.length > 0) {
       const { data: usersData, error: usersErr } =
         await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
@@ -371,14 +371,19 @@ export const getAdminManagers = createServerFn({ method: "GET" })
       for (const u of usersData.users) {
         if (ids.includes(u.id)) {
           emailById.set(u.id, u.email ?? null);
-          const metaName = (u.user_metadata as Record<string, unknown>)?.full_name;
-          nameById.set(u.id, typeof metaName === "string" ? metaName : null);
+          const meta = (u.user_metadata ?? {}) as Record<string, unknown>;
+          const metaName =
+            (typeof meta.full_name === "string" && meta.full_name) ||
+            (typeof meta.owner_name === "string" && meta.owner_name) ||
+            (typeof meta.name === "string" && meta.name) ||
+            null;
+          nameById.set(u.id, metaName as string | null);
         }
       }
     }
 
     return {
-      managers: (profiles ?? []).map((p) => ({
+      managers: profiles.map((p) => ({
         id: p.id,
         role: p.role as AdminRole,
         name: nameById.get(p.id) ?? null,
