@@ -6,10 +6,12 @@ import { ArrowRight, Sparkles, ShieldCheck, Users } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
 import { BusinessCard } from "@/components/directory/BusinessCard";
-import { CATEGORIES } from "@/lib/mock/categories";
 import { getBusinesses } from "@/lib/business.functions";
 import { adaptBusiness } from "@/lib/business.adapter";
+import { useCategories } from "@/hooks/useCategories";
+import { getIcon, getColor } from "@/lib/category-icons";
 import { useI18n } from "@/lib/i18n";
+
 
 export function DirectoryHome() {
   const { t } = useI18n();
@@ -19,6 +21,7 @@ export function DirectoryHome() {
     queryKey: ["businesses", "all"],
     queryFn: () => fetchBusinesses({ data: {} }),
   });
+  const { categories, isLoading: catsLoading } = useCategories();
   const featured = useMemo(() => {
     if (!data?.ok) return [];
     return data.rows.slice(0, 4).map(adaptBusiness);
@@ -27,8 +30,9 @@ export function DirectoryHome() {
   const trustItems = [
     { icon: Users, value: "600+", label: t("directory.trust_businesses") },
     { icon: ShieldCheck, value: "100%", label: t("directory.trust_verified") },
-    { icon: Sparkles, value: "9", label: t("directory.trust_categories") },
+    { icon: Sparkles, value: String(categories.length || 0), label: t("directory.trust_categories") },
   ];
+
 
   return (
     <SiteShell>
@@ -88,24 +92,34 @@ export function DirectoryHome() {
           </Link>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-          {CATEGORIES.slice(0, 10).map((c) => {
-            const Icon = c.icon;
-            return (
-              <Link
-                key={c.key}
-                to="/directory"
-                className="group bg-white border border-gray-200 hover:border-[#1A5336]/40 hover:shadow-md transition rounded-3xl p-5"
-              >
-                <div className={`w-11 h-11 rounded-2xl ${c.bg} ${c.color} flex items-center justify-center`}>
-                  <Icon size={20} />
+          {catsLoading && categories.length === 0
+            ? Array.from({ length: 10 }).map((_, i) => (
+                <div key={i} className="bg-white border border-gray-200 rounded-3xl p-5 animate-pulse">
+                  <div className="w-11 h-11 rounded-2xl bg-gray-100" />
+                  <div className="mt-4 h-4 bg-gray-100 rounded w-3/4" />
+                  <div className="mt-2 h-3 bg-gray-50 rounded w-1/2" />
                 </div>
-                <p className="mt-4 font-extrabold text-gray-900 text-sm leading-tight group-hover:text-[#1A5336]">
-                  {c.name}
-                </p>
-                <p className="text-xs text-gray-400 mt-1">{c.count} {t("directory.listings_count")}</p>
-              </Link>
-            );
-          })}
+              ))
+            : categories.slice(0, 10).map((c) => {
+                const Icon = getIcon(c.iconKey);
+                const color = getColor(c.colorKey);
+                return (
+                  <Link
+                    key={c.id}
+                    to="/directory"
+                    className="group bg-white border border-gray-200 hover:border-[#1A5336]/40 hover:shadow-md transition rounded-3xl p-5"
+                  >
+                    <div className={`w-11 h-11 rounded-2xl ${color.bg} ${color.text} flex items-center justify-center`}>
+                      <Icon size={20} />
+                    </div>
+                    <p className="mt-4 font-extrabold text-gray-900 text-sm leading-tight group-hover:text-[#1A5336]">
+                      {c.name}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">{c.count} {t("directory.listings_count")}</p>
+                  </Link>
+                );
+              })}
+
         </div>
       </section>
 
