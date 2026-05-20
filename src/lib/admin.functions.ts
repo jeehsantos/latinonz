@@ -339,49 +339,12 @@ export const deleteAdminCategory = createServerFn({ method: "POST" })
 
 export const getAdminManagers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    await requireAdminRole(context.userId, context.supabase);
-
-    // Use a SECURITY DEFINER RPC so admins can read all staff profiles
-    // regardless of profiles RLS / service-role key state.
-    const { data: rows, error } = await context.supabase.rpc("list_admin_managers");
-    if (error) throw new Error(error.message);
-
-    type Row = { id: string; role: string; created_at: string };
-    const profiles = (rows ?? []) as unknown as Row[];
-
-    const ids = profiles.map((p) => p.id);
-    const emailById = new Map<string, string | null>();
-    const nameById = new Map<string, string | null>();
-
-    if (ids.length > 0) {
-      const { data: usersData, error: usersErr } =
-        await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
-      if (usersErr) throw new Error(usersErr.message);
-      for (const u of usersData.users) {
-        if (ids.includes(u.id)) {
-          emailById.set(u.id, u.email ?? null);
-          const meta = (u.user_metadata ?? {}) as Record<string, unknown>;
-          const metaName =
-            (typeof meta.full_name === "string" && meta.full_name) ||
-            (typeof meta.owner_name === "string" && meta.owner_name) ||
-            (typeof meta.name === "string" && meta.name) ||
-            null;
-          nameById.set(u.id, metaName as string | null);
-        }
-      }
-    }
-
-    return {
-      managers: profiles.map((p) => ({
-        id: p.id,
-        role: p.role as AdminRole,
-        name: nameById.get(p.id) ?? null,
-        email: emailById.get(p.id) ?? null,
-        createdAt: p.created_at,
-      })),
-    };
-  });
+  .handler(async ({ context }) =>
+    listAdminManagers({
+      callerUserId: context.userId,
+      supabase: context.supabase,
+    }),
+  );
 
 export const inviteManager = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -395,110 +358,24 @@ export const inviteManager = createServerFn({ method: "POST" })
       })
       .parse(input),
   )
-  .handler(async ({ data, context }) => {
-    // Only admins may create new admins/managers
-    const callerRole = await requireAdminRole(context.userId, context.supabase);
-    if (callerRole !== "admin") {
-      throw new Error("Forbidden: only admins can invite managers");
-    }
-
-    let userId: string | undefined;
-    let status: "invited" | "magic_link_sent" | "promoted_only" = "invited";
-    let warning: string | undefined;
-
-    const inviteOptions: { data?: Record<string, unknown>; redirectTo?: string } = {};
-    if (data.name) inviteOptions.data = { full_name: data.name };
-    if (data.redirectTo) inviteOptions.redirectTo = data.redirectTo;
-    const { data: invite, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(
-      data.email,
-      inviteOptions,
-    );
-    if (error) {
-      // If the user already exists, look them up and send a magic-link email
-      // so they can sign in and land on the accept-invite page.
-      const msg = error.message?.toLowerCase() ?? "";
-      const alreadyExists =
-        msg.includes("already been registered") ||
-        msg.includes("already registered") ||
-        msg.includes("already exists");
-      if (!alreadyExists) throw new Error(error.message);
-
-      const { data: list, error: listErr } = await supabaseAdmin.auth.admin.listUsers({
-        page: 1,
-        perPage: 1000,
-      });
-      if (listErr) throw new Error(listErr.message);
-      const existing = list.users.find(
-        (u) => (u.email ?? "").toLowerCase() === data.email.toLowerCase(),
-      );
-      if (!existing) throw new Error("User already exists but could not be located");
-      userId = existing.id;
-
-      // Send a magic-link sign-in email via the anon client so Supabase's
-      // built-in email service actually delivers a message to the recipient.
-      const SUPABASE_URL = process.env.SUPABASE_URL;
-      const SUPABASE_ANON_KEY =
-        process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY;
-      if (SUPABASE_URL && SUPABASE_ANON_KEY) {
-        const anon = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-          auth: {
-            persistSession: false,
-            autoRefreshToken: false,
-            // Server-issued OTP cannot use PKCE (no browser verifier exists),
-            // so force implicit flow so the magic link returns tokens in the URL hash.
-            flowType: "implicit",
-          },
-        });
-        const { error: otpErr } = await anon.auth.signInWithOtp({
-          email: data.email,
-          options: {
-            shouldCreateUser: false,
-            emailRedirectTo: data.redirectTo,
-          },
-        });
-        if (otpErr) {
-          status = "promoted_only";
-          warning = `User already existed; role promoted but magic-link email failed: ${otpErr.message}`;
-        } else {
-          status = "magic_link_sent";
-        }
-      } else {
-        status = "promoted_only";
-        warning = "User already existed; role promoted but email service is not configured.";
-      }
-    } else {
-      userId = invite.user?.id;
-    }
-    if (!userId) throw new Error("Failed to create user");
-
-    // Ensure profile exists and force the requested role. Upsert avoids a
-    // silent no-op if .update() races the handle_new_user trigger.
-    // This write must use the privileged backend client because the invited
-    // user is a different profile row than the caller, so the caller's RLS
-    // context can still reject the insert/update path during upsert.
-    const { error: roleErr } = await supabaseAdmin
-      .from("profiles")
-      .upsert({ id: userId, role: data.role }, { onConflict: "id" });
-    if (roleErr) throw new Error(roleErr.message);
-
-    return { ok: true as const, userId, status, warning };
-  });
+  .handler(async ({ data, context }) =>
+    inviteAdminManager({
+      callerUserId: context.userId,
+      supabase: context.supabase,
+      name: data.name,
+      email: data.email,
+      role: data.role,
+      redirectTo: data.redirectTo,
+    }),
+  );
 
 export const removeManager = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ userId: z.string().uuid() }).parse(input))
-  .handler(async ({ data, context }) => {
-    const callerRole = await requireAdminRole(context.userId, context.supabase);
-    if (callerRole !== "admin") {
-      throw new Error("Forbidden: only admins can remove managers");
-    }
-    if (data.userId === context.userId) {
-      throw new Error("You cannot remove your own account");
-    }
-    // Fully delete the auth user so the email can be re-invited cleanly.
-    const { error: delErr } = await supabaseAdmin.auth.admin.deleteUser(data.userId);
-    if (delErr) throw new Error(delErr.message);
-    // Clean up the profile row in case no FK cascade is set.
-    await supabaseAdmin.from("profiles").delete().eq("id", data.userId);
-    return { ok: true as const };
-  });
+  .handler(async ({ data, context }) =>
+    deleteAdminManager({
+      callerUserId: context.userId,
+      supabase: context.supabase,
+      userId: data.userId,
+    }),
+  );
