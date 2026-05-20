@@ -43,7 +43,12 @@ function LoginPage() {
         setError(sessionErr.message);
         return;
       }
-      navigate({ to: "/dashboard" });
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", res.user.id)
+        .maybeSingle();
+      navigate({ to: profile?.role === "admin" ? "/admin" : "/dashboard" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro inesperado.");
     } finally {
