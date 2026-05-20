@@ -18,6 +18,14 @@ export const Route = createFileRoute("/dashboard")({
         search: { redirect: location.href },
       });
     }
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", data.session.user.id)
+      .maybeSingle();
+    if (profile?.role === "admin" || profile?.role === "manager") {
+      throw redirect({ to: "/admin" });
+    }
   },
   component: () => <DashboardLayout />,
 });
