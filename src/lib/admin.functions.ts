@@ -204,6 +204,27 @@ export const getAdminMetrics = createServerFn({ method: "GET" })
 
 // ---------- Categories ----------
 
+const ICON_KEYS = z.enum([
+  "utensils","briefcase","hammer","car","music","heart-pulse","scissors",
+  "shopping-bag","book-open","users","sparkles","graduation-cap","home",
+  "wrench","camera","plane","laptop","baby","paw-print","dumbbell",
+]);
+const COLOR_KEYS = z.enum([
+  "orange","blue","yellow","slate","purple","red","pink","teal","indigo","rose","emerald",
+]);
+
+const categoryInputSchema = z.object({
+  namePt: z.string().trim().min(1).max(120),
+  nameEs: z.string().trim().max(120).optional().default(""),
+  nameEn: z.string().trim().max(120).optional().default(""),
+  blurbPt: z.string().trim().max(400).optional().default(""),
+  blurbEs: z.string().trim().max(400).optional().default(""),
+  blurbEn: z.string().trim().max(400).optional().default(""),
+  iconKey: ICON_KEYS.default("briefcase"),
+  colorKey: COLOR_KEYS.default("slate"),
+  sortOrder: z.number().int().min(0).max(9999).default(0),
+});
+
 export const listAdminCategories = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -212,7 +233,8 @@ export const listAdminCategories = createServerFn({ method: "GET" })
     const [catsRes, bizRes] = await Promise.all([
       supabaseAdmin
         .from("categories")
-        .select("id, key, name, blurb, created_at")
+        .select("id, key, name, name_pt, name_es, name_en, blurb, blurb_pt, blurb_es, blurb_en, icon_key, color_key, sort_order, created_at")
+        .order("sort_order", { ascending: true })
         .order("name", { ascending: true }),
       supabaseAdmin
         .from("businesses")
@@ -232,40 +254,84 @@ export const listAdminCategories = createServerFn({ method: "GET" })
         id: c.id,
         key: c.key,
         name: c.name,
-        blurb: c.blurb ?? "",
+        namePt: c.name_pt ?? c.name,
+        nameEs: c.name_es ?? "",
+        nameEn: c.name_en ?? "",
+        blurbPt: c.blurb_pt ?? c.blurb ?? "",
+        blurbEs: c.blurb_es ?? "",
+        blurbEn: c.blurb_en ?? "",
+        iconKey: c.icon_key ?? "briefcase",
+        colorKey: c.color_key ?? "slate",
+        sortOrder: c.sort_order ?? 0,
         count: counts.get(c.name) ?? 0,
       })),
     };
   });
 
+function slugifyCategory(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 export const createAdminCategory = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z
-      .object({
-        name: z.string().trim().min(1).max(120),
-        blurb: z.string().trim().max(400).optional().default(""),
-      })
-      .parse(input),
-  )
+  .inputValidator((input) => categoryInputSchema.parse(input))
   .handler(async ({ data, context }) => {
     await requireAdminRole(context.userId);
-    const key = data.name
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
+    const key = slugifyCategory(data.namePt);
     if (!key) throw new Error("Nome de categoria inválido");
-    const { error } = await supabaseAdmin
-      .from("categories")
-      .insert({ key, name: data.name.trim(), blurb: data.blurb || null });
+    const { error } = await supabaseAdmin.from("categories").insert({
+      key,
+      name: data.namePt.trim(),
+      name_pt: data.namePt.trim(),
+      name_es: data.nameEs.trim() || null,
+      name_en: data.nameEn.trim() || null,
+      blurb: data.blurbPt.trim() || null,
+      blurb_pt: data.blurbPt.trim() || null,
+      blurb_es: data.blurbEs.trim() || null,
+      blurb_en: data.blurbEn.trim() || null,
+      icon_key: data.iconKey,
+      color_key: data.colorKey,
+      sort_order: data.sortOrder,
+    });
     if (error) {
       if (error.code === "23505") throw new Error("Categoria já existe");
       throw new Error(error.message);
     }
     return { ok: true as const };
   });
+
+export const updateAdminCategory = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    categoryInputSchema.extend({ id: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await requireAdminRole(context.userId);
+    const { error } = await supabaseAdmin
+      .from("categories")
+      .update({
+        name: data.namePt.trim(),
+        name_pt: data.namePt.trim(),
+        name_es: data.nameEs.trim() || null,
+        name_en: data.nameEn.trim() || null,
+        blurb: data.blurbPt.trim() || null,
+        blurb_pt: data.blurbPt.trim() || null,
+        blurb_es: data.blurbEs.trim() || null,
+        blurb_en: data.blurbEn.trim() || null,
+        icon_key: data.iconKey,
+        color_key: data.colorKey,
+        sort_order: data.sortOrder,
+      })
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
 
 export const deleteAdminCategory = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
