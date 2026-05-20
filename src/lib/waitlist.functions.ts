@@ -52,12 +52,17 @@ export const submitWaitlist = createServerFn({ method: "POST" })
     return { ok: true as const };
   });
 
-export const listWaitlist = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => z.object({ password: z.string().min(1).max(200) }).parse(input))
-  .handler(async ({ data }) => {
-    const expected = process.env.ADMIN_PASSWORD;
-    if (!expected || data.password !== expected) {
-      return { ok: false as const, error: "Senha incorreta." };
+export const listWaitlist = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data: profile, error: profErr } = await supabaseAdmin
+      .from("profiles")
+      .select("role")
+      .eq("id", context.userId)
+      .maybeSingle();
+    if (profErr) return { ok: false as const, error: profErr.message };
+    if (!profile || (profile.role !== "admin" && profile.role !== "manager")) {
+      return { ok: false as const, error: "Acesso negado." };
     }
     const { data: rows, error } = await supabaseAdmin
       .from("waitlist_signups")
@@ -69,3 +74,4 @@ export const listWaitlist = createServerFn({ method: "POST" })
     }
     return { ok: true as const, rows: rows ?? [] };
   });
+
