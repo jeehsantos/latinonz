@@ -26,8 +26,7 @@ function AdminWaitlistPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const password = typeof window !== "undefined" ? sessionStorage.getItem("admin-pwd") || "" : "";
-    fetchList({ data: { password } })
+    fetchList()
       .then((res) => {
         if (res.ok) setRows(res.rows as Row[]);
         else setError(res.error);
@@ -35,6 +34,7 @@ function AdminWaitlistPage() {
       .catch(() => setError("Erro ao conectar."))
       .finally(() => setLoading(false));
   }, [fetchList]);
+
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();

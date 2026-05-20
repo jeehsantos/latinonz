@@ -40,7 +40,7 @@ export const getAdminBusinesses = createServerFn({ method: "POST" })
     let q = supabaseAdmin
       .from("businesses")
       .select(
-        "id, name, slug, macro_category, subcategory, is_active, is_verified, rating, review_count, view_count, owner_id, created_at, updated_at",
+        "id, name, slug, macro_category, subcategory, locations, is_active, is_verified, rating, review_count, view_count, owner_id, created_at, updated_at",
       )
       .order("created_at", { ascending: false });
 
@@ -65,8 +65,30 @@ export const getAdminBusinesses = createServerFn({ method: "POST" })
 
     const { data: rows, error } = await q.limit(500);
     if (error) throw new Error(error.message);
-    return { businesses: rows ?? [] };
+
+    const ownerIds = Array.from(new Set((rows ?? []).map((r) => r.owner_id).filter(Boolean)));
+    const planByOwner = new Map<string, "starter" | "premium" | "ultra">();
+    if (ownerIds.length > 0) {
+      const { data: profs, error: profErr } = await supabaseAdmin
+        .from("profiles")
+        .select("id, plan_tier")
+        .in("id", ownerIds);
+      if (profErr) throw new Error(profErr.message);
+      for (const p of profs ?? []) {
+        const tier = (p.plan_tier ?? "starter") as "starter" | "premium" | "ultra";
+        planByOwner.set(p.id, tier);
+      }
+    }
+
+    const businesses = (rows ?? []).map((b) => ({
+      ...b,
+      plan_tier: planByOwner.get(b.owner_id) ?? ("starter" as const),
+      city: Array.isArray(b.locations) && b.locations.length > 0 ? String(b.locations[0]) : null,
+    }));
+
+    return { businesses };
   });
+
 
 export const approveBusiness = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -121,7 +143,7 @@ export const getAdminMetrics = createServerFn({ method: "GET" })
     await requireAdminRole(context.userId);
 
     const [businessesRes, profilesRes, leadsRes, viewsRes, waitlistRes] = await Promise.all([
-      supabaseAdmin.from("businesses").select("id, is_active, is_verified"),
+      supabaseAdmin.from("businesses").select("id, macro_category, is_active, is_verified"),
       supabaseAdmin
         .from("profiles")
         .select("plan_tier, subscription_status"),
@@ -150,6 +172,16 @@ export const getAdminMetrics = createServerFn({ method: "GET" })
       }
     }
 
+    const byCategoryMap = new Map<string, number>();
+    for (const b of businesses) {
+      if (!b.is_active) continue;
+      const key = b.macro_category ?? "Outros";
+      byCategoryMap.set(key, (byCategoryMap.get(key) ?? 0) + 1);
+    }
+    const byCategory = Array.from(byCategoryMap.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+
     return {
       totals: {
         businesses: businesses.length,
@@ -161,6 +193,7 @@ export const getAdminMetrics = createServerFn({ method: "GET" })
         waitlist: waitlistRes.count ?? 0,
       },
       planCounts,
+      byCategory,
       revenue: {
         mrrNzd: mrr,
         arrNzd: mrr * 12,
@@ -168,6 +201,82 @@ export const getAdminMetrics = createServerFn({ method: "GET" })
       },
     };
   });
+
+// ---------- Categories ----------
+
+export const listAdminCategories = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await requireAdminRole(context.userId);
+
+    const [catsRes, bizRes] = await Promise.all([
+      supabaseAdmin
+        .from("categories")
+        .select("id, key, name, blurb, created_at")
+        .order("name", { ascending: true }),
+      supabaseAdmin
+        .from("businesses")
+        .select("macro_category, is_active"),
+    ]);
+    if (catsRes.error) throw new Error(catsRes.error.message);
+    if (bizRes.error) throw new Error(bizRes.error.message);
+
+    const counts = new Map<string, number>();
+    for (const b of bizRes.data ?? []) {
+      if (!b.is_active || !b.macro_category) continue;
+      counts.set(b.macro_category, (counts.get(b.macro_category) ?? 0) + 1);
+    }
+
+    return {
+      categories: (catsRes.data ?? []).map((c) => ({
+        id: c.id,
+        key: c.key,
+        name: c.name,
+        blurb: c.blurb ?? "",
+        count: counts.get(c.name) ?? 0,
+      })),
+    };
+  });
+
+export const createAdminCategory = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        name: z.string().trim().min(1).max(120),
+        blurb: z.string().trim().max(400).optional().default(""),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await requireAdminRole(context.userId);
+    const key = data.name
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+    if (!key) throw new Error("Nome de categoria inválido");
+    const { error } = await supabaseAdmin
+      .from("categories")
+      .insert({ key, name: data.name.trim(), blurb: data.blurb || null });
+    if (error) {
+      if (error.code === "23505") throw new Error("Categoria já existe");
+      throw new Error(error.message);
+    }
+    return { ok: true as const };
+  });
+
+export const deleteAdminCategory = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await requireAdminRole(context.userId);
+    const { error } = await supabaseAdmin.from("categories").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
+
 
 // ---------- Managers ----------
 

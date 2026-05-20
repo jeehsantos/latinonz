@@ -2,23 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { Briefcase, DollarSign, TrendingUp, Users, Search } from "lucide-react";
-import { CATEGORIES } from "@/lib/mock/categories";
 import { getAdminMetrics } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminMetricsPage,
 });
-
-const TOP_SEARCHES = [
-  { term: "restaurante brasileiro", count: 1248 },
-  { term: "contador latino auckland", count: 982 },
-  { term: "dj festa latina", count: 764 },
-  { term: "salão de beleza", count: 612 },
-  { term: "mecânico português", count: 489 },
-  { term: "psicólogo online", count: 421 },
-  { term: "imigração visto", count: 387 },
-  { term: "comida mexicana wellington", count: 312 },
-];
 
 function MetricCard({
   label, value, hint, icon: Icon, accent,
@@ -52,8 +40,8 @@ function AdminMetricsPage() {
   const paid = (planCounts.premium ?? 0) + (planCounts.ultra ?? 0);
   const free = planCounts.starter ?? 0;
 
-  const byCategory = CATEGORIES.map((c) => ({ name: c.name, count: 0, fallback: c.count }));
-  const maxSearch = Math.max(...TOP_SEARCHES.map((s) => s.count));
+  const byCategory = data?.byCategory ?? [];
+  const maxCat = Math.max(1, ...byCategory.map((c) => c.count));
 
   return (
     <div className="space-y-8">
@@ -75,25 +63,28 @@ function AdminMetricsPage() {
         <div className="bg-white border border-gray-200 rounded-3xl p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-extrabold text-gray-900">Negócios por categoria</h2>
-            <span className="text-xs text-gray-400">{CATEGORIES.length} categorias</span>
+            <span className="text-xs text-gray-400">{byCategory.length} categorias</span>
           </div>
-          <ul className="space-y-3">
-            {byCategory.map((row) => {
-              const value = row.count || row.fallback;
-              const pct = Math.min(100, (value / 150) * 100);
-              return (
-                <li key={row.name}>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="font-semibold text-gray-700">{row.name}</span>
-                    <span className="font-bold text-gray-900">{value}</span>
-                  </div>
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-[#1A5336]" style={{ width: `${pct}%` }} />
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+          {byCategory.length === 0 ? (
+            <p className="text-sm text-gray-400 py-6 text-center">Nenhum negócio ativo ainda.</p>
+          ) : (
+            <ul className="space-y-3">
+              {byCategory.map((row) => {
+                const pct = Math.min(100, (row.count / maxCat) * 100);
+                return (
+                  <li key={row.name}>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="font-semibold text-gray-700">{row.name}</span>
+                      <span className="font-bold text-gray-900">{row.count}</span>
+                    </div>
+                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#1A5336]" style={{ width: `${pct}%` }} />
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
 
         <div className="bg-white border border-gray-200 rounded-3xl p-6">
@@ -101,24 +92,10 @@ function AdminMetricsPage() {
             <h2 className="text-lg font-extrabold text-gray-900">Buscas mais populares</h2>
             <span className="text-xs text-gray-400">últimos 30 dias</span>
           </div>
-          <ul className="space-y-3">
-            {TOP_SEARCHES.map((s, i) => (
-              <li key={s.term} className="flex items-center gap-3">
-                <span className="w-6 text-xs font-black text-gray-400">#{i + 1}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="font-semibold text-gray-700 truncate flex items-center gap-2">
-                      <Search size={12} className="text-gray-400" /> {s.term}
-                    </span>
-                    <span className="font-bold text-gray-900">{s.count.toLocaleString("pt-BR")}</span>
-                  </div>
-                  <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-amber-400" style={{ width: `${(s.count / maxSearch) * 100}%` }} />
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <div className="py-12 text-center text-sm text-gray-400">
+            <Search size={20} className="mx-auto mb-2 text-gray-300" />
+            Sem dados de busca ainda.
+          </div>
         </div>
       </div>
 

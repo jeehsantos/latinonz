@@ -168,6 +168,30 @@ export type Database = {
         }
         Relationships: []
       }
+      categories: {
+        Row: {
+          blurb: string | null
+          created_at: string
+          id: string
+          key: string
+          name: string
+        }
+        Insert: {
+          blurb?: string | null
+          created_at?: string
+          id?: string
+          key: string
+          name: string
+        }
+        Update: {
+          blurb?: string | null
+          created_at?: string
+          id?: string
+          key?: string
+          name?: string
+        }
+        Relationships: []
+      }
       coupons: {
         Row: {
           business_id: string
