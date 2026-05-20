@@ -128,7 +128,7 @@ function RootComponent() {
   );
 }
 
-const ALLOWED_IN_WAITLIST = ["/", "/admin"];
+const ALLOWED_IN_WAITLIST_PREFIXES = ["/admin", "/login", "/auth", "/dashboard", "/cadastro"];
 
 function SiteGate({ children }: { children: React.ReactNode }) {
   const { mode, ready } = useSiteMode();
@@ -137,7 +137,9 @@ function SiteGate({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!ready) return;
-    if (mode === "waitlist" && !ALLOWED_IN_WAITLIST.includes(path)) {
+    const allowed =
+      path === "/" || ALLOWED_IN_WAITLIST_PREFIXES.some((p) => path.startsWith(p));
+    if (mode === "waitlist" && !allowed) {
       navigate({ to: "/" });
     }
   }, [ready, mode, path, navigate]);
