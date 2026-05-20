@@ -389,6 +389,7 @@ export const inviteManager = createServerFn({ method: "POST" })
         name: z.string().min(1).max(255).optional(),
         email: z.string().email().max(255),
         role: z.enum(["admin", "manager"]).default("manager"),
+        redirectTo: z.string().url().max(500).optional(),
       })
       .parse(input),
   )
@@ -400,9 +401,12 @@ export const inviteManager = createServerFn({ method: "POST" })
     }
 
     let userId: string | undefined;
+    const inviteOptions: { data?: Record<string, unknown>; redirectTo?: string } = {};
+    if (data.name) inviteOptions.data = { full_name: data.name };
+    if (data.redirectTo) inviteOptions.redirectTo = data.redirectTo;
     const { data: invite, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(
       data.email,
-      data.name ? { data: { full_name: data.name } } : undefined,
+      inviteOptions,
     );
     if (error) {
       // If the user already exists, look them up and just promote the role.
