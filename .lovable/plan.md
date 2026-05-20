@@ -1,59 +1,45 @@
+## Goal
 
-## Root cause of "Forbidden: admin or manager role required"
+Stop hardcoding categories on the landing page and `/directory`. Render them from the admin-managed `categories` table, with a chosen icon and translated names/blurbs per browser language. The visual design stays exactly as it is today.
 
-Two auth systems exist side-by-side and they don't agree:
+## What changes for the user
 
-- **`/admin` panel** is gated by a shared `ADMIN_PASSWORD` stored in `sessionStorage` (`AdminLayout.tsx`). It does NOT sign anyone into Supabase.
-- **All new admin server functions** (`inviteManager`, `getAdminBusinesses`, `getAdminMetrics`, etc.) check `auth.uid()`'s `profiles.role` for `admin`/`manager` via `requireSupabaseAuth`.
+- **Admin `/admin/categories`**: when adding (or editing) a category, the admin picks an icon from a small curated list and fills name + blurb in PT, ES and EN.
+- **Landing page** (categories grid) and **/directory** (category chip filter): no more static `CATEGORIES` mock — the list, names, blurbs, icons and counts all come from the database, translated to the user's current language.
 
-DB check: every row in `profiles` has `role = 'user'`. So even if a Supabase-logged-in user opens `/admin` after typing the password, the server-side role check still fails. Result: invite always errors out, and the metrics/businesses/managers pages silently return empty if you happen not to be signed in.
+## Database changes (one migration)
 
-## Fix strategy
+Extend `public.categories`:
 
-Unify on Supabase-role-based admin auth (this is what `is_admin_or_manager()` and the RLS policies already assume — the password gate is the outlier).
+- `icon_key text not null default 'briefcase'` — a stable string key from a fixed allowed set (e.g. `utensils`, `briefcase`, `hammer`, `car`, `music`, `heart-pulse`, `scissors`, `shopping-bag`, `book-open`, `users`, `sparkles`, `graduation-cap`, `home`, `wrench`). The frontend maps the key → Lucide icon component.
+- `color_key text not null default 'slate'` — small palette token (`orange | blue | yellow | slate | purple | red | pink | teal | indigo | rose | emerald`) so the existing colored tile background is preserved.
+- `name_pt text`, `name_es text`, `name_en text` — translated display names. `name` stays as the canonical PT label used by `businesses.macro_category` for joining counts.
+- `blurb_pt text`, `blurb_es text`, `blurb_en text` — translated short descriptions.
+- `sort_order int not null default 0` — for stable ordering on landing/directory.
 
-### 1. Database
-- Promote the project owner to `admin` so the admin panel is usable end-to-end. I'll seed `profiles.role = 'admin'` for the user the owner picks (asked at apply time, or default to the first profile that signs in next).
-- Add a `public.categories` table (`key`, `name`, `blurb`, `created_at`) with RLS: public can SELECT; only `is_admin_or_manager()` can INSERT/UPDATE/DELETE.
+Backfill `name_pt = name` and copy `blurb` into `blurb_pt` for existing rows. RLS already allows public SELECT and admin-only writes — no policy change needed.
 
-### 2. Admin auth (replace password gate)
-- Rewrite `src/components/admin/AdminLayout.tsx` so:
-  - It uses the real Supabase session (`supabase.auth.getSession` + `onAuthStateChange`).
-  - If not signed in → redirect to `/login?redirect=/admin`.
-  - If signed in but `profiles.role` ∉ `{admin, manager}` → render an "Access denied" panel with a sign-out button.
-  - Otherwise render the admin shell (no password prompt, no `sessionStorage`).
-- `listWaitlist` switches from `ADMIN_PASSWORD` check to `requireSupabaseAuth + requireAdminRole` (same pattern as the other admin functions). `admin.waitlist.tsx` drops the `admin-pwd` read.
-- Delete the `ADMIN_PASSWORD` branch and `sessionStorage` keys entirely.
+## Server functions (`src/lib/admin.functions.ts` + new public fn)
 
-### 3. Wire each admin page to real data (kill remaining static values)
+- `listAdminCategories`: also return `icon_key`, `color_key`, `sort_order`, all `name_*` and `blurb_*` fields.
+- `createAdminCategory` / new `updateAdminCategory`: accept `iconKey`, `colorKey`, `sortOrder`, `namePt/Es/En`, `blurbPt/Es/En`. Validate `iconKey` and `colorKey` against the allowed sets with Zod. `name` (canonical PT) is derived from `namePt`.
+- New `src/lib/categories.functions.ts` → `listPublicCategories()`: public (no auth), returns the row shape needed by the UI plus the per-category active-business count (one aggregation query against `businesses` grouped by `macro_category`).
 
-**`admin.index.tsx`**
-- Extend `getAdminMetrics` to also return:
-  - `byCategory`: `[{ macro_category, count }]` aggregated from `businesses` grouped by `macro_category` (active only).
-  - `topSearches`: empty array for now (we have no search-events table; the page will render an empty-state "Sem dados ainda" instead of the hardcoded list).
-- Page consumes both; remove the `TOP_SEARCHES` constant and the `CATEGORIES` mock import.
+## Frontend changes
 
-**`admin.businesses.tsx`**
-- Extend `getAdminBusinesses` so each row includes the owner's `plan_tier` (join `profiles` via `owner_id`) and the first entry of `locations` for the "Cidade" column.
-- Page uses `b.plan_tier` for `<PlanBadge>` and `b.locations?.[0]` for city (fallback `—` only when truly null).
+- New `src/lib/category-icons.ts`: maps `icon_key → LucideIcon` and `color_key → { text, bg }` Tailwind class pair (mirrors the current mock styling so the design is identical).
+- New `src/hooks/useCategories.ts`: `useQuery` wrapper around `listPublicCategories` that picks the right `name_*` / `blurb_*` based on `useI18n().locale`, with fallback to PT.
+- `src/components/directory/DirectoryHome.tsx`: remove `CATEGORIES` import; render the categories grid from `useCategories()`. Trust strip's "9" categories number becomes the live count. Loading state renders skeleton tiles in the same grid.
+- `src/routes/directory.tsx`: remove `CATEGORIES` import; render the chip row from `useCategories()`. The chip's `onClick` still sets `search.category` to the canonical PT `name` so the existing filter against `businesses.macro_category` keeps working.
+- `src/routes/admin.categories.tsx`: replace the inline add form with a dialog containing icon picker (grid of Lucide icons), color picker (swatch row), and the three name+blurb language pairs. Inline edit on each row reuses the same dialog.
 
-**`admin.categories.tsx`**
-- New server fns: `listCategories`, `createCategory`, `deleteCategory` (all role-gated). `listCategories` returns `name`, `key`, `blurb`, and live business count per `macro_category`.
-- Page swaps `useState(CATEGORIES)` for `useQuery` + `useMutation`. Add/remove hit the DB.
+## i18n
 
-**`admin.managers.tsx`** — already wired; will work once the auth fix lands.
+- Add `admin.categories.*` strings (form labels, language tabs, icon/color picker labels) to `pt.json`, `es.json`, `en.json` per the project i18n rule.
+- No new keys are needed for category names/blurbs themselves — they are stored per-row in the DB.
 
-**`admin.waitlist.tsx`** — already wired; switch to role-gated `listWaitlist` (no password param).
+## Things deliberately not changed
 
-### 4. Verification
-- Reload `/admin/managers` while signed in as the promoted admin → invite a test email → expect success (no Forbidden).
-- Visit `/admin`, `/admin/businesses`, `/admin/categories` → confirm numbers/rows come from DB, no mock fallbacks visible.
-
-## One question before applying
-
-Which existing user should I promote to `admin`? Current `profiles`:
-```
-6994fa47-799b-4d87-97d7-d85e90b200c5  (user)
-3a650479-0297-43b0-8ad7-20ac0bcfb7ce  (user)
-```
-If you tell me which one is yours (or your email), I'll seed that row to `admin`. Otherwise I'll promote both so you don't get locked out, and you can demote the other later from `/admin/managers`.
+- `src/lib/categories.ts` (the canonical PT enum used for `macro_category` on business profiles) stays as-is so existing businesses and the cadastro flow keep matching.
+- The visual design of the landing categories grid and the `/directory` chip row is preserved 1:1 — same tile shape, same colored icon bubble, same chip styling.
+- No backend logic outside categories is touched.
