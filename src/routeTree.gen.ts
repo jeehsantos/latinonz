@@ -37,6 +37,7 @@ import { Route as AdminWaitlistRouteImport } from './routes/admin.waitlist'
 import { Route as AdminManagersRouteImport } from './routes/admin.managers'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminBusinessesRouteImport } from './routes/admin.businesses'
+import { Route as AdminAccountRouteImport } from './routes/admin.account'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe-webhook'
 
 const SobreRoute = SobreRouteImport.update({
@@ -179,6 +180,11 @@ const AdminBusinessesRoute = AdminBusinessesRouteImport.update({
   path: '/businesses',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAccountRoute = AdminAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
   id: '/api/public/stripe-webhook',
   path: '/api/public/stripe-webhook',
@@ -197,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/planos': typeof PlanosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/admin/account': typeof AdminAccountRoute
   '/admin/businesses': typeof AdminBusinessesRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/managers': typeof AdminManagersRoute
@@ -226,6 +233,7 @@ export interface FileRoutesByTo {
   '/planos': typeof PlanosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/admin/account': typeof AdminAccountRoute
   '/admin/businesses': typeof AdminBusinessesRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/managers': typeof AdminManagersRoute
@@ -258,6 +266,7 @@ export interface FileRoutesById {
   '/planos': typeof PlanosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/admin/account': typeof AdminAccountRoute
   '/admin/businesses': typeof AdminBusinessesRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/managers': typeof AdminManagersRoute
@@ -291,6 +300,7 @@ export interface FileRouteTypes {
     | '/planos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/admin/account'
     | '/admin/businesses'
     | '/admin/categories'
     | '/admin/managers'
@@ -320,6 +330,7 @@ export interface FileRouteTypes {
     | '/planos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/admin/account'
     | '/admin/businesses'
     | '/admin/categories'
     | '/admin/managers'
@@ -351,6 +362,7 @@ export interface FileRouteTypes {
     | '/planos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/admin/account'
     | '/admin/businesses'
     | '/admin/categories'
     | '/admin/managers'
@@ -586,6 +598,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBusinessesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/account': {
+      id: '/admin/account'
+      path: '/account'
+      fullPath: '/admin/account'
+      preLoaderRoute: typeof AdminAccountRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/api/public/stripe-webhook': {
       id: '/api/public/stripe-webhook'
       path: '/api/public/stripe-webhook'
@@ -597,6 +616,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAccountRoute: typeof AdminAccountRoute
   AdminBusinessesRoute: typeof AdminBusinessesRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminManagersRoute: typeof AdminManagersRoute
@@ -605,6 +625,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAccountRoute: AdminAccountRoute,
   AdminBusinessesRoute: AdminBusinessesRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminManagersRoute: AdminManagersRoute,
