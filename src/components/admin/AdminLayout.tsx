@@ -22,7 +22,7 @@ type AuthState =
   | { status: "loading" }
   | { status: "anonymous" }
   | { status: "denied"; email: string | null }
-  | { status: "ok"; email: string | null; role: "admin" };
+  | { status: "ok"; email: string | null; role: "admin" | "manager" };
 
 export function AdminLayout() {
   const path = useRouterState({ select: (s) => s.location.pathname });
