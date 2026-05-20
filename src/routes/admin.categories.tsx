@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Trash2, FolderTree, Loader2, Pencil, X } from "lucide-react";
+import { Plus, Trash2, Loader2, Pencil, X } from "lucide-react";
 import {
   listAdminCategories,
   createAdminCategory,
