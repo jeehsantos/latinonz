@@ -3,33 +3,15 @@
 // reads or writes via the admin Supabase client (RLS bypassed).
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-
-type AdminRole = "admin" | "manager";
-
-async function requireAdminRole(
-  userId: string,
-  authedClient?: { from: typeof supabaseAdmin.from },
-): Promise<AdminRole> {
-  // Prefer the user's authenticated client: RLS "User reads own profile"
-  // guarantees the caller can read their own role, regardless of whether
-  // the service-role key is correctly configured. Fall back to supabaseAdmin
-  // only when no authenticated client was passed in.
-  const client = authedClient ?? supabaseAdmin;
-  const { data, error } = await client
-    .from("profiles")
-    .select("role")
-    .eq("id", userId)
-    .maybeSingle();
-  if (error) throw new Error(error.message);
-  const role = data?.role;
-  if (role !== "admin" && role !== "manager") {
-    throw new Error("Forbidden: admin or manager role required");
-  }
-  return role as AdminRole;
-}
+import {
+  deleteAdminManager,
+  inviteAdminManager,
+  listAdminManagers,
+  requireAdminRole,
+  type AdminRole,
+} from "@/lib/admin-managers.server";
 
 // ---------- Businesses ----------
 
