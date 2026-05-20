@@ -1,6 +1,8 @@
 import { Search } from "lucide-react";
-import { CATEGORIES, NZ_CITIES } from "@/lib/mock/categories";
+import { NZ_CITIES } from "@/lib/mock/categories";
+import { useCategories } from "@/hooks/useCategories";
 import { useI18n } from "@/lib/i18n";
+
 
 export type SearchValue = { q: string; category: string; city: string };
 
@@ -14,6 +16,8 @@ export function SearchBar({
   onSubmit?: () => void;
 }) {
   const { t } = useI18n();
+  const { categories } = useCategories();
+
   return (
     <form
       onSubmit={(e) => {
@@ -37,11 +41,12 @@ export function SearchBar({
         className="md:col-span-3 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#1A5336] text-gray-900"
       >
         <option value="">{t("directory.all_areas")}</option>
-        {CATEGORIES.map((c) => (
-          <option key={c.key} value={c.name}>
+        {categories.map((c) => (
+          <option key={c.id} value={c.canonicalName}>
             {c.name}
           </option>
         ))}
+
       </select>
       <select
         value={value.city}

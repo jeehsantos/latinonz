@@ -5,10 +5,11 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteShell } from "@/components/site/SiteShell";
 import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
 import { BusinessCard } from "@/components/directory/BusinessCard";
-import { CATEGORIES } from "@/lib/mock/categories";
 import { getBusinesses } from "@/lib/business.functions";
 import { adaptBusiness } from "@/lib/business.adapter";
+import { useCategories } from "@/hooks/useCategories";
 import { useI18n } from "@/lib/i18n";
+
 
 export const Route = createFileRoute("/directory")({
   head: () => ({
@@ -27,6 +28,8 @@ export const Route = createFileRoute("/directory")({
 function DirectoryPage() {
   const { t } = useI18n();
   const [search, setSearch] = useState<SearchValue>({ q: "", category: "", city: "" });
+  const { categories } = useCategories();
+
   const fetchBusinesses = useServerFn(getBusinesses);
   const { data } = useQuery({
     queryKey: ["businesses", "all"],
@@ -70,12 +73,12 @@ function DirectoryPage() {
           >
             {t("directory.all_categories")}
           </button>
-          {CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <button
-              key={c.key}
-              onClick={() => setSearch({ ...search, category: c.name })}
+              key={c.id}
+              onClick={() => setSearch({ ...search, category: c.canonicalName })}
               className={`text-sm font-semibold px-4 py-2 rounded-full border ${
-                search.category === c.name
+                search.category === c.canonicalName
                   ? "bg-[#1A5336] text-white border-[#1A5336]"
                   : "bg-white border-gray-200 hover:border-[#1A5336]"
               }`}
@@ -83,6 +86,7 @@ function DirectoryPage() {
               {c.name}
             </button>
           ))}
+
         </div>
       </section>
 
