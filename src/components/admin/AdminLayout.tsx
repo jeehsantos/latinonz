@@ -44,7 +44,7 @@ export function AdminLayout() {
         .maybeSingle();
       if (cancelled) return;
       const role = profile?.role;
-      if (role === "admin" || role === "manager") {
+      if (role === "admin") {
         setAuth({ status: "ok", email: session.user.email ?? null, role });
       } else {
         setAuth({ status: "denied", email: session.user.email ?? null });
