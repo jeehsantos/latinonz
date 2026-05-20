@@ -1,50 +1,37 @@
-## Root causes
+# Plan
 
-I traced the full invite flow against the code. There are **four real bugs** stacking on top of each other — the magic-link fix from last round only solved one of them.
+## What I’ll fix
+1. Align the invite flow with the backend path that already works
+   - Keep the role assignment entirely on the privileged backend client.
+   - Remove any remaining ambiguity in `inviteManager` so the profile role write cannot fall back to a user-scoped RLS path.
 
-1. **`Remover` doesn't delete the user.** `removeManager` only does `update profiles set role='user'`. The auth user keeps existing, so the next invite to the same email hits `inviteUserByEmail` → "already been registered" → falls into the magic-link fallback instead of a fresh invite. That's why `idreamzjsm@gmail.com` was returning `status: "magic_link_sent"` last time and `status: "invited"` only after a real delete.
+2. Add targeted runtime diagnostics for the invite flow
+   - Add temporary server-side logging around `inviteUserByEmail`, the returned `userId`, and the `profiles` upsert result.
+   - This will confirm whether the live preview is executing the updated code or an older/stale copy.
 
-2. **The waitlist site-gate hijacks `/auth/accept-invite`.** `src/routes/__root.tsx` has `ALLOWED_IN_WAITLIST = ["/", "/admin"]`. When the user clicks the magic link, the app boots in `waitlist` mode and `SiteGate` immediately redirects them to `/` — the accept-invite page never runs `verifyOtp` / `setSession`, so the token gets consumed by the URL handler with nothing to do and the page shows "Convite inválido ou expirado".
+3. Force validation against the actual running preview
+   - Reproduce the invite from the running app/runtime, not just from isolated shell checks.
+   - Confirm the newly invited user’s `profiles.role` changes from `user` to `manager` immediately after invite.
 
-3. **The `/admin` guard rejects `manager`.** `src/routes/admin.tsx` `beforeLoad` does `if (profile?.role !== "admin") throw redirect({ to: "/dashboard" })`. A freshly accepted manager gets bounced to `/dashboard`, which then funnels into the empty business profile / waitlist UX. The `AdminLayout` denied screen has the same bug.
+4. Remove the blank-screen failure mode
+   - Make the invite handler return a clean, descriptive error path if the role update fails again, instead of dropping into the current generic runtime error screen.
 
-4. **Post-login redirects ignore `manager`.** `src/routes/login.tsx` sends only `admin` to `/admin`. `GoogleAuthButton` always hard-navigates to `/dashboard`. So even if a manager signs in correctly, they land in the dashboard.
+## Why this plan
+- The database is creating the invited user correctly.
+- The `profiles` trigger is creating the initial row correctly.
+- The same role update succeeds when executed directly with the privileged backend client.
+- That means the remaining issue is most likely the app/runtime path, not the underlying policy itself.
 
-## Changes
+## Technical details
+- Files to update:
+  - `src/lib/admin.functions.ts`
+- Validation steps:
+  - Inspect preview/dev-server logs while reproducing the invite.
+  - Confirm the exact `userId` created during invite.
+  - Confirm `public.profiles.role` is updated for that `userId`.
+  - Re-test delete + re-invite flow for the same email.
 
-### Backend
-
-- `src/lib/admin.functions.ts` → `removeManager`: replace the role-downgrade with `supabaseAdmin.auth.admin.deleteUser(userId)`. Profile row cascades (or is cleaned with a follow-up `delete from profiles`). Result: re-inviting the same email always takes the clean `invited` path.
-- `inviteManager`: keep the existing magic-link fallback as a safety net but it should rarely fire now.
-
-### Frontend guards
-
-- `src/routes/__root.tsx`: extend `ALLOWED_IN_WAITLIST` to include the auth surfaces — `"/auth/accept-invite"` and `"/login"` — and match by `startsWith` so the gate never steals an in-progress auth flow.
-- `src/routes/admin.tsx` `beforeLoad`: allow `role in ('admin', 'manager')`. Non-matching roles → `/dashboard`.
-- `src/components/admin/AdminLayout.tsx`: same — treat `manager` as authorised. Keep the "Acesso negado" screen only for true `user`/null.
-- `src/routes/login.tsx`: after login, route `admin` and `manager` → `/admin`, everyone else → `/dashboard`.
-- `src/components/auth/GoogleAuthButton.tsx`: after success, fetch the profile role and `window.location.assign("/admin")` for admin/manager, `/dashboard` otherwise. The OAuth `redirect_uri` stays `/dashboard` — the Google flow then re-evaluates on landing (see next bullet).
-- `src/routes/dashboard.tsx` `beforeLoad`: if the signed-in user is admin/manager, `throw redirect({ to: "/admin" })`. This catches the OAuth landing case and the "manager opens /dashboard by mistake" case.
-
-### Accept-invite hardening
-
-`src/routes/auth.accept-invite.tsx` already handles `code` / `token_hash` / hash tokens after the previous fix. The only addition: after `getSession` returns a user, also do a single retry of the profile fetch (the `handle_new_user` trigger inserts asynchronously); if the role is still `user`, the page should treat it as an invite that the backend already set to `manager`/`admin` via upsert — so just re-read once before deciding the redirect target.
-
-## Validation
-
-After the changes I will verify, in this order:
-
-1. Re-invite `idreamzjsm@gmail.com` from `/admin/managers` → response `status: "invited"` (not `magic_link_sent`).
-2. From the magic-link email, open `/auth/accept-invite?...` and confirm:
-   - the page is **not** redirected by `SiteGate`,
-   - the password form renders,
-   - on submit the user lands on `/admin` (not `/dashboard`, not waitlist).
-3. Sign out, sign back in with the new manager credentials on `/login` → lands on `/admin`.
-4. Open `/admin/account` as that manager → can edit name + password.
-5. `removeManager` on that user → auth user gone, re-invite works again as a brand-new invite.
-
-## Out of scope
-
-- No DB schema changes. (`profiles.id` already references `auth.users(id)` via the `handle_new_user` trigger; deleting the auth user is enough.)
-- No changes to category/business management or the email template.
-- No new RLS policies.
+## Expected result
+- Inviting a manager no longer throws the RLS error.
+- Re-inviting a deleted user works.
+- The invited user appears on `/admin/managers` with the correct role immediately.
