@@ -24,18 +24,56 @@ function AcceptInvitePage() {
   const [fullName, setFullName] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  // Supabase auto-detects the invite/recovery token in the URL hash on load.
   useEffect(() => {
     let cancelled = false;
     const check = async () => {
-      // Give detectSessionInUrl a tick to consume the hash.
-      await new Promise((r) => setTimeout(r, 100));
+      const url = new URL(window.location.href);
+      const hash = new URLSearchParams(url.hash.startsWith("#") ? url.hash.slice(1) : url.hash);
+      const code = url.searchParams.get("code");
+      const tokenHash = url.searchParams.get("token_hash");
+      const typeParam = url.searchParams.get("type");
+
+      try {
+        if (code) {
+          const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+          if (exchangeError) throw exchangeError;
+        } else if (tokenHash && typeParam) {
+          const normalizedType =
+            typeParam === "signup" ? "email" : typeParam;
+          const supportedTypes = new Set(["invite", "magiclink", "recovery", "email", "email_change"]);
+
+          if (supportedTypes.has(normalizedType)) {
+            const { error: verifyError } = await supabase.auth.verifyOtp({
+              token_hash: tokenHash,
+              type: normalizedType as "invite" | "magiclink" | "recovery" | "email" | "email_change",
+            });
+            if (verifyError) throw verifyError;
+          }
+        } else if (hash.get("access_token") && hash.get("refresh_token")) {
+          const { error: sessionError } = await supabase.auth.setSession({
+            access_token: hash.get("access_token") ?? "",
+            refresh_token: hash.get("refresh_token") ?? "",
+          });
+          if (sessionError) throw sessionError;
+        } else {
+          await new Promise((r) => setTimeout(r, 150));
+        }
+      } catch {
+        if (!cancelled) setStatus("no-session");
+        return;
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       if (cancelled) return;
       if (!session?.user) {
         setStatus("no-session");
         return;
       }
+
+      if (url.search || url.hash) {
+        window.history.replaceState({}, document.title, "/auth/accept-invite");
+      }
+
       setEmail(session.user.email ?? null);
       const meta = (session.user.user_metadata ?? {}) as { full_name?: string };
       if (meta.full_name) setFullName(meta.full_name);
