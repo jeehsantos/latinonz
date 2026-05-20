@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { lovable } from "@/integrations/lovable";
+import { supabase } from "@/integrations/supabase/client";
 
 type Props = {
   label: string;
@@ -25,11 +26,22 @@ export function GoogleAuthButton({ label, onError }: Props) {
         return;
       }
       if (result.redirected) {
-        // Browser is redirecting to Google; keep button disabled.
         return;
       }
-      // Tokens already set on the session — go to dashboard.
-      window.location.assign("/dashboard");
+      // Tokens already set — route by role.
+      const { data: { session } } = await supabase.auth.getSession();
+      let target = "/dashboard";
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .maybeSingle();
+        if (profile?.role === "admin" || profile?.role === "manager") {
+          target = "/admin";
+        }
+      }
+      window.location.assign(target);
     } catch (err) {
       onError?.(err instanceof Error ? err.message : "Erro inesperado.");
       setLoading(false);

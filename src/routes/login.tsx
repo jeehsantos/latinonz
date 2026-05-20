@@ -48,7 +48,8 @@ function LoginPage() {
         .select("role")
         .eq("id", res.user.id)
         .maybeSingle();
-      navigate({ to: profile?.role === "admin" ? "/admin" : "/dashboard" });
+      const isStaff = profile?.role === "admin" || profile?.role === "manager";
+      navigate({ to: isStaff ? "/admin" : "/dashboard" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro inesperado.");
     } finally {

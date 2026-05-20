@@ -489,12 +489,12 @@ export const removeManager = createServerFn({ method: "POST" })
       throw new Error("Forbidden: only admins can remove managers");
     }
     if (data.userId === context.userId) {
-      throw new Error("You cannot demote your own account");
+      throw new Error("You cannot remove your own account");
     }
-    const { error } = await supabaseAdmin
-      .from("profiles")
-      .update({ role: "user" })
-      .eq("id", data.userId);
-    if (error) throw new Error(error.message);
+    // Fully delete the auth user so the email can be re-invited cleanly.
+    const { error: delErr } = await supabaseAdmin.auth.admin.deleteUser(data.userId);
+    if (delErr) throw new Error(delErr.message);
+    // Clean up the profile row in case no FK cascade is set.
+    await supabaseAdmin.from("profiles").delete().eq("id", data.userId);
     return { ok: true as const };
   });

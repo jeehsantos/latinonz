@@ -17,7 +17,7 @@ export const Route = createFileRoute("/admin")({
       .select("role")
       .eq("id", session.user.id)
       .maybeSingle();
-    if (profile?.role !== "admin") {
+    if (profile?.role !== "admin" && profile?.role !== "manager") {
       throw redirect({ to: "/dashboard" });
     }
   },

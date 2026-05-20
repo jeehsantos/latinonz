@@ -1,45 +1,50 @@
-## Goal
+## Root causes
 
-Stop hardcoding categories on the landing page and `/directory`. Render them from the admin-managed `categories` table, with a chosen icon and translated names/blurbs per browser language. The visual design stays exactly as it is today.
+I traced the full invite flow against the code. There are **four real bugs** stacking on top of each other — the magic-link fix from last round only solved one of them.
 
-## What changes for the user
+1. **`Remover` doesn't delete the user.** `removeManager` only does `update profiles set role='user'`. The auth user keeps existing, so the next invite to the same email hits `inviteUserByEmail` → "already been registered" → falls into the magic-link fallback instead of a fresh invite. That's why `idreamzjsm@gmail.com` was returning `status: "magic_link_sent"` last time and `status: "invited"` only after a real delete.
 
-- **Admin `/admin/categories`**: when adding (or editing) a category, the admin picks an icon from a small curated list and fills name + blurb in PT, ES and EN.
-- **Landing page** (categories grid) and **/directory** (category chip filter): no more static `CATEGORIES` mock — the list, names, blurbs, icons and counts all come from the database, translated to the user's current language.
+2. **The waitlist site-gate hijacks `/auth/accept-invite`.** `src/routes/__root.tsx` has `ALLOWED_IN_WAITLIST = ["/", "/admin"]`. When the user clicks the magic link, the app boots in `waitlist` mode and `SiteGate` immediately redirects them to `/` — the accept-invite page never runs `verifyOtp` / `setSession`, so the token gets consumed by the URL handler with nothing to do and the page shows "Convite inválido ou expirado".
 
-## Database changes (one migration)
+3. **The `/admin` guard rejects `manager`.** `src/routes/admin.tsx` `beforeLoad` does `if (profile?.role !== "admin") throw redirect({ to: "/dashboard" })`. A freshly accepted manager gets bounced to `/dashboard`, which then funnels into the empty business profile / waitlist UX. The `AdminLayout` denied screen has the same bug.
 
-Extend `public.categories`:
+4. **Post-login redirects ignore `manager`.** `src/routes/login.tsx` sends only `admin` to `/admin`. `GoogleAuthButton` always hard-navigates to `/dashboard`. So even if a manager signs in correctly, they land in the dashboard.
 
-- `icon_key text not null default 'briefcase'` — a stable string key from a fixed allowed set (e.g. `utensils`, `briefcase`, `hammer`, `car`, `music`, `heart-pulse`, `scissors`, `shopping-bag`, `book-open`, `users`, `sparkles`, `graduation-cap`, `home`, `wrench`). The frontend maps the key → Lucide icon component.
-- `color_key text not null default 'slate'` — small palette token (`orange | blue | yellow | slate | purple | red | pink | teal | indigo | rose | emerald`) so the existing colored tile background is preserved.
-- `name_pt text`, `name_es text`, `name_en text` — translated display names. `name` stays as the canonical PT label used by `businesses.macro_category` for joining counts.
-- `blurb_pt text`, `blurb_es text`, `blurb_en text` — translated short descriptions.
-- `sort_order int not null default 0` — for stable ordering on landing/directory.
+## Changes
 
-Backfill `name_pt = name` and copy `blurb` into `blurb_pt` for existing rows. RLS already allows public SELECT and admin-only writes — no policy change needed.
+### Backend
 
-## Server functions (`src/lib/admin.functions.ts` + new public fn)
+- `src/lib/admin.functions.ts` → `removeManager`: replace the role-downgrade with `supabaseAdmin.auth.admin.deleteUser(userId)`. Profile row cascades (or is cleaned with a follow-up `delete from profiles`). Result: re-inviting the same email always takes the clean `invited` path.
+- `inviteManager`: keep the existing magic-link fallback as a safety net but it should rarely fire now.
 
-- `listAdminCategories`: also return `icon_key`, `color_key`, `sort_order`, all `name_*` and `blurb_*` fields.
-- `createAdminCategory` / new `updateAdminCategory`: accept `iconKey`, `colorKey`, `sortOrder`, `namePt/Es/En`, `blurbPt/Es/En`. Validate `iconKey` and `colorKey` against the allowed sets with Zod. `name` (canonical PT) is derived from `namePt`.
-- New `src/lib/categories.functions.ts` → `listPublicCategories()`: public (no auth), returns the row shape needed by the UI plus the per-category active-business count (one aggregation query against `businesses` grouped by `macro_category`).
+### Frontend guards
 
-## Frontend changes
+- `src/routes/__root.tsx`: extend `ALLOWED_IN_WAITLIST` to include the auth surfaces — `"/auth/accept-invite"` and `"/login"` — and match by `startsWith` so the gate never steals an in-progress auth flow.
+- `src/routes/admin.tsx` `beforeLoad`: allow `role in ('admin', 'manager')`. Non-matching roles → `/dashboard`.
+- `src/components/admin/AdminLayout.tsx`: same — treat `manager` as authorised. Keep the "Acesso negado" screen only for true `user`/null.
+- `src/routes/login.tsx`: after login, route `admin` and `manager` → `/admin`, everyone else → `/dashboard`.
+- `src/components/auth/GoogleAuthButton.tsx`: after success, fetch the profile role and `window.location.assign("/admin")` for admin/manager, `/dashboard` otherwise. The OAuth `redirect_uri` stays `/dashboard` — the Google flow then re-evaluates on landing (see next bullet).
+- `src/routes/dashboard.tsx` `beforeLoad`: if the signed-in user is admin/manager, `throw redirect({ to: "/admin" })`. This catches the OAuth landing case and the "manager opens /dashboard by mistake" case.
 
-- New `src/lib/category-icons.ts`: maps `icon_key → LucideIcon` and `color_key → { text, bg }` Tailwind class pair (mirrors the current mock styling so the design is identical).
-- New `src/hooks/useCategories.ts`: `useQuery` wrapper around `listPublicCategories` that picks the right `name_*` / `blurb_*` based on `useI18n().locale`, with fallback to PT.
-- `src/components/directory/DirectoryHome.tsx`: remove `CATEGORIES` import; render the categories grid from `useCategories()`. Trust strip's "9" categories number becomes the live count. Loading state renders skeleton tiles in the same grid.
-- `src/routes/directory.tsx`: remove `CATEGORIES` import; render the chip row from `useCategories()`. The chip's `onClick` still sets `search.category` to the canonical PT `name` so the existing filter against `businesses.macro_category` keeps working.
-- `src/routes/admin.categories.tsx`: replace the inline add form with a dialog containing icon picker (grid of Lucide icons), color picker (swatch row), and the three name+blurb language pairs. Inline edit on each row reuses the same dialog.
+### Accept-invite hardening
 
-## i18n
+`src/routes/auth.accept-invite.tsx` already handles `code` / `token_hash` / hash tokens after the previous fix. The only addition: after `getSession` returns a user, also do a single retry of the profile fetch (the `handle_new_user` trigger inserts asynchronously); if the role is still `user`, the page should treat it as an invite that the backend already set to `manager`/`admin` via upsert — so just re-read once before deciding the redirect target.
 
-- Add `admin.categories.*` strings (form labels, language tabs, icon/color picker labels) to `pt.json`, `es.json`, `en.json` per the project i18n rule.
-- No new keys are needed for category names/blurbs themselves — they are stored per-row in the DB.
+## Validation
 
-## Things deliberately not changed
+After the changes I will verify, in this order:
 
-- `src/lib/categories.ts` (the canonical PT enum used for `macro_category` on business profiles) stays as-is so existing businesses and the cadastro flow keep matching.
-- The visual design of the landing categories grid and the `/directory` chip row is preserved 1:1 — same tile shape, same colored icon bubble, same chip styling.
-- No backend logic outside categories is touched.
+1. Re-invite `idreamzjsm@gmail.com` from `/admin/managers` → response `status: "invited"` (not `magic_link_sent`).
+2. From the magic-link email, open `/auth/accept-invite?...` and confirm:
+   - the page is **not** redirected by `SiteGate`,
+   - the password form renders,
+   - on submit the user lands on `/admin` (not `/dashboard`, not waitlist).
+3. Sign out, sign back in with the new manager credentials on `/login` → lands on `/admin`.
+4. Open `/admin/account` as that manager → can edit name + password.
+5. `removeManager` on that user → auth user gone, re-invite works again as a brand-new invite.
+
+## Out of scope
+
+- No DB schema changes. (`profiles.id` already references `auth.users(id)` via the `handle_new_user` trigger; deleting the auth user is enough.)
+- No changes to category/business management or the email template.
+- No new RLS policies.
