@@ -118,6 +118,11 @@ function AdminManagersPage() {
           {error}
         </div>
       )}
+      {info && (
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm px-4 py-3 rounded-xl">
+          {info}
+        </div>
+      )}
 
       <div className="bg-white border border-gray-200 rounded-3xl overflow-hidden">
         <table className="w-full text-left">
