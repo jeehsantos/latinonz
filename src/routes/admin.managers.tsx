@@ -41,17 +41,24 @@ function AdminManagersPage() {
               : undefined,
         },
       }),
-    onSuccess: () => {
+    onSuccess: (res) => {
       setName(""); setEmail(""); setRole("manager"); setError(null);
+      const msg =
+        res.status === "magic_link_sent"
+          ? "User already had an account — a magic-link sign-in email was sent."
+          : res.status === "promoted_only"
+            ? res.warning ?? "User already existed; role was promoted but no email was sent."
+            : "Invite email sent.";
+      setInfo(msg);
       invalidate();
     },
-    onError: (e: Error) => setError(e.message),
+    onError: (e: Error) => { setInfo(null); setError(e.message); },
   });
 
   const removeMut = useMutation({
     mutationFn: (userId: string) => removeFn({ data: { userId } }),
     onSuccess: invalidate,
-    onError: (e: Error) => setError(e.message),
+    onError: (e: Error) => { setInfo(null); setError(e.message); },
   });
 
   const add = (e: React.FormEvent) => {
