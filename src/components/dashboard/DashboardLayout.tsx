@@ -3,7 +3,7 @@ import {
   LayoutDashboard, User, Image as ImageIcon, MessageSquare, Tag, BarChart2,
   Settings, CreditCard, Menu, X, Calendar, LogOut,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import logo from "@/assets/logo.png";
