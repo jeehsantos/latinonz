@@ -361,14 +361,19 @@ export const getAdminManagers = createServerFn({ method: "GET" })
 
     const ids = (profiles ?? []).map((p) => p.id);
     const emailById = new Map<string, string | null>();
+    const nameById = new Map<string, string | null>();
 
-    // Look up auth emails via admin API (paginated; cap at 1000 users for safety)
+    // Look up auth emails and names via admin API (paginated; cap at 1000 users for safety)
     if (ids.length > 0) {
       const { data: usersData, error: usersErr } =
         await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
       if (usersErr) throw new Error(usersErr.message);
       for (const u of usersData.users) {
-        if (ids.includes(u.id)) emailById.set(u.id, u.email ?? null);
+        if (ids.includes(u.id)) {
+          emailById.set(u.id, u.email ?? null);
+          const metaName = (u.user_metadata as Record<string, unknown>)?.full_name;
+          nameById.set(u.id, typeof metaName === "string" ? metaName : null);
+        }
       }
     }
 
@@ -376,6 +381,7 @@ export const getAdminManagers = createServerFn({ method: "GET" })
       managers: (profiles ?? []).map((p) => ({
         id: p.id,
         role: p.role as AdminRole,
+        name: nameById.get(p.id) ?? null,
         email: emailById.get(p.id) ?? null,
         createdAt: p.created_at,
       })),
