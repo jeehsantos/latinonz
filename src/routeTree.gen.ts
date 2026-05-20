@@ -32,10 +32,12 @@ import { Route as DashboardCouponsRouteImport } from './routes/dashboard.coupons
 import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 import { Route as BusinessSlugRouteImport } from './routes/business.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AuthAcceptInviteRouteImport } from './routes/auth.accept-invite'
 import { Route as AdminWaitlistRouteImport } from './routes/admin.waitlist'
 import { Route as AdminManagersRouteImport } from './routes/admin.managers'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminBusinessesRouteImport } from './routes/admin.businesses'
+import { Route as AdminAccountRouteImport } from './routes/admin.account'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe-webhook'
 
 const SobreRoute = SobreRouteImport.update({
@@ -153,6 +155,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BlogRoute,
 } as any)
+const AuthAcceptInviteRoute = AuthAcceptInviteRouteImport.update({
+  id: '/auth/accept-invite',
+  path: '/auth/accept-invite',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminWaitlistRoute = AdminWaitlistRouteImport.update({
   id: '/waitlist',
   path: '/waitlist',
@@ -173,6 +180,11 @@ const AdminBusinessesRoute = AdminBusinessesRouteImport.update({
   path: '/businesses',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAccountRoute = AdminAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
   id: '/api/public/stripe-webhook',
   path: '/api/public/stripe-webhook',
@@ -191,10 +203,12 @@ export interface FileRoutesByFullPath {
   '/planos': typeof PlanosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/admin/account': typeof AdminAccountRoute
   '/admin/businesses': typeof AdminBusinessesRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/managers': typeof AdminManagersRoute
   '/admin/waitlist': typeof AdminWaitlistRoute
+  '/auth/accept-invite': typeof AuthAcceptInviteRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/business/$slug': typeof BusinessSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
@@ -219,10 +233,12 @@ export interface FileRoutesByTo {
   '/planos': typeof PlanosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/admin/account': typeof AdminAccountRoute
   '/admin/businesses': typeof AdminBusinessesRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/managers': typeof AdminManagersRoute
   '/admin/waitlist': typeof AdminWaitlistRoute
+  '/auth/accept-invite': typeof AuthAcceptInviteRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/business/$slug': typeof BusinessSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
@@ -250,10 +266,12 @@ export interface FileRoutesById {
   '/planos': typeof PlanosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/admin/account': typeof AdminAccountRoute
   '/admin/businesses': typeof AdminBusinessesRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/managers': typeof AdminManagersRoute
   '/admin/waitlist': typeof AdminWaitlistRoute
+  '/auth/accept-invite': typeof AuthAcceptInviteRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/business/$slug': typeof BusinessSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
@@ -282,10 +300,12 @@ export interface FileRouteTypes {
     | '/planos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/admin/account'
     | '/admin/businesses'
     | '/admin/categories'
     | '/admin/managers'
     | '/admin/waitlist'
+    | '/auth/accept-invite'
     | '/blog/$slug'
     | '/business/$slug'
     | '/dashboard/analytics'
@@ -310,10 +330,12 @@ export interface FileRouteTypes {
     | '/planos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/admin/account'
     | '/admin/businesses'
     | '/admin/categories'
     | '/admin/managers'
     | '/admin/waitlist'
+    | '/auth/accept-invite'
     | '/blog/$slug'
     | '/business/$slug'
     | '/dashboard/analytics'
@@ -340,10 +362,12 @@ export interface FileRouteTypes {
     | '/planos'
     | '/sitemap.xml'
     | '/sobre'
+    | '/admin/account'
     | '/admin/businesses'
     | '/admin/categories'
     | '/admin/managers'
     | '/admin/waitlist'
+    | '/auth/accept-invite'
     | '/blog/$slug'
     | '/business/$slug'
     | '/dashboard/analytics'
@@ -371,6 +395,7 @@ export interface RootRouteChildren {
   PlanosRoute: typeof PlanosRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
+  AuthAcceptInviteRoute: typeof AuthAcceptInviteRoute
   BusinessSlugRoute: typeof BusinessSlugRoute
   ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
 }
@@ -538,6 +563,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
     }
+    '/auth/accept-invite': {
+      id: '/auth/accept-invite'
+      path: '/auth/accept-invite'
+      fullPath: '/auth/accept-invite'
+      preLoaderRoute: typeof AuthAcceptInviteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/waitlist': {
       id: '/admin/waitlist'
       path: '/waitlist'
@@ -566,6 +598,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBusinessesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/account': {
+      id: '/admin/account'
+      path: '/account'
+      fullPath: '/admin/account'
+      preLoaderRoute: typeof AdminAccountRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/api/public/stripe-webhook': {
       id: '/api/public/stripe-webhook'
       path: '/api/public/stripe-webhook'
@@ -577,6 +616,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAccountRoute: typeof AdminAccountRoute
   AdminBusinessesRoute: typeof AdminBusinessesRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminManagersRoute: typeof AdminManagersRoute
@@ -585,6 +625,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAccountRoute: AdminAccountRoute,
   AdminBusinessesRoute: AdminBusinessesRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminManagersRoute: AdminManagersRoute,
@@ -644,6 +685,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlanosRoute: PlanosRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
+  AuthAcceptInviteRoute: AuthAcceptInviteRoute,
   BusinessSlugRoute: BusinessSlugRoute,
   ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
 }

@@ -2,7 +2,7 @@ import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-route
 import { useEffect, useState } from "react";
 import {
   BarChart3, Briefcase, FolderTree, UserCog, Inbox, ShieldAlert, LogOut,
-  Loader2, Menu, X,
+  Loader2, Menu, X, UserCircle,
 } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,6 +15,7 @@ const NAV: NavItem[] = [
   { to: "/admin/categories", label: "Categorias", icon: FolderTree },
   { to: "/admin/managers", label: "Gerentes", icon: UserCog },
   { to: "/admin/waitlist", label: "Lista de espera", icon: Inbox },
+  { to: "/admin/account", label: "Minha conta", icon: UserCircle },
 ];
 
 type AuthState =

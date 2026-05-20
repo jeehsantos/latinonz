@@ -31,7 +31,15 @@ function AdminManagersPage() {
 
   const inviteMut = useMutation({
     mutationFn: (payload: { name: string; email: string; role: RoleValue }) =>
-      inviteFn({ data: payload }),
+      inviteFn({
+        data: {
+          ...payload,
+          redirectTo:
+            typeof window !== "undefined"
+              ? `${window.location.origin}/auth/accept-invite`
+              : undefined,
+        },
+      }),
     onSuccess: () => {
       setName(""); setEmail(""); setRole("manager"); setError(null);
       invalidate();
