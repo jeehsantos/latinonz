@@ -9,8 +9,16 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 type AdminRole = "admin" | "manager";
 
-async function requireAdminRole(userId: string): Promise<AdminRole> {
-  const { data, error } = await supabaseAdmin
+async function requireAdminRole(
+  userId: string,
+  authedClient?: { from: typeof supabaseAdmin.from },
+): Promise<AdminRole> {
+  // Prefer the user's authenticated client: RLS "User reads own profile"
+  // guarantees the caller can read their own role, regardless of whether
+  // the service-role key is correctly configured. Fall back to supabaseAdmin
+  // only when no authenticated client was passed in.
+  const client = authedClient ?? supabaseAdmin;
+  const { data, error } = await client
     .from("profiles")
     .select("role")
     .eq("id", userId)
@@ -20,7 +28,7 @@ async function requireAdminRole(userId: string): Promise<AdminRole> {
   if (role !== "admin" && role !== "manager") {
     throw new Error("Forbidden: admin or manager role required");
   }
-  return role;
+  return role as AdminRole;
 }
 
 // ---------- Businesses ----------
@@ -36,7 +44,7 @@ export const getAdminBusinesses = createServerFn({ method: "POST" })
       .parse(input ?? {}),
   )
   .handler(async ({ data, context }) => {
-    await requireAdminRole(context.userId);
+    await requireAdminRole(context.userId, context.supabase);
 
     let q = supabaseAdmin
       .from("businesses")
@@ -95,7 +103,7 @@ export const approveBusiness = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ businessId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    await requireAdminRole(context.userId);
+    await requireAdminRole(context.userId, context.supabase);
     const { error } = await supabaseAdmin
       .from("businesses")
       .update({ is_verified: true })
@@ -108,7 +116,7 @@ export const lockBusiness = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ businessId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    await requireAdminRole(context.userId);
+    await requireAdminRole(context.userId, context.supabase);
     const { error } = await supabaseAdmin
       .from("businesses")
       .update({ is_active: false })
@@ -121,7 +129,7 @@ export const unlockBusiness = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ businessId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    await requireAdminRole(context.userId);
+    await requireAdminRole(context.userId, context.supabase);
     const { error } = await supabaseAdmin
       .from("businesses")
       .update({ is_active: true })
@@ -141,7 +149,7 @@ const PLAN_PRICES_NZD: Record<string, number> = {
 export const getAdminMetrics = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await requireAdminRole(context.userId);
+    await requireAdminRole(context.userId, context.supabase);
 
     const [businessesRes, profilesRes, leadsRes, viewsRes, waitlistRes] = await Promise.all([
       supabaseAdmin.from("businesses").select("id, macro_category, is_active, is_verified"),
@@ -229,7 +237,7 @@ const categoryInputSchema = z.object({
 export const listAdminCategories = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await requireAdminRole(context.userId);
+    await requireAdminRole(context.userId, context.supabase);
 
     const [catsRes, bizRes] = await Promise.all([
       supabaseAdmin
@@ -282,7 +290,7 @@ export const createAdminCategory = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => categoryInputSchema.parse(input))
   .handler(async ({ data, context }) => {
-    await requireAdminRole(context.userId);
+    await requireAdminRole(context.userId, context.supabase);
     const key = slugifyCategory(data.namePt);
     if (!key) throw new Error("Nome de categoria inválido");
     const { error } = await supabaseAdmin.from("categories").insert({
@@ -312,7 +320,7 @@ export const updateAdminCategory = createServerFn({ method: "POST" })
     categoryInputSchema.extend({ id: z.string().uuid() }).parse(input),
   )
   .handler(async ({ data, context }) => {
-    await requireAdminRole(context.userId);
+    await requireAdminRole(context.userId, context.supabase);
     const { error } = await supabaseAdmin
       .from("categories")
       .update({
@@ -338,7 +346,7 @@ export const deleteAdminCategory = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    await requireAdminRole(context.userId);
+    await requireAdminRole(context.userId, context.supabase);
     const { error } = await supabaseAdmin.from("categories").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true as const };
@@ -350,7 +358,7 @@ export const deleteAdminCategory = createServerFn({ method: "POST" })
 export const getAdminManagers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await requireAdminRole(context.userId);
+    await requireAdminRole(context.userId, context.supabase);
 
     // Use a SECURITY DEFINER RPC so admins can read all staff profiles
     // regardless of profiles RLS / service-role key state.
@@ -407,7 +415,7 @@ export const inviteManager = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     // Only admins may create new admins/managers
-    const callerRole = await requireAdminRole(context.userId);
+    const callerRole = await requireAdminRole(context.userId, context.supabase);
     if (callerRole !== "admin") {
       throw new Error("Forbidden: only admins can invite managers");
     }
@@ -495,7 +503,7 @@ export const removeManager = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ userId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    const callerRole = await requireAdminRole(context.userId);
+    const callerRole = await requireAdminRole(context.userId, context.supabase);
     if (callerRole !== "admin") {
       throw new Error("Forbidden: only admins can remove managers");
     }
