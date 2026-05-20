@@ -119,7 +119,7 @@ export function AdminLayout() {
           <img src={logo} alt="Latino Connect" className="h-9 w-auto" />
         </Link>
         <span className="hidden sm:inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border bg-[#1A5336]/10 text-[#1A5336] border-[#1A5336]/20">
-          {auth.role === "admin" ? "Admin" : "Gerente"}
+          Admin
         </span>
         <div className="ml-auto flex items-center gap-3">
           {auth.email && (
