@@ -141,8 +141,8 @@ function AdminManagersPage() {
             ) : list.length === 0 ? (
               <tr><td colSpan={5} className="p-8 text-center text-gray-400">Nenhum gerente cadastrado.</td></tr>
             ) : list.map((m) => {
-              const label = m.email ?? m.id;
-              const initial = (m.email ?? "?").charAt(0).toUpperCase();
+              const displayName = m.name ?? m.email ?? "—";
+              const initial = (m.name ?? m.email ?? "?").charAt(0).toUpperCase();
               return (
                 <tr key={m.id} className="hover:bg-gray-50">
                   <td className="p-4">
@@ -150,7 +150,12 @@ function AdminManagersPage() {
                       <div className="w-9 h-9 rounded-full bg-[#1A5336] text-white font-bold flex items-center justify-center text-sm">
                         {initial}
                       </div>
-                      <span className="font-bold text-gray-900">{label}</span>
+                      <div className="flex flex-col">
+                        <span className="font-bold text-gray-900">{displayName}</span>
+                        {m.name && m.email && (
+                          <span className="text-xs text-gray-400">{m.email}</span>
+                        )}
+                      </div>
                     </div>
                   </td>
                   <td className="p-4 text-gray-600">{m.email ?? "—"}</td>
