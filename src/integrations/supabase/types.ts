@@ -537,6 +537,14 @@ export type Database = {
     }
     Functions: {
       is_admin_or_manager: { Args: { _user_id: string }; Returns: boolean }
+      list_admin_managers: {
+        Args: never
+        Returns: {
+          created_at: string
+          id: string
+          role: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
