@@ -18,10 +18,6 @@ function statusOf(b: { is_active: boolean; is_verified: boolean }): "approved" |
   return "approved";
 }
 
-function planOf(_b: unknown): "starter" | "premium" | "ultra" {
-  // Plan tier lives on the owner profile; default to starter in this view.
-  return "starter";
-}
 
 function AdminBusinessesPage() {
   const [query, setQuery] = useState("");
