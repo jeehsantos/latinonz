@@ -309,7 +309,7 @@ function AdminCategoriesPage() {
         </div>
       )}
 
-      <FolderTree className="hidden" /> {/* keep import used for future row affordance */}
     </div>
+
   );
 }
