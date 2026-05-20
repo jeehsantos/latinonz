@@ -21,7 +21,7 @@ type AuthState =
   | { status: "loading" }
   | { status: "anonymous" }
   | { status: "denied"; email: string | null }
-  | { status: "ok"; email: string | null; role: "admin" | "manager" };
+  | { status: "ok"; email: string | null; role: "admin" };
 
 export function AdminLayout() {
   const path = useRouterState({ select: (s) => s.location.pathname });
@@ -44,7 +44,7 @@ export function AdminLayout() {
         .maybeSingle();
       if (cancelled) return;
       const role = profile?.role;
-      if (role === "admin" || role === "manager") {
+      if (role === "admin") {
         setAuth({ status: "ok", email: session.user.email ?? null, role });
       } else {
         setAuth({ status: "denied", email: session.user.email ?? null });
@@ -119,7 +119,7 @@ export function AdminLayout() {
           <img src={logo} alt="Latino Connect" className="h-9 w-auto" />
         </Link>
         <span className="hidden sm:inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border bg-[#1A5336]/10 text-[#1A5336] border-[#1A5336]/20">
-          {auth.role === "admin" ? "Admin" : "Gerente"}
+          Admin
         </span>
         <div className="ml-auto flex items-center gap-3">
           {auth.email && (
