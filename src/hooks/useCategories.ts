@@ -12,6 +12,7 @@ export type LocalizedCategory = {
   blurb: string;
   iconKey: string;
   colorKey: string;
+  kind: "service" | "product";
   count: number;
 };
 
