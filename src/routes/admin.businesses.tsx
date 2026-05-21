@@ -29,6 +29,7 @@ function AdminBusinessesPage() {
   const approveFn = useServerFn(approveBusiness);
   const lockFn = useServerFn(lockBusiness);
   const unlockFn = useServerFn(unlockBusiness);
+  const setPlanFn = useServerFn(setBusinessPlan);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "businesses", filter, query],
