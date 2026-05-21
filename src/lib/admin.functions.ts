@@ -105,10 +105,25 @@ export const setBusinessPlan = createServerFn({ method: "POST" })
     if (!biz?.owner_id) throw new Error("Business owner not found");
 
     const ownerId = biz.owner_id;
-    const { error: upsertError } = await supabaseAdmin
+    const { data: existingProfile, error: existingProfileError } = await supabaseAdmin
       .from("profiles")
-      .upsert({ id: ownerId, plan_tier: data.plan }, { onConflict: "id" });
-    if (upsertError) throw new Error(upsertError.message);
+      .select("id")
+      .eq("id", ownerId)
+      .maybeSingle();
+    if (existingProfileError) throw new Error(existingProfileError.message);
+
+    if (existingProfile) {
+      const { error: updateError } = await supabaseAdmin
+        .from("profiles")
+        .update({ plan_tier: data.plan })
+        .eq("id", ownerId);
+      if (updateError) throw new Error(updateError.message);
+    } else {
+      const { error: insertError } = await supabaseAdmin
+        .from("profiles")
+        .insert({ id: ownerId, role: "user", plan_tier: data.plan });
+      if (insertError) throw new Error(insertError.message);
+    }
 
     const { data: verifiedProfile, error: verifyError } = await supabaseAdmin
       .from("profiles")
@@ -120,7 +135,12 @@ export const setBusinessPlan = createServerFn({ method: "POST" })
       throw new Error("Failed to persist business plan change");
     }
 
-    return { ok: true as const, plan: verifiedProfile.plan_tier as "starter" | "premium" | "ultra" };
+    return {
+      ok: true as const,
+      businessId: data.businessId,
+      ownerId,
+      plan: verifiedProfile.plan_tier as "starter" | "premium" | "ultra",
+    };
   });
 
 
