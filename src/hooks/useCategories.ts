@@ -48,6 +48,7 @@ export function useCategories() {
         blurb,
         iconKey: c.icon_key,
         colorKey: c.color_key,
+        kind: c.kind,
         count: c.count,
       };
     });
