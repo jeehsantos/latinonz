@@ -303,7 +303,10 @@ function ProfileEditor() {
               onChange={(e) => setCategory(e.target.value)}
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] appearance-none"
             >
-              {activeCategories.map((c, i) => <option key={i} value={c}>{c}</option>)}
+              {activeCategories.length === 0 && (
+                <option value="">Nenhuma categoria disponível</option>
+              )}
+              {activeCategories.map((c: string, i: number) => <option key={i} value={c}>{c}</option>)}
             </select>
             <ChevronDown size={16} className="absolute right-4 top-4 text-gray-400 pointer-events-none" />
           </div>
