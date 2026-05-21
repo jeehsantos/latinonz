@@ -95,6 +95,7 @@ export const setBusinessPlan = createServerFn({ method: "POST" })
     if (role !== "admin") {
       throw new Error("Forbidden: only admins can change business plan");
     }
+
     const { data: biz, error: bizErr } = await supabaseAdmin
       .from("businesses")
       .select("owner_id")
@@ -103,12 +104,23 @@ export const setBusinessPlan = createServerFn({ method: "POST" })
     if (bizErr) throw new Error(bizErr.message);
     if (!biz?.owner_id) throw new Error("Business owner not found");
 
-    const { error } = await supabaseAdmin
+    const ownerId = biz.owner_id;
+    const { error: upsertError } = await supabaseAdmin
       .from("profiles")
-      .update({ plan_tier: data.plan })
-      .eq("id", biz.owner_id);
-    if (error) throw new Error(error.message);
-    return { ok: true as const };
+      .upsert({ id: ownerId, plan_tier: data.plan }, { onConflict: "id" });
+    if (upsertError) throw new Error(upsertError.message);
+
+    const { data: verifiedProfile, error: verifyError } = await supabaseAdmin
+      .from("profiles")
+      .select("plan_tier")
+      .eq("id", ownerId)
+      .maybeSingle();
+    if (verifyError) throw new Error(verifyError.message);
+    if (verifiedProfile?.plan_tier !== data.plan) {
+      throw new Error("Failed to persist business plan change");
+    }
+
+    return { ok: true as const, plan: verifiedProfile.plan_tier as "starter" | "premium" | "ultra" };
   });
 
 
