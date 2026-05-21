@@ -4,7 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Search, CheckCircle2, Lock, Unlock, ExternalLink, Filter } from "lucide-react";
 import { PlanBadge } from "@/components/PlanBadge";
-import { getAdminBusinesses, approveBusiness, lockBusiness, unlockBusiness } from "@/lib/admin.functions";
+import { getAdminBusinesses, approveBusiness, lockBusiness, unlockBusiness, setBusinessPlan } from "@/lib/admin.functions";
+import type { PlanTier } from "@/lib/plans";
 
 export const Route = createFileRoute("/admin/businesses")({
   component: AdminBusinessesPage,
