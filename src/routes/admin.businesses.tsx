@@ -4,7 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Search, CheckCircle2, Lock, Unlock, ExternalLink, Filter } from "lucide-react";
 import { PlanBadge } from "@/components/PlanBadge";
-import { getAdminBusinesses, approveBusiness, lockBusiness, unlockBusiness } from "@/lib/admin.functions";
+import { getAdminBusinesses, approveBusiness, lockBusiness, unlockBusiness, setBusinessPlan } from "@/lib/admin.functions";
+import type { PlanTier } from "@/lib/plans";
 
 export const Route = createFileRoute("/admin/businesses")({
   component: AdminBusinessesPage,
@@ -28,6 +29,7 @@ function AdminBusinessesPage() {
   const approveFn = useServerFn(approveBusiness);
   const lockFn = useServerFn(lockBusiness);
   const unlockFn = useServerFn(unlockBusiness);
+  const setPlanFn = useServerFn(setBusinessPlan);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "businesses", filter, query],
@@ -49,7 +51,14 @@ function AdminBusinessesPage() {
     onSuccess: invalidate,
   });
 
+  const setPlanMut = useMutation({
+    mutationFn: ({ businessId, plan }: { businessId: string; plan: PlanTier }) =>
+      setPlanFn({ data: { businessId, plan } }),
+    onSuccess: invalidate,
+  });
+
   const businesses = data?.businesses ?? [];
+  const isAdmin = data?.viewerRole === "admin";
 
   return (
     <div className="space-y-6">
@@ -113,7 +122,28 @@ function AdminBusinessesPage() {
                       </td>
                       <td className="p-4 text-gray-600">{b.macro_category}</td>
                       <td className="p-4 text-gray-600">{b.city ?? "—"}</td>
-                      <td className="p-4"><PlanBadge plan={b.plan_tier} /></td>
+                      <td className="p-4">
+                        {isAdmin ? (
+                          <select
+                            value={b.plan_tier}
+                            disabled={setPlanMut.isPending}
+                            onChange={(e) =>
+                              setPlanMut.mutate({
+                                businessId: b.id,
+                                plan: e.target.value as PlanTier,
+                              })
+                            }
+                            className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-bold outline-none focus:border-[#1A5336] disabled:opacity-50"
+                            title="Alterar plano do negócio"
+                          >
+                            <option value="starter">Starter</option>
+                            <option value="premium">Premium</option>
+                            <option value="ultra">Ultra</option>
+                          </select>
+                        ) : (
+                          <PlanBadge plan={b.plan_tier} />
+                        )}
+                      </td>
 
                       <td className="p-4">
                         {status === "approved" && (

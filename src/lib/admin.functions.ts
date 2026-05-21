@@ -26,7 +26,7 @@ export const getAdminBusinesses = createServerFn({ method: "POST" })
       .parse(input ?? {}),
   )
   .handler(async ({ data, context }) => {
-    await requireAdminRole(context.userId, context.supabase);
+    const viewerRole = await requireAdminRole(context.userId, context.supabase);
 
     let q = supabaseAdmin
       .from("businesses")
@@ -77,7 +77,38 @@ export const getAdminBusinesses = createServerFn({ method: "POST" })
       city: Array.isArray(b.locations) && b.locations.length > 0 ? String(b.locations[0]) : null,
     }));
 
-    return { businesses };
+    return { businesses, viewerRole };
+  });
+
+export const setBusinessPlan = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        businessId: z.string().uuid(),
+        plan: z.enum(["starter", "premium", "ultra"]),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const role = await requireAdminRole(context.userId, context.supabase);
+    if (role !== "admin") {
+      throw new Error("Forbidden: only admins can change business plan");
+    }
+    const { data: biz, error: bizErr } = await supabaseAdmin
+      .from("businesses")
+      .select("owner_id")
+      .eq("id", data.businessId)
+      .maybeSingle();
+    if (bizErr) throw new Error(bizErr.message);
+    if (!biz?.owner_id) throw new Error("Business owner not found");
+
+    const { error } = await supabaseAdmin
+      .from("profiles")
+      .update({ plan_tier: data.plan })
+      .eq("id", biz.owner_id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
   });
 
 
