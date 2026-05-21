@@ -23,6 +23,7 @@ function statusOf(b: { is_active: boolean; is_verified: boolean }): "approved" |
 function AdminBusinessesPage() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<FilterValue>("all");
+  const [pendingPlans, setPendingPlans] = useState<Record<string, PlanTier>>({});
 
   const qc = useQueryClient();
   const fetchList = useServerFn(getAdminBusinesses);
@@ -54,7 +55,33 @@ function AdminBusinessesPage() {
   const setPlanMut = useMutation({
     mutationFn: ({ businessId, plan }: { businessId: string; plan: PlanTier }) =>
       setPlanFn({ data: { businessId, plan } }),
-    onSuccess: invalidate,
+    onMutate: async ({ businessId, plan }) => {
+      setPendingPlans((current) => ({ ...current, [businessId]: plan }));
+    },
+    onSuccess: (result) => {
+      qc.setQueriesData(
+        { queryKey: ["admin", "businesses"] },
+        (current: typeof data | undefined) => {
+          if (!current) return current;
+          return {
+            ...current,
+            businesses: current.businesses.map((business) =>
+              business.id === result.businessId
+                ? { ...business, plan_tier: result.plan }
+                : business,
+            ),
+          };
+        },
+      );
+      invalidate();
+    },
+    onSettled: (_result, _error, variables) => {
+      setPendingPlans((current) => {
+        const next = { ...current };
+        delete next[variables.businessId];
+        return next;
+      });
+    },
   });
 
   const businesses = data?.businesses ?? [];
@@ -125,8 +152,8 @@ function AdminBusinessesPage() {
                       <td className="p-4">
                         {isAdmin ? (
                           <select
-                            value={b.plan_tier}
-                            disabled={setPlanMut.isPending}
+                            value={pendingPlans[b.id] ?? b.plan_tier}
+                            disabled={setPlanMut.isPending && pendingPlans[b.id] !== undefined}
                             onChange={(e) =>
                               setPlanMut.mutate({
                                 businessId: b.id,
