@@ -179,6 +179,7 @@ export type Database = {
           icon_key: string
           id: string
           key: string
+          kind: string
           name: string
           name_en: string | null
           name_es: string | null
@@ -195,6 +196,7 @@ export type Database = {
           icon_key?: string
           id?: string
           key: string
+          kind?: string
           name: string
           name_en?: string | null
           name_es?: string | null
@@ -211,6 +213,7 @@ export type Database = {
           icon_key?: string
           id?: string
           key?: string
+          kind?: string
           name?: string
           name_en?: string | null
           name_es?: string | null
