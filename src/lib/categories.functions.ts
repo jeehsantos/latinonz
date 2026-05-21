@@ -14,6 +14,7 @@ export type PublicCategory = {
   icon_key: string;
   color_key: string;
   sort_order: number;
+  kind: "service" | "product";
   count: number;
 };
 
