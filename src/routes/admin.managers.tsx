@@ -35,10 +35,7 @@ function AdminManagersPage() {
       inviteFn({
         data: {
           ...payload,
-          redirectTo:
-            typeof window !== "undefined"
-              ? `${window.location.origin}/auth/accept-invite`
-              : undefined,
+          redirectTo: "https://latinonz.lovable.app/auth/accept-invite",
         },
       }),
     onSuccess: (res) => {
