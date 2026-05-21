@@ -23,7 +23,7 @@ export const listPublicCategories = createServerFn({ method: "GET" })
     const [catsRes, bizRes] = await Promise.all([
       supabaseAdmin
         .from("categories")
-        .select("id, key, name, name_pt, name_es, name_en, blurb_pt, blurb_es, blurb_en, icon_key, color_key, sort_order")
+        .select("id, key, name, name_pt, name_es, name_en, blurb_pt, blurb_es, blurb_en, icon_key, color_key, sort_order, kind")
         .order("sort_order", { ascending: true })
         .order("name", { ascending: true }),
       supabaseAdmin.from("businesses").select("macro_category, is_active"),
