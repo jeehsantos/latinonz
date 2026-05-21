@@ -122,7 +122,28 @@ function AdminBusinessesPage() {
                       </td>
                       <td className="p-4 text-gray-600">{b.macro_category}</td>
                       <td className="p-4 text-gray-600">{b.city ?? "—"}</td>
-                      <td className="p-4"><PlanBadge plan={b.plan_tier} /></td>
+                      <td className="p-4">
+                        {isAdmin ? (
+                          <select
+                            value={b.plan_tier}
+                            disabled={setPlanMut.isPending}
+                            onChange={(e) =>
+                              setPlanMut.mutate({
+                                businessId: b.id,
+                                plan: e.target.value as PlanTier,
+                              })
+                            }
+                            className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-bold outline-none focus:border-[#1A5336] disabled:opacity-50"
+                            title="Alterar plano do negócio"
+                          >
+                            <option value="starter">Starter</option>
+                            <option value="premium">Premium</option>
+                            <option value="ultra">Ultra</option>
+                          </select>
+                        ) : (
+                          <PlanBadge plan={b.plan_tier} />
+                        )}
+                      </td>
 
                       <td className="p-4">
                         {status === "approved" && (
