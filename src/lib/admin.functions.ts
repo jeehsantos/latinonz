@@ -255,6 +255,7 @@ export const listAdminCategories = createServerFn({ method: "GET" })
         iconKey: c.icon_key ?? "briefcase",
         colorKey: c.color_key ?? "slate",
         sortOrder: c.sort_order ?? 0,
+        kind: (c.kind as "service" | "product" | null) ?? "service",
         count: counts.get(c.name) ?? 0,
       })),
     };
