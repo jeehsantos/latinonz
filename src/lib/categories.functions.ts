@@ -51,6 +51,7 @@ export const listPublicCategories = createServerFn({ method: "GET" })
         icon_key: c.icon_key,
         color_key: c.color_key,
         sort_order: c.sort_order,
+        kind: (((c as unknown as { kind?: string }).kind) === "product" ? "product" : "service"),
         count: counts.get(c.name) ?? 0,
       })),
     };
