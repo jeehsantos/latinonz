@@ -82,6 +82,7 @@ function AdminCategoriesPage() {
       blurbPt: r.blurbPt, blurbEs: r.blurbEs, blurbEn: r.blurbEn,
       iconKey: r.iconKey as IconKey, colorKey: r.colorKey as ColorKey,
       sortOrder: r.sortOrder,
+      kind: (r as { kind?: "service" | "product" }).kind ?? "service",
     });
     setError(null); setOpen(true);
   };
