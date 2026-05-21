@@ -214,6 +214,7 @@ const categoryInputSchema = z.object({
   iconKey: ICON_KEYS.default("briefcase"),
   colorKey: COLOR_KEYS.default("slate"),
   sortOrder: z.number().int().min(0).max(9999).default(0),
+  kind: z.enum(["service", "product"]).default("service"),
 });
 
 export const listAdminCategories = createServerFn({ method: "GET" })
@@ -224,7 +225,7 @@ export const listAdminCategories = createServerFn({ method: "GET" })
     const [catsRes, bizRes] = await Promise.all([
       supabaseAdmin
         .from("categories")
-        .select("id, key, name, name_pt, name_es, name_en, blurb, blurb_pt, blurb_es, blurb_en, icon_key, color_key, sort_order, created_at")
+        .select("id, key, name, name_pt, name_es, name_en, blurb, blurb_pt, blurb_es, blurb_en, icon_key, color_key, sort_order, kind, created_at")
         .order("sort_order", { ascending: true })
         .order("name", { ascending: true }),
       supabaseAdmin
@@ -254,6 +255,7 @@ export const listAdminCategories = createServerFn({ method: "GET" })
         iconKey: c.icon_key ?? "briefcase",
         colorKey: c.color_key ?? "slate",
         sortOrder: c.sort_order ?? 0,
+        kind: (c.kind as "service" | "product" | null) ?? "service",
         count: counts.get(c.name) ?? 0,
       })),
     };
@@ -288,6 +290,7 @@ export const createAdminCategory = createServerFn({ method: "POST" })
       icon_key: data.iconKey,
       color_key: data.colorKey,
       sort_order: data.sortOrder,
+      kind: data.kind,
     });
     if (error) {
       if (error.code === "23505") throw new Error("Categoria já existe");
@@ -317,6 +320,7 @@ export const updateAdminCategory = createServerFn({ method: "POST" })
         icon_key: data.iconKey,
         color_key: data.colorKey,
         sort_order: data.sortOrder,
+        kind: data.kind,
       })
       .eq("id", data.id);
     if (error) throw new Error(error.message);

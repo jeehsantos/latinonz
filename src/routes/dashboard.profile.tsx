@@ -7,7 +7,8 @@ import {
   Copy, MapPin, Clock, ShoppingBag, UtensilsCrossed, Bike, CalendarClock, Sparkles, Lock,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { CATEGORIES, NZ_CITIES } from "@/lib/mock/categories";
+import { NZ_CITIES } from "@/lib/mock/categories";
+import { useCategories } from "@/hooks/useCategories";
 import { useI18n } from "@/lib/i18n";
 import { getMyBusiness, updateMyBusiness } from "@/lib/business.functions";
 import { uploadLogo } from "@/lib/storage.functions";
@@ -64,7 +65,7 @@ function ProfileEditor() {
   const [businessType, setBusinessType] = useState<BusinessType>("Serviço");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState<string>(CATEGORIES[0]?.name ?? "");
+  const [category, setCategory] = useState<string>("");
   const [phone, setPhone] = useState("");
   const [keywords, setKeywords] = useState("");
   const [cities, setCities] = useState<string[]>(["Auckland"]);
@@ -106,7 +107,22 @@ function ProfileEditor() {
     if (b.logo_url) setLogo(b.logo_url);
   }, [loaded]);
 
-  const activeCategories = CATEGORIES.map((c) => c.name);
+  const { categories: dbCategories } = useCategories();
+  const wantedKind: "service" | "product" = businessType === "Produto" ? "product" : "service";
+  const activeCategories = useMemo(
+    () => dbCategories.filter((c) => c.kind === wantedKind).map((c) => c.canonicalName),
+    [dbCategories, wantedKind],
+  );
+  // Reset category if it no longer belongs to the current tab
+  useEffect(() => {
+    if (!category && activeCategories.length > 0) {
+      setCategory(activeCategories[0]);
+      return;
+    }
+    if (category && activeCategories.length > 0 && !activeCategories.includes(category)) {
+      setCategory(activeCategories[0]);
+    }
+  }, [activeCategories, category]);
   const branchSchedule = schedules[activeBranch] ?? DEFAULT_SCHEDULE;
 
   const days: { key: DayKey; label: string; short: string }[] = [
@@ -287,7 +303,10 @@ function ProfileEditor() {
               onChange={(e) => setCategory(e.target.value)}
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] appearance-none"
             >
-              {activeCategories.map((c, i) => <option key={i} value={c}>{c}</option>)}
+              {activeCategories.length === 0 && (
+                <option value="">Nenhuma categoria disponível</option>
+              )}
+              {activeCategories.map((c: string, i: number) => <option key={i} value={c}>{c}</option>)}
             </select>
             <ChevronDown size={16} className="absolute right-4 top-4 text-gray-400 pointer-events-none" />
           </div>

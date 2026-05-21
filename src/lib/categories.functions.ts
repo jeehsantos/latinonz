@@ -14,6 +14,7 @@ export type PublicCategory = {
   icon_key: string;
   color_key: string;
   sort_order: number;
+  kind: "service" | "product";
   count: number;
 };
 
@@ -22,7 +23,7 @@ export const listPublicCategories = createServerFn({ method: "GET" })
     const [catsRes, bizRes] = await Promise.all([
       supabaseAdmin
         .from("categories")
-        .select("id, key, name, name_pt, name_es, name_en, blurb_pt, blurb_es, blurb_en, icon_key, color_key, sort_order")
+        .select("id, key, name, name_pt, name_es, name_en, blurb_pt, blurb_es, blurb_en, icon_key, color_key, sort_order, kind")
         .order("sort_order", { ascending: true })
         .order("name", { ascending: true }),
       supabaseAdmin.from("businesses").select("macro_category, is_active"),
@@ -50,6 +51,7 @@ export const listPublicCategories = createServerFn({ method: "GET" })
         icon_key: c.icon_key,
         color_key: c.color_key,
         sort_order: c.sort_order,
+        kind: (((c as unknown as { kind?: string }).kind) === "product" ? "product" : "service"),
         count: counts.get(c.name) ?? 0,
       })),
     };
