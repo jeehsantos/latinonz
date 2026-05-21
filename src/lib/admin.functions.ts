@@ -214,6 +214,7 @@ const categoryInputSchema = z.object({
   iconKey: ICON_KEYS.default("briefcase"),
   colorKey: COLOR_KEYS.default("slate"),
   sortOrder: z.number().int().min(0).max(9999).default(0),
+  kind: z.enum(["service", "product"]).default("service"),
 });
 
 export const listAdminCategories = createServerFn({ method: "GET" })
