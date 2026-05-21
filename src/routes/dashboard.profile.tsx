@@ -7,7 +7,8 @@ import {
   Copy, MapPin, Clock, ShoppingBag, UtensilsCrossed, Bike, CalendarClock, Sparkles, Lock,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { CATEGORIES, NZ_CITIES } from "@/lib/mock/categories";
+import { NZ_CITIES } from "@/lib/mock/categories";
+import { useCategories } from "@/hooks/useCategories";
 import { useI18n } from "@/lib/i18n";
 import { getMyBusiness, updateMyBusiness } from "@/lib/business.functions";
 import { uploadLogo } from "@/lib/storage.functions";
