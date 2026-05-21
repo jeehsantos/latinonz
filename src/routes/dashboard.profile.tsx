@@ -65,7 +65,7 @@ function ProfileEditor() {
   const [businessType, setBusinessType] = useState<BusinessType>("Serviço");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState<string>(CATEGORIES[0]?.name ?? "");
+  const [category, setCategory] = useState<string>("");
   const [phone, setPhone] = useState("");
   const [keywords, setKeywords] = useState("");
   const [cities, setCities] = useState<string[]>(["Auckland"]);
