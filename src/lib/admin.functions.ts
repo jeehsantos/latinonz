@@ -290,6 +290,7 @@ export const createAdminCategory = createServerFn({ method: "POST" })
       icon_key: data.iconKey,
       color_key: data.colorKey,
       sort_order: data.sortOrder,
+      kind: data.kind,
     });
     if (error) {
       if (error.code === "23505") throw new Error("Categoria já existe");
