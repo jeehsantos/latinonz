@@ -107,7 +107,22 @@ function ProfileEditor() {
     if (b.logo_url) setLogo(b.logo_url);
   }, [loaded]);
 
-  const activeCategories = CATEGORIES.map((c) => c.name);
+  const { categories: dbCategories } = useCategories();
+  const wantedKind: "service" | "product" = businessType === "Produto" ? "product" : "service";
+  const activeCategories = useMemo(
+    () => dbCategories.filter((c) => c.kind === wantedKind).map((c) => c.canonicalName),
+    [dbCategories, wantedKind],
+  );
+  // Reset category if it no longer belongs to the current tab
+  useEffect(() => {
+    if (!category && activeCategories.length > 0) {
+      setCategory(activeCategories[0]);
+      return;
+    }
+    if (category && activeCategories.length > 0 && !activeCategories.includes(category)) {
+      setCategory(activeCategories[0]);
+    }
+  }, [activeCategories, category]);
   const branchSchedule = schedules[activeBranch] ?? DEFAULT_SCHEDULE;
 
   const days: { key: DayKey; label: string; short: string }[] = [
