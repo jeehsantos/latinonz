@@ -26,7 +26,7 @@ export const getAdminBusinesses = createServerFn({ method: "POST" })
       .parse(input ?? {}),
   )
   .handler(async ({ data, context }) => {
-    await requireAdminRole(context.userId, context.supabase);
+    const viewerRole = await requireAdminRole(context.userId, context.supabase);
 
     let q = supabaseAdmin
       .from("businesses")
