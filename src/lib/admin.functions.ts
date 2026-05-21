@@ -320,6 +320,7 @@ export const updateAdminCategory = createServerFn({ method: "POST" })
         icon_key: data.iconKey,
         color_key: data.colorKey,
         sort_order: data.sortOrder,
+        kind: data.kind,
       })
       .eq("id", data.id);
     if (error) throw new Error(error.message);
