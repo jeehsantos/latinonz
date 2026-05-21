@@ -23,12 +23,14 @@ type FormState = {
   namePt: string; nameEs: string; nameEn: string;
   blurbPt: string; blurbEs: string; blurbEn: string;
   iconKey: IconKey; colorKey: ColorKey; sortOrder: number;
+  kind: "service" | "product";
 };
 
 const EMPTY_FORM: FormState = {
   namePt: "", nameEs: "", nameEn: "",
   blurbPt: "", blurbEs: "", blurbEn: "",
   iconKey: "briefcase", colorKey: "slate", sortOrder: 0,
+  kind: "service",
 };
 
 function AdminCategoriesPage() {
