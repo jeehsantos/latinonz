@@ -225,7 +225,7 @@ export const listAdminCategories = createServerFn({ method: "GET" })
     const [catsRes, bizRes] = await Promise.all([
       supabaseAdmin
         .from("categories")
-        .select("id, key, name, name_pt, name_es, name_en, blurb, blurb_pt, blurb_es, blurb_en, icon_key, color_key, sort_order, created_at")
+        .select("id, key, name, name_pt, name_es, name_en, blurb, blurb_pt, blurb_es, blurb_en, icon_key, color_key, sort_order, kind, created_at")
         .order("sort_order", { ascending: true })
         .order("name", { ascending: true }),
       supabaseAdmin
