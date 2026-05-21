@@ -196,6 +196,28 @@ function AdminCategoriesPage() {
                 <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">{error}</div>
               )}
 
+              {/* Kind: Service vs Product */}
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Tipo</p>
+                <div className="inline-flex bg-gray-100 rounded-xl p-1">
+                  {(["service", "product"] as const).map((k) => (
+                    <button
+                      key={k}
+                      type="button"
+                      onClick={() => setForm({ ...form, kind: k })}
+                      className={`px-4 py-1.5 text-sm font-bold rounded-lg transition ${
+                        form.kind === k ? "bg-white text-[#1A5336] shadow-sm" : "text-gray-500 hover:text-gray-700"
+                      }`}
+                    >
+                      {k === "service" ? "Serviço" : "Produto"}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-400 mt-2">
+                  Define em qual aba (Serviço / Produto) esta categoria aparece no cadastro de negócios.
+                </p>
+              </div>
+
               {/* Translations */}
               <div className="space-y-4">
                 <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Traduções</p>
