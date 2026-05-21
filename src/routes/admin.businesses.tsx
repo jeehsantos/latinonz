@@ -51,7 +51,14 @@ function AdminBusinessesPage() {
     onSuccess: invalidate,
   });
 
+  const setPlanMut = useMutation({
+    mutationFn: ({ businessId, plan }: { businessId: string; plan: PlanTier }) =>
+      setPlanFn({ data: { businessId, plan } }),
+    onSuccess: invalidate,
+  });
+
   const businesses = data?.businesses ?? [];
+  const isAdmin = data?.viewerRole === "admin";
 
   return (
     <div className="space-y-6">
