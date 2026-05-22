@@ -11,6 +11,8 @@ export const Route = createFileRoute("/admin/managers")({
 
 type RoleValue = "manager" | "admin";
 
+const INVITE_ACCEPT_URL = "https://latinoconnecthub.co.nz/auth/accept-invite";
+
 function AdminManagersPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -35,7 +37,7 @@ function AdminManagersPage() {
       inviteFn({
         data: {
           ...payload,
-          redirectTo: "https://latinonz.lovable.app/auth/accept-invite",
+          redirectTo: INVITE_ACCEPT_URL,
         },
       }),
     onSuccess: (res) => {
