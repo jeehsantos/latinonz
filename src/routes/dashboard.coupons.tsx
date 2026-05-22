@@ -6,12 +6,7 @@ import { Plus, Tag, Ticket, X, Power, Trash2 } from "lucide-react";
 import { useCurrentPlan } from "@/lib/dev-plan";
 import { can } from "@/lib/plans";
 import { useI18n } from "@/lib/i18n";
-import {
-  getMyCoupons,
-  createCoupon,
-  toggleCoupon,
-  deleteCoupon,
-} from "@/lib/coupons.functions";
+import { getMyCoupons, createCoupon, toggleCoupon, deleteCoupon } from "@/lib/coupons.functions";
 
 export const Route = createFileRoute("/dashboard/coupons")({
   component: CouponsPage,
@@ -47,9 +42,7 @@ function CouponsPage() {
   });
 
   const coupons: CouponRow[] =
-    data && (data as { ok?: boolean }).ok
-      ? ((data as { coupons: CouponRow[] }).coupons ?? [])
-      : [];
+    data && (data as { ok?: boolean }).ok ? ((data as { coupons: CouponRow[] }).coupons ?? []) : [];
 
   const [formOpen, setFormOpen] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -95,8 +88,7 @@ function CouponsPage() {
       setFormOpen(false);
       resetForm();
     },
-    onError: (err) =>
-      setFormError(err instanceof Error ? err.message : "Erro ao criar cupom"),
+    onError: (err) => setFormError(err instanceof Error ? err.message : "Erro ao criar cupom"),
   });
 
   const toggleMutation = useMutation({
@@ -147,7 +139,10 @@ function CouponsPage() {
                   }`}
                 >
                   <div className="flex items-start justify-between">
-                    <Ticket className={c.is_active ? "text-amber-700" : "text-gray-400"} size={20} />
+                    <Ticket
+                      className={c.is_active ? "text-amber-700" : "text-gray-400"}
+                      size={20}
+                    />
                     <div className="flex gap-1">
                       <button
                         onClick={() => toggleMutation.mutate(c.id)}
@@ -194,7 +189,9 @@ function CouponsPage() {
             <div className="w-14 h-14 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center">
               <Tag size={22} />
             </div>
-            <p className="mt-5 font-extrabold text-gray-900 text-base">{t("coupons.locked_title")}</p>
+            <p className="mt-5 font-extrabold text-gray-900 text-base">
+              {t("coupons.locked_title")}
+            </p>
             <Link
               to="/dashboard/upgrade"
               className="mt-4 inline-flex items-center bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold text-sm px-5 py-2.5 rounded-xl shadow-sm transition-colors"

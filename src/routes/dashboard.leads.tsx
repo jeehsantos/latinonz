@@ -41,16 +41,14 @@ function LeadsPage() {
     throwOnError: false,
   });
 
-  const leads: LeadRow[] = (data && (data as { ok?: boolean }).ok
-    ? ((data as { leads: LeadRow[] }).leads ?? [])
-    : []);
+  const leads: LeadRow[] =
+    data && (data as { ok?: boolean }).ok ? ((data as { leads: LeadRow[] }).leads ?? []) : [];
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = leads.find((l) => l.id === selectedId) ?? null;
 
   const mutation = useMutation({
-    mutationFn: (vars: { leadId: string; status: LeadStatus }) =>
-      updateStatusFn({ data: vars }),
+    mutationFn: (vars: { leadId: string; status: LeadStatus }) => updateStatusFn({ data: vars }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-leads"] });
     },
@@ -104,12 +102,18 @@ function LeadsPage() {
                   >
                     <td className="p-4 font-bold text-gray-900">
                       {l.name}
-                      <div className="text-xs font-normal text-gray-500">{l.phone ?? l.email ?? ""}</div>
+                      <div className="text-xs font-normal text-gray-500">
+                        {l.phone ?? l.email ?? ""}
+                      </div>
                     </td>
                     <td className="p-4 text-gray-600">{l.source}</td>
-                    <td className="p-4 text-gray-500">{date} {time}</td>
+                    <td className="p-4 text-gray-500">
+                      {date} {time}
+                    </td>
                     <td className="p-4">
-                      <span className={`text-xs font-bold px-2 py-1 rounded-full ${statusStyles[l.status]}`}>
+                      <span
+                        className={`text-xs font-bold px-2 py-1 rounded-full ${statusStyles[l.status]}`}
+                      >
                         {statusLabels[l.status]}
                       </span>
                     </td>
@@ -122,7 +126,9 @@ function LeadsPage() {
         <div className="bg-white border border-gray-200 rounded-3xl p-6">
           {selected ? (
             <>
-              <p className="text-xs font-bold uppercase tracking-wider text-gray-500">{selected.source}</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                {selected.source}
+              </p>
               <h3 className="font-extrabold text-gray-900 mt-1">{selected.name}</h3>
               <p className="text-sm text-gray-500">{selected.phone ?? selected.email ?? ""}</p>
               <p className="mt-4 text-sm text-gray-700">{selected.message ?? ""}</p>

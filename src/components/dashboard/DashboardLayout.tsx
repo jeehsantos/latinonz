@@ -1,7 +1,17 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
-  LayoutDashboard, User, Image as ImageIcon, MessageSquare, Tag, BarChart2,
-  Settings, CreditCard, Menu, X, Calendar, LogOut,
+  LayoutDashboard,
+  User,
+  Image as ImageIcon,
+  MessageSquare,
+  Tag,
+  BarChart2,
+  Settings,
+  CreditCard,
+  Menu,
+  X,
+  Calendar,
+  LogOut,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -47,9 +57,10 @@ export function DashboardLayout() {
   });
   const business = myBiz?.business;
   const businessName = business?.name ?? "—";
-  const businessLocation = Array.isArray(business?.locations) && business?.locations.length
-    ? String(business.locations[0])
-    : "";
+  const businessLocation =
+    Array.isArray(business?.locations) && business?.locations.length
+      ? String(business.locations[0])
+      : "";
   const logoUrl = business?.logo_url ?? null;
   const initial = (businessName || "?").trim().charAt(0).toUpperCase();
 
@@ -62,8 +73,7 @@ export function DashboardLayout() {
   const [plan, setPlan] = useCurrentPlan();
   const [sidebarColor] = useSidebarColor();
   const showDevSwitch =
-    typeof window !== "undefined" &&
-    new URLSearchParams(window.location.search).get("dev") === "1";
+    typeof window !== "undefined" && new URLSearchParams(window.location.search).get("dev") === "1";
 
   const pendingLeads = LEADS.filter((l) => l.status === "Pendente").length;
 
@@ -79,7 +89,12 @@ export function DashboardLayout() {
     { to: "/dashboard", label: t("dashboard.nav_dashboard"), icon: LayoutDashboard, exact: true },
     { to: "/dashboard/profile", label: t("dashboard.nav_profile"), icon: User },
     { to: "/dashboard/gallery", label: t("dashboard.nav_gallery"), icon: ImageIcon },
-    { to: "/dashboard/leads", label: t("dashboard.nav_leads"), icon: MessageSquare, badge: pendingLeads },
+    {
+      to: "/dashboard/leads",
+      label: t("dashboard.nav_leads"),
+      icon: MessageSquare,
+      badge: pendingLeads,
+    },
     { to: "/dashboard/coupons", label: t("dashboard.nav_coupons"), icon: Tag },
     ...(can(plan, "events")
       ? [{ to: "/dashboard/events", label: "Eventos", icon: Calendar } as NavItem]
@@ -156,7 +171,11 @@ export function DashboardLayout() {
             className="lg:hidden flex items-center justify-between p-4 border-b"
             style={{ borderColor: borderCol }}
           >
-            <img src={logo} alt="Latino Connect" className="h-8 w-auto bg-white rounded px-2 py-1" />
+            <img
+              src={logo}
+              alt="Latino Connect"
+              className="h-8 w-auto bg-white rounded px-2 py-1"
+            />
             <button className="text-white/80" onClick={() => setMobileOpen(false)}>
               <X size={20} />
             </button>
@@ -171,7 +190,9 @@ export function DashboardLayout() {
                   key={n.to}
                   to={n.to}
                   onClick={() => setMobileOpen(false)}
-                  style={active ? { backgroundColor: activeBg, color: "#fff" } : { color: mutedText }}
+                  style={
+                    active ? { backgroundColor: activeBg, color: "#fff" } : { color: mutedText }
+                  }
                   onMouseEnter={(e) => {
                     if (!active) e.currentTarget.style.backgroundColor = hoverBg;
                   }}

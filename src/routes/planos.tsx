@@ -3,7 +3,7 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { Container } from "@/components/site/Container";
 import { PlanCard } from "@/components/plans/PlanCard";
 import { PlanComparisonTable } from "@/components/plans/PlanComparisonTable";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, usePageMetadata } from "@/lib/i18n";
 
 export const Route = createFileRoute("/planos")({
   head: () => ({
@@ -29,6 +29,7 @@ export const Route = createFileRoute("/planos")({
 
 function PlanosPage() {
   const { t, raw } = useI18n();
+  usePageMetadata("metadata.planos.title", "metadata.planos.description");
   const starterFeatures = raw<string[]>("plans.features_starter") ?? [];
   const premiumFeatures = raw<string[]>("plans.features_premium") ?? [];
   const ultraFeatures = raw<string[]>("plans.features_ultra") ?? [];
@@ -37,7 +38,9 @@ function PlanosPage() {
     <SiteShell>
       <Container className="py-16">
         <header className="text-center max-w-2xl mx-auto mb-12">
-          <h1 className="text-4xl md:text-5xl font-black text-gray-900">{t("plans.page_heading")}</h1>
+          <h1 className="text-4xl md:text-5xl font-black text-gray-900">
+            {t("plans.page_heading")}
+          </h1>
           <p className="mt-4 text-gray-600">{t("plans.page_subheading")}</p>
         </header>
 

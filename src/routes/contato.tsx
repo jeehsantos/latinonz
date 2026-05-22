@@ -1,14 +1,27 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Mail, MapPin, MessageSquare, Send, CheckCircle2, Instagram, Facebook, Linkedin } from "lucide-react";
+import {
+  Mail,
+  MapPin,
+  MessageSquare,
+  Send,
+  CheckCircle2,
+  Instagram,
+  Facebook,
+  Linkedin,
+} from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, usePageMetadata } from "@/lib/i18n";
 
 export const Route = createFileRoute("/contato")({
   head: () => ({
     meta: [
       { title: "Contato — Latino Connect" },
-      { name: "description", content: "Fale com a equipe Latino Connect — tire dúvidas sobre planos, parcerias e cadastro." },
+      {
+        name: "description",
+        content:
+          "Fale com a equipe Latino Connect — tire dúvidas sobre planos, parcerias e cadastro.",
+      },
       { property: "og:title", content: "Contato — Latino Connect" },
       { property: "og:description", content: "Envie sua mensagem para a equipe Latino Connect." },
       { property: "og:url", content: "https://latinoconnecthub.co.nz/contato" },
@@ -43,6 +56,7 @@ const FLAGS = [
 
 function ContatoPage() {
   const { t } = useI18n();
+  usePageMetadata("metadata.contato.title", "metadata.contato.description");
   const [currentFlagIndex, setCurrentFlagIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -122,8 +136,14 @@ function ContatoPage() {
               <div className="flex items-center gap-4">
                 <div className="flex -space-x-3">
                   {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
-                      <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 10}`} alt="User" />
+                    <div
+                      key={i}
+                      className="w-10 h-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden"
+                    >
+                      <img
+                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 10}`}
+                        alt="User"
+                      />
                     </div>
                   ))}
                 </div>
@@ -155,10 +175,15 @@ function ContatoPage() {
                     <CheckCircle2 size={40} />
                   </div>
                   <div className="space-y-2">
-                    <h2 className="text-2xl font-bold text-slate-900">{t("contact.success_title")}</h2>
+                    <h2 className="text-2xl font-bold text-slate-900">
+                      {t("contact.success_title")}
+                    </h2>
                     <p className="text-slate-500">{t("contact.success_body")}</p>
                   </div>
-                  <button onClick={handleReset} className="text-[#14532d] font-bold text-sm hover:underline">
+                  <button
+                    onClick={handleReset}
+                    className="text-[#14532d] font-bold text-sm hover:underline"
+                  >
                     {t("contact.success_resend")}
                   </button>
                 </div>
@@ -237,7 +262,10 @@ function ContatoPage() {
                     ) : (
                       <>
                         {t("contact.submit")}
-                        <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                        <Send
+                          size={18}
+                          className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
+                        />
                       </>
                     )}
                   </button>

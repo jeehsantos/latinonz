@@ -4,7 +4,12 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const placeIdSchema = z.object({
-  placeId: z.string().trim().min(10).max(200).regex(/^[A-Za-z0-9_-]+$/),
+  placeId: z
+    .string()
+    .trim()
+    .min(10)
+    .max(200)
+    .regex(/^[A-Za-z0-9_-]+$/),
 });
 
 const businessIdSchema = z.object({
@@ -47,7 +52,9 @@ async function fetchAndCache(businessId: string, placeId: string) {
   }
   const payload = (await res.json()) as PlaceDetailsResponse;
   if (payload.status !== "OK" && payload.status !== "ZERO_RESULTS") {
-    throw new Error(`Google Places API status ${payload.status}: ${payload.error_message ?? ""}`.trim());
+    throw new Error(
+      `Google Places API status ${payload.status}: ${payload.error_message ?? ""}`.trim(),
+    );
   }
 
   const reviews = payload.result?.reviews ?? [];

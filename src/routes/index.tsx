@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { WaitlistModal } from "@/components/WaitlistModal";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, usePageMetadata } from "@/lib/i18n";
 import { useSiteMode } from "@/lib/site-mode";
 import { DirectoryHome } from "@/components/directory/DirectoryHome";
 import logo from "@/assets/logo.png";
@@ -18,7 +18,8 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Latino Connect — Negócios latinos na Nova Zelândia" },
       {
         property: "og:description",
-        content: "Cadastre seu negócio latino e tenha acesso antecipado à plataforma Latino Connect.",
+        content:
+          "Cadastre seu negócio latino e tenha acesso antecipado à plataforma Latino Connect.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://latinoconnecthub.co.nz/" },
@@ -52,6 +53,7 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   const { mode } = useSiteMode();
+  usePageMetadata("metadata.home.title", "metadata.home.description");
   if (mode === "live") return <DirectoryHome />;
   return <WaitlistLanding />;
 }
@@ -123,11 +125,14 @@ function Landing() {
               {t("hero.badge")}
             </div>
             <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
-              {t("hero.headline_1")} <span className="text-[#EFC64E]">{t("hero.headline_highlight")}</span>
+              {t("hero.headline_1")}{" "}
+              <span className="text-[#EFC64E]">{t("hero.headline_highlight")}</span>
               <br />
               {t("hero.headline_2")}
             </h1>
-            <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">{t("hero.subheadline")}</p>
+            <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">
+              {t("hero.subheadline")}
+            </p>
           </div>
         </div>
       </section>

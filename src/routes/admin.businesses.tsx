@@ -4,7 +4,13 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Search, CheckCircle2, Lock, Unlock, ExternalLink, Filter } from "lucide-react";
 import { PlanBadge } from "@/components/PlanBadge";
-import { getAdminBusinesses, approveBusiness, lockBusiness, unlockBusiness, setBusinessPlan } from "@/lib/admin.functions";
+import {
+  getAdminBusinesses,
+  approveBusiness,
+  lockBusiness,
+  unlockBusiness,
+  setBusinessPlan,
+} from "@/lib/admin.functions";
 import type { PlanTier } from "@/lib/plans";
 
 export const Route = createFileRoute("/admin/businesses")({
@@ -13,12 +19,14 @@ export const Route = createFileRoute("/admin/businesses")({
 
 type FilterValue = "all" | "pending" | "active" | "blocked";
 
-function statusOf(b: { is_active: boolean; is_verified: boolean }): "approved" | "pending" | "locked" {
+function statusOf(b: {
+  is_active: boolean;
+  is_verified: boolean;
+}): "approved" | "pending" | "locked" {
   if (!b.is_active) return "locked";
   if (!b.is_verified) return "pending";
   return "approved";
 }
-
 
 function AdminBusinessesPage() {
   const [query, setQuery] = useState("");
@@ -135,9 +143,17 @@ function AdminBusinessesPage() {
             </thead>
             <tbody className="text-sm divide-y divide-gray-100">
               {isLoading ? (
-                <tr><td colSpan={6} className="p-8 text-center text-gray-400">Carregando...</td></tr>
+                <tr>
+                  <td colSpan={6} className="p-8 text-center text-gray-400">
+                    Carregando...
+                  </td>
+                </tr>
               ) : businesses.length === 0 ? (
-                <tr><td colSpan={6} className="p-8 text-center text-gray-400">Nenhum negócio encontrado.</td></tr>
+                <tr>
+                  <td colSpan={6} className="p-8 text-center text-gray-400">
+                    Nenhum negócio encontrado.
+                  </td>
+                </tr>
               ) : (
                 businesses.map((b) => {
                   const status = statusOf(b);

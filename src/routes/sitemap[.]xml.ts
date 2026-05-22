@@ -16,7 +16,6 @@ interface SitemapEntry {
 // types pulled in via @tanstack/react-router. Runtime contract is unaffected.
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
-
     handlers: {
       GET: async () => {
         const entries: SitemapEntry[] = [

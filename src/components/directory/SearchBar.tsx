@@ -3,7 +3,6 @@ import { NZ_CITIES } from "@/lib/mock/categories";
 import { useCategories } from "@/hooks/useCategories";
 import { useI18n } from "@/lib/i18n";
 
-
 export type SearchValue = { q: string; category: string; city: string };
 
 export function SearchBar({
@@ -46,7 +45,6 @@ export function SearchBar({
             {c.name}
           </option>
         ))}
-
       </select>
       <select
         value={value.city}

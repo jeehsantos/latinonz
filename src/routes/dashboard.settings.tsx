@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { useCurrentPlan } from "@/lib/dev-plan";
@@ -7,6 +7,7 @@ import { PLAN_LABELS } from "@/lib/plans";
 import { useSidebarColor, DEFAULT_SIDEBAR_COLOR } from "@/lib/sidebar-color";
 import { useI18n } from "@/lib/i18n";
 import { createBillingPortalSession } from "@/lib/stripe.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 const PRESET_COLORS = [
   { name: "Verde Latino", value: "#1A5336" },
@@ -27,7 +28,16 @@ function SettingsPage() {
   const [sidebarColor, setSidebarColor] = useSidebarColor();
   const billingPortal = useServerFn(createBillingPortalSession);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [email, setEmail] = useState("");
   const navigate = Route.useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user?.email) {
+        setEmail(data.user.email);
+      }
+    });
+  }, []);
 
   const handleChangePlan = async () => {
     if (plan === "starter") {
@@ -88,7 +98,9 @@ function SettingsPage() {
                 title={c.name}
                 style={{ backgroundColor: c.value }}
                 className={`h-10 w-10 rounded-full border-2 transition ${
-                  active ? "border-gray-900 ring-2 ring-offset-2 ring-gray-900" : "border-white shadow"
+                  active
+                    ? "border-gray-900 ring-2 ring-offset-2 ring-gray-900"
+                    : "border-white shadow"
                 }`}
                 aria-label={c.name}
               />
@@ -96,7 +108,9 @@ function SettingsPage() {
           })}
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <label className="text-xs font-bold uppercase text-gray-500">{t("settings.custom_color")}</label>
+          <label className="text-xs font-bold uppercase text-gray-500">
+            {t("settings.custom_color")}
+          </label>
           <input
             type="color"
             value={sidebarColor}
@@ -122,15 +136,23 @@ function SettingsPage() {
       <div className="bg-white border border-gray-200 rounded-3xl p-8 space-y-4">
         <h2 className="font-extrabold text-gray-900">{t("settings.account_title")}</h2>
         <div>
-          <label className="text-xs font-bold uppercase text-gray-500">{t("settings.email_label")}</label>
+          <label className="text-xs font-bold uppercase text-gray-500">
+            {t("settings.email_label")}
+          </label>
           <input
-            defaultValue="hello@tacosdochef.co.nz"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
           />
         </div>
         <div>
-          <label className="text-xs font-bold uppercase text-gray-500">{t("settings.new_password_label")}</label>
-          <input type="password" className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm" />
+          <label className="text-xs font-bold uppercase text-gray-500">
+            {t("settings.new_password_label")}
+          </label>
+          <input
+            type="password"
+            className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
+          />
         </div>
         <button className="bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-xl px-5 py-2.5 text-sm">
           {t("settings.save_button")}

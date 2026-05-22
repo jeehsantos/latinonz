@@ -30,7 +30,9 @@ export function SiteHeader() {
             <Link
               key={n.to}
               to={n.to}
-              activeProps={{ className: "px-4 py-1.5 rounded-full bg-white shadow-sm text-[#1A5336]" }}
+              activeProps={{
+                className: "px-4 py-1.5 rounded-full bg-white shadow-sm text-[#1A5336]",
+              }}
               inactiveProps={{ className: "px-4 py-1.5 rounded-full hover:bg-white/60" }}
             >
               {n.label}
@@ -71,8 +73,14 @@ export function SiteHeader() {
               key={n.to}
               to={n.to}
               onClick={() => setMobileOpen(false)}
-              activeProps={{ className: "block px-4 py-2.5 rounded-xl bg-[#1A5336]/10 text-[#1A5336] font-bold text-sm" }}
-              inactiveProps={{ className: "block px-4 py-2.5 rounded-xl text-gray-700 font-semibold text-sm hover:bg-gray-50" }}
+              activeProps={{
+                className:
+                  "block px-4 py-2.5 rounded-xl bg-[#1A5336]/10 text-[#1A5336] font-bold text-sm",
+              }}
+              inactiveProps={{
+                className:
+                  "block px-4 py-2.5 rounded-xl text-gray-700 font-semibold text-sm hover:bg-gray-50",
+              }}
             >
               {n.label}
             </Link>

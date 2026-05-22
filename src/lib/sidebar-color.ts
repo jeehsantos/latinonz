@@ -60,7 +60,13 @@ export function useSidebarColor(): [string, (c: string) => void] {
 export function darken(hex: string, amount = 0.3): string {
   const safe = isValidHex(hex) ? hex : DEFAULT_SIDEBAR_COLOR;
   const h = safe.replace("#", "");
-  const n = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  const n =
+    h.length === 3
+      ? h
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : h;
   const r = parseInt(n.slice(0, 2), 16);
   const g = parseInt(n.slice(2, 4), 16);
   const b = parseInt(n.slice(4, 6), 16);
@@ -72,7 +78,13 @@ export function darken(hex: string, amount = 0.3): string {
 export function lighten(hex: string, amount = 0.15): string {
   const safe = isValidHex(hex) ? hex : DEFAULT_SIDEBAR_COLOR;
   const h = safe.replace("#", "");
-  const n = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  const n =
+    h.length === 3
+      ? h
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : h;
   const r = parseInt(n.slice(0, 2), 16);
   const g = parseInt(n.slice(2, 4), 16);
   const b = parseInt(n.slice(4, 6), 16);

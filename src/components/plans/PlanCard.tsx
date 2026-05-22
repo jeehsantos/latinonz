@@ -31,10 +31,14 @@ export function PlanCard({
           {t("plans.most_popular")}
         </span>
       )}
-      <p className="text-sm font-bold uppercase tracking-wider text-gray-500">{PLAN_LABELS[plan]}</p>
+      <p className="text-sm font-bold uppercase tracking-wider text-gray-500">
+        {PLAN_LABELS[plan]}
+      </p>
       <p className="mt-3 text-4xl font-black text-gray-900">
         {price === 0 ? t("plans.free") : `NZ$ ${price}`}
-        {price > 0 && <span className="text-base font-bold text-gray-400">{t("plans.per_month")}</span>}
+        {price > 0 && (
+          <span className="text-base font-bold text-gray-400">{t("plans.per_month")}</span>
+        )}
       </p>
       <ul className="mt-6 space-y-3 text-sm text-gray-700 flex-1">
         {features.map((f) => (

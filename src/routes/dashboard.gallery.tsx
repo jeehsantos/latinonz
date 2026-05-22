@@ -84,7 +84,8 @@ function GalleryPage() {
           {t("gallery.subtitle_allows")}{" "}
           {Number.isFinite(limit)
             ? `${t("gallery.subtitle_photos").replace("{n}", String(limit))}`
-            : t("gallery.subtitle_unlimited")}.
+            : t("gallery.subtitle_unlimited")}
+          .
         </p>
         {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
       </div>
@@ -112,9 +113,7 @@ function GalleryPage() {
             className="aspect-square rounded-2xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-[#1A5336] hover:text-[#1A5336] disabled:opacity-60 flex flex-col items-center justify-center gap-2"
           >
             <Plus size={20} />
-            <span className="text-xs font-bold">
-              {uploading ? "..." : t("gallery.add_button")}
-            </span>
+            <span className="text-xs font-bold">{uploading ? "..." : t("gallery.add_button")}</span>
           </button>
         )}
         {!isLoading &&

@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n, usePageMetadata } from "@/lib/i18n";
 
 export const Route = createFileRoute("/auth/accept-invite")({
   head: () => ({
@@ -17,6 +18,9 @@ type Status = "loading" | "ready" | "no-session" | "saving" | "done" | "error";
 
 function AcceptInvitePage() {
   const navigate = useNavigate();
+  const { t } = useI18n();
+  usePageMetadata("metadata.accept_invite.title", "metadata.accept_invite.description");
+
   const [status, setStatus] = useState<Status>("loading");
   const [email, setEmail] = useState<string | null>(null);
   const [password, setPassword] = useState("");
@@ -38,14 +42,24 @@ function AcceptInvitePage() {
           const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
           if (exchangeError) throw exchangeError;
         } else if (tokenHash && typeParam) {
-          const normalizedType =
-            typeParam === "signup" ? "email" : typeParam;
-          const supportedTypes = new Set(["invite", "magiclink", "recovery", "email", "email_change"]);
+          const normalizedType = typeParam === "signup" ? "email" : typeParam;
+          const supportedTypes = new Set([
+            "invite",
+            "magiclink",
+            "recovery",
+            "email",
+            "email_change",
+          ]);
 
           if (supportedTypes.has(normalizedType)) {
             const { error: verifyError } = await supabase.auth.verifyOtp({
               token_hash: tokenHash,
-              type: normalizedType as "invite" | "magiclink" | "recovery" | "email" | "email_change",
+              type: normalizedType as
+                | "invite"
+                | "magiclink"
+                | "recovery"
+                | "email"
+                | "email_change",
             });
             if (verifyError) throw verifyError;
           }
@@ -63,7 +77,9 @@ function AcceptInvitePage() {
         return;
       }
 
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (cancelled) return;
       if (!session?.user) {
         setStatus("no-session");
@@ -89,11 +105,11 @@ function AcceptInvitePage() {
     e.preventDefault();
     setError(null);
     if (password.length < 8) {
-      setError("A senha deve ter no mínimo 8 caracteres.");
+      setError(t("auth.accept_invite.password_min_len"));
       return;
     }
     if (password !== confirm) {
-      setError("As senhas não coincidem.");
+      setError(t("auth.accept_invite.passwords_dont_match"));
       return;
     }
     setStatus("saving");
@@ -109,7 +125,9 @@ function AcceptInvitePage() {
     setStatus("done");
 
     // Route by role.
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     const userId = session?.user?.id;
     let target: "/admin" | "/dashboard" = "/dashboard";
     if (userId) {
@@ -129,20 +147,18 @@ function AcceptInvitePage() {
         <div className="w-12 h-12 rounded-2xl bg-[#1A5336]/10 text-[#1A5336] flex items-center justify-center mb-4">
           <ShieldCheck size={20} />
         </div>
-        <h1 className="text-2xl font-black text-gray-900">Aceitar convite</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Defina uma senha para acessar o painel administrativo.
-        </p>
+        <h1 className="text-2xl font-black text-gray-900">{t("auth.accept_invite.title")}</h1>
+        <p className="text-sm text-gray-500 mt-1">{t("auth.accept_invite.subtitle")}</p>
 
         {status === "loading" && (
           <div className="mt-8 flex items-center gap-2 text-sm text-gray-500">
-            <Loader2 className="animate-spin" size={16} /> Validando convite...
+            <Loader2 className="animate-spin" size={16} /> {t("auth.accept_invite.validating")}
           </div>
         )}
 
         {status === "no-session" && (
           <div className="mt-6 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
-            Convite inválido ou expirado. Peça ao administrador para reenviar o convite.
+            {t("auth.accept_invite.invalid")}
           </div>
         )}
 
@@ -150,11 +166,14 @@ function AcceptInvitePage() {
           <form onSubmit={onSubmit} className="mt-6 space-y-4">
             {email && (
               <div className="text-xs text-gray-500">
-                Conta: <span className="font-semibold text-gray-900">{email}</span>
+                {t("auth.accept_invite.account")}{" "}
+                <span className="font-semibold text-gray-900">{email}</span>
               </div>
             )}
             <div>
-              <label className="text-xs font-bold uppercase text-gray-500">Nome completo</label>
+              <label className="text-xs font-bold uppercase text-gray-500">
+                {t("auth.accept_invite.full_name")}
+              </label>
               <input
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
@@ -162,7 +181,9 @@ function AcceptInvitePage() {
               />
             </div>
             <div>
-              <label className="text-xs font-bold uppercase text-gray-500">Nova senha</label>
+              <label className="text-xs font-bold uppercase text-gray-500">
+                {t("auth.accept_invite.new_password")}
+              </label>
               <input
                 type="password"
                 required
@@ -173,7 +194,9 @@ function AcceptInvitePage() {
               />
             </div>
             <div>
-              <label className="text-xs font-bold uppercase text-gray-500">Confirmar senha</label>
+              <label className="text-xs font-bold uppercase text-gray-500">
+                {t("auth.accept_invite.confirm_password")}
+              </label>
               <input
                 type="password"
                 required
@@ -189,7 +212,11 @@ function AcceptInvitePage() {
               disabled={status === "saving" || status === "done"}
               className="w-full bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold rounded-xl py-3 text-sm"
             >
-              {status === "saving" ? "Salvando..." : status === "done" ? "Redirecionando..." : "Definir senha e entrar"}
+              {status === "saving"
+                ? t("auth.accept_invite.saving")
+                : status === "done"
+                  ? t("auth.accept_invite.redirecting")
+                  : t("auth.accept_invite.submit")}
             </button>
           </form>
         )}

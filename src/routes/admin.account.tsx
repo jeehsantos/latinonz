@@ -21,7 +21,9 @@ function AdminAccountPage() {
 
   useEffect(() => {
     const load = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       const user = session?.user;
       if (!user) return;
       setEmail(user.email ?? null);
@@ -119,7 +121,9 @@ function AdminAccountPage() {
           />
         </div>
         {profileMsg && (
-          <p className={`text-sm ${profileMsg.type === "ok" ? "text-emerald-700" : "text-red-600"}`}>
+          <p
+            className={`text-sm ${profileMsg.type === "ok" ? "text-emerald-700" : "text-red-600"}`}
+          >
             {profileMsg.text}
           </p>
         )}

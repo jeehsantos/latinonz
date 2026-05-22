@@ -152,7 +152,10 @@
     "not_found_title": "Article not found",
     "back_to_blog": "← Back to blog",
     "placeholder_body": "This is placeholder content. The full article will be published soon with practical and up-to-date information for the Latin community in New Zealand.",
-    "placeholder_cta": "Subscribe to our newsletter to receive updates on visas, job opportunities, financial tips and community stories."
+    "placeholder_cta": "Subscribe to our newsletter to receive updates on visas, job opportunities, financial tips and community stories.",
+    "article_title_fallback": "Article",
+    "coming_soon_title": "Coming soon",
+    "coming_soon_desc": "We are crafting amazing stories, useful guides, and community news for Latinos in New Zealand. Stay tuned for our upcoming releases!"
   },
   "directory": {
     "page_title": "Our Network",
@@ -211,7 +214,23 @@
     "plan_starter": "Starter Package",
     "plan_premium": "Premium",
     "plan_ultra": "Ultra",
-    "photos_limit": "photos"
+    "photos_limit": "photos",
+    "profile_title_fallback": "Profile",
+    "type_business": "Business",
+    "type_freelancer_m": "Freelancer",
+    "type_freelancer_f": "Freelancer",
+    "lead_modal": {
+      "success_title": "Message sent!",
+      "success_body": "The business will contact you shortly.",
+      "close": "Close",
+      "placeholder_name": "Your name",
+      "placeholder_email": "Email",
+      "placeholder_phone": "WhatsApp (+64...)",
+      "placeholder_message": "Message",
+      "disclaimer": "Provide email or WhatsApp for contact.",
+      "submitting": "Sending...",
+      "submit": "Send message"
+    }
   },
   "dashboard": {
     "greeting": "Hello",
@@ -397,6 +416,66 @@
       "fashion": "Fashion & Apparel",
       "automotive": "Automotive",
       "other": "Other"
+    }
+  },
+  "auth": {
+    "google_signup": "Sign up with Google",
+    "google_login": "Sign in with Google",
+    "or": "or",
+    "unexpected_error": "Unexpected error.",
+    "google_error": "Failed to sign in with Google.",
+    "accept_invite": {
+      "title": "Accept invitation",
+      "subtitle": "Set a password to access the administration panel.",
+      "validating": "Validating invitation...",
+      "invalid": "Invalid or expired invitation. Ask the administrator to resend the invitation.",
+      "account": "Account:",
+      "full_name": "Full name",
+      "new_password": "New password",
+      "confirm_password": "Confirm password",
+      "password_min_len": "Password must be at least 8 characters long.",
+      "passwords_dont_match": "Passwords do not match.",
+      "saving": "Saving...",
+      "redirecting": "Redirecting...",
+      "submit": "Set password and enter"
+    }
+  },
+  "metadata": {
+    "home": {
+      "title": "Latino Connect — Latin businesses in New Zealand",
+      "description": "The platform connecting the Latin community with the best businesses and services in New Zealand. Join the waitlist."
+    },
+    "directory": {
+      "title": "Our Network — Latino Connect",
+      "description": "Explore Latin businesses, professionals, and organisations across New Zealand."
+    },
+    "blog": {
+      "title": "Blog — Latino Connect",
+      "description": "News, guides, and useful tips for the Latin community in New Zealand."
+    },
+    "planos": {
+      "title": "Packages — Latino Connect",
+      "description": "Learn about Latino Connect's Starter, Premium, and Ultra packages and choose the ideal one for your business in New Zealand."
+    },
+    "sobre": {
+      "title": "About — Latino Connect",
+      "description": "Learn about Latino Connect Hub's mission: connecting the Latin community in NZ."
+    },
+    "contato": {
+      "title": "Contact — Latino Connect",
+      "description": "Contact the Latino Connect team — ask questions about packages, partnerships, and registration."
+    },
+    "cadastro": {
+      "title": "Sign Up — Latino Connect",
+      "description": "Register your business or organisation in the largest network for the Latin community in NZ."
+    },
+    "login": {
+      "title": "Sign In — Latino Connect",
+      "description": "Access your Latino Connect profile dashboard."
+    },
+    "accept_invite": {
+      "title": "Accept invitation — Latino Connect",
+      "description": "Accept the invitation and set your password on Latino Connect."
     }
   }
 }

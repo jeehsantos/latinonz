@@ -54,9 +54,19 @@ function UpgradePage() {
         <PlanCard
           plan="premium"
           highlight
-          features={["Perfil completo", "Galeria ilimitada", "Leads via WhatsApp", "Cupons", "Analytics"]}
+          features={[
+            "Perfil completo",
+            "Galeria ilimitada",
+            "Leads via WhatsApp",
+            "Cupons",
+            "Analytics",
+          ]}
           ctaLabel={
-            plan === "premium" ? "Plano atual" : loading === "premium" ? "Redirecionando..." : "Assinar Premium"
+            plan === "premium"
+              ? "Plano atual"
+              : loading === "premium"
+                ? "Redirecionando..."
+                : "Assinar Premium"
           }
           onSelect={() => select("premium")}
         />
@@ -64,7 +74,11 @@ function UpgradePage() {
           plan="ultra"
           features={["Tudo do Premium", "Destaque no topo", "Eventos", "Posts em redes sociais"]}
           ctaLabel={
-            plan === "ultra" ? "Plano atual" : loading === "ultra" ? "Redirecionando..." : "Assinar Ultra"
+            plan === "ultra"
+              ? "Plano atual"
+              : loading === "ultra"
+                ? "Redirecionando..."
+                : "Assinar Ultra"
           }
           onSelect={() => select("ultra")}
         />

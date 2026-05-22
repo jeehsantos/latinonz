@@ -4,10 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
-    meta: [
-      { title: "Painel — Latino Connect" },
-      { name: "robots", content: "noindex,nofollow" },
-    ],
+    meta: [{ title: "Painel — Latino Connect" }, { name: "robots", content: "noindex,nofollow" }],
   }),
   beforeLoad: async ({ location }) => {
     if (typeof window === "undefined") return;

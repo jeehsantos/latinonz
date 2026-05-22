@@ -2,6 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { getLimit, type PlanTier } from "@/lib/plans";
+import { type SupabaseClient } from "@supabase/supabase-js";
+import { type Database } from "@/integrations/supabase/types";
 
 const LOGO_BUCKET = "business-logos";
 const GALLERY_BUCKET = "business-gallery";
@@ -13,7 +15,11 @@ const ALLOWED_EXT = new Set(["jpg", "jpeg", "png", "webp", "gif"]);
 const fileSchema = z.object({
   contentBase64: z.string().min(1),
   contentType: z.string().min(1).max(100),
-  ext: z.string().min(1).max(10).regex(/^[a-z0-9]+$/i),
+  ext: z
+    .string()
+    .min(1)
+    .max(10)
+    .regex(/^[a-z0-9]+$/i),
 });
 
 function decodeBase64(str: string): Uint8Array {
@@ -49,12 +55,12 @@ async function getOwnerBusinessId(
   return data.id as string;
 }
 
-// Helper to type the context.supabase client without importing the type directly.
-function getSupabaseFromContext(ctx: { supabase: any }) {
+// Helper to type the context.supabase client.
+function getSupabaseFromContext(ctx: { supabase: SupabaseClient<Database> }) {
   return ctx.supabase;
 }
 
-async function getUserPlan(supabase: any, userId: string): Promise<PlanTier> {
+async function getUserPlan(supabase: SupabaseClient<Database>, userId: string): Promise<PlanTier> {
   const { data } = await supabase
     .from("profiles")
     .select("plan_tier")
@@ -161,7 +167,7 @@ export const listMyPhotos = createServerFn({ method: "GET" })
       .select("id")
       .eq("owner_id", userId)
       .maybeSingle();
-    if (!biz) return { ok: true as const, photos: [] as Array<any> };
+    if (!biz) return { ok: true as const, photos: [] };
     const { data, error } = await supabase
       .from("business_photos")
       .select("id, url, position, storage_path")
@@ -189,10 +195,7 @@ export const deletePhoto = createServerFn({ method: "POST" })
     }
 
     await supabase.storage.from(GALLERY_BUCKET).remove([photo.storage_path]);
-    const { error: delErr } = await supabase
-      .from("business_photos")
-      .delete()
-      .eq("id", photo.id);
+    const { error: delErr } = await supabase.from("business_photos").delete().eq("id", photo.id);
     if (delErr) throw new Error(delErr.message);
 
     return { ok: true as const };
@@ -212,7 +215,7 @@ export const reorderPhotos = createServerFn({ method: "POST" })
       .select("id")
       .eq("business_id", businessId);
     if (selErr) throw new Error(selErr.message);
-    const owned = new Set((existing ?? []).map((r: any) => r.id));
+    const owned = new Set((existing ?? []).map((r) => r.id));
     for (const id of data.photoIds) {
       if (!owned.has(id)) throw new Error("Foto inválida no reordenamento.");
     }

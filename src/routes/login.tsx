@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { SiteShell } from "@/components/site/SiteShell";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, usePageMetadata } from "@/lib/i18n";
 import { signIn } from "@/lib/auth.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
@@ -19,6 +19,7 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const { t } = useI18n();
+  usePageMetadata("metadata.login.title", "metadata.login.description");
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,7 +52,7 @@ function LoginPage() {
       const isStaff = profile?.role === "admin" || profile?.role === "manager";
       navigate({ to: isStaff ? "/admin" : "/dashboard" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro inesperado.");
+      setError(err instanceof Error ? err.message : t("auth.unexpected_error"));
     } finally {
       setLoading(false);
     }
@@ -65,17 +66,19 @@ function LoginPage() {
           <p className="text-sm text-gray-500 mt-1">{t("login.subtitle")}</p>
 
           <div className="mt-6">
-            <GoogleAuthButton label="Entrar com Google" onError={setError} />
+            <GoogleAuthButton label={t("auth.google_login")} onError={setError} />
           </div>
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px bg-gray-200" />
-            <span className="text-xs uppercase tracking-wider text-gray-400">ou</span>
+            <span className="text-xs uppercase tracking-wider text-gray-400">{t("auth.or")}</span>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
 
           <form className="space-y-4" onSubmit={onSubmit}>
             <div>
-              <label className="text-xs font-bold uppercase text-gray-500">{t("login.email")}</label>
+              <label className="text-xs font-bold uppercase text-gray-500">
+                {t("login.email")}
+              </label>
               <input
                 type="email"
                 required
@@ -85,7 +88,9 @@ function LoginPage() {
               />
             </div>
             <div>
-              <label className="text-xs font-bold uppercase text-gray-500">{t("login.password")}</label>
+              <label className="text-xs font-bold uppercase text-gray-500">
+                {t("login.password")}
+              </label>
               <input
                 type="password"
                 required
@@ -105,7 +110,9 @@ function LoginPage() {
           </form>
           <p className="text-xs text-gray-500 text-center mt-4">
             {t("login.no_account")}{" "}
-            <Link to="/cadastro" className="font-bold text-[#1A5336]">{t("login.register_link")}</Link>
+            <Link to="/cadastro" className="font-bold text-[#1A5336]">
+              {t("login.register_link")}
+            </Link>
           </p>
         </div>
       </section>

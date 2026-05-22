@@ -141,9 +141,10 @@ function normalizeWhatsAppNumber(raw: string): string | null {
   const digits = raw.replace(/\D/g, "");
   if (digits.length < 8) return null;
   // Default to NZ country code if user typed a local number
-  const e164 = digits.startsWith("64") || raw.trim().startsWith("+")
-    ? `+${digits}`
-    : `+64${digits.replace(/^0+/, "")}`;
+  const e164 =
+    digits.startsWith("64") || raw.trim().startsWith("+")
+      ? `+${digits}`
+      : `+64${digits.replace(/^0+/, "")}`;
   return `whatsapp:${e164}`;
 }
 
@@ -184,7 +185,11 @@ export const submitLead = createServerFn({ method: "POST" })
       .eq("id", data.businessId)
       .maybeSingle();
     if (bizErr || !biz) {
-      return { ok: true as const, leadId: inserted.id, notified: { email: false, whatsapp: false } };
+      return {
+        ok: true as const,
+        leadId: inserted.id,
+        notified: { email: false, whatsapp: false },
+      };
     }
 
     const { data: profile } = await supabaseAdmin
@@ -209,15 +214,31 @@ export const submitLead = createServerFn({ method: "POST" })
 
     try {
       if (plan === "starter" && ownerEmail) {
-        emailResult = await sendOwnerEmail({ to: ownerEmail, businessName: biz.name, lead: leadPayload });
+        emailResult = await sendOwnerEmail({
+          to: ownerEmail,
+          businessName: biz.name,
+          lead: leadPayload,
+        });
       } else if (plan === "premium" && ownerPhone) {
-        whatsappResult = await sendOwnerWhatsApp({ toPhone: ownerPhone, businessName: biz.name, lead: leadPayload });
+        whatsappResult = await sendOwnerWhatsApp({
+          toPhone: ownerPhone,
+          businessName: biz.name,
+          lead: leadPayload,
+        });
       } else if (plan === "ultra") {
         if (ownerPhone) {
-          whatsappResult = await sendOwnerWhatsApp({ toPhone: ownerPhone, businessName: biz.name, lead: leadPayload });
+          whatsappResult = await sendOwnerWhatsApp({
+            toPhone: ownerPhone,
+            businessName: biz.name,
+            lead: leadPayload,
+          });
         }
         if (ownerEmail) {
-          emailResult = await sendOwnerEmail({ to: ownerEmail, businessName: biz.name, lead: leadPayload });
+          emailResult = await sendOwnerEmail({
+            to: ownerEmail,
+            businessName: biz.name,
+            lead: leadPayload,
+          });
         }
       }
     } catch (err) {

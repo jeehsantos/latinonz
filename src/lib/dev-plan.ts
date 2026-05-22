@@ -54,7 +54,7 @@ export function useCurrentPlan(): [PlanTier, (p: PlanTier) => void] {
         .eq("id", userId)
         .maybeSingle();
       if (!active) return;
-      setPlan(isPlan(data?.plan_tier) ? data!.plan_tier as PlanTier : "starter");
+      setPlan(isPlan(data?.plan_tier) ? (data!.plan_tier as PlanTier) : "starter");
     };
 
     load();

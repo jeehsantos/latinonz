@@ -9,8 +9,18 @@ export const Route = createFileRoute("/admin/")({
 });
 
 function MetricCard({
-  label, value, hint, icon: Icon, accent,
-}: { label: string; value: string; hint?: string; icon: typeof Briefcase; accent: string }) {
+  label,
+  value,
+  hint,
+  icon: Icon,
+  accent,
+}: {
+  label: string;
+  value: string;
+  hint?: string;
+  icon: typeof Briefcase;
+  accent: string;
+}) {
   return (
     <div className="bg-white border border-gray-200 rounded-3xl p-6">
       <div className="flex items-center justify-between">
@@ -32,7 +42,15 @@ function AdminMetricsPage() {
     queryFn: () => fetchMetrics(),
   });
 
-  const totals = data?.totals ?? { businesses: 0, activeBusinesses: 0, pendingBusinesses: 0, blockedBusinesses: 0, leads: 0, profileViews: 0, waitlist: 0 };
+  const totals = data?.totals ?? {
+    businesses: 0,
+    activeBusinesses: 0,
+    pendingBusinesses: 0,
+    blockedBusinesses: 0,
+    leads: 0,
+    profileViews: 0,
+    waitlist: 0,
+  };
   const planCounts = data?.planCounts ?? { starter: 0, premium: 0, ultra: 0 };
   const monthly = data?.revenue.mrrNzd ?? 0;
   const yearly = data?.revenue.arrNzd ?? 0;
@@ -53,10 +71,34 @@ function AdminMetricsPage() {
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard label="Negócios" value={String(total)} hint="cadastrados" icon={Briefcase} accent="bg-emerald-50 text-emerald-700" />
-        <MetricCard label="Pagantes" value={String(paid)} hint={`${free} grátis`} icon={Users} accent="bg-blue-50 text-blue-700" />
-        <MetricCard label="MRR" value={`NZ$ ${monthly.toLocaleString("pt-BR")}`} hint="receita mensal" icon={DollarSign} accent="bg-amber-50 text-amber-700" />
-        <MetricCard label="ARR" value={`NZ$ ${yearly.toLocaleString("pt-BR")}`} hint="receita anual" icon={TrendingUp} accent="bg-purple-50 text-purple-700" />
+        <MetricCard
+          label="Negócios"
+          value={String(total)}
+          hint="cadastrados"
+          icon={Briefcase}
+          accent="bg-emerald-50 text-emerald-700"
+        />
+        <MetricCard
+          label="Pagantes"
+          value={String(paid)}
+          hint={`${free} grátis`}
+          icon={Users}
+          accent="bg-blue-50 text-blue-700"
+        />
+        <MetricCard
+          label="MRR"
+          value={`NZ$ ${monthly.toLocaleString("pt-BR")}`}
+          hint="receita mensal"
+          icon={DollarSign}
+          accent="bg-amber-50 text-amber-700"
+        />
+        <MetricCard
+          label="ARR"
+          value={`NZ$ ${yearly.toLocaleString("pt-BR")}`}
+          hint="receita anual"
+          icon={TrendingUp}
+          accent="bg-purple-50 text-purple-700"
+        />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
@@ -101,7 +143,9 @@ function AdminMetricsPage() {
 
       <div className="grid sm:grid-cols-3 gap-4">
         <div className="bg-white border border-gray-200 rounded-3xl p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-gray-500">Plano Starter (grátis)</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
+            Plano Starter (grátis)
+          </p>
           <p className="text-2xl font-black mt-2">{planCounts.starter ?? 0}</p>
         </div>
         <div className="bg-white border border-gray-200 rounded-3xl p-6">

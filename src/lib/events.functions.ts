@@ -27,7 +27,9 @@ export const getMyEvents = createServerFn({ method: "GET" })
 
     const { data: rows, error } = await supabase
       .from("events")
-      .select("id, title, description, location, starts_at, ends_at, image_url, is_active, created_at")
+      .select(
+        "id, title, description, location, starts_at, ends_at, image_url, is_active, created_at",
+      )
       .eq("business_id", biz.id)
       .order("starts_at", { ascending: false });
     if (error) return { ok: false as const, error: error.message };

@@ -1,14 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, usePageMetadata } from "@/lib/i18n";
 
 export const Route = createFileRoute("/sobre")({
   head: () => ({
     meta: [
       { title: "Sobre — Latino Connect" },
-      { name: "description", content: "Conheça a missão da Latino Connect Hub: conectar a comunidade latina em NZ." },
+      {
+        name: "description",
+        content: "Conheça a missão da Latino Connect Hub: conectar a comunidade latina em NZ.",
+      },
       { property: "og:title", content: "Sobre a Latino Connect" },
-      { property: "og:description", content: "Missão, visão e valores da plataforma que conecta a comunidade latina na Nova Zelândia." },
+      {
+        property: "og:description",
+        content:
+          "Missão, visão e valores da plataforma que conecta a comunidade latina na Nova Zelândia.",
+      },
       { property: "og:url", content: "https://latinoconnecthub.co.nz/sobre" },
     ],
     links: [{ rel: "canonical", href: "https://latinoconnecthub.co.nz/sobre" }],
@@ -18,10 +25,13 @@ export const Route = createFileRoute("/sobre")({
 
 function SobrePage() {
   const { t } = useI18n();
+  usePageMetadata("metadata.sobre.title", "metadata.sobre.description");
   return (
     <SiteShell>
       <section className="max-w-3xl mx-auto px-6 py-20">
-        <p className="text-xs font-bold uppercase tracking-wider text-[#1A5336]">{t("about.badge")}</p>
+        <p className="text-xs font-bold uppercase tracking-wider text-[#1A5336]">
+          {t("about.badge")}
+        </p>
         <h1 className="mt-3 text-4xl md:text-5xl font-black text-gray-900">{t("about.title")}</h1>
         <p className="mt-6 text-lg text-gray-600 leading-relaxed">{t("about.body")}</p>
         <div className="mt-10 grid sm:grid-cols-2 gap-6">

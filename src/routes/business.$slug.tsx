@@ -2,7 +2,18 @@ import { useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { MapPin, Star, Phone, Mail, Globe, MessageCircle, Clock, Ticket, Image as ImageIcon, X } from "lucide-react";
+import {
+  MapPin,
+  Star,
+  Phone,
+  Mail,
+  Globe,
+  MessageCircle,
+  Clock,
+  Ticket,
+  Image as ImageIcon,
+  X,
+} from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { PlanBadge } from "@/components/PlanBadge";
 import { getBusinessBySlug } from "@/lib/business.functions";
@@ -12,7 +23,7 @@ import { submitLead } from "@/lib/leads.functions";
 import { logProfileView } from "@/lib/analytics.functions";
 import { COUPONS_BY_BUSINESS } from "@/lib/mock/businesses";
 import { can, getLimit } from "@/lib/plans";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, usePageMetadata } from "@/lib/i18n";
 
 export const Route = createFileRoute("/business/$slug")({
   loader: async ({ params }) => {
@@ -41,31 +52,27 @@ export const Route = createFileRoute("/business/$slug")({
               "@type": "LocalBusiness",
               name: loaderData.business.name,
               description: loaderData.business.description,
-              address: { "@type": "PostalAddress", addressLocality: loaderData.business.location, addressCountry: "NZ" },
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: loaderData.business.location,
+                addressCountry: "NZ",
+              },
               telephone: loaderData.business.phone,
               email: loaderData.business.email,
               url: loaderData.business.website,
               aggregateRating: loaderData.business.reviewCount
-                ? { "@type": "AggregateRating", ratingValue: loaderData.business.rating, reviewCount: loaderData.business.reviewCount }
+                ? {
+                    "@type": "AggregateRating",
+                    ratingValue: loaderData.business.rating,
+                    reviewCount: loaderData.business.reviewCount,
+                  }
                 : undefined,
             }),
           },
         ]
       : [],
   }),
-  notFoundComponent: () => {
-    const { t } = useI18n();
-    return (
-      <SiteShell>
-        <div className="max-w-3xl mx-auto px-6 py-24 text-center">
-          <h1 className="text-3xl font-black text-gray-900">{t("business.not_found_title")}</h1>
-          <Link to="/directory" className="inline-flex mt-6 bg-[#1A5336] text-white font-bold px-5 py-2.5 rounded-xl">
-            {t("business.back_to_directory_btn")}
-          </Link>
-        </div>
-      </SiteShell>
-    );
-  },
+  notFoundComponent: BusinessNotFound,
   errorComponent: ({ error }) => (
     <SiteShell>
       <div className="max-w-3xl mx-auto px-6 py-24 text-center">
@@ -79,6 +86,13 @@ export const Route = createFileRoute("/business/$slug")({
 function BusinessPage() {
   const { t } = useI18n();
   const { business } = Route.useLoaderData();
+  usePageMetadata(
+    undefined,
+    undefined,
+    `${business.name ?? t("business.profile_title_fallback")} — Latino Connect`,
+    business.description,
+  );
+
   const fetchReviews = useServerFn(getReviews);
   const submitLeadFn = useServerFn(submitLead);
   const { data: reviewsData } = useQuery({
@@ -90,6 +104,15 @@ function BusinessPage() {
     rating: r.rating,
     text: r.text ?? "",
   }));
+
+  const displayType =
+    business.type === "Empresa"
+      ? t("business.type_business")
+      : business.type === "Autônomo"
+        ? t("business.type_freelancer_m")
+        : business.type === "Autônoma"
+          ? t("business.type_freelancer_f")
+          : business.type;
 
   const [leadOpen, setLeadOpen] = useState(false);
   const [leadForm, setLeadForm] = useState({ name: "", email: "", phone: "", message: "" });
@@ -112,24 +135,25 @@ function BusinessPage() {
         },
       });
       if (!(res as { ok?: boolean })?.ok) {
-        throw new Error((res as { error?: string })?.error ?? "Erro ao enviar");
+        throw new Error((res as { error?: string })?.error ?? t("modal.error_generic"));
       }
       setLeadStatus("success");
       setLeadForm({ name: "", email: "", phone: "", message: "" });
     } catch (err) {
       setLeadStatus("error");
-      setLeadError(err instanceof Error ? err.message : "Erro ao enviar");
+      setLeadError(err instanceof Error ? err.message : t("modal.error_generic"));
     }
   }
-  const coupons = can(business.plan, "coupons") ? COUPONS_BY_BUSINESS[business.slug] ?? [] : [];
+  const coupons = can(business.plan, "coupons") ? (COUPONS_BY_BUSINESS[business.slug] ?? []) : [];
   const photoLimit = getLimit(business.plan, "photoLimit");
   const photoCount = Number.isFinite(photoLimit) ? Math.min(photoLimit, 6) : 6;
 
-  const planName = business.plan === "starter"
-    ? t("business.plan_starter")
-    : business.plan === "premium"
-    ? t("business.plan_premium")
-    : t("business.plan_ultra");
+  const planName =
+    business.plan === "starter"
+      ? t("business.plan_starter")
+      : business.plan === "premium"
+        ? t("business.plan_premium")
+        : t("business.plan_ultra");
 
   return (
     <SiteShell>
@@ -141,7 +165,9 @@ function BusinessPage() {
           <div className="mt-6 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold uppercase bg-white/15 px-2 py-0.5 rounded-full">{business.type}</span>
+                <span className="text-[10px] font-bold uppercase bg-white/15 px-2 py-0.5 rounded-full">
+                  {displayType}
+                </span>
                 <PlanBadge plan={business.plan} />
                 {business.fastResponder && (
                   <span className="text-[10px] font-bold uppercase bg-amber-400 text-amber-950 px-2 py-0.5 rounded-full">
@@ -152,10 +178,15 @@ function BusinessPage() {
               <h1 className="mt-3 text-4xl md:text-5xl font-black">{business.name}</h1>
               <p className="mt-2 text-white/70 max-w-2xl">{business.description}</p>
               <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
-                <span className="inline-flex items-center gap-1 text-white/80"><MapPin size={14} /> {business.location}</span>
+                <span className="inline-flex items-center gap-1 text-white/80">
+                  <MapPin size={14} /> {business.location}
+                </span>
                 <span className="inline-flex items-center gap-1 text-amber-300 font-semibold">
-                  <Star size={14} className="fill-amber-400 text-amber-400" /> {business.rating.toFixed(1)}
-                  <span className="text-white/50">({business.reviewCount} {t("business.reviews_label")})</span>
+                  <Star size={14} className="fill-amber-400 text-amber-400" />{" "}
+                  {business.rating.toFixed(1)}
+                  <span className="text-white/50">
+                    ({business.reviewCount} {t("business.reviews_label")})
+                  </span>
                 </span>
                 <span className="text-white/60">{business.subcategory}</span>
               </div>
@@ -173,7 +204,12 @@ function BusinessPage() {
             {business.tags && (
               <div className="mt-5 flex flex-wrap gap-2">
                 {business.tags.map((tag: string) => (
-                  <span key={tag} className="text-xs font-semibold bg-gray-100 text-gray-700 px-3 py-1 rounded-full">{tag}</span>
+                  <span
+                    key={tag}
+                    className="text-xs font-semibold bg-gray-100 text-gray-700 px-3 py-1 rounded-full"
+                  >
+                    {tag}
+                  </span>
                 ))}
               </div>
             )}
@@ -193,7 +229,10 @@ function BusinessPage() {
             </div>
             <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
               {Array.from({ length: photoCount }).map((_, i) => (
-                <div key={i} className="aspect-square rounded-2xl bg-gradient-to-br from-emerald-100 via-amber-100 to-emerald-50" />
+                <div
+                  key={i}
+                  className="aspect-square rounded-2xl bg-gradient-to-br from-emerald-100 via-amber-100 to-emerald-50"
+                />
               ))}
             </div>
           </div>
@@ -211,7 +250,13 @@ function BusinessPage() {
                       <p className="font-bold text-gray-900">{r.name}</p>
                       <div className="flex">
                         {Array.from({ length: 5 }).map((_, j) => (
-                          <Star key={j} size={14} className={j < r.rating ? "fill-amber-400 text-amber-400" : "text-gray-200"} />
+                          <Star
+                            key={j}
+                            size={14}
+                            className={
+                              j < r.rating ? "fill-amber-400 text-amber-400" : "text-gray-200"
+                            }
+                          />
                         ))}
                       </div>
                     </div>
@@ -229,7 +274,10 @@ function BusinessPage() {
             <h3 className="font-extrabold text-gray-900">{t("business.contact_title")}</h3>
             <div className="mt-4 space-y-3 text-sm">
               {business.phone && (
-                <a href={`tel:${business.phone}`} className="flex items-center gap-3 text-gray-700 hover:text-[#1A5336]">
+                <a
+                  href={`tel:${business.phone}`}
+                  className="flex items-center gap-3 text-gray-700 hover:text-[#1A5336]"
+                >
                   <Phone size={16} /> {business.phone}
                 </a>
               )}
@@ -244,12 +292,18 @@ function BusinessPage() {
                 </a>
               )}
               {business.email && (
-                <a href={`mailto:${business.email}`} className="flex items-center gap-3 text-gray-700 hover:text-[#1A5336]">
+                <a
+                  href={`mailto:${business.email}`}
+                  className="flex items-center gap-3 text-gray-700 hover:text-[#1A5336]"
+                >
                   <Mail size={16} /> {business.email}
                 </a>
               )}
               {business.website && (
-                <a href={business.website} className="flex items-center gap-3 text-gray-700 hover:text-[#1A5336]">
+                <a
+                  href={business.website}
+                  className="flex items-center gap-3 text-gray-700 hover:text-[#1A5336]"
+                >
                   <Globe size={16} /> {t("business.website_label")}
                 </a>
               )}
@@ -310,7 +364,9 @@ function BusinessPage() {
                   <div key={c.code} className="bg-white rounded-2xl p-4 border border-amber-200">
                     <p className="font-extrabold text-amber-700 text-lg tracking-wider">{c.code}</p>
                     <p className="text-sm text-gray-700">{c.title}</p>
-                    <p className="text-xs text-gray-400 mt-1">{t("business.coupon_valid_until")} {c.expiresAt}</p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {t("business.coupon_valid_until")} {c.expiresAt}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -320,23 +376,35 @@ function BusinessPage() {
       </section>
 
       {leadOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setLeadOpen(false)}>
-          <div className="bg-white rounded-3xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setLeadOpen(false)}
+        >
+          <div
+            className="bg-white rounded-3xl p-6 max-w-md w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between">
               <h3 className="font-extrabold text-gray-900 text-lg">{t("business.send_message")}</h3>
-              <button onClick={() => setLeadOpen(false)} className="text-gray-400 hover:text-gray-700" aria-label="Close">
+              <button
+                onClick={() => setLeadOpen(false)}
+                className="text-gray-400 hover:text-gray-700"
+                aria-label="Close"
+              >
                 <X size={20} />
               </button>
             </div>
             {leadStatus === "success" ? (
               <div className="mt-6 text-center space-y-3">
-                <p className="text-emerald-700 font-bold">Mensagem enviada!</p>
-                <p className="text-sm text-gray-600">O negócio entrará em contato em breve.</p>
+                <p className="text-emerald-700 font-bold">
+                  {t("business.lead_modal.success_title")}
+                </p>
+                <p className="text-sm text-gray-600">{t("business.lead_modal.success_body")}</p>
                 <button
                   onClick={() => setLeadOpen(false)}
                   className="mt-2 bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-2xl py-2 px-5 text-sm"
                 >
-                  Fechar
+                  {t("business.lead_modal.close")}
                 </button>
               </div>
             ) : (
@@ -344,46 +412,65 @@ function BusinessPage() {
                 <input
                   required
                   type="text"
-                  placeholder="Seu nome"
+                  placeholder={t("business.lead_modal.placeholder_name")}
                   value={leadForm.name}
                   onChange={(e) => setLeadForm((f) => ({ ...f, name: e.target.value }))}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
                 />
                 <input
                   type="email"
-                  placeholder="Email"
+                  placeholder={t("business.lead_modal.placeholder_email")}
                   value={leadForm.email}
                   onChange={(e) => setLeadForm((f) => ({ ...f, email: e.target.value }))}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
                 />
                 <input
                   type="tel"
-                  placeholder="WhatsApp (+64...)"
+                  placeholder={t("business.lead_modal.placeholder_phone")}
                   value={leadForm.phone}
                   onChange={(e) => setLeadForm((f) => ({ ...f, phone: e.target.value }))}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
                 />
                 <textarea
                   rows={4}
-                  placeholder="Mensagem"
+                  placeholder={t("business.lead_modal.placeholder_message")}
                   value={leadForm.message}
                   onChange={(e) => setLeadForm((f) => ({ ...f, message: e.target.value }))}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm resize-none"
                 />
-                <p className="text-xs text-gray-400">Informe email ou WhatsApp para contato.</p>
+                <p className="text-xs text-gray-400">{t("business.lead_modal.disclaimer")}</p>
                 {leadError && <p className="text-xs text-red-600">{leadError}</p>}
                 <button
                   type="submit"
                   disabled={leadStatus === "submitting"}
                   className="w-full bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-50 text-white font-bold rounded-2xl py-3 text-sm"
                 >
-                  {leadStatus === "submitting" ? "Enviando..." : "Enviar mensagem"}
+                  {leadStatus === "submitting"
+                    ? t("business.lead_modal.submitting")
+                    : t("business.lead_modal.submit")}
                 </button>
               </form>
             )}
           </div>
         </div>
       )}
+    </SiteShell>
+  );
+}
+
+function BusinessNotFound() {
+  const { t } = useI18n();
+  return (
+    <SiteShell>
+      <div className="max-w-3xl mx-auto px-6 py-24 text-center">
+        <h1 className="text-3xl font-black text-gray-900">{t("business.not_found_title")}</h1>
+        <Link
+          to="/directory"
+          className="inline-flex mt-6 bg-[#1A5336] text-white font-bold px-5 py-2.5 rounded-xl"
+        >
+          {t("business.back_to_directory_btn")}
+        </Link>
+      </div>
     </SiteShell>
   );
 }

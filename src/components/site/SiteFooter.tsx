@@ -16,17 +16,41 @@ export function SiteFooter() {
         <div>
           <p className="text-white font-bold mb-3">{t("footer_platform")}</p>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/directory" className="hover:text-white">{t("nav.directory")}</Link></li>
-            <li><Link to="/planos" className="hover:text-white">{t("nav.plans")}</Link></li>
-            <li><Link to="/cadastro" className="hover:text-white">{t("nav.register")}</Link></li>
+            <li>
+              <Link to="/directory" className="hover:text-white">
+                {t("nav.directory")}
+              </Link>
+            </li>
+            <li>
+              <Link to="/planos" className="hover:text-white">
+                {t("nav.plans")}
+              </Link>
+            </li>
+            <li>
+              <Link to="/cadastro" className="hover:text-white">
+                {t("nav.register")}
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
           <p className="text-white font-bold mb-3">{t("footer_content")}</p>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/blog" className="hover:text-white">{t("nav.blog")}</Link></li>
-            <li><Link to="/sobre" className="hover:text-white">{t("nav.about")}</Link></li>
-            <li><Link to="/contato" className="hover:text-white">{t("nav.contact")}</Link></li>
+            <li>
+              <Link to="/blog" className="hover:text-white">
+                {t("nav.blog")}
+              </Link>
+            </li>
+            <li>
+              <Link to="/sobre" className="hover:text-white">
+                {t("nav.about")}
+              </Link>
+            </li>
+            <li>
+              <Link to="/contato" className="hover:text-white">
+                {t("nav.contact")}
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
@@ -37,7 +61,9 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-4 text-xs text-white/40 flex flex-col md:flex-row justify-between gap-2">
-          <p>© {new Date().getFullYear()} Latino Connect Hub. {t("footer_rights")}</p>
+          <p>
+            © {new Date().getFullYear()} Latino Connect Hub. {t("footer_rights")}
+          </p>
           <p>{t("footer_made_with")}</p>
         </div>
       </div>

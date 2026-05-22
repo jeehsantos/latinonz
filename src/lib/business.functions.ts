@@ -13,7 +13,12 @@ const listFilterSchema = z.object({
 });
 
 const slugSchema = z.object({
-  slug: z.string().trim().min(1).max(200).regex(/^[a-z0-9-]+$/),
+  slug: z
+    .string()
+    .trim()
+    .min(1)
+    .max(200)
+    .regex(/^[a-z0-9-]+$/),
 });
 
 const updateBusinessSchema = z.object({
@@ -140,11 +145,7 @@ export const getMyBusiness = createServerFn({ method: "GET" })
 
     const [{ data: hours }, { data: serviceOptions }] = await Promise.all([
       supabase.from("business_hours").select("*").eq("business_id", business.id),
-      supabase
-        .from("service_options")
-        .select("*")
-        .eq("business_id", business.id)
-        .maybeSingle(),
+      supabase.from("service_options").select("*").eq("business_id", business.id).maybeSingle(),
     ]);
 
     return {

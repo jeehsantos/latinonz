@@ -3,12 +3,21 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const createSchema = z.object({
-  code: z.string().trim().min(3).max(30).regex(/^[A-Za-z0-9_-]+$/),
+  code: z
+    .string()
+    .trim()
+    .min(3)
+    .max(30)
+    .regex(/^[A-Za-z0-9_-]+$/),
   title: z.string().trim().min(1).max(100),
   description: z.string().trim().max(500).optional().nullable(),
   discountType: z.enum(["percent", "fixed"]).optional().nullable(),
   discountValue: z.number().min(0).max(100000).optional().nullable(),
-  expiresAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().nullable(),
+  expiresAt: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional()
+    .nullable(),
 });
 
 const idSchema = z.object({ couponId: z.string().uuid() });

@@ -41,23 +41,32 @@ function AdminManagersPage() {
         },
       }),
     onSuccess: (res) => {
-      setName(""); setEmail(""); setRole("manager"); setError(null);
+      setName("");
+      setEmail("");
+      setRole("manager");
+      setError(null);
       const msg =
         res.status === "magic_link_sent"
           ? "User already had an account — a magic-link sign-in email was sent."
           : res.status === "promoted_only"
-            ? res.warning ?? "User already existed; role was promoted but no email was sent."
+            ? (res.warning ?? "User already existed; role was promoted but no email was sent.")
             : "Invite email sent.";
       setInfo(msg);
       invalidate();
     },
-    onError: (e: Error) => { setInfo(null); setError(e.message); },
+    onError: (e: Error) => {
+      setInfo(null);
+      setError(e.message);
+    },
   });
 
   const removeMut = useMutation({
     mutationFn: (userId: string) => removeFn({ data: { userId } }),
     onSuccess: invalidate,
-    onError: (e: Error) => { setInfo(null); setError(e.message); },
+    onError: (e: Error) => {
+      setInfo(null);
+      setError(e.message);
+    },
   });
 
   const add = (e: React.FormEvent) => {
@@ -136,54 +145,64 @@ function AdminManagersPage() {
           </thead>
           <tbody className="text-sm divide-y divide-gray-100">
             {isLoading ? (
-              <tr><td colSpan={5} className="p-8 text-center text-gray-400">Carregando...</td></tr>
+              <tr>
+                <td colSpan={5} className="p-8 text-center text-gray-400">
+                  Carregando...
+                </td>
+              </tr>
             ) : list.length === 0 ? (
-              <tr><td colSpan={5} className="p-8 text-center text-gray-400">Nenhum gerente cadastrado.</td></tr>
-            ) : list.map((m) => {
-              const displayName = m.name ?? m.email ?? "—";
-              const initial = (m.name ?? m.email ?? "?").charAt(0).toUpperCase();
-              return (
-                <tr key={m.id} className="hover:bg-gray-50">
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-[#1A5336] text-white font-bold flex items-center justify-center text-sm">
-                        {initial}
+              <tr>
+                <td colSpan={5} className="p-8 text-center text-gray-400">
+                  Nenhum gerente cadastrado.
+                </td>
+              </tr>
+            ) : (
+              list.map((m) => {
+                const displayName = m.name ?? m.email ?? "—";
+                const initial = (m.name ?? m.email ?? "?").charAt(0).toUpperCase();
+                return (
+                  <tr key={m.id} className="hover:bg-gray-50">
+                    <td className="p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-[#1A5336] text-white font-bold flex items-center justify-center text-sm">
+                          {initial}
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-bold text-gray-900">{displayName}</span>
+                          {m.name && m.email && (
+                            <span className="text-xs text-gray-400">{m.email}</span>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex flex-col">
-                        <span className="font-bold text-gray-900">{displayName}</span>
-                        {m.name && m.email && (
-                          <span className="text-xs text-gray-400">{m.email}</span>
-                        )}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="p-4 text-gray-600">{m.email ?? "—"}</td>
-                  <td className="p-4">
-                    <span
-                      className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full border ${
-                        m.role === "admin"
-                          ? "bg-amber-50 text-amber-700 border-amber-200"
-                          : "bg-[#1A5336]/10 text-[#1A5336] border-[#1A5336]/20"
-                      }`}
-                    >
-                      <Shield size={12} /> {m.role === "admin" ? "Admin" : "Gerente"}
-                    </span>
-                  </td>
-                  <td className="p-4 text-gray-400 text-xs">
-                    {new Date(m.createdAt).toLocaleDateString("pt-BR")}
-                  </td>
-                  <td className="p-4 text-right">
-                    <button
-                      disabled={removeMut.isPending}
-                      onClick={() => removeMut.mutate(m.id)}
-                      className="text-xs font-bold text-red-700 bg-red-50 border border-red-200 hover:bg-red-100 px-3 py-1.5 rounded-lg inline-flex items-center gap-1 disabled:opacity-50"
-                    >
-                      <Trash2 size={12} /> Remover
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+                    </td>
+                    <td className="p-4 text-gray-600">{m.email ?? "—"}</td>
+                    <td className="p-4">
+                      <span
+                        className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full border ${
+                          m.role === "admin"
+                            ? "bg-amber-50 text-amber-700 border-amber-200"
+                            : "bg-[#1A5336]/10 text-[#1A5336] border-[#1A5336]/20"
+                        }`}
+                      >
+                        <Shield size={12} /> {m.role === "admin" ? "Admin" : "Gerente"}
+                      </span>
+                    </td>
+                    <td className="p-4 text-gray-400 text-xs">
+                      {new Date(m.createdAt).toLocaleDateString("pt-BR")}
+                    </td>
+                    <td className="p-4 text-right">
+                      <button
+                        disabled={removeMut.isPending}
+                        onClick={() => removeMut.mutate(m.id)}
+                        className="text-xs font-bold text-red-700 bg-red-50 border border-red-200 hover:bg-red-100 px-3 py-1.5 rounded-lg inline-flex items-center gap-1 disabled:opacity-50"
+                      >
+                        <Trash2 size={12} /> Remover
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
       </div>

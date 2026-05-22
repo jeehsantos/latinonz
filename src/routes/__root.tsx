@@ -1,5 +1,14 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Outlet, Link, createRootRouteWithContext, useRouter, useRouterState, useNavigate, HeadContent, Scripts } from "@tanstack/react-router";
+import {
+  Outlet,
+  Link,
+  createRootRouteWithContext,
+  useRouter,
+  useRouterState,
+  useNavigate,
+  HeadContent,
+  Scripts,
+} from "@tanstack/react-router";
 import { useEffect } from "react";
 import { I18nProvider } from "@/lib/i18n";
 import { useSiteMode } from "@/lib/site-mode";
@@ -35,7 +44,9 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">This page didn't load</h1>
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">
+          This page didn't load
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Something went wrong on our end. You can try refreshing or head back home.
         </p>
@@ -137,8 +148,7 @@ function SiteGate({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!ready) return;
-    const allowed =
-      path === "/" || ALLOWED_IN_WAITLIST_PREFIXES.some((p) => path.startsWith(p));
+    const allowed = path === "/" || ALLOWED_IN_WAITLIST_PREFIXES.some((p) => path.startsWith(p));
     if (mode === "waitlist" && !allowed) {
       navigate({ to: "/" });
     }

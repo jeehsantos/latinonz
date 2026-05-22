@@ -151,7 +151,10 @@
     "not_found_title": "Artículo no encontrado",
     "back_to_blog": "← Volver al blog",
     "placeholder_body": "Este es un contenido de marcador de posición. El artículo completo se publicará pronto con información práctica y actualizada para la comunidad latina en Nueva Zelanda.",
-    "placeholder_cta": "Suscríbete a nuestro boletín para recibir novedades sobre visas, oportunidades de trabajo, consejos financieros e historias de la comunidad."
+    "placeholder_cta": "Suscríbete a nuestro boletín para recibir novedades sobre visas, oportunidades de trabajo, consejos financieros e historias de la comunidad.",
+    "article_title_fallback": "Artículo",
+    "coming_soon_title": "Próximamente",
+    "coming_soon_desc": "Estamos preparando historias increíbles, guías útiles y noticias de la comunidad para los latinos en Nueva Zelanda. ¡Mantente atento a nuestras próximas publicaciones!"
   },
   "directory": {
     "page_title": "Nuestra Red",
@@ -210,7 +213,23 @@
     "plan_starter": "Plan Starter",
     "plan_premium": "Premium",
     "plan_ultra": "Ultra",
-    "photos_limit": "fotos"
+    "photos_limit": "fotos",
+    "profile_title_fallback": "Perfil",
+    "type_business": "Empresa",
+    "type_freelancer_m": "Autónomo",
+    "type_freelancer_f": "Autónoma",
+    "lead_modal": {
+      "success_title": "¡Mensaje enviado!",
+      "success_body": "El negocio se pondrá en contacto pronto.",
+      "close": "Cerrar",
+      "placeholder_name": "Su nombre",
+      "placeholder_email": "Correo electrónico",
+      "placeholder_phone": "WhatsApp (+64...)",
+      "placeholder_message": "Mensaje",
+      "disclaimer": "Ingrese correo o WhatsApp para contacto.",
+      "submitting": "Enviando...",
+      "submit": "Enviar mensaje"
+    }
   },
   "dashboard": {
     "greeting": "Hola",
@@ -396,6 +415,66 @@
       "fashion": "Moda y Vestuario",
       "automotive": "Automotriz",
       "other": "Otro"
+    }
+  },
+  "auth": {
+    "google_signup": "Registrarse con Google",
+    "google_login": "Iniciar sesión con Google",
+    "or": "o",
+    "unexpected_error": "Error inesperado.",
+    "google_error": "Fallo al iniciar sesión con Google.",
+    "accept_invite": {
+      "title": "Aceptar invitación",
+      "subtitle": "Defina una contraseña para acceder al panel de administración.",
+      "validating": "Validando invitación...",
+      "invalid": "Invitación inválida o expirada. Solicite al administrador que reenvíe la invitación.",
+      "account": "Cuenta:",
+      "full_name": "Nombre completo",
+      "new_password": "Nueva contraseña",
+      "confirm_password": "Confirmar contraseña",
+      "password_min_len": "La contraseña debe tener al menos 8 caracteres.",
+      "passwords_dont_match": "Las contraseñas no coinciden.",
+      "saving": "Guardando...",
+      "redirecting": "Redireccionando...",
+      "submit": "Establecer contraseña y entrar"
+    }
+  },
+  "metadata": {
+    "home": {
+      "title": "Latino Connect — Negocios latinos en Nueva Zelanda",
+      "description": "La plataforma que conecta a la comunidad latina con los mejores negocios y servicios en Nueva Zelanda. Únete a la lista de espera."
+    },
+    "directory": {
+      "title": "Nuestra Red — Latino Connect",
+      "description": "Explore negocios, profesionales y organizaciones latinas en toda Nueva Zelanda."
+    },
+    "blog": {
+      "title": "Blog — Latino Connect",
+      "description": "Noticias, guías y consejos útiles para la comunidad latina en Nueva Zelanda."
+    },
+    "planos": {
+      "title": "Planes — Latino Connect",
+      "description": "Conozca los planes Starter, Premium y Ultra de Latino Connect y elija el ideal para su negocio en Nueva Zelanda."
+    },
+    "sobre": {
+      "title": "Sobre — Latino Connect",
+      "description": "Conozca la misión de Latino Connect Hub: conectar a la comunidad latina en Nueva Zelanda."
+    },
+    "contato": {
+      "title": "Contacto — Latino Connect",
+      "description": "Hable con el equipo de Latino Connect — resuelva dudas sobre planes, alianzas y registro."
+    },
+    "cadastro": {
+      "title": "Registrarse — Latino Connect",
+      "description": "Registre su negocio u organización en la red más grande de la comunidad latina en Nueva Zelanda."
+    },
+    "login": {
+      "title": "Iniciar sesión — Latino Connect",
+      "description": "Acceda al panel de su perfil Latino Connect."
+    },
+    "accept_invite": {
+      "title": "Aceptar invitación — Latino Connect",
+      "description": "Acepte la invitación y defina su contraseña en Latino Connect."
     }
   }
 }

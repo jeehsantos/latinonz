@@ -27,17 +27,16 @@ const signInSchema = z.object({
 export const signUp = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => signUpSchema.parse(input))
   .handler(async ({ data }) => {
-    const { data: created, error: createError } =
-      await supabaseAdmin.auth.admin.createUser({
-        email: data.email,
-        password: data.password,
-        email_confirm: true,
-        user_metadata: {
-          business_name: data.businessName,
-          owner_name: data.ownerName,
-          whatsapp: data.whatsapp,
-        },
-      });
+    const { data: created, error: createError } = await supabaseAdmin.auth.admin.createUser({
+      email: data.email,
+      password: data.password,
+      email_confirm: true,
+      user_metadata: {
+        business_name: data.businessName,
+        owner_name: data.ownerName,
+        whatsapp: data.whatsapp,
+      },
+    });
 
     if (createError || !created.user) {
       console.error("signUp createUser error", createError);
@@ -45,11 +44,10 @@ export const signUp = createServerFn({ method: "POST" })
       return { ok: false as const, error: message };
     }
 
-    const { data: session, error: signInError } =
-      await supabaseAdmin.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
-      });
+    const { data: session, error: signInError } = await supabaseAdmin.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    });
 
     if (signInError || !session.session) {
       console.error("signUp signIn error", signInError);

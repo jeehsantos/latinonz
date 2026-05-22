@@ -51,6 +51,14 @@ export type NewsItem = {
   title: string;
   date: string;
   excerpt: string;
+  category_es?: string;
+  title_es?: string;
+  date_es?: string;
+  excerpt_es?: string;
+  category_en?: string;
+  title_en?: string;
+  date_en?: string;
+  excerpt_en?: string;
 };
 
 export type Review = {

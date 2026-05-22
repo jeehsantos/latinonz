@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { Download, Loader2, Search, Users } from "lucide-react";
 import { listWaitlist } from "@/lib/waitlist.functions";
 
@@ -20,21 +21,15 @@ type Row = {
 
 function AdminWaitlistPage() {
   const fetchList = useServerFn(listWaitlist);
-  const [rows, setRows] = useState<Row[]>([]);
   const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchList()
-      .then((res) => {
-        if (res.ok) setRows(res.rows as Row[]);
-        else setError(res.error);
-      })
-      .catch(() => setError("Erro ao conectar."))
-      .finally(() => setLoading(false));
-  }, [fetchList]);
+  const { data: res, isLoading: loading, error: queryError } = useQuery({
+    queryKey: ["admin", "waitlist"],
+    queryFn: () => fetchList(),
+  });
 
+  const rows = (res?.ok ? res.rows : []) as Row[];
+  const error = res && !res.ok ? res.error : queryError?.message ?? null;
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -51,7 +46,14 @@ function AdminWaitlistPage() {
     const header = ["Negócio", "Responsável", "WhatsApp", "E-mail", "Categoria", "Data"];
     const lines = [header.join(",")].concat(
       filtered.map((r) =>
-        [r.business_name, r.owner_name, r.whatsapp_number, r.email, r.service_category, new Date(r.created_at).toISOString()]
+        [
+          r.business_name,
+          r.owner_name,
+          r.whatsapp_number,
+          r.email,
+          r.service_category,
+          new Date(r.created_at).toISOString(),
+        ]
           .map((v) => `"${String(v).replace(/"/g, '""')}"`)
           .join(","),
       ),
@@ -122,11 +124,15 @@ function AdminWaitlistPage() {
                 </tr>
               ) : error ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-red-600 font-semibold">{error}</td>
+                  <td colSpan={6} className="p-8 text-center text-red-600 font-semibold">
+                    {error}
+                  </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-400">Nenhum registro.</td>
+                  <td colSpan={6} className="p-8 text-center text-gray-400">
+                    Nenhum registro.
+                  </td>
                 </tr>
               ) : (
                 filtered.map((r) => (
@@ -136,7 +142,9 @@ function AdminWaitlistPage() {
                     <td className="p-4 text-gray-600 font-medium">{r.whatsapp_number}</td>
                     <td className="p-4 text-gray-500">{r.email}</td>
                     <td className="p-4 text-gray-500">{r.service_category}</td>
-                    <td className="p-4 text-gray-400 text-xs">{new Date(r.created_at).toLocaleDateString("pt-BR")}</td>
+                    <td className="p-4 text-gray-400 text-xs">
+                      {new Date(r.created_at).toLocaleDateString("pt-BR")}
+                    </td>
                   </tr>
                 ))
               )}

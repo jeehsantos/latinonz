@@ -1,13 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Sparkles } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
-import { NEWS } from "@/lib/mock/news";
-import { useI18n } from "@/lib/i18n";
+import { NEWS, getLocalizedNewsItem } from "@/lib/mock/news";
+import { useI18n, usePageMetadata } from "@/lib/i18n";
 
 export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
       { title: "Blog — Latino Connect" },
-      { name: "description", content: "Notícias, guias e dicas úteis para a comunidade latina na Nova Zelândia." },
+      {
+        name: "description",
+        content: "Notícias, guias e dicas úteis para a comunidade latina na Nova Zelândia.",
+      },
       { property: "og:title", content: "Blog — Latino Connect" },
       { property: "og:description", content: "Vistos, finanças, comunidade e mais." },
       { property: "og:url", content: "https://latinoconnecthub.co.nz/blog" },
@@ -19,33 +23,47 @@ export const Route = createFileRoute("/blog")({
 
 function BlogPage() {
   const { t } = useI18n();
+  usePageMetadata("metadata.blog.title", "metadata.blog.description");
+  
   return (
     <SiteShell>
       <section className="bg-[#0F3D24] text-white">
         <div className="max-w-5xl mx-auto px-6 py-16">
-          <p className="text-xs font-bold uppercase tracking-wider text-amber-300">{t("blog.badge")}</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-amber-300">
+            {t("blog.badge")}
+          </p>
           <h1 className="mt-3 text-4xl md:text-5xl font-black">{t("blog.title")}</h1>
           <p className="mt-3 text-white/70 max-w-2xl">{t("blog.subtitle")}</p>
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-6 py-12 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {NEWS.map((n) => (
-          <Link
-            key={n.slug}
-            to="/blog/$slug"
-            params={{ slug: n.slug }}
-            className="group bg-white border border-gray-200 hover:border-[#1A5336]/40 hover:shadow-lg rounded-3xl overflow-hidden transition"
-          >
-            <div className="aspect-[16/10] bg-gradient-to-br from-emerald-100 to-amber-100" />
-            <div className="p-6">
-              <p className="text-xs font-bold uppercase tracking-wider text-[#1A5336]">{n.category}</p>
-              <h3 className="mt-2 font-extrabold text-gray-900 group-hover:text-[#1A5336]">{n.title}</h3>
-              <p className="text-sm text-gray-600 mt-2 line-clamp-2">{n.excerpt}</p>
-              <p className="text-xs text-gray-400 mt-3">{n.date}</p>
+      <section className="max-w-5xl mx-auto px-6 py-16 md:py-24">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#1A5336] via-[#0F3D24] to-[#051c0d] shadow-2xl group">
+          {/* Animated glow effect */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,#34d399,transparent_60%)] opacity-20 group-hover:opacity-30 transition-opacity duration-1000 animate-pulse"></div>
+          
+          {/* Glassmorphism content */}
+          <div className="relative p-12 md:p-24 text-center">
+            <div className="inline-flex items-center justify-center p-4 bg-white/10 rounded-2xl mb-8 shadow-inner ring-1 ring-white/20 backdrop-blur-md">
+              <Sparkles className="w-10 h-10 text-amber-300" />
             </div>
-          </Link>
-        ))}
+            
+            <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight mb-6">
+              {t("blog.coming_soon_title")}
+            </h2>
+            
+            <p className="text-lg md:text-xl text-emerald-100/80 max-w-2xl mx-auto font-medium leading-relaxed">
+              {t("blog.coming_soon_desc")}
+            </p>
+            
+            {/* Loading dots animation */}
+            <div className="mt-12 flex items-center justify-center gap-3">
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '0ms' }}></div>
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '150ms' }}></div>
+              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            </div>
+          </div>
+        </div>
       </section>
     </SiteShell>
   );

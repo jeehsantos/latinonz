@@ -143,7 +143,6 @@ export const setBusinessPlan = createServerFn({ method: "POST" })
     };
   });
 
-
 export const approveBusiness = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ businessId: z.string().uuid() }).parse(input))
@@ -198,16 +197,10 @@ export const getAdminMetrics = createServerFn({ method: "GET" })
 
     const [businessesRes, profilesRes, leadsRes, viewsRes, waitlistRes] = await Promise.all([
       supabaseAdmin.from("businesses").select("id, macro_category, is_active, is_verified"),
-      supabaseAdmin
-        .from("profiles")
-        .select("plan_tier, subscription_status"),
+      supabaseAdmin.from("profiles").select("plan_tier, subscription_status"),
       supabaseAdmin.from("leads").select("id", { count: "exact", head: true }),
-      supabaseAdmin
-        .from("profile_views")
-        .select("id", { count: "exact", head: true }),
-      supabaseAdmin
-        .from("waitlist_signups")
-        .select("id", { count: "exact", head: true }),
+      supabaseAdmin.from("profile_views").select("id", { count: "exact", head: true }),
+      supabaseAdmin.from("waitlist_signups").select("id", { count: "exact", head: true }),
     ]);
 
     if (businessesRes.error) throw new Error(businessesRes.error.message);
@@ -259,12 +252,39 @@ export const getAdminMetrics = createServerFn({ method: "GET" })
 // ---------- Categories ----------
 
 const ICON_KEYS = z.enum([
-  "utensils","briefcase","hammer","car","music","heart-pulse","scissors",
-  "shopping-bag","book-open","users","sparkles","graduation-cap","home",
-  "wrench","camera","plane","laptop","baby","paw-print","dumbbell",
+  "utensils",
+  "briefcase",
+  "hammer",
+  "car",
+  "music",
+  "heart-pulse",
+  "scissors",
+  "shopping-bag",
+  "book-open",
+  "users",
+  "sparkles",
+  "graduation-cap",
+  "home",
+  "wrench",
+  "camera",
+  "plane",
+  "laptop",
+  "baby",
+  "paw-print",
+  "dumbbell",
 ]);
 const COLOR_KEYS = z.enum([
-  "orange","blue","yellow","slate","purple","red","pink","teal","indigo","rose","emerald",
+  "orange",
+  "blue",
+  "yellow",
+  "slate",
+  "purple",
+  "red",
+  "pink",
+  "teal",
+  "indigo",
+  "rose",
+  "emerald",
 ]);
 
 const categoryInputSchema = z.object({
@@ -288,12 +308,12 @@ export const listAdminCategories = createServerFn({ method: "GET" })
     const [catsRes, bizRes] = await Promise.all([
       supabaseAdmin
         .from("categories")
-        .select("id, key, name, name_pt, name_es, name_en, blurb, blurb_pt, blurb_es, blurb_en, icon_key, color_key, sort_order, kind, created_at")
+        .select(
+          "id, key, name, name_pt, name_es, name_en, blurb, blurb_pt, blurb_es, blurb_en, icon_key, color_key, sort_order, kind, created_at",
+        )
         .order("sort_order", { ascending: true })
         .order("name", { ascending: true }),
-      supabaseAdmin
-        .from("businesses")
-        .select("macro_category, is_active"),
+      supabaseAdmin.from("businesses").select("macro_category, is_active"),
     ]);
     if (catsRes.error) throw new Error(catsRes.error.message);
     if (bizRes.error) throw new Error(bizRes.error.message);
@@ -364,9 +384,7 @@ export const createAdminCategory = createServerFn({ method: "POST" })
 
 export const updateAdminCategory = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    categoryInputSchema.extend({ id: z.string().uuid() }).parse(input),
-  )
+  .inputValidator((input) => categoryInputSchema.extend({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     await requireAdminRole(context.userId, context.supabase);
     const { error } = await supabaseAdmin
@@ -390,7 +408,6 @@ export const updateAdminCategory = createServerFn({ method: "POST" })
     return { ok: true as const };
   });
 
-
 export const deleteAdminCategory = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
@@ -400,7 +417,6 @@ export const deleteAdminCategory = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });
-
 
 // ---------- Managers ----------
 

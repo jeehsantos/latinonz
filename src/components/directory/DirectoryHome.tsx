@@ -12,7 +12,6 @@ import { useCategories } from "@/hooks/useCategories";
 import { getIcon, getColor } from "@/lib/category-icons";
 import { useI18n } from "@/lib/i18n";
 
-
 export function DirectoryHome() {
   const { t } = useI18n();
   const [search, setSearch] = useState<SearchValue>({ q: "", category: "", city: "" });
@@ -30,9 +29,12 @@ export function DirectoryHome() {
   const trustItems = [
     { icon: Users, value: "600+", label: t("directory.trust_businesses") },
     { icon: ShieldCheck, value: "100%", label: t("directory.trust_verified") },
-    { icon: Sparkles, value: String(categories.length || 0), label: t("directory.trust_categories") },
+    {
+      icon: Sparkles,
+      value: String(categories.length || 0),
+      label: t("directory.trust_categories"),
+    },
   ];
-
 
   return (
     <SiteShell>
@@ -84,17 +86,25 @@ export function DirectoryHome() {
       <section className="max-w-7xl mx-auto px-6 py-16">
         <div className="flex items-end justify-between mb-6">
           <div>
-            <h2 className="text-2xl md:text-3xl font-black text-gray-900">{t("directory.categories_title")}</h2>
+            <h2 className="text-2xl md:text-3xl font-black text-gray-900">
+              {t("directory.categories_title")}
+            </h2>
             <p className="text-gray-500 mt-1">{t("directory.categories_subtitle")}</p>
           </div>
-          <Link to="/directory" className="hidden sm:inline-flex text-sm font-bold text-[#1A5336] items-center gap-1">
+          <Link
+            to="/directory"
+            className="hidden sm:inline-flex text-sm font-bold text-[#1A5336] items-center gap-1"
+          >
             {t("directory.see_all")} <ArrowRight size={14} />
           </Link>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
           {catsLoading && categories.length === 0
             ? Array.from({ length: 10 }).map((_, i) => (
-                <div key={i} className="bg-white border border-gray-200 rounded-3xl p-5 animate-pulse">
+                <div
+                  key={i}
+                  className="bg-white border border-gray-200 rounded-3xl p-5 animate-pulse"
+                >
                   <div className="w-11 h-11 rounded-2xl bg-gray-100" />
                   <div className="mt-4 h-4 bg-gray-100 rounded w-3/4" />
                   <div className="mt-2 h-3 bg-gray-50 rounded w-1/2" />
@@ -109,17 +119,20 @@ export function DirectoryHome() {
                     to="/directory"
                     className="group bg-white border border-gray-200 hover:border-[#1A5336]/40 hover:shadow-md transition rounded-3xl p-5"
                   >
-                    <div className={`w-11 h-11 rounded-2xl ${color.bg} ${color.text} flex items-center justify-center`}>
+                    <div
+                      className={`w-11 h-11 rounded-2xl ${color.bg} ${color.text} flex items-center justify-center`}
+                    >
                       <Icon size={20} />
                     </div>
                     <p className="mt-4 font-extrabold text-gray-900 text-sm leading-tight group-hover:text-[#1A5336]">
                       {c.name}
                     </p>
-                    <p className="text-xs text-gray-400 mt-1">{c.count} {t("directory.listings_count")}</p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {c.count} {t("directory.listings_count")}
+                    </p>
                   </Link>
                 );
               })}
-
         </div>
       </section>
 
@@ -127,10 +140,15 @@ export function DirectoryHome() {
       <section className="max-w-7xl mx-auto px-6 pb-16">
         <div className="flex items-end justify-between mb-6">
           <div>
-            <h2 className="text-2xl md:text-3xl font-black text-gray-900">{t("directory.featured_title")}</h2>
+            <h2 className="text-2xl md:text-3xl font-black text-gray-900">
+              {t("directory.featured_title")}
+            </h2>
             <p className="text-gray-500 mt-1">{t("directory.featured_subtitle")}</p>
           </div>
-          <Link to="/directory" className="text-sm font-bold text-[#1A5336] inline-flex items-center gap-1">
+          <Link
+            to="/directory"
+            className="text-sm font-bold text-[#1A5336] inline-flex items-center gap-1"
+          >
             {t("directory.see_more")} <ArrowRight size={14} />
           </Link>
         </div>
@@ -146,7 +164,10 @@ export function DirectoryHome() {
         <div className="rounded-3xl bg-gradient-to-br from-[#1A5336] to-[#0F3D24] text-white p-10 md:p-16 text-center">
           <h2 className="text-3xl md:text-4xl font-black">{t("directory.cta_title")}</h2>
           <p className="mt-3 text-white/80 max-w-xl mx-auto">{t("directory.cta_body")}</p>
-          <Link to="/cadastro" className="inline-flex mt-6 bg-white text-[#1A5336] font-bold px-6 py-3 rounded-full">
+          <Link
+            to="/cadastro"
+            className="inline-flex mt-6 bg-white text-[#1A5336] font-bold px-6 py-3 rounded-full"
+          >
             {t("directory.cta_button")}
           </Link>
         </div>

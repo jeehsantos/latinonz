@@ -65,9 +65,7 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
         owner_name: form.owner_name.trim(),
         whatsapp_number: form.whatsapp_number.trim(),
         email: form.email.trim(),
-        service_category: isOther
-          ? form.service_category_other.trim()
-          : form.service_category,
+        service_category: isOther ? form.service_category_other.trim() : form.service_category,
       };
       const res = await submit({ data: payload });
       if (res?.ok) {
@@ -119,16 +117,16 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
               <div className="inline-block bg-[#EFC64E]/20 text-[#8a6a16] text-[10px] font-bold px-3 py-0.5 rounded-full mb-2 uppercase tracking-wider">
                 {t("modal.badge")}
               </div>
-              <h2 className="text-xl font-extrabold text-gray-900 mb-1">
-                {t("modal.title")}
-              </h2>
-              <p className="text-xs text-gray-500">
-                {t("modal.subtitle")}
-              </p>
+              <h2 className="text-xl font-extrabold text-gray-900 mb-1">{t("modal.title")}</h2>
+              <p className="text-xs text-gray-500">{t("modal.subtitle")}</p>
             </div>
 
             <form onSubmit={handleSubmit} noValidate className="space-y-2.5">
-              <Field label={t("modal.field_business_name")} invalid={showErr("business_name")} message={t("modal.field_business_name_error")}>
+              <Field
+                label={t("modal.field_business_name")}
+                invalid={showErr("business_name")}
+                message={t("modal.field_business_name_error")}
+              >
                 <input
                   maxLength={200}
                   type="text"
@@ -138,7 +136,11 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
                   placeholder={t("modal.field_business_name_placeholder")}
                 />
               </Field>
-              <Field label={t("modal.field_owner_name")} invalid={showErr("owner_name")} message={t("modal.field_owner_name_error")}>
+              <Field
+                label={t("modal.field_owner_name")}
+                invalid={showErr("owner_name")}
+                message={t("modal.field_owner_name_error")}
+              >
                 <input
                   maxLength={200}
                   type="text"
@@ -148,7 +150,11 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
                   placeholder={t("modal.field_owner_name_placeholder")}
                 />
               </Field>
-              <Field label={t("modal.field_whatsapp")} invalid={showErr("whatsapp_number")} message={t("modal.field_whatsapp_error")}>
+              <Field
+                label={t("modal.field_whatsapp")}
+                invalid={showErr("whatsapp_number")}
+                message={t("modal.field_whatsapp_error")}
+              >
                 <input
                   type="tel"
                   maxLength={32}
@@ -158,7 +164,11 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
                   placeholder={t("modal.field_whatsapp_placeholder")}
                 />
               </Field>
-              <Field label={t("modal.field_email")} invalid={showErr("email")} message={t("modal.field_email_error")}>
+              <Field
+                label={t("modal.field_email")}
+                invalid={showErr("email")}
+                message={t("modal.field_email_error")}
+              >
                 <input
                   type="email"
                   maxLength={320}
@@ -168,7 +178,11 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
                   placeholder={t("modal.field_email_placeholder")}
                 />
               </Field>
-              <Field label={t("modal.field_category")} invalid={showErr("service_category")} message={t("modal.field_category_error")}>
+              <Field
+                label={t("modal.field_category")}
+                invalid={showErr("service_category")}
+                message={t("modal.field_category_error")}
+              >
                 <select
                   value={form.service_category}
                   onChange={(e) => setForm({ ...form, service_category: e.target.value })}
@@ -195,9 +209,7 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
                     maxLength={100}
                     type="text"
                     value={form.service_category_other}
-                    onChange={(e) =>
-                      setForm({ ...form, service_category_other: e.target.value })
-                    }
+                    onChange={(e) => setForm({ ...form, service_category_other: e.target.value })}
                     className={inputCls(showErr("service_category_other"))}
                     placeholder={t("modal.field_category_other_placeholder")}
                     autoFocus
@@ -226,14 +238,11 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
             <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-in zoom-in-50 duration-500">
               <CheckCircle2 size={44} className="text-[#1A5336]" strokeWidth={2.5} />
             </div>
-            <h2 className="text-2xl font-extrabold text-gray-900 mb-2">{t("modal.success_title")}</h2>
-            <p className="text-gray-500 mb-6 text-sm">
-              {t("modal.success_body")}
-            </p>
-            <button
-              onClick={onClose}
-              className="text-[#1A5336] font-bold text-sm hover:underline"
-            >
+            <h2 className="text-2xl font-extrabold text-gray-900 mb-2">
+              {t("modal.success_title")}
+            </h2>
+            <p className="text-gray-500 mb-6 text-sm">{t("modal.success_body")}</p>
+            <button onClick={onClose} className="text-[#1A5336] font-bold text-sm hover:underline">
               {t("modal.success_back")}
             </button>
           </div>

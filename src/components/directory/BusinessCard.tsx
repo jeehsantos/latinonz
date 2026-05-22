@@ -3,7 +3,19 @@ import { MapPin, Star } from "lucide-react";
 import type { Business } from "@/lib/mock/types";
 import { PlanBadge } from "@/components/PlanBadge";
 
+import { useI18n } from "@/lib/i18n";
+
 export function BusinessCard({ business }: { business: Business }) {
+  const { t } = useI18n();
+  const displayType =
+    business.type === "Empresa"
+      ? t("business.type_business")
+      : business.type === "Autônomo"
+        ? t("business.type_freelancer_m")
+        : business.type === "Autônoma"
+          ? t("business.type_freelancer_f")
+          : business.type;
+
   return (
     <Link
       to="/business/$slug"
@@ -13,7 +25,7 @@ export function BusinessCard({ business }: { business: Business }) {
       <div className="aspect-[4/3] bg-gradient-to-br from-emerald-50 via-amber-50 to-emerald-100 relative">
         <div className="absolute top-3 left-3 flex items-center gap-2">
           <span className="text-[10px] font-bold uppercase bg-white/90 text-gray-700 px-2 py-0.5 rounded-full">
-            {business.type}
+            {displayType}
           </span>
           <PlanBadge plan={business.plan} />
         </div>
@@ -27,7 +39,8 @@ export function BusinessCard({ business }: { business: Business }) {
             <MapPin size={12} /> {business.location}
           </span>
           <span className="inline-flex items-center gap-1 font-semibold text-amber-600">
-            <Star size={12} className="fill-amber-500 text-amber-500" /> {business.rating.toFixed(1)}
+            <Star size={12} className="fill-amber-500 text-amber-500" />{" "}
+            {business.rating.toFixed(1)}
             <span className="text-gray-400 font-normal">({business.reviewCount})</span>
           </span>
         </div>

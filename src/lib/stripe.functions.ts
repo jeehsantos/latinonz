@@ -12,12 +12,9 @@ export function getStripe(): Stripe {
   return new Stripe(key);
 }
 
-
 function priceIdFor(tier: StripePlanTier): string {
   const id =
-    tier === "premium"
-      ? process.env.STRIPE_PREMIUM_PRICE_ID
-      : process.env.STRIPE_ULTRA_PRICE_ID;
+    tier === "premium" ? process.env.STRIPE_PREMIUM_PRICE_ID : process.env.STRIPE_ULTRA_PRICE_ID;
   if (!id) throw new Error(`Stripe price id for ${tier} is not configured`);
   return id;
 }
@@ -50,18 +47,13 @@ async function ensureCustomer(stripe: Stripe, userId: string, email?: string | n
     email: email ?? undefined,
     metadata: { supabase_user_id: userId },
   });
-  await supabaseAdmin
-    .from("profiles")
-    .update({ stripe_customer_id: customer.id })
-    .eq("id", userId);
+  await supabaseAdmin.from("profiles").update({ stripe_customer_id: customer.id }).eq("id", userId);
   return customer.id;
 }
 
 export const createCheckoutSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ planTier: z.enum(["premium", "ultra"]) }).parse(input)
-  )
+  .inputValidator((input) => z.object({ planTier: z.enum(["premium", "ultra"]) }).parse(input))
   .handler(async ({ data, context }) => {
     const stripe = getStripe();
     const { userId, claims } = context;
@@ -132,13 +124,11 @@ export async function handleStripeWebhook(event: Stripe.Event): Promise<void> {
       const session = event.data.object as Stripe.Checkout.Session;
       const userId = session.metadata?.supabase_user_id ?? null;
       const customerId =
-        typeof session.customer === "string"
-          ? session.customer
-          : session.customer?.id ?? null;
+        typeof session.customer === "string" ? session.customer : (session.customer?.id ?? null);
       const subscriptionId =
         typeof session.subscription === "string"
           ? session.subscription
-          : session.subscription?.id ?? null;
+          : (session.subscription?.id ?? null);
 
       if (subscriptionId) {
         const sub = await stripe.subscriptions.retrieve(subscriptionId);
@@ -173,10 +163,7 @@ export async function handleStripeWebhook(event: Stripe.Event): Promise<void> {
       if (userIdFromMeta) {
         await supabaseAdmin.from("profiles").update(downgrade).eq("id", userIdFromMeta);
       } else {
-        await supabaseAdmin
-          .from("profiles")
-          .update(downgrade)
-          .eq("stripe_customer_id", customerId);
+        await supabaseAdmin.from("profiles").update(downgrade).eq("stripe_customer_id", customerId);
       }
       break;
     }
@@ -184,4 +171,3 @@ export async function handleStripeWebhook(event: Stripe.Event): Promise<void> {
       break;
   }
 }
-

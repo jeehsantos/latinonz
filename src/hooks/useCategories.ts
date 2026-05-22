@@ -18,10 +18,14 @@ export type LocalizedCategory = {
 
 function pick(locale: string, c: PublicCategory): { name: string; blurb: string } {
   const nameByLocale: Record<string, string | null> = {
-    pt: c.name_pt, es: c.name_es, en: c.name_en,
+    pt: c.name_pt,
+    es: c.name_es,
+    en: c.name_en,
   };
   const blurbByLocale: Record<string, string | null> = {
-    pt: c.blurb_pt, es: c.blurb_es, en: c.blurb_en,
+    pt: c.blurb_pt,
+    es: c.blurb_es,
+    en: c.blurb_en,
   };
   return {
     name: nameByLocale[locale] || c.name_pt || c.name,

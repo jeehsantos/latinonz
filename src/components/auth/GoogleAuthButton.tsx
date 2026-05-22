@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { lovable } from "@/integrations/lovable";
 import { supabase } from "@/integrations/supabase/client";
+import { useI18n } from "@/lib/i18n";
 
 type Props = {
   label: string;
@@ -9,6 +10,7 @@ type Props = {
 
 export function GoogleAuthButton({ label, onError }: Props) {
   const [loading, setLoading] = useState(false);
+  const { t } = useI18n();
 
   const handleClick = async () => {
     setLoading(true);
@@ -17,11 +19,7 @@ export function GoogleAuthButton({ label, onError }: Props) {
         redirect_uri: window.location.origin + "/dashboard",
       });
       if (result.error) {
-        onError?.(
-          result.error instanceof Error
-            ? result.error.message
-            : "Falha ao entrar com Google.",
-        );
+        onError?.(result.error instanceof Error ? result.error.message : t("auth.google_error"));
         setLoading(false);
         return;
       }
@@ -29,7 +27,9 @@ export function GoogleAuthButton({ label, onError }: Props) {
         return;
       }
       // Tokens already set — route by role.
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       let target = "/dashboard";
       if (session?.user) {
         const { data: profile } = await supabase
@@ -43,7 +43,7 @@ export function GoogleAuthButton({ label, onError }: Props) {
       }
       window.location.assign(target);
     } catch (err) {
-      onError?.(err instanceof Error ? err.message : "Erro inesperado.");
+      onError?.(err instanceof Error ? err.message : t("auth.unexpected_error"));
       setLoading(false);
     }
   };

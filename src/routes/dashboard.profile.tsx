@@ -3,8 +3,23 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import {
-  ChevronDown, QrCode, Download, Plus, Trash2, Upload, X, Check,
-  Copy, MapPin, Clock, ShoppingBag, UtensilsCrossed, Bike, CalendarClock, Sparkles, Lock,
+  ChevronDown,
+  QrCode,
+  Download,
+  Plus,
+  Trash2,
+  Upload,
+  X,
+  Check,
+  Copy,
+  MapPin,
+  Clock,
+  ShoppingBag,
+  UtensilsCrossed,
+  Bike,
+  CalendarClock,
+  Sparkles,
+  Lock,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { NZ_CITIES } from "@/lib/mock/categories";
@@ -17,6 +32,7 @@ import { Star, RefreshCw } from "lucide-react";
 import QRCode from "qrcode";
 import { useCurrentPlan } from "@/lib/dev-plan";
 import { can } from "@/lib/plans";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/dashboard/profile")({
   component: ProfileEditor,
@@ -70,7 +86,9 @@ function ProfileEditor() {
   const [keywords, setKeywords] = useState("");
   const [cities, setCities] = useState<string[]>(["Auckland"]);
   const [citiesOpen, setCitiesOpen] = useState(false);
-  const [schedules, setSchedules] = useState<Record<string, BranchSchedule>>({ Auckland: DEFAULT_SCHEDULE });
+  const [schedules, setSchedules] = useState<Record<string, BranchSchedule>>({
+    Auckland: DEFAULT_SCHEDULE,
+  });
   const [activeBranch, setActiveBranch] = useState<string>("Auckland");
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [qrError, setQrError] = useState<string | null>(null);
@@ -87,24 +105,37 @@ function ProfileEditor() {
 
   // Seed form once business loads
   useEffect(() => {
-    if (!loaded?.ok || !loaded.business) return;
-    const b = loaded.business;
-    if (b.type === "Serviço" || b.type === "Produto") setBusinessType(b.type as BusinessType);
-    setName(b.name ?? "");
-    setDescription(b.description ?? "");
-    if (b.macro_category) setCategory(b.macro_category);
-    setPhone(b.phone ?? "");
-    setKeywords((b.keywords ?? []).join(", "));
-    if (b.locations && b.locations.length > 0) {
-      setCities(b.locations);
-      setActiveBranch(b.locations[0]);
-      setSchedules((prev) => {
-        const next: Record<string, BranchSchedule> = {};
-        for (const c of b.locations as string[]) next[c] = prev[c] ?? cloneSchedule(DEFAULT_SCHEDULE);
-        return next;
+    if (!loaded?.ok) return;
+    
+    if (loaded.business) {
+      const b = loaded.business;
+      if (b.type === "Serviço" || b.type === "Produto") setBusinessType(b.type as BusinessType);
+      setName(b.name ?? "");
+      setDescription(b.description ?? "");
+      if (b.macro_category) setCategory(b.macro_category);
+      setPhone(b.phone ?? "");
+      setKeywords((b.keywords ?? []).join(", "));
+      if (b.locations && b.locations.length > 0) {
+        setCities(b.locations);
+        setActiveBranch(b.locations[0]);
+        setSchedules((prev) => {
+          const next: Record<string, BranchSchedule> = {};
+          for (const c of b.locations as string[])
+            next[c] = prev[c] ?? cloneSchedule(DEFAULT_SCHEDULE);
+          return next;
+        });
+      }
+      if (b.logo_url) setLogo(b.logo_url);
+    } else {
+      // Fallback: If no business row exists yet, use user_metadata from signup
+      supabase.auth.getUser().then(({ data }) => {
+        const meta = data.user?.user_metadata;
+        if (meta) {
+          setName((prev) => prev || meta.business_name || "");
+          setPhone((prev) => prev || meta.whatsapp || "");
+        }
       });
     }
-    if (b.logo_url) setLogo(b.logo_url);
   }, [loaded]);
 
   const { categories: dbCategories } = useCategories();
@@ -148,8 +179,11 @@ function ProfileEditor() {
       const next = exists ? prev.filter((c) => c !== city) : [...prev, city];
       setSchedules((sch) => {
         const copy = { ...sch };
-        if (exists) { delete copy[city]; }
-        else if (!copy[city]) { copy[city] = cloneSchedule(DEFAULT_SCHEDULE); }
+        if (exists) {
+          delete copy[city];
+        } else if (!copy[city]) {
+          copy[city] = cloneSchedule(DEFAULT_SCHEDULE);
+        }
         return copy;
       });
       if (exists && activeBranch === city) setActiveBranch(next[0] ?? "");
@@ -168,7 +202,10 @@ function ProfileEditor() {
   const updateSlot = (day: DayKey, idx: number, field: "open" | "close", v: string) =>
     setBranchSchedule((s) => ({
       ...s,
-      [day]: { ...s[day], slots: s[day].slots.map((sl, i) => (i === idx ? { ...sl, [field]: v } : sl)) },
+      [day]: {
+        ...s[day],
+        slots: s[day].slots.map((sl, i) => (i === idx ? { ...sl, [field]: v } : sl)),
+      },
     }));
 
   const addSlot = (day: DayKey) =>
@@ -190,7 +227,11 @@ function ProfileEditor() {
         ...s,
         [day]: {
           closed: isClosed,
-          slots: isClosed ? [] : s[day].slots.length ? s[day].slots : [{ open: "09:00", close: "18:00" }],
+          slots: isClosed
+            ? []
+            : s[day].slots.length
+              ? s[day].slots
+              : [{ open: "09:00", close: "18:00" }],
         },
       };
     });
@@ -200,7 +241,11 @@ function ProfileEditor() {
     setQrError(null);
     setGenerating(true);
     try {
-      const url = await QRCode.toDataURL(qrUrl, { width: 512, margin: 1, errorCorrectionLevel: "M" });
+      const url = await QRCode.toDataURL(qrUrl, {
+        width: 512,
+        margin: 1,
+        errorCorrectionLevel: "M",
+      });
       setQrDataUrl(url);
     } catch (err) {
       setQrError(err instanceof Error ? err.message : "Erro ao gerar QR");
@@ -255,11 +300,15 @@ function ProfileEditor() {
   return (
     <div className="flex flex-col lg:flex-row gap-8">
       <div className="flex-1 bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-6">
-        <h3 className="text-xl font-bold text-gray-900 border-b border-gray-100 pb-4">{t("profile.title")}</h3>
+        <h3 className="text-xl font-bold text-gray-900 border-b border-gray-100 pb-4">
+          {t("profile.title")}
+        </h3>
 
         <div>
           <div className="flex justify-between mb-1">
-            <label className="block text-sm font-bold text-gray-700">{t("profile.description_label")}</label>
+            <label className="block text-sm font-bold text-gray-700">
+              {t("profile.description_label")}
+            </label>
             <span className="text-xs text-gray-400">240/500</span>
           </div>
           <textarea
@@ -273,7 +322,9 @@ function ProfileEditor() {
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">{t("profile.type_label")}</label>
+          <label className="block text-sm font-bold text-gray-700 mb-2">
+            {t("profile.type_label")}
+          </label>
           <div className="flex bg-gray-100 p-1 rounded-xl">
             <button
               onClick={() => setBusinessType("Serviço")}
@@ -291,12 +342,21 @@ function ProfileEditor() {
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-1">{t("profile.business_name_label")}</label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] focus:ring-1 focus:ring-[#1A5336]" />
+          <label className="block text-sm font-bold text-gray-700 mb-1">
+            {t("profile.business_name_label")}
+          </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] focus:ring-1 focus:ring-[#1A5336]"
+          />
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-1">{t("profile.category_label")}</label>
+          <label className="block text-sm font-bold text-gray-700 mb-1">
+            {t("profile.category_label")}
+          </label>
           <div className="relative">
             <select
               value={category}
@@ -306,20 +366,36 @@ function ProfileEditor() {
               {activeCategories.length === 0 && (
                 <option value="">Nenhuma categoria disponível</option>
               )}
-              {activeCategories.map((c: string, i: number) => <option key={i} value={c}>{c}</option>)}
+              {activeCategories.map((c: string, i: number) => (
+                <option key={i} value={c}>
+                  {c}
+                </option>
+              ))}
             </select>
-            <ChevronDown size={16} className="absolute right-4 top-4 text-gray-400 pointer-events-none" />
+            <ChevronDown
+              size={16}
+              className="absolute right-4 top-4 text-gray-400 pointer-events-none"
+            />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-1">{t("profile.phone_label")}</label>
-          <input type="text" placeholder="Ex: 021 000 0000" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]" />
+          <label className="block text-sm font-bold text-gray-700 mb-1">
+            {t("profile.phone_label")}
+          </label>
+          <input
+            type="text"
+            placeholder="Ex: 021 000 0000"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]"
+          />
         </div>
 
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-1">
-            {t("profile.cities_label")} <span className="font-normal text-gray-400">{t("profile.cities_multiple")}</span>
+            {t("profile.cities_label")}{" "}
+            <span className="font-normal text-gray-400">{t("profile.cities_multiple")}</span>
           </label>
           <div className="relative">
             <button
@@ -328,15 +404,25 @@ function ProfileEditor() {
               className="w-full flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-left text-gray-900 outline-none focus:border-[#1A5336]"
             >
               <span className="truncate">{citiesLabel}</span>
-              <ChevronDown size={16} className={`text-gray-400 transition-transform ${citiesOpen ? "rotate-180" : ""}`} />
+              <ChevronDown
+                size={16}
+                className={`text-gray-400 transition-transform ${citiesOpen ? "rotate-180" : ""}`}
+              />
             </button>
             {citiesOpen && (
               <div className="absolute z-20 mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-lg p-2 max-h-72 overflow-y-auto">
                 {NZ_CITIES.map((c) => {
                   const checked = cities.includes(c);
                   return (
-                    <button type="button" key={c} onClick={() => toggleCity(c)} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-50 text-left">
-                      <span className={`h-4 w-4 rounded border flex items-center justify-center ${checked ? "bg-[#1A5336] border-[#1A5336]" : "border-gray-300"}`}>
+                    <button
+                      type="button"
+                      key={c}
+                      onClick={() => toggleCity(c)}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-50 text-left"
+                    >
+                      <span
+                        className={`h-4 w-4 rounded border flex items-center justify-center ${checked ? "bg-[#1A5336] border-[#1A5336]" : "border-gray-300"}`}
+                      >
                         {checked && <Check size={12} className="text-white" />}
                       </span>
                       <span className="text-sm text-gray-700">{c}</span>
@@ -349,9 +435,17 @@ function ProfileEditor() {
           {cities.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-2">
               {cities.map((c) => (
-                <span key={c} className="inline-flex items-center gap-1 bg-emerald-50 text-[#1A5336] text-xs font-semibold px-2.5 py-1 rounded-full">
+                <span
+                  key={c}
+                  className="inline-flex items-center gap-1 bg-emerald-50 text-[#1A5336] text-xs font-semibold px-2.5 py-1 rounded-full"
+                >
                   <MapPin size={11} /> {c}
-                  <button type="button" onClick={() => toggleCity(c)} className="hover:text-red-600" aria-label={`Remover ${c}`}>
+                  <button
+                    type="button"
+                    onClick={() => toggleCity(c)}
+                    className="hover:text-red-600"
+                    aria-label={`Remover ${c}`}
+                  >
                     <X size={12} />
                   </button>
                 </span>
@@ -361,8 +455,16 @@ function ProfileEditor() {
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-1">{t("profile.keywords_label")}</label>
-          <input type="text" value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder={t("profile.keywords_placeholder")} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]" />
+          <label className="block text-sm font-bold text-gray-700 mb-1">
+            {t("profile.keywords_label")}
+          </label>
+          <input
+            type="text"
+            value={keywords}
+            onChange={(e) => setKeywords(e.target.value)}
+            placeholder={t("profile.keywords_placeholder")}
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]"
+          />
           <p className="text-xs text-gray-500 mt-1">{t("profile.keywords_hint")}</p>
         </div>
 
@@ -371,94 +473,145 @@ function ProfileEditor() {
           <div className="pt-4 border-t border-gray-100">
             <div className="flex items-center gap-2 mb-2">
               <Clock size={18} className="text-gray-400" />
-              <label className="block text-sm font-bold text-gray-700">{t("profile.hours_title")}</label>
-              <span className="text-[10px] bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded font-bold">PREMIUM+</span>
+              <label className="block text-sm font-bold text-gray-700">
+                {t("profile.hours_title")}
+              </label>
+              <span className="text-[10px] bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded font-bold">
+                PREMIUM+
+              </span>
             </div>
             <p className="text-xs text-gray-500">{t("profile.hours_upgrade_hint")}</p>
           </div>
         ) : (
-        <div className="pt-4 border-t border-gray-100">
-          <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-            <div className="flex items-center gap-2">
-              <Clock size={18} className="text-[#1A5336]" />
-              <label className="block text-sm font-bold text-gray-700">{t("profile.hours_title")}</label>
-            </div>
-          </div>
-
-          {multiBranch && (
-            <div className="mb-4">
-              <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
-                <p className="text-xs text-gray-500">{t("profile.hours_configure_branches")}</p>
-                <button type="button" onClick={copyScheduleToAll} className="inline-flex items-center gap-1 text-xs font-semibold text-[#1A5336] hover:underline">
-                  <Copy size={12} /> {t("profile.hours_apply_all")}
-                </button>
+          <div className="pt-4 border-t border-gray-100">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-2">
+                <Clock size={18} className="text-[#1A5336]" />
+                <label className="block text-sm font-bold text-gray-700">
+                  {t("profile.hours_title")}
+                </label>
               </div>
-              <div className="flex flex-wrap gap-1.5 p-1 bg-gray-100 rounded-xl">
-                {cities.map((c) => (
-                  <button key={c} type="button" onClick={() => setActiveBranch(c)}
-                    className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${activeBranch === c ? "bg-white text-[#1A5336] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
-                    {c}
+            </div>
+
+            {multiBranch && (
+              <div className="mb-4">
+                <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
+                  <p className="text-xs text-gray-500">{t("profile.hours_configure_branches")}</p>
+                  <button
+                    type="button"
+                    onClick={copyScheduleToAll}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#1A5336] hover:underline"
+                  >
+                    <Copy size={12} /> {t("profile.hours_apply_all")}
                   </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="rounded-xl border border-gray-200 overflow-hidden divide-y divide-gray-100">
-            {days.map(({ key, label, short }) => {
-              const day = branchSchedule[key];
-              return (
-                <div key={key} className={`flex flex-col md:flex-row md:items-center gap-3 md:gap-4 px-4 py-3 transition-colors ${day.closed ? "bg-gray-50" : "bg-white hover:bg-gray-50/60"}`}>
-                  <div className="flex items-center gap-3 md:w-44">
-                    <span className={`flex items-center justify-center h-9 w-9 rounded-lg text-[11px] font-bold ${day.closed ? "bg-gray-200 text-gray-500" : "bg-emerald-50 text-[#1A5336]"}`}>{short}</span>
-                    <span className="text-sm font-semibold text-gray-700">{label}</span>
-                  </div>
-                  <div className="flex-1 flex flex-wrap items-center gap-2">
-                    {day.closed ? (
-                      <span className="inline-flex items-center text-xs font-bold text-red-700 bg-red-50 border border-red-100 rounded-md px-2.5 py-1.5">{t("profile.hours_closed")}</span>
-                    ) : (
-                      <>
-                        {day.slots.map((slot, idx) => (
-                          <div key={idx} className="inline-flex items-center gap-1.5 bg-white border border-gray-200 rounded-lg px-2 py-1">
-                            <input type="time" value={slot.open} onChange={(e) => updateSlot(key, idx, "open", e.target.value)} className="bg-transparent text-sm text-gray-900 outline-none w-[88px]" />
-                            <span className="text-gray-400 text-xs">{t("profile.hours_at")}</span>
-                            <input type="time" value={slot.close} onChange={(e) => updateSlot(key, idx, "close", e.target.value)} className="bg-transparent text-sm text-gray-900 outline-none w-[88px]" />
-                            {day.slots.length > 1 && (
-                              <button type="button" onClick={() => removeSlot(key, idx)} className="text-gray-400 hover:text-red-600 ml-1" aria-label="Remover horário">
-                                <Trash2 size={13} />
-                              </button>
-                            )}
-                          </div>
-                        ))}
-                        <button type="button" onClick={() => addSlot(key)} className="inline-flex items-center gap-1 text-[#1A5336] hover:bg-emerald-50 text-xs font-bold px-2 py-1.5 rounded-md transition-colors">
-                          <Plus size={12} /> {t("profile.hours_add_slot")}
-                        </button>
-                      </>
-                    )}
-                  </div>
-                  <label className="inline-flex items-center gap-2 cursor-pointer select-none">
-                    <span className="text-xs font-semibold text-gray-500">{day.closed ? t("profile.hours_closed_label") : t("profile.hours_open")}</span>
-                    <span className="relative">
-                      <input type="checkbox" checked={!day.closed} onChange={() => toggleClosed(key)} className="sr-only peer" />
-                      <span className="block h-5 w-9 bg-gray-300 peer-checked:bg-[#1A5336] rounded-full transition-colors" />
-                      <span className="absolute top-0.5 left-0.5 h-4 w-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4" />
-                    </span>
-                  </label>
                 </div>
-              );
-            })}
+                <div className="flex flex-wrap gap-1.5 p-1 bg-gray-100 rounded-xl">
+                  {cities.map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setActiveBranch(c)}
+                      className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${activeBranch === c ? "bg-white text-[#1A5336] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="rounded-xl border border-gray-200 overflow-hidden divide-y divide-gray-100">
+              {days.map(({ key, label, short }) => {
+                const day = branchSchedule[key];
+                return (
+                  <div
+                    key={key}
+                    className={`flex flex-col md:flex-row md:items-center gap-3 md:gap-4 px-4 py-3 transition-colors ${day.closed ? "bg-gray-50" : "bg-white hover:bg-gray-50/60"}`}
+                  >
+                    <div className="flex items-center gap-3 md:w-44">
+                      <span
+                        className={`flex items-center justify-center h-9 w-9 rounded-lg text-[11px] font-bold ${day.closed ? "bg-gray-200 text-gray-500" : "bg-emerald-50 text-[#1A5336]"}`}
+                      >
+                        {short}
+                      </span>
+                      <span className="text-sm font-semibold text-gray-700">{label}</span>
+                    </div>
+                    <div className="flex-1 flex flex-wrap items-center gap-2">
+                      {day.closed ? (
+                        <span className="inline-flex items-center text-xs font-bold text-red-700 bg-red-50 border border-red-100 rounded-md px-2.5 py-1.5">
+                          {t("profile.hours_closed")}
+                        </span>
+                      ) : (
+                        <>
+                          {day.slots.map((slot, idx) => (
+                            <div
+                              key={idx}
+                              className="inline-flex items-center gap-1.5 bg-white border border-gray-200 rounded-lg px-2 py-1"
+                            >
+                              <input
+                                type="time"
+                                value={slot.open}
+                                onChange={(e) => updateSlot(key, idx, "open", e.target.value)}
+                                className="bg-transparent text-sm text-gray-900 outline-none w-[88px]"
+                              />
+                              <span className="text-gray-400 text-xs">{t("profile.hours_at")}</span>
+                              <input
+                                type="time"
+                                value={slot.close}
+                                onChange={(e) => updateSlot(key, idx, "close", e.target.value)}
+                                className="bg-transparent text-sm text-gray-900 outline-none w-[88px]"
+                              />
+                              {day.slots.length > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => removeSlot(key, idx)}
+                                  className="text-gray-400 hover:text-red-600 ml-1"
+                                  aria-label="Remover horário"
+                                >
+                                  <Trash2 size={13} />
+                                </button>
+                              )}
+                            </div>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={() => addSlot(key)}
+                            className="inline-flex items-center gap-1 text-[#1A5336] hover:bg-emerald-50 text-xs font-bold px-2 py-1.5 rounded-md transition-colors"
+                          >
+                            <Plus size={12} /> {t("profile.hours_add_slot")}
+                          </button>
+                        </>
+                      )}
+                    </div>
+                    <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+                      <span className="text-xs font-semibold text-gray-500">
+                        {day.closed ? t("profile.hours_closed_label") : t("profile.hours_open")}
+                      </span>
+                      <span className="relative">
+                        <input
+                          type="checkbox"
+                          checked={!day.closed}
+                          onChange={() => toggleClosed(key)}
+                          className="sr-only peer"
+                        />
+                        <span className="block h-5 w-9 bg-gray-300 peer-checked:bg-[#1A5336] rounded-full transition-colors" />
+                        <span className="absolute top-0.5 left-0.5 h-4 w-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4" />
+                      </span>
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
         )}
 
         {plan !== "starter" && (
           <GoogleReviewsSection
-            businessId={loaded?.ok ? loaded.business?.id ?? null : null}
-            initialPlaceId={loaded?.ok ? loaded.business?.google_place_id ?? "" : ""}
+            businessId={loaded?.ok ? (loaded.business?.id ?? null) : null}
+            initialPlaceId={loaded?.ok ? (loaded.business?.google_place_id ?? "") : ""}
             onConnected={() => refetch()}
           />
         )}
-
 
         <ServiceOptionsSection plan={plan} />
 
@@ -519,15 +672,35 @@ function ProfileEditor() {
           <p className="text-xs text-gray-500 mb-4">{t("profile.logo_subtitle")}</p>
           <div className="flex flex-col items-center">
             <div className="w-32 h-32 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 overflow-hidden flex items-center justify-center mb-3">
-              {logo ? <img src={logo} alt="Logo" className="w-full h-full object-cover" /> : <Upload size={28} className="text-gray-300" />}
+              {logo ? (
+                <img src={logo} alt="Logo" className="w-full h-full object-cover" />
+              ) : (
+                <Upload size={28} className="text-gray-300" />
+              )}
             </div>
-            <input ref={logoRef} type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
+            <input
+              ref={logoRef}
+              type="file"
+              accept="image/*"
+              onChange={handleLogoUpload}
+              className="hidden"
+            />
             <div className="flex gap-2 w-full">
-              <button onClick={() => logoRef.current?.click()} disabled={logoUploading} className="flex-1 inline-flex items-center justify-center gap-2 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold py-2 rounded-xl text-sm transition-colors">
-                <Upload size={14} /> {logoUploading ? "..." : logo ? t("profile.logo_change") : t("profile.logo_upload")}
+              <button
+                onClick={() => logoRef.current?.click()}
+                disabled={logoUploading}
+                className="flex-1 inline-flex items-center justify-center gap-2 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold py-2 rounded-xl text-sm transition-colors"
+              >
+                <Upload size={14} />{" "}
+                {logoUploading ? "..." : logo ? t("profile.logo_change") : t("profile.logo_upload")}
               </button>
               {logo && (
-                <button onClick={() => setLogo(null)} disabled={logoUploading} className="inline-flex items-center justify-center bg-gray-100 hover:bg-gray-200 disabled:opacity-60 text-gray-700 font-bold px-3 rounded-xl text-sm transition-colors" aria-label={t("profile.logo_remove")}>
+                <button
+                  onClick={() => setLogo(null)}
+                  disabled={logoUploading}
+                  className="inline-flex items-center justify-center bg-gray-100 hover:bg-gray-200 disabled:opacity-60 text-gray-700 font-bold px-3 rounded-xl text-sm transition-colors"
+                  aria-label={t("profile.logo_remove")}
+                >
                   <Trash2 size={14} />
                 </button>
               )}
@@ -576,11 +749,8 @@ function ProfileEditor() {
             </button>
           )}
           {qrError && <p className="text-[11px] text-red-600 mt-2">{qrError}</p>}
-          {qrUrl && canUseQr && (
-            <p className="text-[10px] text-gray-400 mt-2 break-all">{qrUrl}</p>
-          )}
+          {qrUrl && canUseQr && <p className="text-[10px] text-gray-400 mt-2 break-all">{qrUrl}</p>}
         </div>
-
       </div>
     </div>
   );
@@ -588,7 +758,12 @@ function ProfileEditor() {
 
 type ServiceOptionKey = "takeaway" | "dinein" | "delivery" | "booking";
 
-const SERVICE_OPTIONS: { key: ServiceOptionKey; label: string; hint: string; icon: typeof ShoppingBag }[] = [
+const SERVICE_OPTIONS: {
+  key: ServiceOptionKey;
+  label: string;
+  hint: string;
+  icon: typeof ShoppingBag;
+}[] = [
   { key: "takeaway", label: "Take Away", hint: "Cliente retira no local", icon: ShoppingBag },
   { key: "dinein", label: "Dine In", hint: "Consumo no local", icon: UtensilsCrossed },
   { key: "delivery", label: "Delivery", hint: "Entrega ao cliente", icon: Bike },
@@ -598,7 +773,10 @@ const SERVICE_OPTIONS: { key: ServiceOptionKey; label: string; hint: string; ico
 function ServiceOptionsSection({ plan }: { plan: string }) {
   const { t } = useI18n();
   const [enabled, setEnabled] = useState<Record<ServiceOptionKey, boolean>>({
-    takeaway: true, dinein: true, delivery: false, booking: false,
+    takeaway: true,
+    dinein: true,
+    delivery: false,
+    booking: false,
   });
   const [extra, setExtra] = useState("");
   const isPaid = plan === "Premium" || plan === "Ultra";
@@ -611,7 +789,9 @@ function ServiceOptionsSection({ plan }: { plan: string }) {
         <div className="flex items-center gap-2">
           <Sparkles size={18} className="text-[#1A5336]" />
           <div>
-            <h3 className="text-base font-bold text-gray-900">{t("profile.service_options_title")}</h3>
+            <h3 className="text-base font-bold text-gray-900">
+              {t("profile.service_options_title")}
+            </h3>
             <p className="text-xs text-gray-500">{t("profile.service_options_subtitle")}</p>
           </div>
         </div>
@@ -625,9 +805,16 @@ function ServiceOptionsSection({ plan }: { plan: string }) {
           <div className="w-11 h-11 mx-auto rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center">
             <Lock size={18} />
           </div>
-          <p className="mt-3 text-sm font-bold text-gray-900">{t("profile.service_options_locked_title")}</p>
-          <p className="text-xs text-gray-500 mt-1 max-w-sm mx-auto">{t("profile.service_options_locked_body")}</p>
-          <Link to="/dashboard/upgrade" className="inline-flex mt-4 bg-[#1A5336] hover:bg-[#123F27] text-white text-xs font-bold px-4 py-2 rounded-xl">
+          <p className="mt-3 text-sm font-bold text-gray-900">
+            {t("profile.service_options_locked_title")}
+          </p>
+          <p className="text-xs text-gray-500 mt-1 max-w-sm mx-auto">
+            {t("profile.service_options_locked_body")}
+          </p>
+          <Link
+            to="/dashboard/upgrade"
+            className="inline-flex mt-4 bg-[#1A5336] hover:bg-[#123F27] text-white text-xs font-bold px-4 py-2 rounded-xl"
+          >
             {t("profile.service_options_upgrade")}
           </Link>
         </div>
@@ -637,9 +824,15 @@ function ServiceOptionsSection({ plan }: { plan: string }) {
             {SERVICE_OPTIONS.map(({ key, label, hint, icon: Icon }) => {
               const on = enabled[key];
               return (
-                <button key={key} type="button" onClick={() => toggle(key)}
-                  className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-colors ${on ? "border-[#1A5336] bg-emerald-50/60" : "border-gray-200 bg-white hover:border-gray-300"}`}>
-                  <span className={`flex items-center justify-center h-10 w-10 rounded-lg ${on ? "bg-[#1A5336] text-white" : "bg-gray-100 text-gray-500"}`}>
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => toggle(key)}
+                  className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-colors ${on ? "border-[#1A5336] bg-emerald-50/60" : "border-gray-200 bg-white hover:border-gray-300"}`}
+                >
+                  <span
+                    className={`flex items-center justify-center h-10 w-10 rounded-lg ${on ? "bg-[#1A5336] text-white" : "bg-gray-100 text-gray-500"}`}
+                  >
                     <Icon size={18} />
                   </span>
                   <span className="flex-1">
@@ -647,8 +840,12 @@ function ServiceOptionsSection({ plan }: { plan: string }) {
                     <span className="block text-xs text-gray-500">{hint}</span>
                   </span>
                   <span className="relative">
-                    <span className={`block h-5 w-9 rounded-full transition-colors ${on ? "bg-[#1A5336]" : "bg-gray-300"}`} />
-                    <span className={`absolute top-0.5 left-0.5 h-4 w-4 bg-white rounded-full shadow transition-transform ${on ? "translate-x-4" : ""}`} />
+                    <span
+                      className={`block h-5 w-9 rounded-full transition-colors ${on ? "bg-[#1A5336]" : "bg-gray-300"}`}
+                    />
+                    <span
+                      className={`absolute top-0.5 left-0.5 h-4 w-4 bg-white rounded-full shadow transition-transform ${on ? "translate-x-4" : ""}`}
+                    />
                   </span>
                 </button>
               );
@@ -657,11 +854,16 @@ function ServiceOptionsSection({ plan }: { plan: string }) {
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-1">
               {t("profile.service_options_other_label")}{" "}
-              <span className="font-normal text-gray-400">{t("profile.service_options_other_optional")}</span>
+              <span className="font-normal text-gray-400">
+                {t("profile.service_options_other_optional")}
+              </span>
             </label>
             <input
-              type="text" value={extra} onChange={(e) => setExtra(e.target.value)}
-              placeholder={t("profile.service_options_other_placeholder")} maxLength={60}
+              type="text"
+              value={extra}
+              onChange={(e) => setExtra(e.target.value)}
+              placeholder={t("profile.service_options_other_placeholder")}
+              maxLength={60}
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]"
             />
             <p className="text-xs text-gray-500 mt-1">{t("profile.service_options_other_hint")}</p>

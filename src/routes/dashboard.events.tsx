@@ -5,12 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Calendar, X, Power, Trash2, MapPin } from "lucide-react";
 import { useCurrentPlan } from "@/lib/dev-plan";
 import { can } from "@/lib/plans";
-import {
-  getMyEvents,
-  createEvent,
-  toggleEvent,
-  deleteEvent,
-} from "@/lib/events.functions";
+import { getMyEvents, createEvent, toggleEvent, deleteEvent } from "@/lib/events.functions";
 
 export const Route = createFileRoute("/dashboard/events")({
   component: EventsPage,
@@ -54,9 +49,7 @@ function EventsPage() {
   });
 
   const events: EventRow[] =
-    data && (data as { ok?: boolean }).ok
-      ? ((data as { events: EventRow[] }).events ?? [])
-      : [];
+    data && (data as { ok?: boolean }).ok ? ((data as { events: EventRow[] }).events ?? []) : [];
 
   const [formOpen, setFormOpen] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -95,8 +88,7 @@ function EventsPage() {
       setFormOpen(false);
       resetForm();
     },
-    onError: (err) =>
-      setFormError(err instanceof Error ? err.message : "Erro ao criar evento"),
+    onError: (err) => setFormError(err instanceof Error ? err.message : "Erro ao criar evento"),
   });
 
   const toggleMutation = useMutation({
@@ -114,9 +106,7 @@ function EventsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-black text-gray-900">Eventos</h1>
-          <p className="text-gray-500 mt-1">
-            Crie e gerencie eventos do seu negócio.
-          </p>
+          <p className="text-gray-500 mt-1">Crie e gerencie eventos do seu negócio.</p>
         </div>
         {unlocked && (
           <button
@@ -136,9 +126,7 @@ function EventsPage() {
 
         {unlocked ? (
           events.length === 0 ? (
-            <p className="text-sm text-gray-400 py-8 text-center">
-              Nenhum evento criado ainda.
-            </p>
+            <p className="text-sm text-gray-400 py-8 text-center">Nenhum evento criado ainda.</p>
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
               {events.map((e) => (
@@ -167,8 +155,7 @@ function EventsPage() {
                       </button>
                       <button
                         onClick={() => {
-                          if (confirm(`Remover evento "${e.title}"?`))
-                            deleteMutation.mutate(e.id);
+                          if (confirm(`Remover evento "${e.title}"?`)) deleteMutation.mutate(e.id);
                         }}
                         disabled={deleteMutation.isPending}
                         className="text-gray-400 hover:text-red-600 p-1"
@@ -181,17 +168,13 @@ function EventsPage() {
                   </div>
                   <p className="font-extrabold text-lg mt-3 text-gray-900">{e.title}</p>
                   <p className="text-xs text-gray-600 mt-1">{fmt(e.starts_at)}</p>
-                  {e.ends_at && (
-                    <p className="text-xs text-gray-500">até {fmt(e.ends_at)}</p>
-                  )}
+                  {e.ends_at && <p className="text-xs text-gray-500">até {fmt(e.ends_at)}</p>}
                   {e.location && (
                     <p className="text-xs text-gray-600 mt-2 flex items-center gap-1">
                       <MapPin size={12} /> {e.location}
                     </p>
                   )}
-                  {e.description && (
-                    <p className="text-sm text-gray-700 mt-2">{e.description}</p>
-                  )}
+                  {e.description && <p className="text-sm text-gray-700 mt-2">{e.description}</p>}
                 </div>
               ))}
             </div>

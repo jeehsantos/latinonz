@@ -1,8 +1,17 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
-  BarChart3, Briefcase, FolderTree, UserCog, Inbox, ShieldAlert, LogOut,
-  Loader2, Menu, X, UserCircle,
+  BarChart3,
+  Briefcase,
+  FolderTree,
+  UserCog,
+  Inbox,
+  ShieldAlert,
+  LogOut,
+  Loader2,
+  Menu,
+  X,
+  UserCircle,
 } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { supabase } from "@/integrations/supabase/client";
@@ -33,7 +42,9 @@ export function AdminLayout() {
   useEffect(() => {
     let cancelled = false;
     const check = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session?.user) {
         if (!cancelled) setAuth({ status: "anonymous" });
         return;
@@ -52,7 +63,9 @@ export function AdminLayout() {
       }
     };
     check();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
       check();
     });
     return () => {
@@ -89,7 +102,8 @@ export function AdminLayout() {
           </div>
           <h1 className="text-xl font-extrabold text-gray-900 mb-1">Acesso negado</h1>
           <p className="text-sm text-gray-500 mb-1">
-            Sua conta {auth.email ? <span className="font-semibold">{auth.email}</span> : null} não tem permissão para acessar o painel administrativo.
+            Sua conta {auth.email ? <span className="font-semibold">{auth.email}</span> : null} não
+            tem permissão para acessar o painel administrativo.
           </p>
           <p className="text-xs text-gray-400 mb-6">
             Solicite a um administrador para conceder acesso.
@@ -124,7 +138,9 @@ export function AdminLayout() {
         </span>
         <div className="ml-auto flex items-center gap-3">
           {auth.email && (
-            <span className="hidden sm:inline text-xs text-gray-500 font-semibold">{auth.email}</span>
+            <span className="hidden sm:inline text-xs text-gray-500 font-semibold">
+              {auth.email}
+            </span>
           )}
           <button
             onClick={logout}
@@ -172,7 +188,10 @@ export function AdminLayout() {
         </aside>
 
         {mobileOpen && (
-          <div className="lg:hidden fixed inset-0 z-30 bg-black/40" onClick={() => setMobileOpen(false)} />
+          <div
+            className="lg:hidden fixed inset-0 z-30 bg-black/40"
+            onClick={() => setMobileOpen(false)}
+          />
         )}
 
         <main className="flex-1 p-6 lg:p-10 min-w-0">
