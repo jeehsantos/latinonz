@@ -17,7 +17,7 @@ export const Route = createFileRoute("/dashboard/")({
     return {
       business: bizRes?.ok ? bizRes.business : null,
       analytics: analyticsRes?.ok ? analyticsRes : null,
-      leads: leadsRes?.ok ? leadsRes.leads : ([] as NonNullable<Extract<typeof leadsRes, { ok: true }>["leads"]>),
+      leads: leadsRes?.ok ? leadsRes.leads : [],
     };
   },
   component: DashboardOverview,
