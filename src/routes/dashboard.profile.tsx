@@ -779,7 +779,7 @@ function ServiceOptionsSection({ plan }: { plan: string }) {
     booking: false,
   });
   const [extra, setExtra] = useState("");
-  const isPaid = plan === "Premium" || plan === "Ultra";
+  const isPaid = plan === "premium" || plan === "ultra";
 
   const toggle = (k: ServiceOptionKey) => setEnabled((p) => ({ ...p, [k]: !p[k] }));
 
