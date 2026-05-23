@@ -96,41 +96,24 @@ export const setBusinessPlan = createServerFn({ method: "POST" })
       throw new Error("Forbidden: only admins can change business plan");
     }
 
-    const { data: biz, error: bizErr } = await supabaseAdmin
-      .from("businesses")
-      .select("owner_id")
-      .eq("id", data.businessId)
-      .maybeSingle();
-    if (bizErr) throw new Error(bizErr.message);
-    if (!biz?.owner_id) throw new Error("Business owner not found");
+    // Call SECURITY DEFINER RPC via the caller's authenticated client so
+    // auth.uid() resolves to the admin and the function's internal gate passes.
+    const { data: rpcRows, error: rpcError } = await context.supabase.rpc(
+      "admin_set_business_plan",
+      { _business_id: data.businessId, _plan: data.plan },
+    );
+    if (rpcError) throw new Error(rpcError.message);
 
-    const ownerId = biz.owner_id;
-    const { error: upsertError } = await supabaseAdmin
-      .from("profiles")
-      .upsert(
-        {
-          id: ownerId,
-          plan_tier: data.plan,
-        },
-        { onConflict: "id" },
-      );
-    if (upsertError) throw new Error(upsertError.message);
-
-    const { data: verifiedProfile, error: verifyError } = await supabaseAdmin
-      .from("profiles")
-      .select("plan_tier")
-      .eq("id", ownerId)
-      .maybeSingle();
-    if (verifyError) throw new Error(verifyError.message);
-    if (verifiedProfile?.plan_tier !== data.plan) {
+    const row = Array.isArray(rpcRows) ? rpcRows[0] : rpcRows;
+    if (!row?.owner_id || row.plan_tier !== data.plan) {
       throw new Error("Failed to persist business plan change");
     }
 
     return {
       ok: true as const,
       businessId: data.businessId,
-      ownerId,
-      plan: verifiedProfile.plan_tier as "starter" | "premium" | "ultra",
+      ownerId: row.owner_id as string,
+      plan: row.plan_tier as "starter" | "premium" | "ultra",
     };
   });
 

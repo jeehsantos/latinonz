@@ -1,37 +1,45 @@
-# Plan
+## Goal
+Make admin package changes reliably update the business owner’s access to premium and ultra features without triggering RLS/runtime errors.
 
-## What I’ll fix
-1. Align the invite flow with the backend path that already works
-   - Keep the role assignment entirely on the privileged backend client.
-   - Remove any remaining ambiguity in `inviteManager` so the profile role write cannot fall back to a user-scoped RLS path.
+## Root cause identified
+- `src/lib/admin.functions.ts` updates a business owner’s entry in `profiles` when an admin changes the package.
+- Some users appear to be missing a `profiles` row, so the flow falls back to an insert.
+- The backend snapshot shows the trigger function for automatic profile creation exists in migrations, but the current backend state reports no active triggers, so profile rows may not be created automatically for new users.
+- That fallback insert is the path failing with `new row violates row-level security policy for table "profiles"`.
+- Premium access in the app is mainly driven by `profiles.plan_tier`, with `subscription_status` also referenced in some admin/billing logic.
 
-2. Add targeted runtime diagnostics for the invite flow
-   - Add temporary server-side logging around `inviteUserByEmail`, the returned `userId`, and the `profiles` upsert result.
-   - This will confirm whether the live preview is executing the updated code or an older/stale copy.
+## Plan
+1. Update the admin package-change function
+- Replace the fragile update-or-insert branch with a safe server-side write path.
+- Handle both cases cleanly:
+  - profile exists: update `plan_tier`
+  - profile missing: bootstrap the row safely, then apply the plan
+- Verify the saved value after the write.
 
-3. Force validation against the actual running preview
-   - Reproduce the invite from the running app/runtime, not just from isolated shell checks.
-   - Confirm the newly invited user’s `profiles.role` changes from `user` to `manager` immediately after invite.
+2. Restore profile auto-creation for future users
+- Add a backend migration to ensure the auth-user trigger exists.
+- Make the trigger function idempotent so duplicate profile creation cannot crash.
+- Keep the existing security model intact.
 
-4. Remove the blank-screen failure mode
-   - Make the invite handler return a clean, descriptive error path if the role update fails again, instead of dropping into the current generic runtime error screen.
+3. Align access with the business rule
+- Confirm the package change updates the fields actually used to unlock premium features.
+- If needed, include `subscription_status` handling only where the current app logic depends on it.
 
-## Why this plan
-- The database is creating the invited user correctly.
-- The `profiles` trigger is creating the initial row correctly.
-- The same role update succeeds when executed directly with the privileged backend client.
-- That means the remaining issue is most likely the app/runtime path, not the underlying policy itself.
+4. Validate the affected flow
+- Test package changes for owners with and without an existing `profiles` row.
+- Confirm the runtime error is gone.
+- Confirm the upgraded user now receives premium or ultra access from the stored profile data.
 
 ## Technical details
-- Files to update:
+- Files likely involved:
   - `src/lib/admin.functions.ts`
-- Validation steps:
-  - Inspect preview/dev-server logs while reproducing the invite.
-  - Confirm the exact `userId` created during invite.
-  - Confirm `public.profiles.role` is updated for that `userId`.
-  - Re-test delete + re-invite flow for the same email.
+  - one new migration under `supabase/migrations/`
+- Backend fix shape:
+  - restore `on_auth_user_created`
+  - make `handle_new_user()` use an idempotent insert pattern
+- App fix shape:
+  - avoid the current insert path that falls into `profiles` RLS failure
+  - verify the stored plan after mutation
 
-## Expected result
-- Inviting a manager no longer throws the RLS error.
-- Re-inviting a deleted user works.
-- The invited user appears on `/admin/managers` with the correct role immediately.
+## Expected outcome
+After the fix, when an admin changes a business package, the owner profile is updated consistently in the database and the user gains access to the corresponding premium features without the blank-screen runtime error.
