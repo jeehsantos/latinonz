@@ -410,21 +410,21 @@ export type Database = {
           created_at: string
           id: string
           referrer: string | null
-          viewer_ip: string | null
+          viewer_ip_hash: string | null
         }
         Insert: {
           business_id: string
           created_at?: string
           id?: string
           referrer?: string | null
-          viewer_ip?: string | null
+          viewer_ip_hash?: string | null
         }
         Update: {
           business_id?: string
           created_at?: string
           id?: string
           referrer?: string | null
-          viewer_ip?: string | null
+          viewer_ip_hash?: string | null
         }
         Relationships: [
           {
