@@ -76,7 +76,7 @@ function DashboardOverview() {
           {leads.length === 0 ? (
             <p className="py-4 text-gray-500 text-sm">Nenhum lead recebido ainda.</p>
           ) : (
-            leads.slice(0, 3).map((l) => (
+            leads.slice(0, 3).map((l: { id: string; name: string; message: string | null; created_at: string }) => (
               <div key={l.id} className="py-3 flex items-center justify-between">
                 <div>
                   <p className="font-bold text-gray-900">{l.name}</p>
