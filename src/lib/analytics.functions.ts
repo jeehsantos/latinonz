@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
+import { createHash } from "crypto";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
@@ -8,6 +9,12 @@ const logSchema = z.object({
   businessId: z.string().uuid(),
   referrer: z.string().max(500).optional().nullable(),
 });
+
+function hashIp(ip: string | null): string | null {
+  if (!ip) return null;
+  const salt = process.env.IP_HASH_SALT ?? "latinonz-default-salt";
+  return createHash("sha256").update(`${salt}:${ip}`).digest("hex");
+}
 
 export const logProfileView = createServerFn({ method: "POST" })
   .inputValidator((input) => logSchema.parse(input))
@@ -30,7 +37,7 @@ export const logProfileView = createServerFn({ method: "POST" })
 
     const { error } = await supabaseAdmin.from("profile_views").insert({
       business_id: data.businessId,
-      viewer_ip: ip,
+      viewer_ip_hash: hashIp(ip),
       referrer,
     });
     if (error) return { ok: false as const, error: error.message };
