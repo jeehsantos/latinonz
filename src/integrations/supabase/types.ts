@@ -539,6 +539,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_set_business_plan: {
+        Args: { _business_id: string; _plan: string }
+        Returns: {
+          owner_id: string
+          plan_tier: string
+        }[]
+      }
       is_admin_or_manager: { Args: { _user_id: string }; Returns: boolean }
       list_admin_managers: {
         Args: never
