@@ -25,6 +25,7 @@ export type Business = {
   reviewCount: number;
   plan: PlanTier;
   contactKind: "website" | "whatsapp" | "instagram";
+  logoUrl?: string;
   hours?: { label: string; value: string }[];
   tags?: string[];
   phone?: string;
