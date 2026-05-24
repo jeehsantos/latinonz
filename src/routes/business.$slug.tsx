@@ -29,9 +29,15 @@ export const Route = createFileRoute("/business/$slug")({
   loader: async ({ params }) => {
     const res = await getBusinessBySlug({ data: { slug: params.slug } });
     if (!res.ok) throw notFound();
-    // Fire-and-forget view log; never block render.
     logProfileView({ data: { businessId: res.business.id } }).catch(() => {});
-    return { business: adaptBusiness(res.business) };
+    return {
+      business: adaptBusiness(res.business, res.plan),
+      hours: res.hours,
+      serviceOptions: res.serviceOptions,
+      photos: res.photos,
+      coupons: res.coupons,
+      locations: (res.business.locations ?? []) as string[],
+    };
   },
   head: ({ params, loaderData }) => ({
     meta: [
@@ -85,7 +91,7 @@ export const Route = createFileRoute("/business/$slug")({
 
 function BusinessPage() {
   const { t } = useI18n();
-  const { business } = Route.useLoaderData();
+  const { business, hours, serviceOptions, photos, coupons, locations } = Route.useLoaderData();
   usePageMetadata(
     undefined,
     undefined,
@@ -119,6 +125,9 @@ function BusinessPage() {
   const [leadStatus, setLeadStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [leadError, setLeadError] = useState<string | null>(null);
 
+  const waNumber = business.phone ? business.phone.replace(/\D/g, "") : "";
+  const wantsWhatsappFlow = can(business.plan, "leadWhatsapp") && Boolean(waNumber);
+
   async function handleLeadSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLeadStatus("submitting");
@@ -131,12 +140,27 @@ function BusinessPage() {
           email: leadForm.email.trim() || null,
           phone: leadForm.phone.trim() || null,
           message: leadForm.message.trim() || null,
-          source: "direct",
+          source: wantsWhatsappFlow ? "whatsapp" : "direct",
         },
       });
       if (!(res as { ok?: boolean })?.ok) {
         throw new Error((res as { error?: string })?.error ?? t("modal.error_generic"));
       }
+
+      if (wantsWhatsappFlow) {
+        const lines = [
+          `Olá ${business.name},`,
+          ``,
+          `Nome: ${leadForm.name.trim()}`,
+          leadForm.email.trim() ? `Email: ${leadForm.email.trim()}` : "",
+          leadForm.phone.trim() ? `Telefone: ${leadForm.phone.trim()}` : "",
+          ``,
+          leadForm.message.trim() || "Gostaria de mais informações.",
+        ].filter(Boolean);
+        const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
+        window.open(waUrl, "_blank", "noopener,noreferrer");
+      }
+
       setLeadStatus("success");
       setLeadForm({ name: "", email: "", phone: "", message: "" });
     } catch (err) {
@@ -144,9 +168,9 @@ function BusinessPage() {
       setLeadError(err instanceof Error ? err.message : t("modal.error_generic"));
     }
   }
-  const coupons = can(business.plan, "coupons") ? (COUPONS_BY_BUSINESS[business.slug] ?? []) : [];
+
   const photoLimit = getLimit(business.plan, "photoLimit");
-  const photoCount = Number.isFinite(photoLimit) ? Math.min(photoLimit, 6) : 6;
+  const visiblePhotos = Number.isFinite(photoLimit) ? photos.slice(0, photoLimit) : photos;
 
   const planName =
     business.plan === "starter"
@@ -154,6 +178,42 @@ function BusinessPage() {
       : business.plan === "premium"
         ? t("business.plan_premium")
         : t("business.plan_ultra");
+
+  // Build localized day labels from business_hours rows.
+  const DAY_ORDER = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
+  const DAY_LABELS: Record<string, string> = {
+    mon: "Seg",
+    tue: "Ter",
+    wed: "Qua",
+    thu: "Qui",
+    fri: "Sex",
+    sat: "Sáb",
+    sun: "Dom",
+  };
+  type HourRow = {
+    day_key: string;
+    is_closed: boolean;
+    slots: { open: string; close: string }[];
+    location: string;
+  };
+  const sortedHours = [...(hours as HourRow[])].sort(
+    (a, b) => DAY_ORDER.indexOf(a.day_key as (typeof DAY_ORDER)[number]) -
+      DAY_ORDER.indexOf(b.day_key as (typeof DAY_ORDER)[number]),
+  );
+
+  const serviceOptionItems: { key: string; label: string }[] = [];
+  if (serviceOptions) {
+    if (serviceOptions.takeaway) serviceOptionItems.push({ key: "takeaway", label: "Take away" });
+    if (serviceOptions.dinein) serviceOptionItems.push({ key: "dinein", label: "Dine in" });
+    if (serviceOptions.delivery) serviceOptionItems.push({ key: "delivery", label: "Delivery" });
+    if (serviceOptions.booking)
+      serviceOptionItems.push({ key: "booking", label: "Book in advance" });
+    if (serviceOptions.other && serviceOptions.other.trim())
+      serviceOptionItems.push({ key: "other", label: serviceOptions.other.trim() });
+  }
+
+  void COUPONS_BY_BUSINESS;
+
 
   return (
     <SiteShell>
@@ -238,14 +298,21 @@ function BusinessPage() {
                   : t("business.gallery_full")}
               </p>
             </div>
-            <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
-              {Array.from({ length: photoCount }).map((_, i) => (
-                <div
-                  key={i}
-                  className="aspect-square rounded-2xl bg-gradient-to-br from-emerald-100 via-amber-100 to-emerald-50"
-                />
-              ))}
-            </div>
+            {visiblePhotos.length === 0 ? (
+              <p className="mt-4 text-sm text-gray-500">{t("business.no_reviews")}</p>
+            ) : (
+              <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
+                {visiblePhotos.map((p: { id: string; url: string }) => (
+                  <img
+                    key={p.id}
+                    src={p.url}
+                    alt={business.name}
+                    className="aspect-square rounded-2xl object-cover bg-gray-100"
+                    loading="lazy"
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Reviews */}
@@ -348,17 +415,57 @@ function BusinessPage() {
           </div>
 
           {/* Hours — Premium+ only */}
-          {can(business.plan, "businessHours") && business.hours && (
+          {can(business.plan, "businessHours") && sortedHours.length > 0 && (
             <div className="bg-white border border-gray-200 rounded-3xl p-6">
               <h3 className="font-extrabold text-gray-900 flex items-center gap-2">
                 <Clock size={16} /> {t("business.hours_title")}
               </h3>
               <div className="mt-3 space-y-2 text-sm">
-                {business.hours.map((h: { label: string; value: string }) => (
-                  <div key={h.label} className="flex justify-between">
-                    <span className="text-gray-500">{h.label}</span>
-                    <span className="font-semibold text-gray-800">{h.value}</span>
+                {sortedHours.map((h) => (
+                  <div key={`${h.location}-${h.day_key}`} className="flex justify-between">
+                    <span className="text-gray-500">{DAY_LABELS[h.day_key] ?? h.day_key}</span>
+                    <span className="font-semibold text-gray-800">
+                      {h.is_closed || h.slots.length === 0
+                        ? "—"
+                        : h.slots.map((s) => `${s.open}–${s.close}`).join(", ")}
+                    </span>
                   </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Service options — Premium+ only */}
+          {can(business.plan, "serviceOptions") && serviceOptionItems.length > 0 && (
+            <div className="bg-white border border-gray-200 rounded-3xl p-6">
+              <h3 className="font-extrabold text-gray-900">Opções de atendimento</h3>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {serviceOptionItems.map((it) => (
+                  <span
+                    key={it.key}
+                    className="text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full"
+                  >
+                    {it.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Service cities */}
+          {locations.length > 0 && (
+            <div className="bg-white border border-gray-200 rounded-3xl p-6">
+              <h3 className="font-extrabold text-gray-900 flex items-center gap-2">
+                <MapPin size={16} /> Cidades atendidas
+              </h3>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {locations.map((loc: string) => (
+                  <span
+                    key={loc}
+                    className="text-xs font-semibold bg-gray-100 text-gray-700 px-3 py-1 rounded-full"
+                  >
+                    {loc}
+                  </span>
                 ))}
               </div>
             </div>
@@ -371,13 +478,15 @@ function BusinessPage() {
                 <Ticket size={16} /> {t("business.coupons_title")}
               </h3>
               <div className="mt-3 space-y-3">
-                {coupons.map((c) => (
-                  <div key={c.code} className="bg-white rounded-2xl p-4 border border-amber-200">
+                {coupons.map((c: { id: string; code: string; title: string; expires_at: string | null }) => (
+                  <div key={c.id} className="bg-white rounded-2xl p-4 border border-amber-200">
                     <p className="font-extrabold text-amber-700 text-lg tracking-wider">{c.code}</p>
                     <p className="text-sm text-gray-700">{c.title}</p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      {t("business.coupon_valid_until")} {c.expiresAt}
-                    </p>
+                    {c.expires_at && (
+                      <p className="text-xs text-gray-400 mt-1">
+                        {t("business.coupon_valid_until")} {c.expires_at}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
