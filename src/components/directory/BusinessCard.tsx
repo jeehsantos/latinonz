@@ -22,7 +22,15 @@ export function BusinessCard({ business }: { business: Business }) {
       params={{ slug: business.slug }}
       className="group block bg-white border border-gray-200 hover:border-[#1A5336]/40 hover:shadow-lg transition rounded-3xl overflow-hidden"
     >
-      <div className="aspect-[4/3] bg-gradient-to-br from-emerald-50 via-amber-50 to-emerald-100 relative">
+      <div className="aspect-[4/3] bg-gradient-to-br from-emerald-50 via-amber-50 to-emerald-100 relative flex items-center justify-center">
+        {business.logoUrl ? (
+          <img
+            src={business.logoUrl}
+            alt={business.name}
+            className="max-h-[70%] max-w-[70%] object-contain"
+            loading="lazy"
+          />
+        ) : null}
         <div className="absolute top-3 left-3 flex items-center gap-2">
           <span className="text-[10px] font-bold uppercase bg-white/90 text-gray-700 px-2 py-0.5 rounded-full">
             {displayType}
