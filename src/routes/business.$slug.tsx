@@ -29,9 +29,15 @@ export const Route = createFileRoute("/business/$slug")({
   loader: async ({ params }) => {
     const res = await getBusinessBySlug({ data: { slug: params.slug } });
     if (!res.ok) throw notFound();
-    // Fire-and-forget view log; never block render.
     logProfileView({ data: { businessId: res.business.id } }).catch(() => {});
-    return { business: adaptBusiness(res.business) };
+    return {
+      business: adaptBusiness(res.business, res.plan),
+      hours: res.hours,
+      serviceOptions: res.serviceOptions,
+      photos: res.photos,
+      coupons: res.coupons,
+      locations: (res.business.locations ?? []) as string[],
+    };
   },
   head: ({ params, loaderData }) => ({
     meta: [
