@@ -43,6 +43,7 @@ export function adaptBusiness(row: DbBusinessRow): Business {
     reviewCount: row.review_count ?? 0,
     plan: "starter",
     contactKind: row.website ? "website" : row.phone ? "whatsapp" : "instagram",
+    logoUrl: row.logo_url ?? undefined,
     tags: row.tags ?? undefined,
     phone: row.phone ?? undefined,
     email: row.email ?? undefined,

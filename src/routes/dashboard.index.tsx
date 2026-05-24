@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import { Eye, Inbox, Star, MousePointerClick } from "lucide-react";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { useI18n } from "@/lib/i18n";
@@ -8,25 +10,55 @@ import { getMyLeads } from "@/lib/leads.functions";
 import { format } from "date-fns";
 
 export const Route = createFileRoute("/dashboard/")({
-  loader: async () => {
-    const [bizRes, analyticsRes, leadsRes] = await Promise.all([
-      getMyBusiness(),
-      getAnalytics(),
-      getMyLeads(),
-    ]);
-    return {
-      business: bizRes?.ok ? bizRes.business : null,
-      analytics: analyticsRes?.ok ? analyticsRes : null,
-      leads: leadsRes?.ok ? leadsRes.leads : [],
-    };
-  },
   component: DashboardOverview,
 });
 
 function DashboardOverview() {
   const { t } = useI18n();
-  const { business, analytics, leads } = Route.useLoaderData();
+  const fetchMyBusiness = useServerFn(getMyBusiness);
+  const fetchAnalytics = useServerFn(getAnalytics);
+  const fetchMyLeads = useServerFn(getMyLeads);
 
+  const { data: bizRes } = useQuery({
+    queryKey: ["my-business"],
+    queryFn: async () => {
+      try {
+        return await fetchMyBusiness();
+      } catch {
+        return null;
+      }
+    },
+    retry: false,
+    throwOnError: false,
+  });
+  const { data: analyticsRes } = useQuery({
+    queryKey: ["dashboard-analytics"],
+    queryFn: async () => {
+      try {
+        return await fetchAnalytics();
+      } catch {
+        return null;
+      }
+    },
+    retry: false,
+    throwOnError: false,
+  });
+  const { data: leadsRes } = useQuery({
+    queryKey: ["dashboard-leads"],
+    queryFn: async () => {
+      try {
+        return await fetchMyLeads();
+      } catch {
+        return null;
+      }
+    },
+    retry: false,
+    throwOnError: false,
+  });
+
+  const business = bizRes?.ok ? bizRes.business : null;
+  const analytics = analyticsRes?.ok ? analyticsRes : null;
+  const leads = leadsRes?.ok ? leadsRes.leads : [];
   const businessName = business?.name ?? "";
 
   return (
