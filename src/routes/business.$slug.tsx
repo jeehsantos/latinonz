@@ -415,17 +415,57 @@ function BusinessPage() {
           </div>
 
           {/* Hours — Premium+ only */}
-          {can(business.plan, "businessHours") && business.hours && (
+          {can(business.plan, "businessHours") && sortedHours.length > 0 && (
             <div className="bg-white border border-gray-200 rounded-3xl p-6">
               <h3 className="font-extrabold text-gray-900 flex items-center gap-2">
                 <Clock size={16} /> {t("business.hours_title")}
               </h3>
               <div className="mt-3 space-y-2 text-sm">
-                {business.hours.map((h: { label: string; value: string }) => (
-                  <div key={h.label} className="flex justify-between">
-                    <span className="text-gray-500">{h.label}</span>
-                    <span className="font-semibold text-gray-800">{h.value}</span>
+                {sortedHours.map((h) => (
+                  <div key={`${h.location}-${h.day_key}`} className="flex justify-between">
+                    <span className="text-gray-500">{DAY_LABELS[h.day_key] ?? h.day_key}</span>
+                    <span className="font-semibold text-gray-800">
+                      {h.is_closed || h.slots.length === 0
+                        ? "—"
+                        : h.slots.map((s) => `${s.open}–${s.close}`).join(", ")}
+                    </span>
                   </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Service options — Premium+ only */}
+          {can(business.plan, "serviceOptions") && serviceOptionItems.length > 0 && (
+            <div className="bg-white border border-gray-200 rounded-3xl p-6">
+              <h3 className="font-extrabold text-gray-900">Opções de atendimento</h3>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {serviceOptionItems.map((it) => (
+                  <span
+                    key={it.key}
+                    className="text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full"
+                  >
+                    {it.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Service cities */}
+          {locations.length > 0 && (
+            <div className="bg-white border border-gray-200 rounded-3xl p-6">
+              <h3 className="font-extrabold text-gray-900 flex items-center gap-2">
+                <MapPin size={16} /> Cidades atendidas
+              </h3>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {locations.map((loc) => (
+                  <span
+                    key={loc}
+                    className="text-xs font-semibold bg-gray-100 text-gray-700 px-3 py-1 rounded-full"
+                  >
+                    {loc}
+                  </span>
                 ))}
               </div>
             </div>
@@ -438,13 +478,15 @@ function BusinessPage() {
                 <Ticket size={16} /> {t("business.coupons_title")}
               </h3>
               <div className="mt-3 space-y-3">
-                {coupons.map((c) => (
-                  <div key={c.code} className="bg-white rounded-2xl p-4 border border-amber-200">
+                {coupons.map((c: { id: string; code: string; title: string; expires_at: string | null }) => (
+                  <div key={c.id} className="bg-white rounded-2xl p-4 border border-amber-200">
                     <p className="font-extrabold text-amber-700 text-lg tracking-wider">{c.code}</p>
                     <p className="text-sm text-gray-700">{c.title}</p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      {t("business.coupon_valid_until")} {c.expiresAt}
-                    </p>
+                    {c.expires_at && (
+                      <p className="text-xs text-gray-400 mt-1">
+                        {t("business.coupon_valid_until")} {c.expires_at}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
