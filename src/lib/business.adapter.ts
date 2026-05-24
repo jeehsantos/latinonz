@@ -1,4 +1,5 @@
 import type { Business } from "@/lib/mock/types";
+import type { PlanTier } from "@/lib/plans";
 
 type DbBusinessRow = {
   id: string;
@@ -23,10 +24,9 @@ type DbBusinessRow = {
 
 /**
  * Map a DB businesses row into the legacy `Business` shape used by the
- * directory and business profile components. Keeps the UI untouched while
- * the data source moves from mock to Supabase.
+ * directory and business profile components.
  */
-export function adaptBusiness(row: DbBusinessRow): Business {
+export function adaptBusiness(row: DbBusinessRow, plan: PlanTier = "starter"): Business {
   const typeUi: Business["type"] =
     row.type === "Produto" || row.type === "Serviço" ? "Empresa" : "Empresa";
 
@@ -41,7 +41,7 @@ export function adaptBusiness(row: DbBusinessRow): Business {
     location: (row.locations && row.locations[0]) || "",
     rating: Number(row.rating ?? 0),
     reviewCount: row.review_count ?? 0,
-    plan: "starter",
+    plan,
     contactKind: row.website ? "website" : row.phone ? "whatsapp" : "instagram",
     logoUrl: row.logo_url ?? undefined,
     tags: row.tags ?? undefined,
