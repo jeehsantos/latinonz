@@ -162,7 +162,18 @@ function BusinessPage() {
           <Link to="/directory" className="text-sm text-white/60 hover:text-white">
             {t("business.back_to_directory")}
           </Link>
-          <div className="mt-6 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+          <div className="mt-6 flex flex-col md:flex-row md:items-center gap-6">
+            {business.logoUrl ? (
+              <img
+                src={business.logoUrl}
+                alt={business.name}
+                className="w-24 h-24 md:w-28 md:h-28 rounded-2xl object-cover bg-white/10 border border-white/20 shrink-0"
+              />
+            ) : (
+              <div className="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-3xl font-black shrink-0">
+                {(business.name || "?").trim().charAt(0).toUpperCase()}
+              </div>
+            )}
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-bold uppercase bg-white/15 px-2 py-0.5 rounded-full">
