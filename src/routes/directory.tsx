@@ -41,7 +41,10 @@ function DirectoryPage() {
     queryKey: ["businesses", "all"],
     queryFn: () => fetchBusinesses({ data: {} }),
   });
-  const businesses = useMemo(() => (data?.ok ? data.rows.map(adaptBusiness) : []), [data]);
+  const businesses = useMemo(
+    () => (data?.ok ? data.rows.map((r) => adaptBusiness(r)) : []),
+    [data],
+  );
 
   const filtered = useMemo(() => {
     return businesses.filter((b) => {
