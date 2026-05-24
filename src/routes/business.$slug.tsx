@@ -298,14 +298,21 @@ function BusinessPage() {
                   : t("business.gallery_full")}
               </p>
             </div>
-            <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
-              {Array.from({ length: photoCount }).map((_, i) => (
-                <div
-                  key={i}
-                  className="aspect-square rounded-2xl bg-gradient-to-br from-emerald-100 via-amber-100 to-emerald-50"
-                />
-              ))}
-            </div>
+            {visiblePhotos.length === 0 ? (
+              <p className="mt-4 text-sm text-gray-500">{t("business.no_reviews")}</p>
+            ) : (
+              <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
+                {visiblePhotos.map((p: { id: string; url: string }) => (
+                  <img
+                    key={p.id}
+                    src={p.url}
+                    alt={business.name}
+                    className="aspect-square rounded-2xl object-cover bg-gray-100"
+                    loading="lazy"
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Reviews */}
