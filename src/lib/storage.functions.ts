@@ -77,6 +77,20 @@ export const uploadLogo = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { bytes, type, ext } = validateFile(data);
 
+    // Ensure the user has a business row first — otherwise the update
+    // silently affects 0 rows and the logo URL is lost on refresh.
+    const { data: biz, error: bizErr } = await supabase
+      .from("businesses")
+      .select("id")
+      .eq("owner_id", userId)
+      .maybeSingle();
+    if (bizErr) throw new Error(bizErr.message);
+    if (!biz) {
+      throw new Error(
+        "Salve as informações do seu negócio antes de enviar o logo.",
+      );
+    }
+
     const path = `${userId}/logo.${ext}`;
     const { error: upErr } = await supabase.storage
       .from(LOGO_BUCKET)
@@ -86,11 +100,14 @@ export const uploadLogo = createServerFn({ method: "POST" })
     const { data: pub } = supabase.storage.from(LOGO_BUCKET).getPublicUrl(path);
     const url = `${pub.publicUrl}?v=${Date.now()}`;
 
-    const { error: updErr } = await supabase
+    const { data: updated, error: updErr } = await supabase
       .from("businesses")
       .update({ logo_url: url })
-      .eq("owner_id", userId);
+      .eq("owner_id", userId)
+      .select("id")
+      .maybeSingle();
     if (updErr) throw new Error(updErr.message);
+    if (!updated) throw new Error("Não foi possível salvar o logo.");
 
     return { ok: true as const, url };
   });
