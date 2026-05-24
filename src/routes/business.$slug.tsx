@@ -459,7 +459,7 @@ function BusinessPage() {
                 <MapPin size={16} /> Cidades atendidas
               </h3>
               <div className="mt-3 flex flex-wrap gap-2">
-                {locations.map((loc) => (
+                {locations.map((loc: string) => (
                   <span
                     key={loc}
                     className="text-xs font-semibold bg-gray-100 text-gray-700 px-3 py-1 rounded-full"
