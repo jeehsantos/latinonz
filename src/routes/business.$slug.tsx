@@ -91,7 +91,7 @@ export const Route = createFileRoute("/business/$slug")({
 
 function BusinessPage() {
   const { t } = useI18n();
-  const { business } = Route.useLoaderData();
+  const { business, hours, serviceOptions, photos, coupons, locations } = Route.useLoaderData();
   usePageMetadata(
     undefined,
     undefined,
@@ -125,6 +125,9 @@ function BusinessPage() {
   const [leadStatus, setLeadStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [leadError, setLeadError] = useState<string | null>(null);
 
+  const waNumber = business.phone ? business.phone.replace(/\D/g, "") : "";
+  const wantsWhatsappFlow = can(business.plan, "leadWhatsapp") && Boolean(waNumber);
+
   async function handleLeadSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLeadStatus("submitting");
@@ -137,12 +140,27 @@ function BusinessPage() {
           email: leadForm.email.trim() || null,
           phone: leadForm.phone.trim() || null,
           message: leadForm.message.trim() || null,
-          source: "direct",
+          source: wantsWhatsappFlow ? "whatsapp" : "direct",
         },
       });
       if (!(res as { ok?: boolean })?.ok) {
         throw new Error((res as { error?: string })?.error ?? t("modal.error_generic"));
       }
+
+      if (wantsWhatsappFlow) {
+        const lines = [
+          `Olá ${business.name},`,
+          ``,
+          `Nome: ${leadForm.name.trim()}`,
+          leadForm.email.trim() ? `Email: ${leadForm.email.trim()}` : "",
+          leadForm.phone.trim() ? `Telefone: ${leadForm.phone.trim()}` : "",
+          ``,
+          leadForm.message.trim() || "Gostaria de mais informações.",
+        ].filter(Boolean);
+        const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
+        window.open(waUrl, "_blank", "noopener,noreferrer");
+      }
+
       setLeadStatus("success");
       setLeadForm({ name: "", email: "", phone: "", message: "" });
     } catch (err) {
@@ -150,9 +168,9 @@ function BusinessPage() {
       setLeadError(err instanceof Error ? err.message : t("modal.error_generic"));
     }
   }
-  const coupons = can(business.plan, "coupons") ? (COUPONS_BY_BUSINESS[business.slug] ?? []) : [];
+
   const photoLimit = getLimit(business.plan, "photoLimit");
-  const photoCount = Number.isFinite(photoLimit) ? Math.min(photoLimit, 6) : 6;
+  const visiblePhotos = Number.isFinite(photoLimit) ? photos.slice(0, photoLimit) : photos;
 
   const planName =
     business.plan === "starter"
@@ -160,6 +178,42 @@ function BusinessPage() {
       : business.plan === "premium"
         ? t("business.plan_premium")
         : t("business.plan_ultra");
+
+  // Build localized day labels from business_hours rows.
+  const DAY_ORDER = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
+  const DAY_LABELS: Record<string, string> = {
+    mon: "Seg",
+    tue: "Ter",
+    wed: "Qua",
+    thu: "Qui",
+    fri: "Sex",
+    sat: "Sáb",
+    sun: "Dom",
+  };
+  type HourRow = {
+    day_key: string;
+    is_closed: boolean;
+    slots: { open: string; close: string }[];
+    location: string;
+  };
+  const sortedHours = [...(hours as HourRow[])].sort(
+    (a, b) => DAY_ORDER.indexOf(a.day_key as (typeof DAY_ORDER)[number]) -
+      DAY_ORDER.indexOf(b.day_key as (typeof DAY_ORDER)[number]),
+  );
+
+  const serviceOptionItems: { key: string; label: string }[] = [];
+  if (serviceOptions) {
+    if (serviceOptions.takeaway) serviceOptionItems.push({ key: "takeaway", label: "Take away" });
+    if (serviceOptions.dinein) serviceOptionItems.push({ key: "dinein", label: "Dine in" });
+    if (serviceOptions.delivery) serviceOptionItems.push({ key: "delivery", label: "Delivery" });
+    if (serviceOptions.booking)
+      serviceOptionItems.push({ key: "booking", label: "Book in advance" });
+    if (serviceOptions.other && serviceOptions.other.trim())
+      serviceOptionItems.push({ key: "other", label: serviceOptions.other.trim() });
+  }
+
+  void COUPONS_BY_BUSINESS;
+
 
   return (
     <SiteShell>
