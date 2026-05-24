@@ -23,7 +23,7 @@ export function DirectoryHome() {
   const { categories, isLoading: catsLoading } = useCategories();
   const featured = useMemo(() => {
     if (!data?.ok) return [];
-    return data.rows.slice(0, 4).map(adaptBusiness);
+    return data.rows.slice(0, 4).map((r) => adaptBusiness(r));
   }, [data]);
 
   const trustItems = [
