@@ -106,20 +106,46 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
       return { ok: false as const, error: "Negócio não encontrado." };
     }
 
-    const [{ data: hours }, { data: serviceOptions }] = await Promise.all([
+    const [
+      { data: hours },
+      { data: serviceOptions },
+      { data: photos },
+      { data: coupons },
+      { data: ownerProfile },
+    ] = await Promise.all([
       supabaseAdmin.from("business_hours").select("*").eq("business_id", business.id),
       supabaseAdmin
         .from("service_options")
         .select("*")
         .eq("business_id", business.id)
         .maybeSingle(),
+      supabaseAdmin
+        .from("business_photos")
+        .select("id, url, position")
+        .eq("business_id", business.id)
+        .order("position", { ascending: true }),
+      supabaseAdmin
+        .from("coupons")
+        .select("id, code, title, description, expires_at, discount_type, discount_value")
+        .eq("business_id", business.id)
+        .eq("is_active", true),
+      supabaseAdmin
+        .from("profiles")
+        .select("plan_tier")
+        .eq("id", business.owner_id)
+        .maybeSingle(),
     ]);
+
+    const plan = (ownerProfile?.plan_tier ?? "starter") as "starter" | "premium" | "ultra";
 
     return {
       ok: true as const,
       business,
+      plan,
       hours: hours ?? [],
       serviceOptions: serviceOptions ?? null,
+      photos: photos ?? [],
+      coupons: coupons ?? [],
     };
   });
 
