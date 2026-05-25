@@ -21,6 +21,7 @@ export type Business = {
   macro: string;
   subcategory: string;
   location: string;
+  locations?: string[];
   rating: number;
   reviewCount: number;
   plan: PlanTier;

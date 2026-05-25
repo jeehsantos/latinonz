@@ -39,6 +39,7 @@ export function adaptBusiness(row: DbBusinessRow, plan: PlanTier = "starter"): B
     macro: row.macro_category,
     subcategory: row.subcategory ?? "",
     location: (row.locations && row.locations[0]) || "",
+    locations: row.locations ?? [],
     rating: Number(row.rating ?? 0),
     reviewCount: row.review_count ?? 0,
     plan,
