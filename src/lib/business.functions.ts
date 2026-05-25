@@ -392,3 +392,53 @@ export const updateServiceOptions = createServerFn({ method: "POST" })
     }
     return { ok: true as const, serviceOptions: upserted };
   });
+
+// Authenticated — replace custom service option items for the owner's business
+export const updateServiceOptionItems = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => updateServiceOptionItemsSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+
+    const { data: business, error: bizError } = await supabase
+      .from("businesses")
+      .select("id")
+      .eq("owner_id", userId)
+      .maybeSingle();
+
+    if (bizError || !business) {
+      return { ok: false as const, error: "Negócio não encontrado." };
+    }
+
+    const { error: delError } = await supabase
+      .from("service_option_items")
+      .delete()
+      .eq("business_id", business.id);
+    if (delError) {
+      console.error("updateServiceOptionItems delete error", delError);
+      return { ok: false as const, error: delError.message };
+    }
+
+    if (data.items.length === 0) {
+      return { ok: true as const, items: [] };
+    }
+
+    const rows = data.items.map((it, idx) => ({
+      business_id: business.id,
+      title: it.title,
+      description: it.description ?? null,
+      icon_key: it.icon_key,
+      position: idx,
+    }));
+
+    const { data: inserted, error: insError } = await supabase
+      .from("service_option_items")
+      .insert(rows)
+      .select();
+
+    if (insError) {
+      console.error("updateServiceOptionItems insert error", insError);
+      return { ok: false as const, error: insError.message };
+    }
+    return { ok: true as const, items: inserted ?? [] };
+  });
