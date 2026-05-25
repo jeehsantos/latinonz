@@ -25,7 +25,13 @@ import { Link } from "@tanstack/react-router";
 import { NZ_CITIES } from "@/lib/mock/categories";
 import { useCategories } from "@/hooks/useCategories";
 import { useI18n } from "@/lib/i18n";
-import { getMyBusiness, updateMyBusiness } from "@/lib/business.functions";
+import {
+  getMyBusiness,
+  updateMyBusiness,
+  updateBusinessHours,
+  updateServiceOptions,
+  updateServiceOptionItems,
+} from "@/lib/business.functions";
 import { uploadLogo } from "@/lib/storage.functions";
 import { connectGooglePlace, syncGoogleReviews } from "@/lib/reviews.functions";
 import { Star, RefreshCw } from "lucide-react";
