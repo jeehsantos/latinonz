@@ -185,12 +185,27 @@ export const getMyBusiness = createServerFn({ method: "GET" })
       return { ok: false as const, error: "Erro ao carregar perfil." };
     }
     if (!business) {
-      return { ok: true as const, business: null, hours: [], serviceOptions: null };
+      return {
+        ok: true as const,
+        business: null,
+        hours: [],
+        serviceOptions: null,
+        serviceOptionItems: [],
+      };
     }
 
-    const [{ data: hours }, { data: serviceOptions }] = await Promise.all([
+    const [
+      { data: hours },
+      { data: serviceOptions },
+      { data: serviceOptionItems },
+    ] = await Promise.all([
       supabase.from("business_hours").select("*").eq("business_id", business.id),
       supabase.from("service_options").select("*").eq("business_id", business.id).maybeSingle(),
+      supabase
+        .from("service_option_items")
+        .select("id, title, description, icon_key, position")
+        .eq("business_id", business.id)
+        .order("position", { ascending: true }),
     ]);
 
     return {
@@ -198,6 +213,7 @@ export const getMyBusiness = createServerFn({ method: "GET" })
       business,
       hours: hours ?? [],
       serviceOptions: serviceOptions ?? null,
+      serviceOptionItems: serviceOptionItems ?? [],
     };
   });
 
