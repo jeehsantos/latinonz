@@ -687,7 +687,15 @@ function ProfileEditor() {
           />
         )}
 
-        <ServiceOptionsSection plan={plan} />
+        <ServiceOptionsSection
+          plan={plan}
+          flags={serviceFlags}
+          onToggleFlag={(k) => setServiceFlags((p) => ({ ...p, [k]: !p[k] }))}
+          extra={serviceExtra}
+          onChangeExtra={setServiceExtra}
+          items={customServiceItems}
+          onChangeItems={setCustomServiceItems}
+        />
 
         {saveError && <p className="text-sm text-red-600">{saveError}</p>}
         {saveSuccess && <p className="text-sm text-emerald-700">{t("profile.save_button")} ✓</p>}
@@ -724,6 +732,49 @@ function ProfileEditor() {
                 }
                 return;
               }
+
+              // Save hours, service options, and custom service items for Premium+
+              if (plan !== "starter") {
+                const hoursPayload: {
+                  location: string;
+                  day_key: DayKey;
+                  is_closed: boolean;
+                  slots: { open: string; close: string }[];
+                }[] = [];
+                for (const city of cities) {
+                  const sched = schedules[city] ?? DEFAULT_SCHEDULE;
+                  for (const k of DAY_KEYS) {
+                    hoursPayload.push({
+                      location: city,
+                      day_key: k,
+                      is_closed: sched[k].closed,
+                      slots: sched[k].closed ? [] : sched[k].slots,
+                    });
+                  }
+                }
+                await saveHoursFn({ data: { hours: hoursPayload } });
+                await saveServiceOptionsFn({
+                  data: {
+                    takeaway: serviceFlags.takeaway,
+                    dinein: serviceFlags.dinein,
+                    delivery: serviceFlags.delivery,
+                    booking: serviceFlags.booking,
+                    other: serviceExtra.trim() || null,
+                  },
+                });
+                await saveServiceItemsFn({
+                  data: {
+                    items: customServiceItems
+                      .filter((it) => it.title.trim().length > 0)
+                      .map((it) => ({
+                        title: it.title.trim(),
+                        description: it.description.trim() || null,
+                        icon_key: it.icon_key,
+                      })),
+                  },
+                });
+              }
+
               setSaveSuccess(true);
               await refetch();
             } catch (err) {
