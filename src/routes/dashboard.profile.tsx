@@ -20,12 +20,25 @@ import {
   CalendarClock,
   Sparkles,
   Lock,
+  Truck,
+  Wrench,
+  Heart,
+  Gift,
+  Star as StarIcon,
+  Coffee,
+  Package,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { NZ_CITIES } from "@/lib/mock/categories";
 import { useCategories } from "@/hooks/useCategories";
 import { useI18n } from "@/lib/i18n";
-import { getMyBusiness, updateMyBusiness } from "@/lib/business.functions";
+import {
+  getMyBusiness,
+  updateMyBusiness,
+  updateBusinessHours,
+  updateServiceOptions,
+  updateServiceOptionItems,
+} from "@/lib/business.functions";
 import { uploadLogo } from "@/lib/storage.functions";
 import { connectGooglePlace, syncGoogleReviews } from "@/lib/reviews.functions";
 import { Star, RefreshCw } from "lucide-react";
@@ -62,6 +75,9 @@ function ProfileEditor() {
   const { t } = useI18n();
   const fetchMyBusiness = useServerFn(getMyBusiness);
   const saveMyBusiness = useServerFn(updateMyBusiness);
+  const saveHoursFn = useServerFn(updateBusinessHours);
+  const saveServiceOptionsFn = useServerFn(updateServiceOptions);
+  const saveServiceItemsFn = useServerFn(updateServiceOptionItems);
   const callUploadLogo = useServerFn(uploadLogo);
   const { data: loaded, refetch } = useQuery({
     queryKey: ["my-business"],
@@ -100,6 +116,18 @@ function ProfileEditor() {
   const [logo, setLogo] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+
+  // Service options (controlled by parent)
+  type ServiceFlagKey = "takeaway" | "dinein" | "delivery" | "booking";
+  const [serviceFlags, setServiceFlags] = useState<Record<ServiceFlagKey, boolean>>({
+    takeaway: false,
+    dinein: false,
+    delivery: false,
+    booking: false,
+  });
+  const [serviceExtra, setServiceExtra] = useState("");
+  type CustomServiceItem = { title: string; description: string; icon_key: string };
+  const [customServiceItems, setCustomServiceItems] = useState<CustomServiceItem[]>([]);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const logoRef = useRef<HTMLInputElement>(null);
 
@@ -115,17 +143,66 @@ function ProfileEditor() {
       if (b.macro_category) setCategory(b.macro_category);
       setPhone(b.phone ?? "");
       setKeywords((b.keywords ?? []).join(", "));
-      if (b.locations && b.locations.length > 0) {
-        setCities(b.locations);
-        setActiveBranch(b.locations[0]);
-        setSchedules((prev) => {
-          const next: Record<string, BranchSchedule> = {};
-          for (const c of b.locations as string[])
-            next[c] = prev[c] ?? cloneSchedule(DEFAULT_SCHEDULE);
-          return next;
-        });
-      }
+      const locs: string[] =
+        b.locations && b.locations.length > 0 ? (b.locations as string[]) : ["Auckland"];
+      setCities(locs);
+      setActiveBranch(locs[0]);
+
+      // Seed schedules from saved business_hours (per location), fallback to default
+      const loadedHours = (loaded.hours ?? []) as unknown as {
+        day_key: DayKey;
+        is_closed: boolean;
+        slots: { open: string; close: string }[];
+        location: string;
+      }[];
+      setSchedules(() => {
+        const next: Record<string, BranchSchedule> = {};
+        for (const loc of locs) {
+          const base = cloneSchedule(DEFAULT_SCHEDULE);
+          const rowsForLoc = loadedHours.filter((h) => h.location === loc);
+          if (rowsForLoc.length > 0) {
+            for (const k of DAY_KEYS) base[k] = { closed: true, slots: [] };
+            for (const r of rowsForLoc) {
+              base[r.day_key] = {
+                closed: !!r.is_closed,
+                slots: Array.isArray(r.slots) ? r.slots : [],
+              };
+            }
+          }
+          next[loc] = base;
+        }
+        return next;
+      });
+
       if (b.logo_url) setLogo(b.logo_url);
+
+      // Seed service options
+      const so = loaded.serviceOptions as
+        | { takeaway: boolean; dinein: boolean; delivery: boolean; booking: boolean; other: string | null }
+        | null;
+      if (so) {
+        setServiceFlags({
+          takeaway: !!so.takeaway,
+          dinein: !!so.dinein,
+          delivery: !!so.delivery,
+          booking: !!so.booking,
+        });
+        setServiceExtra(so.other ?? "");
+      }
+
+      // Seed custom service items
+      const items = (loaded.serviceOptionItems ?? []) as {
+        title: string;
+        description: string | null;
+        icon_key: string;
+      }[];
+      setCustomServiceItems(
+        items.map((it) => ({
+          title: it.title,
+          description: it.description ?? "",
+          icon_key: it.icon_key || "sparkles",
+        })),
+      );
     } else {
       // Fallback: If no business row exists yet, use user_metadata from signup
       supabase.auth.getUser().then(({ data }) => {
@@ -613,7 +690,15 @@ function ProfileEditor() {
           />
         )}
 
-        <ServiceOptionsSection plan={plan} />
+        <ServiceOptionsSection
+          plan={plan}
+          flags={serviceFlags}
+          onToggleFlag={(k) => setServiceFlags((p) => ({ ...p, [k]: !p[k] }))}
+          extra={serviceExtra}
+          onChangeExtra={setServiceExtra}
+          items={customServiceItems}
+          onChangeItems={setCustomServiceItems}
+        />
 
         {saveError && <p className="text-sm text-red-600">{saveError}</p>}
         {saveSuccess && <p className="text-sm text-emerald-700">{t("profile.save_button")} ✓</p>}
@@ -650,6 +735,49 @@ function ProfileEditor() {
                 }
                 return;
               }
+
+              // Save hours, service options, and custom service items for Premium+
+              if (plan !== "starter") {
+                const hoursPayload: {
+                  location: string;
+                  day_key: DayKey;
+                  is_closed: boolean;
+                  slots: { open: string; close: string }[];
+                }[] = [];
+                for (const city of cities) {
+                  const sched = schedules[city] ?? DEFAULT_SCHEDULE;
+                  for (const k of DAY_KEYS) {
+                    hoursPayload.push({
+                      location: city,
+                      day_key: k,
+                      is_closed: sched[k].closed,
+                      slots: sched[k].closed ? [] : sched[k].slots,
+                    });
+                  }
+                }
+                await saveHoursFn({ data: { hours: hoursPayload } });
+                await saveServiceOptionsFn({
+                  data: {
+                    takeaway: serviceFlags.takeaway,
+                    dinein: serviceFlags.dinein,
+                    delivery: serviceFlags.delivery,
+                    booking: serviceFlags.booking,
+                    other: serviceExtra.trim() || null,
+                  },
+                });
+                await saveServiceItemsFn({
+                  data: {
+                    items: customServiceItems
+                      .filter((it) => it.title.trim().length > 0)
+                      .map((it) => ({
+                        title: it.title.trim(),
+                        description: it.description.trim() || null,
+                        icon_key: it.icon_key,
+                      })),
+                  },
+                });
+              }
+
               setSaveSuccess(true);
               await refetch();
             } catch (err) {
@@ -756,32 +884,56 @@ function ProfileEditor() {
   );
 }
 
-type ServiceOptionKey = "takeaway" | "dinein" | "delivery" | "booking";
-
-const SERVICE_OPTIONS: {
-  key: ServiceOptionKey;
-  label: string;
-  hint: string;
-  icon: typeof ShoppingBag;
-}[] = [
-  { key: "takeaway", label: "Take Away", hint: "Cliente retira no local", icon: ShoppingBag },
-  { key: "dinein", label: "Dine In", hint: "Consumo no local", icon: UtensilsCrossed },
-  { key: "delivery", label: "Delivery", hint: "Entrega ao cliente", icon: Bike },
-  { key: "booking", label: "Reserva antecipada", hint: "Book in advance", icon: CalendarClock },
+const CUSTOM_ICONS: { key: string; icon: typeof ShoppingBag }[] = [
+  { key: "sparkles", icon: Sparkles },
+  { key: "shopping-bag", icon: ShoppingBag },
+  { key: "utensils", icon: UtensilsCrossed },
+  { key: "bike", icon: Bike },
+  { key: "calendar", icon: CalendarClock },
+  { key: "truck", icon: Truck },
+  { key: "wrench", icon: Wrench },
+  { key: "heart", icon: Heart },
+  { key: "gift", icon: Gift },
+  { key: "star", icon: StarIcon },
+  { key: "coffee", icon: Coffee },
+  { key: "package", icon: Package },
 ];
 
-function ServiceOptionsSection({ plan }: { plan: string }) {
+export function getServiceIcon(key: string): typeof ShoppingBag {
+  return CUSTOM_ICONS.find((i) => i.key === key)?.icon ?? Sparkles;
+}
+
+type ServiceOptionsSectionProps = {
+  plan: string;
+  flags: Record<ServiceOptionKey, boolean>;
+  onToggleFlag: (k: ServiceOptionKey) => void;
+  extra: string;
+  onChangeExtra: (v: string) => void;
+  items: { title: string; description: string; icon_key: string }[];
+  onChangeItems: (
+    items: { title: string; description: string; icon_key: string }[],
+  ) => void;
+};
+
+function ServiceOptionsSection({
+  plan,
+  flags,
+  onToggleFlag,
+  extra,
+  onChangeExtra,
+  items,
+  onChangeItems,
+}: ServiceOptionsSectionProps) {
   const { t } = useI18n();
-  const [enabled, setEnabled] = useState<Record<ServiceOptionKey, boolean>>({
-    takeaway: true,
-    dinein: true,
-    delivery: false,
-    booking: false,
-  });
-  const [extra, setExtra] = useState("");
   const isPaid = plan === "premium" || plan === "ultra";
 
-  const toggle = (k: ServiceOptionKey) => setEnabled((p) => ({ ...p, [k]: !p[k] }));
+  const addItem = () =>
+    onChangeItems([...items, { title: "", description: "", icon_key: "sparkles" }]);
+  const updateItem = (
+    idx: number,
+    patch: Partial<{ title: string; description: string; icon_key: string }>,
+  ) => onChangeItems(items.map((it, i) => (i === idx ? { ...it, ...patch } : it)));
+  const removeItem = (idx: number) => onChangeItems(items.filter((_, i) => i !== idx));
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-5">
@@ -822,12 +974,12 @@ function ServiceOptionsSection({ plan }: { plan: string }) {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {SERVICE_OPTIONS.map(({ key, label, hint, icon: Icon }) => {
-              const on = enabled[key];
+              const on = flags[key];
               return (
                 <button
                   key={key}
                   type="button"
-                  onClick={() => toggle(key)}
+                  onClick={() => onToggleFlag(key)}
                   className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-colors ${on ? "border-[#1A5336] bg-emerald-50/60" : "border-gray-200 bg-white hover:border-gray-300"}`}
                 >
                   <span
@@ -839,18 +991,92 @@ function ServiceOptionsSection({ plan }: { plan: string }) {
                     <span className="block text-sm font-bold text-gray-900">{label}</span>
                     <span className="block text-xs text-gray-500">{hint}</span>
                   </span>
-                  <span className="relative">
-                    <span
-                      className={`block h-5 w-9 rounded-full transition-colors ${on ? "bg-[#1A5336]" : "bg-gray-300"}`}
-                    />
-                    <span
-                      className={`absolute top-0.5 left-0.5 h-4 w-4 bg-white rounded-full shadow transition-transform ${on ? "translate-x-4" : ""}`}
-                    />
-                  </span>
                 </button>
               );
             })}
           </div>
+
+          <div className="pt-4 border-t border-gray-100">
+            <div className="flex items-center justify-between mb-3">
+              <label className="block text-sm font-bold text-gray-700">
+                Opções personalizadas
+              </label>
+              <button
+                type="button"
+                onClick={addItem}
+                className="inline-flex items-center gap-1 text-xs font-bold text-[#1A5336] hover:underline"
+              >
+                <Plus size={14} /> Adicionar opção
+              </button>
+            </div>
+
+            {items.length === 0 && (
+              <p className="text-xs text-gray-500">
+                Adicione opções extras com título, descrição e ícone (ex: Atendimento domiciliar, Consultoria online).
+              </p>
+            )}
+
+            <div className="space-y-3">
+              {items.map((it, idx) => {
+                const Icon = getServiceIcon(it.icon_key);
+                return (
+                  <div
+                    key={idx}
+                    className="rounded-xl border border-gray-200 p-3 bg-gray-50/40 space-y-2"
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="flex items-center justify-center h-10 w-10 rounded-lg bg-[#1A5336] text-white shrink-0">
+                        <Icon size={18} />
+                      </span>
+                      <div className="flex-1 space-y-2">
+                        <input
+                          type="text"
+                          value={it.title}
+                          onChange={(e) => updateItem(idx, { title: e.target.value })}
+                          placeholder="Título (ex: Atendimento domiciliar)"
+                          maxLength={80}
+                          className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#1A5336]"
+                        />
+                        <input
+                          type="text"
+                          value={it.description}
+                          onChange={(e) => updateItem(idx, { description: e.target.value })}
+                          placeholder="Descrição (opcional)"
+                          maxLength={200}
+                          className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#1A5336]"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeItem(idx)}
+                        className="text-gray-400 hover:text-red-600 mt-2"
+                        aria-label="Remover"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {CUSTOM_ICONS.map(({ key, icon: I }) => {
+                        const active = it.icon_key === key;
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => updateItem(idx, { icon_key: key })}
+                            className={`flex items-center justify-center h-8 w-8 rounded-lg border transition-colors ${active ? "border-[#1A5336] bg-emerald-50 text-[#1A5336]" : "border-gray-200 text-gray-500 hover:border-gray-300"}`}
+                            aria-label={key}
+                          >
+                            <I size={14} />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-1">
               {t("profile.service_options_other_label")}{" "}
@@ -861,7 +1087,7 @@ function ServiceOptionsSection({ plan }: { plan: string }) {
             <input
               type="text"
               value={extra}
-              onChange={(e) => setExtra(e.target.value)}
+              onChange={(e) => onChangeExtra(e.target.value)}
               placeholder={t("profile.service_options_other_placeholder")}
               maxLength={60}
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]"
@@ -873,6 +1099,20 @@ function ServiceOptionsSection({ plan }: { plan: string }) {
     </div>
   );
 }
+
+type ServiceOptionKey = "takeaway" | "dinein" | "delivery" | "booking";
+
+const SERVICE_OPTIONS: {
+  key: ServiceOptionKey;
+  label: string;
+  hint: string;
+  icon: typeof ShoppingBag;
+}[] = [
+  { key: "takeaway", label: "Take Away", hint: "Cliente retira no local", icon: ShoppingBag },
+  { key: "dinein", label: "Dine In", hint: "Consumo no local", icon: UtensilsCrossed },
+  { key: "delivery", label: "Delivery", hint: "Entrega ao cliente", icon: Bike },
+  { key: "booking", label: "Reserva antecipada", hint: "Book in advance", icon: CalendarClock },
+];
 
 function GoogleReviewsSection({
   businessId,

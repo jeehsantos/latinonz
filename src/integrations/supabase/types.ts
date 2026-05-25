@@ -469,6 +469,36 @@ export type Database = {
         }
         Relationships: []
       }
+      service_option_items: {
+        Row: {
+          business_id: string
+          created_at: string
+          description: string | null
+          icon_key: string
+          id: string
+          position: number
+          title: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          description?: string | null
+          icon_key?: string
+          id?: string
+          position?: number
+          title: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          description?: string | null
+          icon_key?: string
+          id?: string
+          position?: number
+          title?: string
+        }
+        Relationships: []
+      }
       service_options: {
         Row: {
           booking: boolean

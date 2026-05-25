@@ -63,6 +63,18 @@ const updateServiceOptionsSchema = z.object({
   other: z.string().trim().max(200).nullable().optional(),
 });
 
+const updateServiceOptionItemsSchema = z.object({
+  items: z
+    .array(
+      z.object({
+        title: z.string().trim().min(1).max(80),
+        description: z.string().trim().max(200).nullable().optional(),
+        icon_key: z.string().trim().min(1).max(40),
+      }),
+    )
+    .max(20),
+});
+
 // Public — list businesses with filters
 export const getBusinesses = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => listFilterSchema.parse(input ?? {}))
@@ -109,6 +121,7 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
     const [
       { data: hours },
       { data: serviceOptions },
+      { data: serviceOptionItems },
       { data: photos },
       { data: coupons },
       { data: ownerProfile },
@@ -119,6 +132,11 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
         .select("*")
         .eq("business_id", business.id)
         .maybeSingle(),
+      supabaseAdmin
+        .from("service_option_items")
+        .select("id, title, description, icon_key, position")
+        .eq("business_id", business.id)
+        .order("position", { ascending: true }),
       supabaseAdmin
         .from("business_photos")
         .select("id, url, position")
@@ -144,6 +162,7 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
       plan,
       hours: hours ?? [],
       serviceOptions: serviceOptions ?? null,
+      serviceOptionItems: serviceOptionItems ?? [],
       photos: photos ?? [],
       coupons: coupons ?? [],
     };
@@ -166,12 +185,27 @@ export const getMyBusiness = createServerFn({ method: "GET" })
       return { ok: false as const, error: "Erro ao carregar perfil." };
     }
     if (!business) {
-      return { ok: true as const, business: null, hours: [], serviceOptions: null };
+      return {
+        ok: true as const,
+        business: null,
+        hours: [],
+        serviceOptions: null,
+        serviceOptionItems: [],
+      };
     }
 
-    const [{ data: hours }, { data: serviceOptions }] = await Promise.all([
+    const [
+      { data: hours },
+      { data: serviceOptions },
+      { data: serviceOptionItems },
+    ] = await Promise.all([
       supabase.from("business_hours").select("*").eq("business_id", business.id),
       supabase.from("service_options").select("*").eq("business_id", business.id).maybeSingle(),
+      supabase
+        .from("service_option_items")
+        .select("id, title, description, icon_key, position")
+        .eq("business_id", business.id)
+        .order("position", { ascending: true }),
     ]);
 
     return {
@@ -179,6 +213,7 @@ export const getMyBusiness = createServerFn({ method: "GET" })
       business,
       hours: hours ?? [],
       serviceOptions: serviceOptions ?? null,
+      serviceOptionItems: serviceOptionItems ?? [],
     };
   });
 
@@ -356,4 +391,54 @@ export const updateServiceOptions = createServerFn({ method: "POST" })
       return { ok: false as const, error: error.message };
     }
     return { ok: true as const, serviceOptions: upserted };
+  });
+
+// Authenticated — replace custom service option items for the owner's business
+export const updateServiceOptionItems = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => updateServiceOptionItemsSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+
+    const { data: business, error: bizError } = await supabase
+      .from("businesses")
+      .select("id")
+      .eq("owner_id", userId)
+      .maybeSingle();
+
+    if (bizError || !business) {
+      return { ok: false as const, error: "Negócio não encontrado." };
+    }
+
+    const { error: delError } = await supabase
+      .from("service_option_items")
+      .delete()
+      .eq("business_id", business.id);
+    if (delError) {
+      console.error("updateServiceOptionItems delete error", delError);
+      return { ok: false as const, error: delError.message };
+    }
+
+    if (data.items.length === 0) {
+      return { ok: true as const, items: [] };
+    }
+
+    const rows = data.items.map((it, idx) => ({
+      business_id: business.id,
+      title: it.title,
+      description: it.description ?? null,
+      icon_key: it.icon_key,
+      position: idx,
+    }));
+
+    const { data: inserted, error: insError } = await supabase
+      .from("service_option_items")
+      .insert(rows)
+      .select();
+
+    if (insError) {
+      console.error("updateServiceOptionItems insert error", insError);
+      return { ok: false as const, error: insError.message };
+    }
+    return { ok: true as const, items: inserted ?? [] };
   });
