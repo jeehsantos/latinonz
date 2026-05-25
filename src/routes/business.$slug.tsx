@@ -202,16 +202,22 @@ function BusinessPage() {
       DAY_ORDER.indexOf(b.day_key as (typeof DAY_ORDER)[number]),
   );
 
-  const serviceOptionItems: { key: string; label: string }[] = [];
+  const serviceOptionBadges: { key: string; label: string }[] = [];
   if (serviceOptions) {
-    if (serviceOptions.takeaway) serviceOptionItems.push({ key: "takeaway", label: "Take away" });
-    if (serviceOptions.dinein) serviceOptionItems.push({ key: "dinein", label: "Dine in" });
-    if (serviceOptions.delivery) serviceOptionItems.push({ key: "delivery", label: "Delivery" });
+    if (serviceOptions.takeaway) serviceOptionBadges.push({ key: "takeaway", label: "Take away" });
+    if (serviceOptions.dinein) serviceOptionBadges.push({ key: "dinein", label: "Dine in" });
+    if (serviceOptions.delivery) serviceOptionBadges.push({ key: "delivery", label: "Delivery" });
     if (serviceOptions.booking)
-      serviceOptionItems.push({ key: "booking", label: "Book in advance" });
+      serviceOptionBadges.push({ key: "booking", label: "Book in advance" });
     if (serviceOptions.other && serviceOptions.other.trim())
-      serviceOptionItems.push({ key: "other", label: serviceOptions.other.trim() });
+      serviceOptionBadges.push({ key: "other", label: serviceOptions.other.trim() });
   }
+  const customItems = (serviceOptionItems ?? []) as {
+    id: string;
+    title: string;
+    description: string | null;
+    icon_key: string;
+  }[];
 
   void COUPONS_BY_BUSINESS;
 
