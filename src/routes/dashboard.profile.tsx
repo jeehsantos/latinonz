@@ -20,6 +20,13 @@ import {
   CalendarClock,
   Sparkles,
   Lock,
+  Truck,
+  Wrench,
+  Heart,
+  Gift,
+  Star as StarIcon,
+  Coffee,
+  Package,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { NZ_CITIES } from "@/lib/mock/categories";
