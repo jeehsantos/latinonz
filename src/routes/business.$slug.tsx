@@ -250,7 +250,8 @@ function BusinessPage() {
               <p className="mt-2 text-white/70 max-w-2xl">{business.description}</p>
               <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
                 <span className="inline-flex items-center gap-1 text-white/80">
-                  <MapPin size={14} /> {business.location}
+                  <MapPin size={14} />{" "}
+                  {locations.length > 0 ? locations.join(", ") : business.location}
                 </span>
                 <span className="inline-flex items-center gap-1 text-amber-300 font-semibold">
                   <Star size={14} className="fill-amber-400 text-amber-400" />{" "}

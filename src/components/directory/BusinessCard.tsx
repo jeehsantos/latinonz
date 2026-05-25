@@ -44,7 +44,10 @@ export function BusinessCard({ business }: { business: Business }) {
         <p className="text-sm text-gray-600 mt-3 line-clamp-2">{business.description}</p>
         <div className="flex items-center justify-between mt-4 text-xs text-gray-500">
           <span className="inline-flex items-center gap-1">
-            <MapPin size={12} /> {business.location}
+            <MapPin size={12} />{" "}
+            {business.locations && business.locations.length > 0
+              ? business.locations.join(", ")
+              : business.location}
           </span>
           <span className="inline-flex items-center gap-1 font-semibold text-amber-600">
             <Star size={12} className="fill-amber-500 text-amber-500" />{" "}
