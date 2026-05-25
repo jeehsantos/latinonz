@@ -884,32 +884,56 @@ function ProfileEditor() {
   );
 }
 
-type ServiceOptionKey = "takeaway" | "dinein" | "delivery" | "booking";
-
-const SERVICE_OPTIONS: {
-  key: ServiceOptionKey;
-  label: string;
-  hint: string;
-  icon: typeof ShoppingBag;
-}[] = [
-  { key: "takeaway", label: "Take Away", hint: "Cliente retira no local", icon: ShoppingBag },
-  { key: "dinein", label: "Dine In", hint: "Consumo no local", icon: UtensilsCrossed },
-  { key: "delivery", label: "Delivery", hint: "Entrega ao cliente", icon: Bike },
-  { key: "booking", label: "Reserva antecipada", hint: "Book in advance", icon: CalendarClock },
+const CUSTOM_ICONS: { key: string; icon: typeof ShoppingBag }[] = [
+  { key: "sparkles", icon: Sparkles },
+  { key: "shopping-bag", icon: ShoppingBag },
+  { key: "utensils", icon: UtensilsCrossed },
+  { key: "bike", icon: Bike },
+  { key: "calendar", icon: CalendarClock },
+  { key: "truck", icon: Truck },
+  { key: "wrench", icon: Wrench },
+  { key: "heart", icon: Heart },
+  { key: "gift", icon: Gift },
+  { key: "star", icon: StarIcon },
+  { key: "coffee", icon: Coffee },
+  { key: "package", icon: Package },
 ];
 
-function ServiceOptionsSection({ plan }: { plan: string }) {
+export function getServiceIcon(key: string): typeof ShoppingBag {
+  return CUSTOM_ICONS.find((i) => i.key === key)?.icon ?? Sparkles;
+}
+
+type ServiceOptionsSectionProps = {
+  plan: string;
+  flags: Record<ServiceOptionKey, boolean>;
+  onToggleFlag: (k: ServiceOptionKey) => void;
+  extra: string;
+  onChangeExtra: (v: string) => void;
+  items: { title: string; description: string; icon_key: string }[];
+  onChangeItems: (
+    items: { title: string; description: string; icon_key: string }[],
+  ) => void;
+};
+
+function ServiceOptionsSection({
+  plan,
+  flags,
+  onToggleFlag,
+  extra,
+  onChangeExtra,
+  items,
+  onChangeItems,
+}: ServiceOptionsSectionProps) {
   const { t } = useI18n();
-  const [enabled, setEnabled] = useState<Record<ServiceOptionKey, boolean>>({
-    takeaway: true,
-    dinein: true,
-    delivery: false,
-    booking: false,
-  });
-  const [extra, setExtra] = useState("");
   const isPaid = plan === "premium" || plan === "ultra";
 
-  const toggle = (k: ServiceOptionKey) => setEnabled((p) => ({ ...p, [k]: !p[k] }));
+  const addItem = () =>
+    onChangeItems([...items, { title: "", description: "", icon_key: "sparkles" }]);
+  const updateItem = (
+    idx: number,
+    patch: Partial<{ title: string; description: string; icon_key: string }>,
+  ) => onChangeItems(items.map((it, i) => (i === idx ? { ...it, ...patch } : it)));
+  const removeItem = (idx: number) => onChangeItems(items.filter((_, i) => i !== idx));
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-5">
@@ -950,12 +974,12 @@ function ServiceOptionsSection({ plan }: { plan: string }) {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {SERVICE_OPTIONS.map(({ key, label, hint, icon: Icon }) => {
-              const on = enabled[key];
+              const on = flags[key];
               return (
                 <button
                   key={key}
                   type="button"
-                  onClick={() => toggle(key)}
+                  onClick={() => onToggleFlag(key)}
                   className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-colors ${on ? "border-[#1A5336] bg-emerald-50/60" : "border-gray-200 bg-white hover:border-gray-300"}`}
                 >
                   <span
@@ -967,18 +991,92 @@ function ServiceOptionsSection({ plan }: { plan: string }) {
                     <span className="block text-sm font-bold text-gray-900">{label}</span>
                     <span className="block text-xs text-gray-500">{hint}</span>
                   </span>
-                  <span className="relative">
-                    <span
-                      className={`block h-5 w-9 rounded-full transition-colors ${on ? "bg-[#1A5336]" : "bg-gray-300"}`}
-                    />
-                    <span
-                      className={`absolute top-0.5 left-0.5 h-4 w-4 bg-white rounded-full shadow transition-transform ${on ? "translate-x-4" : ""}`}
-                    />
-                  </span>
                 </button>
               );
             })}
           </div>
+
+          <div className="pt-4 border-t border-gray-100">
+            <div className="flex items-center justify-between mb-3">
+              <label className="block text-sm font-bold text-gray-700">
+                Opções personalizadas
+              </label>
+              <button
+                type="button"
+                onClick={addItem}
+                className="inline-flex items-center gap-1 text-xs font-bold text-[#1A5336] hover:underline"
+              >
+                <Plus size={14} /> Adicionar opção
+              </button>
+            </div>
+
+            {items.length === 0 && (
+              <p className="text-xs text-gray-500">
+                Adicione opções extras com título, descrição e ícone (ex: Atendimento domiciliar, Consultoria online).
+              </p>
+            )}
+
+            <div className="space-y-3">
+              {items.map((it, idx) => {
+                const Icon = getServiceIcon(it.icon_key);
+                return (
+                  <div
+                    key={idx}
+                    className="rounded-xl border border-gray-200 p-3 bg-gray-50/40 space-y-2"
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="flex items-center justify-center h-10 w-10 rounded-lg bg-[#1A5336] text-white shrink-0">
+                        <Icon size={18} />
+                      </span>
+                      <div className="flex-1 space-y-2">
+                        <input
+                          type="text"
+                          value={it.title}
+                          onChange={(e) => updateItem(idx, { title: e.target.value })}
+                          placeholder="Título (ex: Atendimento domiciliar)"
+                          maxLength={80}
+                          className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#1A5336]"
+                        />
+                        <input
+                          type="text"
+                          value={it.description}
+                          onChange={(e) => updateItem(idx, { description: e.target.value })}
+                          placeholder="Descrição (opcional)"
+                          maxLength={200}
+                          className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#1A5336]"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeItem(idx)}
+                        className="text-gray-400 hover:text-red-600 mt-2"
+                        aria-label="Remover"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {CUSTOM_ICONS.map(({ key, icon: I }) => {
+                        const active = it.icon_key === key;
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => updateItem(idx, { icon_key: key })}
+                            className={`flex items-center justify-center h-8 w-8 rounded-lg border transition-colors ${active ? "border-[#1A5336] bg-emerald-50 text-[#1A5336]" : "border-gray-200 text-gray-500 hover:border-gray-300"}`}
+                            aria-label={key}
+                          >
+                            <I size={14} />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-1">
               {t("profile.service_options_other_label")}{" "}
@@ -989,7 +1087,7 @@ function ServiceOptionsSection({ plan }: { plan: string }) {
             <input
               type="text"
               value={extra}
-              onChange={(e) => setExtra(e.target.value)}
+              onChange={(e) => onChangeExtra(e.target.value)}
               placeholder={t("profile.service_options_other_placeholder")}
               maxLength={60}
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]"
@@ -1001,6 +1099,20 @@ function ServiceOptionsSection({ plan }: { plan: string }) {
     </div>
   );
 }
+
+type ServiceOptionKey = "takeaway" | "dinein" | "delivery" | "booking";
+
+const SERVICE_OPTIONS: {
+  key: ServiceOptionKey;
+  label: string;
+  hint: string;
+  icon: typeof ShoppingBag;
+}[] = [
+  { key: "takeaway", label: "Take Away", hint: "Cliente retira no local", icon: ShoppingBag },
+  { key: "dinein", label: "Dine In", hint: "Consumo no local", icon: UtensilsCrossed },
+  { key: "delivery", label: "Delivery", hint: "Entrega ao cliente", icon: Bike },
+  { key: "booking", label: "Reserva antecipada", hint: "Book in advance", icon: CalendarClock },
+];
 
 function GoogleReviewsSection({
   businessId,
