@@ -113,6 +113,18 @@ function ProfileEditor() {
   const [logo, setLogo] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+
+  // Service options (controlled by parent)
+  type ServiceFlagKey = "takeaway" | "dinein" | "delivery" | "booking";
+  const [serviceFlags, setServiceFlags] = useState<Record<ServiceFlagKey, boolean>>({
+    takeaway: false,
+    dinein: false,
+    delivery: false,
+    booking: false,
+  });
+  const [serviceExtra, setServiceExtra] = useState("");
+  type CustomServiceItem = { title: string; description: string; icon_key: string };
+  const [customServiceItems, setCustomServiceItems] = useState<CustomServiceItem[]>([]);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const logoRef = useRef<HTMLInputElement>(null);
 
