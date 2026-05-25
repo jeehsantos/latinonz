@@ -121,6 +121,7 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
     const [
       { data: hours },
       { data: serviceOptions },
+      { data: serviceOptionItems },
       { data: photos },
       { data: coupons },
       { data: ownerProfile },
@@ -131,6 +132,11 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
         .select("*")
         .eq("business_id", business.id)
         .maybeSingle(),
+      supabaseAdmin
+        .from("service_option_items")
+        .select("id, title, description, icon_key, position")
+        .eq("business_id", business.id)
+        .order("position", { ascending: true }),
       supabaseAdmin
         .from("business_photos")
         .select("id, url, position")
@@ -156,6 +162,7 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
       plan,
       hours: hours ?? [],
       serviceOptions: serviceOptions ?? null,
+      serviceOptionItems: serviceOptionItems ?? [],
       photos: photos ?? [],
       coupons: coupons ?? [],
     };
