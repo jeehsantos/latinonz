@@ -134,7 +134,7 @@ function ProfileEditor() {
       setActiveBranch(locs[0]);
 
       // Seed schedules from saved business_hours (per location), fallback to default
-      const loadedHours = (loaded.hours ?? []) as {
+      const loadedHours = (loaded.hours ?? []) as unknown as {
         day_key: DayKey;
         is_closed: boolean;
         slots: { open: string; close: string }[];
