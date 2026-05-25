@@ -52,7 +52,10 @@ function DirectoryPage() {
       if (q && !b.name.toLowerCase().includes(q) && !b.description.toLowerCase().includes(q))
         return false;
       if (search.category && b.macro !== search.category) return false;
-      if (search.city && b.location !== search.city) return false;
+      if (search.city) {
+        const cities = b.locations && b.locations.length > 0 ? b.locations : [b.location];
+        if (!cities.includes(search.city)) return false;
+      }
       return true;
     });
   }, [businesses, search]);
