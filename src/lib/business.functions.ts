@@ -63,6 +63,18 @@ const updateServiceOptionsSchema = z.object({
   other: z.string().trim().max(200).nullable().optional(),
 });
 
+const updateServiceOptionItemsSchema = z.object({
+  items: z
+    .array(
+      z.object({
+        title: z.string().trim().min(1).max(80),
+        description: z.string().trim().max(200).nullable().optional(),
+        icon_key: z.string().trim().min(1).max(40),
+      }),
+    )
+    .max(20),
+});
+
 // Public — list businesses with filters
 export const getBusinesses = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => listFilterSchema.parse(input ?? {}))
