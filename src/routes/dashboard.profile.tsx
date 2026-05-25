@@ -75,6 +75,9 @@ function ProfileEditor() {
   const { t } = useI18n();
   const fetchMyBusiness = useServerFn(getMyBusiness);
   const saveMyBusiness = useServerFn(updateMyBusiness);
+  const saveHoursFn = useServerFn(updateBusinessHours);
+  const saveServiceOptionsFn = useServerFn(updateServiceOptions);
+  const saveServiceItemsFn = useServerFn(updateServiceOptionItems);
   const callUploadLogo = useServerFn(uploadLogo);
   const { data: loaded, refetch } = useQuery({
     queryKey: ["my-business"],
