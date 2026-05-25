@@ -172,6 +172,34 @@ function ProfileEditor() {
       });
 
       if (b.logo_url) setLogo(b.logo_url);
+
+      // Seed service options
+      const so = loaded.serviceOptions as
+        | { takeaway: boolean; dinein: boolean; delivery: boolean; booking: boolean; other: string | null }
+        | null;
+      if (so) {
+        setServiceFlags({
+          takeaway: !!so.takeaway,
+          dinein: !!so.dinein,
+          delivery: !!so.delivery,
+          booking: !!so.booking,
+        });
+        setServiceExtra(so.other ?? "");
+      }
+
+      // Seed custom service items
+      const items = (loaded.serviceOptionItems ?? []) as {
+        title: string;
+        description: string | null;
+        icon_key: string;
+      }[];
+      setCustomServiceItems(
+        items.map((it) => ({
+          title: it.title,
+          description: it.description ?? "",
+          icon_key: it.icon_key || "sparkles",
+        })),
+      );
     } else {
       // Fallback: If no business row exists yet, use user_metadata from signup
       supabase.auth.getUser().then(({ data }) => {
