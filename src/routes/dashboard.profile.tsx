@@ -128,16 +128,37 @@ function ProfileEditor() {
       if (b.macro_category) setCategory(b.macro_category);
       setPhone(b.phone ?? "");
       setKeywords((b.keywords ?? []).join(", "));
-      if (b.locations && b.locations.length > 0) {
-        setCities(b.locations);
-        setActiveBranch(b.locations[0]);
-        setSchedules((prev) => {
-          const next: Record<string, BranchSchedule> = {};
-          for (const c of b.locations as string[])
-            next[c] = prev[c] ?? cloneSchedule(DEFAULT_SCHEDULE);
-          return next;
-        });
-      }
+      const locs: string[] =
+        b.locations && b.locations.length > 0 ? (b.locations as string[]) : ["Auckland"];
+      setCities(locs);
+      setActiveBranch(locs[0]);
+
+      // Seed schedules from saved business_hours (per location), fallback to default
+      const loadedHours = (loaded.hours ?? []) as {
+        day_key: DayKey;
+        is_closed: boolean;
+        slots: { open: string; close: string }[];
+        location: string;
+      }[];
+      setSchedules(() => {
+        const next: Record<string, BranchSchedule> = {};
+        for (const loc of locs) {
+          const base = cloneSchedule(DEFAULT_SCHEDULE);
+          const rowsForLoc = loadedHours.filter((h) => h.location === loc);
+          if (rowsForLoc.length > 0) {
+            for (const k of DAY_KEYS) base[k] = { closed: true, slots: [] };
+            for (const r of rowsForLoc) {
+              base[r.day_key] = {
+                closed: !!r.is_closed,
+                slots: Array.isArray(r.slots) ? r.slots : [],
+              };
+            }
+          }
+          next[loc] = base;
+        }
+        return next;
+      });
+
       if (b.logo_url) setLogo(b.logo_url);
     } else {
       // Fallback: If no business row exists yet, use user_metadata from signup
