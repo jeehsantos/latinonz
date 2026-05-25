@@ -34,6 +34,7 @@ export const Route = createFileRoute("/business/$slug")({
       business: adaptBusiness(res.business, res.plan),
       hours: res.hours,
       serviceOptions: res.serviceOptions,
+      serviceOptionItems: res.serviceOptionItems ?? [],
       photos: res.photos,
       coupons: res.coupons,
       locations: (res.business.locations ?? []) as string[],
