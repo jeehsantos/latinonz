@@ -13,7 +13,33 @@ import {
   Ticket,
   Image as ImageIcon,
   X,
+  ShoppingBag,
+  UtensilsCrossed,
+  Bike,
+  CalendarClock,
+  Sparkles,
+  Truck,
+  Wrench,
+  Heart,
+  Gift,
+  Coffee,
+  Package,
 } from "lucide-react";
+
+const CUSTOM_ICON_MAP: Record<string, typeof Sparkles> = {
+  sparkles: Sparkles,
+  shopping: ShoppingBag,
+  utensils: UtensilsCrossed,
+  bike: Bike,
+  truck: Truck,
+  wrench: Wrench,
+  heart: Heart,
+  gift: Gift,
+  star: Star,
+  coffee: Coffee,
+  package: Package,
+  calendar: CalendarClock,
+};
 import { SiteShell } from "@/components/site/SiteShell";
 import { PlanBadge } from "@/components/PlanBadge";
 import { getBusinessBySlug } from "@/lib/business.functions";
@@ -444,21 +470,44 @@ function BusinessPage() {
           )}
 
           {/* Service options — Premium+ only */}
-          {can(business.plan, "serviceOptions") && serviceOptionItems.length > 0 && (
-            <div className="bg-white border border-gray-200 rounded-3xl p-6">
-              <h3 className="font-extrabold text-gray-900">Opções de atendimento</h3>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {serviceOptionItems.map((it) => (
-                  <span
-                    key={it.key}
-                    className="text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full"
-                  >
-                    {it.label}
-                  </span>
-                ))}
+          {can(business.plan, "serviceOptions") &&
+            (serviceOptionBadges.length > 0 || customItems.length > 0) && (
+              <div className="bg-white border border-gray-200 rounded-3xl p-6">
+                <h3 className="font-extrabold text-gray-900">Opções de atendimento</h3>
+                {serviceOptionBadges.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {serviceOptionBadges.map((b) => (
+                      <span
+                        key={b.key}
+                        className="text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full"
+                      >
+                        {b.label}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {customItems.length > 0 && (
+                  <div className="mt-4 space-y-3">
+                    {customItems.map((it) => {
+                      const Icon = CUSTOM_ICON_MAP[it.icon_key] ?? Sparkles;
+                      return (
+                        <div key={it.id} className="flex items-start gap-3">
+                          <span className="flex items-center justify-center h-9 w-9 rounded-lg bg-[#1A5336] text-white shrink-0">
+                            <Icon size={16} />
+                          </span>
+                          <div className="flex-1">
+                            <p className="text-sm font-bold text-gray-900">{it.title}</p>
+                            {it.description && (
+                              <p className="text-xs text-gray-500">{it.description}</p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-            </div>
-          )}
+            )}
 
           {/* Service cities */}
           {locations.length > 0 && (
