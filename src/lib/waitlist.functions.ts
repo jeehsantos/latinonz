@@ -54,7 +54,9 @@ export const submitWaitlist = createServerFn({ method: "POST" })
 export const listWaitlist = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data: profile, error: profErr } = await supabaseAdmin
+    // Use the auth-scoped client so RLS gates the read to admins/managers
+    // via the "Admins read waitlist signups" policy.
+    const { data: profile, error: profErr } = await context.supabase
       .from("profiles")
       .select("role")
       .eq("id", context.userId)
@@ -63,7 +65,7 @@ export const listWaitlist = createServerFn({ method: "GET" })
     if (!profile || (profile.role !== "admin" && profile.role !== "manager")) {
       return { ok: false as const, error: "Acesso negado." };
     }
-    const { data: rows, error } = await supabaseAdmin
+    const { data: rows, error } = await context.supabase
       .from("waitlist_signups")
       .select("*")
       .order("created_at", { ascending: false });
