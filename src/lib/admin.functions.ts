@@ -173,11 +173,11 @@ export const getAdminMetrics = createServerFn({ method: "GET" })
     await requireAdminRole(context.userId, context.supabase);
 
     const [businessesRes, profilesRes, leadsRes, viewsRes, waitlistRes] = await Promise.all([
-      supabaseAdmin.from("businesses").select("id, macro_category, is_active, is_verified"),
-      supabaseAdmin.from("profiles").select("plan_tier, subscription_status"),
-      supabaseAdmin.from("leads").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("profile_views").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("waitlist_signups").select("id", { count: "exact", head: true }),
+      context.supabase.from("businesses").select("id, macro_category, is_active, is_verified"),
+      context.supabase.from("profiles").select("plan_tier, subscription_status"),
+      context.supabase.from("leads").select("id", { count: "exact", head: true }),
+      context.supabase.from("profile_views").select("id", { count: "exact", head: true }),
+      context.supabase.from("waitlist_signups").select("id", { count: "exact", head: true }),
     ]);
 
     if (businessesRes.error) throw new Error(businessesRes.error.message);
