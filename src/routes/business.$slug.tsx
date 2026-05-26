@@ -13,7 +13,33 @@ import {
   Ticket,
   Image as ImageIcon,
   X,
+  ShoppingBag,
+  UtensilsCrossed,
+  Bike,
+  CalendarClock,
+  Sparkles,
+  Truck,
+  Wrench,
+  Heart,
+  Gift,
+  Coffee,
+  Package,
 } from "lucide-react";
+
+const CUSTOM_ICON_MAP: Record<string, typeof Sparkles> = {
+  sparkles: Sparkles,
+  shopping: ShoppingBag,
+  utensils: UtensilsCrossed,
+  bike: Bike,
+  truck: Truck,
+  wrench: Wrench,
+  heart: Heart,
+  gift: Gift,
+  star: Star,
+  coffee: Coffee,
+  package: Package,
+  calendar: CalendarClock,
+};
 import { SiteShell } from "@/components/site/SiteShell";
 import { PlanBadge } from "@/components/PlanBadge";
 import { getBusinessBySlug } from "@/lib/business.functions";
