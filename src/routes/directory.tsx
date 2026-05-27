@@ -111,8 +111,8 @@ function DirectoryPage() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-6 pb-20">
-        <div className="flex items-center justify-between mb-6">
+      <section className="max-w-7xl mx-auto px-5 sm:px-6 pb-16 sm:pb-20">
+        <div className="flex items-center justify-between mb-5 sm:mb-6">
           <p className="text-sm text-gray-500">
             <span className="font-bold text-gray-900">{filtered.length}</span>{" "}
             {filtered.length === 1
@@ -121,18 +121,18 @@ function DirectoryPage() {
           </p>
         </div>
         {filtered.length === 0 ? (
-          <div className="bg-white rounded-3xl border border-gray-200 p-12 text-center">
+          <div className="bg-white rounded-3xl border border-gray-200 p-8 sm:p-12 text-center">
             <p className="font-extrabold text-gray-900">{t("directory.empty_title")}</p>
             <p className="text-sm text-gray-500 mt-1">{t("directory.empty_subtitle")}</p>
             <Link
               to="/cadastro"
-              className="inline-flex mt-5 bg-[#000000] text-white font-bold px-5 py-2.5 rounded-xl text-sm"
+              className="inline-flex mt-5 bg-[#df991b] hover:bg-[#c4861a] text-white font-bold px-5 py-2.5 rounded-xl text-sm transition"
             >
               {t("directory.empty_cta")}
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
             {filtered.map((b) => (
               <BusinessCard key={b.id} business={b} />
             ))}
