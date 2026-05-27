@@ -78,7 +78,7 @@ function WaitlistLanding() {
       {!isWaitlistOpen && (
         <button
           onClick={() => setIsWaitlistOpen(true)}
-          className="fixed bottom-8 right-8 z-40 bg-[#000000] text-white font-bold px-6 py-4 rounded-full hover:bg-[#1a1a1a] transition-colors animate-inflate"
+          className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-40 bg-[#df991b] text-white font-bold px-5 py-3 sm:px-6 sm:py-4 rounded-full hover:bg-[#c4861a] transition-colors animate-inflate text-sm sm:text-base"
         >
           {t("waitlist_button")}
         </button>
