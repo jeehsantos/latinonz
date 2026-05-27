@@ -69,7 +69,7 @@ function CadastroPage() {
   return (
     <SiteShell>
       <section className="max-w-2xl mx-auto px-6 py-20">
-        <p className="text-xs font-bold uppercase tracking-wider text-[#1A5336]">
+        <p className="text-xs font-bold uppercase tracking-wider text-[#000000]">
           {t("register.badge")}
         </p>
         <h1 className="mt-3 text-3xl md:text-4xl font-black text-gray-900">
@@ -151,13 +151,13 @@ function CadastroPage() {
             <button
               type="submit"
               disabled={loading}
-              className="block w-full text-center bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold rounded-xl py-3 text-sm"
+              className="block w-full text-center bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 text-white font-bold rounded-xl py-3 text-sm"
             >
               {loading ? "..." : t("register.submit")}
             </button>
             <p className="text-xs text-gray-500 text-center">
               {t("register.has_account")}{" "}
-              <Link to="/login" className="font-bold text-[#1A5336]">
+              <Link to="/login" className="font-bold text-[#000000]">
                 {t("register.login_link")}
               </Link>
             </p>

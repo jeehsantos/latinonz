@@ -62,7 +62,7 @@ function DirectoryPage() {
 
   return (
     <SiteShell>
-      <section className="bg-[#0F3D24] text-white">
+      <section className="bg-[#000000] text-white">
         <div className="max-w-7xl mx-auto px-6 py-16">
           <h1 className="text-3xl md:text-5xl font-black">{t("directory.title")}</h1>
           <p className="mt-3 text-white/70 max-w-2xl">{t("directory.subtitle")}</p>
@@ -81,8 +81,8 @@ function DirectoryPage() {
             onClick={() => setSearch({ ...search, category: "" })}
             className={`text-sm font-semibold px-4 py-2 rounded-full border ${
               !search.category
-                ? "bg-[#1A5336] text-white border-[#1A5336]"
-                : "bg-white border-gray-200 hover:border-[#1A5336]"
+                ? "bg-[#000000] text-white border-[#000000]"
+                : "bg-white border-gray-200 hover:border-[#000000]"
             }`}
           >
             {t("directory.all_categories")}
@@ -93,8 +93,8 @@ function DirectoryPage() {
               onClick={() => setSearch({ ...search, category: c.canonicalName })}
               className={`text-sm font-semibold px-4 py-2 rounded-full border ${
                 search.category === c.canonicalName
-                  ? "bg-[#1A5336] text-white border-[#1A5336]"
-                  : "bg-white border-gray-200 hover:border-[#1A5336]"
+                  ? "bg-[#000000] text-white border-[#000000]"
+                  : "bg-white border-gray-200 hover:border-[#000000]"
               }`}
             >
               {c.name}
@@ -118,7 +118,7 @@ function DirectoryPage() {
             <p className="text-sm text-gray-500 mt-1">{t("directory.empty_subtitle")}</p>
             <Link
               to="/cadastro"
-              className="inline-flex mt-5 bg-[#1A5336] text-white font-bold px-5 py-2.5 rounded-xl text-sm"
+              className="inline-flex mt-5 bg-[#000000] text-white font-bold px-5 py-2.5 rounded-xl text-sm"
             >
               {t("directory.empty_cta")}
             </Link>

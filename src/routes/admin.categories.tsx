@@ -140,7 +140,7 @@ function AdminCategoriesPage() {
         </div>
         <button
           onClick={openCreate}
-          className="bg-[#1A5336] hover:bg-[#123F27] text-white font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2"
+          className="bg-[#000000] hover:bg-[#1a1a1a] text-white font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2"
         >
           <Plus size={16} /> Nova categoria
         </button>
@@ -275,7 +275,7 @@ function AdminCategoriesPage() {
                       onClick={() => setForm({ ...form, kind: k })}
                       className={`px-4 py-1.5 text-sm font-bold rounded-lg transition ${
                         form.kind === k
-                          ? "bg-white text-[#1A5336] shadow-sm"
+                          ? "bg-white text-[#000000] shadow-sm"
                           : "text-gray-500 hover:text-gray-700"
                       }`}
                     >
@@ -313,7 +313,7 @@ function AdminCategoriesPage() {
                         <input
                           value={form[nameField]}
                           onChange={(e) => setForm({ ...form, [nameField]: e.target.value })}
-                          className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#1A5336]"
+                          className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#000000]"
                         />
                       </div>
                       <div>
@@ -323,7 +323,7 @@ function AdminCategoriesPage() {
                         <input
                           value={form[blurbField]}
                           onChange={(e) => setForm({ ...form, [blurbField]: e.target.value })}
-                          className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#1A5336]"
+                          className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#000000]"
                         />
                       </div>
                     </div>
@@ -347,8 +347,8 @@ function AdminCategoriesPage() {
                         onClick={() => setForm({ ...form, iconKey: k })}
                         className={`w-11 h-11 rounded-xl flex items-center justify-center border transition ${
                           active
-                            ? "bg-[#1A5336] text-white border-[#1A5336]"
-                            : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[#1A5336]"
+                            ? "bg-[#000000] text-white border-[#000000]"
+                            : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[#000000]"
                         }`}
                         title={k}
                       >
@@ -372,7 +372,7 @@ function AdminCategoriesPage() {
                         key={k}
                         onClick={() => setForm({ ...form, colorKey: k })}
                         className={`px-3 py-1.5 rounded-xl border text-xs font-bold inline-flex items-center gap-2 ${
-                          active ? "border-[#1A5336] ring-2 ring-[#1A5336]/30" : "border-gray-200"
+                          active ? "border-[#000000] ring-2 ring-[#000000]/30" : "border-gray-200"
                         }`}
                       >
                         <span
@@ -395,7 +395,7 @@ function AdminCategoriesPage() {
                   min={0}
                   value={form.sortOrder}
                   onChange={(e) => setForm({ ...form, sortOrder: Number(e.target.value) || 0 })}
-                  className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#1A5336]"
+                  className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#000000]"
                 />
               </div>
             </div>
@@ -411,7 +411,7 @@ function AdminCategoriesPage() {
               <button
                 type="submit"
                 disabled={saveMut.isPending}
-                className="bg-[#1A5336] hover:bg-[#123F27] text-white font-bold px-5 py-2 rounded-xl text-sm disabled:opacity-50 inline-flex items-center gap-2"
+                className="bg-[#000000] hover:bg-[#1a1a1a] text-white font-bold px-5 py-2 rounded-xl text-sm disabled:opacity-50 inline-flex items-center gap-2"
               >
                 {saveMut.isPending && <Loader2 size={14} className="animate-spin" />}
                 {form.id ? "Salvar alterações" : "Criar categoria"}

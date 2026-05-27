@@ -31,13 +31,13 @@ export function SearchBar({
           value={value.q}
           onChange={(e) => onChange({ ...value, q: e.target.value })}
           placeholder={t("directory.search_placeholder")}
-          className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-3 text-sm outline-none focus:border-[#1A5336] text-gray-900"
+          className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-3 text-sm outline-none focus:border-[#000000] text-gray-900"
         />
       </div>
       <select
         value={value.category}
         onChange={(e) => onChange({ ...value, category: e.target.value })}
-        className="md:col-span-3 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#1A5336] text-gray-900"
+        className="md:col-span-3 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#000000] text-gray-900"
       >
         <option value="">{t("directory.all_areas")}</option>
         {categories.map((c) => (
@@ -49,7 +49,7 @@ export function SearchBar({
       <select
         value={value.city}
         onChange={(e) => onChange({ ...value, city: e.target.value })}
-        className="md:col-span-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#1A5336] text-gray-900"
+        className="md:col-span-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#000000] text-gray-900"
       >
         <option value="">{t("directory.all_nz")}</option>
         {NZ_CITIES.map((c) => (
@@ -60,7 +60,7 @@ export function SearchBar({
       </select>
       <button
         type="submit"
-        className="md:col-span-2 bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-2xl px-4 py-3 text-sm"
+        className="md:col-span-2 bg-[#000000] hover:bg-[#1a1a1a] text-white font-bold rounded-2xl px-4 py-3 text-sm"
       >
         {t("directory.search_button")}
       </button>

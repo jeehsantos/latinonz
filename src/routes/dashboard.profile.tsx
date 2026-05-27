@@ -391,7 +391,7 @@ function ProfileEditor() {
           <textarea
             rows={4}
             maxLength={500}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] resize-none"
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#000000] resize-none"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -405,13 +405,13 @@ function ProfileEditor() {
           <div className="flex bg-gray-100 p-1 rounded-xl">
             <button
               onClick={() => setBusinessType("Serviço")}
-              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${businessType === "Serviço" ? "bg-white text-[#1A5336] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${businessType === "Serviço" ? "bg-white text-[#000000] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
             >
               {t("profile.type_service")}
             </button>
             <button
               onClick={() => setBusinessType("Produto")}
-              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${businessType === "Produto" ? "bg-white text-[#1A5336] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${businessType === "Produto" ? "bg-white text-[#000000] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
             >
               {t("profile.type_product")}
             </button>
@@ -426,7 +426,7 @@ function ProfileEditor() {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] focus:ring-1 focus:ring-[#1A5336]"
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#000000] focus:ring-1 focus:ring-[#000000]"
           />
         </div>
 
@@ -438,7 +438,7 @@ function ProfileEditor() {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336] appearance-none"
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#000000] appearance-none"
             >
               {activeCategories.length === 0 && (
                 <option value="">Nenhuma categoria disponível</option>
@@ -465,7 +465,7 @@ function ProfileEditor() {
             placeholder="Ex: 021 000 0000"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]"
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#000000]"
           />
         </div>
 
@@ -478,7 +478,7 @@ function ProfileEditor() {
             <button
               type="button"
               onClick={() => setCitiesOpen((o) => !o)}
-              className="w-full flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-left text-gray-900 outline-none focus:border-[#1A5336]"
+              className="w-full flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-left text-gray-900 outline-none focus:border-[#000000]"
             >
               <span className="truncate">{citiesLabel}</span>
               <ChevronDown
@@ -498,7 +498,7 @@ function ProfileEditor() {
                       className="w-full flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-50 text-left"
                     >
                       <span
-                        className={`h-4 w-4 rounded border flex items-center justify-center ${checked ? "bg-[#1A5336] border-[#1A5336]" : "border-gray-300"}`}
+                        className={`h-4 w-4 rounded border flex items-center justify-center ${checked ? "bg-[#000000] border-[#000000]" : "border-gray-300"}`}
                       >
                         {checked && <Check size={12} className="text-white" />}
                       </span>
@@ -514,7 +514,7 @@ function ProfileEditor() {
               {cities.map((c) => (
                 <span
                   key={c}
-                  className="inline-flex items-center gap-1 bg-emerald-50 text-[#1A5336] text-xs font-semibold px-2.5 py-1 rounded-full"
+                  className="inline-flex items-center gap-1 bg-emerald-50 text-[#000000] text-xs font-semibold px-2.5 py-1 rounded-full"
                 >
                   <MapPin size={11} /> {c}
                   <button
@@ -540,7 +540,7 @@ function ProfileEditor() {
             value={keywords}
             onChange={(e) => setKeywords(e.target.value)}
             placeholder={t("profile.keywords_placeholder")}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]"
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#000000]"
           />
           <p className="text-xs text-gray-500 mt-1">{t("profile.keywords_hint")}</p>
         </div>
@@ -563,7 +563,7 @@ function ProfileEditor() {
           <div className="pt-4 border-t border-gray-100">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div className="flex items-center gap-2">
-                <Clock size={18} className="text-[#1A5336]" />
+                <Clock size={18} className="text-[#000000]" />
                 <label className="block text-sm font-bold text-gray-700">
                   {t("profile.hours_title")}
                 </label>
@@ -577,7 +577,7 @@ function ProfileEditor() {
                   <button
                     type="button"
                     onClick={copyScheduleToAll}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#1A5336] hover:underline"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#000000] hover:underline"
                   >
                     <Copy size={12} /> {t("profile.hours_apply_all")}
                   </button>
@@ -588,7 +588,7 @@ function ProfileEditor() {
                       key={c}
                       type="button"
                       onClick={() => setActiveBranch(c)}
-                      className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${activeBranch === c ? "bg-white text-[#1A5336] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+                      className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${activeBranch === c ? "bg-white text-[#000000] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
                     >
                       {c}
                     </button>
@@ -607,7 +607,7 @@ function ProfileEditor() {
                   >
                     <div className="flex items-center gap-3 md:w-44">
                       <span
-                        className={`flex items-center justify-center h-9 w-9 rounded-lg text-[11px] font-bold ${day.closed ? "bg-gray-200 text-gray-500" : "bg-emerald-50 text-[#1A5336]"}`}
+                        className={`flex items-center justify-center h-9 w-9 rounded-lg text-[11px] font-bold ${day.closed ? "bg-gray-200 text-gray-500" : "bg-emerald-50 text-[#000000]"}`}
                       >
                         {short}
                       </span>
@@ -653,7 +653,7 @@ function ProfileEditor() {
                           <button
                             type="button"
                             onClick={() => addSlot(key)}
-                            className="inline-flex items-center gap-1 text-[#1A5336] hover:bg-emerald-50 text-xs font-bold px-2 py-1.5 rounded-md transition-colors"
+                            className="inline-flex items-center gap-1 text-[#000000] hover:bg-emerald-50 text-xs font-bold px-2 py-1.5 rounded-md transition-colors"
                           >
                             <Plus size={12} /> {t("profile.hours_add_slot")}
                           </button>
@@ -671,7 +671,7 @@ function ProfileEditor() {
                           onChange={() => toggleClosed(key)}
                           className="sr-only peer"
                         />
-                        <span className="block h-5 w-9 bg-gray-300 peer-checked:bg-[#1A5336] rounded-full transition-colors" />
+                        <span className="block h-5 w-9 bg-gray-300 peer-checked:bg-[#000000] rounded-full transition-colors" />
                         <span className="absolute top-0.5 left-0.5 h-4 w-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4" />
                       </span>
                     </label>
@@ -787,7 +787,7 @@ function ProfileEditor() {
             }
           }}
           disabled={saving}
-          className="bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold rounded-xl px-6 py-2.5 text-sm"
+          className="bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 text-white font-bold rounded-xl px-6 py-2.5 text-sm"
         >
           {saving ? "..." : t("profile.save_button")}
         </button>
@@ -817,7 +817,7 @@ function ProfileEditor() {
               <button
                 onClick={() => logoRef.current?.click()}
                 disabled={logoUploading}
-                className="flex-1 inline-flex items-center justify-center gap-2 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold py-2 rounded-xl text-sm transition-colors"
+                className="flex-1 inline-flex items-center justify-center gap-2 bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 text-white font-bold py-2 rounded-xl text-sm transition-colors"
               >
                 <Upload size={14} />{" "}
                 {logoUploading ? "..." : logo ? t("profile.logo_change") : t("profile.logo_upload")}
@@ -864,14 +864,14 @@ function ProfileEditor() {
             <button
               onClick={handleGenerateQr}
               disabled={generating || !qrUrl}
-              className="w-full flex items-center justify-center gap-2 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold py-2.5 rounded-xl text-sm transition-colors"
+              className="w-full flex items-center justify-center gap-2 bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 text-white font-bold py-2.5 rounded-xl text-sm transition-colors"
             >
               {generating ? t("profile.qr_generating") : t("profile.qr_generate")}
             </button>
           ) : (
             <button
               onClick={handleDownloadQr}
-              className="w-full flex items-center justify-center gap-2 bg-[#0B2C1A] text-white font-bold py-2.5 rounded-xl text-sm hover:bg-[#1A5336] transition-colors"
+              className="w-full flex items-center justify-center gap-2 bg-[#0B2C1A] text-white font-bold py-2.5 rounded-xl text-sm hover:bg-[#000000] transition-colors"
             >
               <Download size={16} /> {t("profile.qr_download")}
             </button>
@@ -939,7 +939,7 @@ function ServiceOptionsSection({
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4">
         <div className="flex items-center gap-2">
-          <Sparkles size={18} className="text-[#1A5336]" />
+          <Sparkles size={18} className="text-[#000000]" />
           <div>
             <h3 className="text-base font-bold text-gray-900">
               {t("profile.service_options_title")}
@@ -965,7 +965,7 @@ function ServiceOptionsSection({
           </p>
           <Link
             to="/dashboard/upgrade"
-            className="inline-flex mt-4 bg-[#1A5336] hover:bg-[#123F27] text-white text-xs font-bold px-4 py-2 rounded-xl"
+            className="inline-flex mt-4 bg-[#000000] hover:bg-[#1a1a1a] text-white text-xs font-bold px-4 py-2 rounded-xl"
           >
             {t("profile.service_options_upgrade")}
           </Link>
@@ -980,10 +980,10 @@ function ServiceOptionsSection({
                   key={key}
                   type="button"
                   onClick={() => onToggleFlag(key)}
-                  className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-colors ${on ? "border-[#1A5336] bg-emerald-50/60" : "border-gray-200 bg-white hover:border-gray-300"}`}
+                  className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-colors ${on ? "border-[#000000] bg-emerald-50/60" : "border-gray-200 bg-white hover:border-gray-300"}`}
                 >
                   <span
-                    className={`flex items-center justify-center h-10 w-10 rounded-lg ${on ? "bg-[#1A5336] text-white" : "bg-gray-100 text-gray-500"}`}
+                    className={`flex items-center justify-center h-10 w-10 rounded-lg ${on ? "bg-[#000000] text-white" : "bg-gray-100 text-gray-500"}`}
                   >
                     <Icon size={18} />
                   </span>
@@ -1004,7 +1004,7 @@ function ServiceOptionsSection({
               <button
                 type="button"
                 onClick={addItem}
-                className="inline-flex items-center gap-1 text-xs font-bold text-[#1A5336] hover:underline"
+                className="inline-flex items-center gap-1 text-xs font-bold text-[#000000] hover:underline"
               >
                 <Plus size={14} /> Adicionar opção
               </button>
@@ -1025,7 +1025,7 @@ function ServiceOptionsSection({
                     className="rounded-xl border border-gray-200 p-3 bg-gray-50/40 space-y-2"
                   >
                     <div className="flex items-start gap-3">
-                      <span className="flex items-center justify-center h-10 w-10 rounded-lg bg-[#1A5336] text-white shrink-0">
+                      <span className="flex items-center justify-center h-10 w-10 rounded-lg bg-[#000000] text-white shrink-0">
                         <Icon size={18} />
                       </span>
                       <div className="flex-1 space-y-2">
@@ -1035,7 +1035,7 @@ function ServiceOptionsSection({
                           onChange={(e) => updateItem(idx, { title: e.target.value })}
                           placeholder="Título (ex: Atendimento domiciliar)"
                           maxLength={80}
-                          className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#1A5336]"
+                          className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#000000]"
                         />
                         <input
                           type="text"
@@ -1043,7 +1043,7 @@ function ServiceOptionsSection({
                           onChange={(e) => updateItem(idx, { description: e.target.value })}
                           placeholder="Descrição (opcional)"
                           maxLength={200}
-                          className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#1A5336]"
+                          className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#000000]"
                         />
                       </div>
                       <button
@@ -1063,7 +1063,7 @@ function ServiceOptionsSection({
                             key={key}
                             type="button"
                             onClick={() => updateItem(idx, { icon_key: key })}
-                            className={`flex items-center justify-center h-8 w-8 rounded-lg border transition-colors ${active ? "border-[#1A5336] bg-emerald-50 text-[#1A5336]" : "border-gray-200 text-gray-500 hover:border-gray-300"}`}
+                            className={`flex items-center justify-center h-8 w-8 rounded-lg border transition-colors ${active ? "border-[#000000] bg-emerald-50 text-[#000000]" : "border-gray-200 text-gray-500 hover:border-gray-300"}`}
                             aria-label={key}
                           >
                             <I size={14} />
@@ -1090,7 +1090,7 @@ function ServiceOptionsSection({
               onChange={(e) => onChangeExtra(e.target.value)}
               placeholder={t("profile.service_options_other_placeholder")}
               maxLength={60}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]"
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#000000]"
             />
             <p className="text-xs text-gray-500 mt-1">{t("profile.service_options_other_hint")}</p>
           </div>
@@ -1172,7 +1172,7 @@ function GoogleReviewsSection({
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4">
         <div className="flex items-center gap-2">
-          <Star size={18} className="text-[#1A5336]" />
+          <Star size={18} className="text-[#000000]" />
           <div>
             <h3 className="text-base font-bold text-gray-900">Google Reviews</h3>
             <p className="text-xs text-gray-500">
@@ -1190,7 +1190,7 @@ function GoogleReviewsSection({
           onChange={(e) => setPlaceId(e.target.value)}
           placeholder="Ex: ChIJN1t_tDeuEmsRUsoyG83frY4"
           maxLength={200}
-          className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#1A5336]"
+          className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#000000]"
         />
         <p className="text-xs text-gray-500 mt-1">
           Encontre seu Place ID em{" "}
@@ -1198,7 +1198,7 @@ function GoogleReviewsSection({
             href="https://developers.google.com/maps/documentation/places/web-service/place-id"
             target="_blank"
             rel="noreferrer"
-            className="text-[#1A5336] font-semibold hover:underline"
+            className="text-[#000000] font-semibold hover:underline"
           >
             developers.google.com
           </a>
@@ -1217,7 +1217,7 @@ function GoogleReviewsSection({
           type="button"
           onClick={handleConnect}
           disabled={busy || !isValid}
-          className="inline-flex items-center gap-2 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold rounded-xl px-4 py-2 text-sm"
+          className="inline-flex items-center gap-2 bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 text-white font-bold rounded-xl px-4 py-2 text-sm"
         >
           {busy ? "..." : initialPlaceId ? "Atualizar e sincronizar" : "Conectar"}
         </button>

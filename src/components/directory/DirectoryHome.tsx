@@ -42,17 +42,17 @@ export function DirectoryHome() {
       <section
         className="relative text-white overflow-hidden"
         style={{
-          background: "radial-gradient(ellipse at top, #1A5336 0%, #0F3D24 50%, #0A2A19 100%)",
+          background: "radial-gradient(ellipse at top, #000000 0%, #000000 50%, #0A2A19 100%)",
         }}
       >
         <div className="relative max-w-6xl mx-auto px-6 py-20 md:py-28 text-center">
           <div className="inline-flex items-center gap-2 bg-black/30 backdrop-blur-sm text-white text-[11px] font-bold px-4 py-2 rounded-full mb-8 uppercase tracking-[0.18em]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#EFC64E]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#df991b]" />
             {t("directory.home_badge")}
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
             {t("directory.home_headline_before")}
-            <span className="text-[#EFC64E]">{t("directory.home_headline_highlight")}</span>
+            <span className="text-[#df991b]">{t("directory.home_headline_highlight")}</span>
             {t("directory.home_headline_after")}
           </h1>
           <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">
@@ -71,7 +71,7 @@ export function DirectoryHome() {
             key={label}
             className="bg-white border border-gray-100 rounded-3xl p-5 flex items-center gap-4 shadow-sm"
           >
-            <div className="w-11 h-11 rounded-2xl bg-[#1A5336]/10 text-[#1A5336] flex items-center justify-center">
+            <div className="w-11 h-11 rounded-2xl bg-[#000000]/10 text-[#000000] flex items-center justify-center">
               <Icon size={20} />
             </div>
             <div>
@@ -93,7 +93,7 @@ export function DirectoryHome() {
           </div>
           <Link
             to="/directory"
-            className="hidden sm:inline-flex text-sm font-bold text-[#1A5336] items-center gap-1"
+            className="hidden sm:inline-flex text-sm font-bold text-[#000000] items-center gap-1"
           >
             {t("directory.see_all")} <ArrowRight size={14} />
           </Link>
@@ -117,14 +117,14 @@ export function DirectoryHome() {
                   <Link
                     key={c.id}
                     to="/directory"
-                    className="group bg-white border border-gray-200 hover:border-[#1A5336]/40 hover:shadow-md transition rounded-3xl p-5"
+                    className="group bg-white border border-gray-200 hover:border-[#000000]/40 hover:shadow-md transition rounded-3xl p-5"
                   >
                     <div
                       className={`w-11 h-11 rounded-2xl ${color.bg} ${color.text} flex items-center justify-center`}
                     >
                       <Icon size={20} />
                     </div>
-                    <p className="mt-4 font-extrabold text-gray-900 text-sm leading-tight group-hover:text-[#1A5336]">
+                    <p className="mt-4 font-extrabold text-gray-900 text-sm leading-tight group-hover:text-[#000000]">
                       {c.name}
                     </p>
                     <p className="text-xs text-gray-400 mt-1">
@@ -147,7 +147,7 @@ export function DirectoryHome() {
           </div>
           <Link
             to="/directory"
-            className="text-sm font-bold text-[#1A5336] inline-flex items-center gap-1"
+            className="text-sm font-bold text-[#000000] inline-flex items-center gap-1"
           >
             {t("directory.see_more")} <ArrowRight size={14} />
           </Link>
@@ -161,12 +161,12 @@ export function DirectoryHome() {
 
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-6 pb-20">
-        <div className="rounded-3xl bg-gradient-to-br from-[#1A5336] to-[#0F3D24] text-white p-10 md:p-16 text-center">
+        <div className="rounded-3xl bg-gradient-to-br from-[#000000] to-[#000000] text-white p-10 md:p-16 text-center">
           <h2 className="text-3xl md:text-4xl font-black">{t("directory.cta_title")}</h2>
           <p className="mt-3 text-white/80 max-w-xl mx-auto">{t("directory.cta_body")}</p>
           <Link
             to="/cadastro"
-            className="inline-flex mt-6 bg-white text-[#1A5336] font-bold px-6 py-3 rounded-full"
+            className="inline-flex mt-6 bg-white text-[#000000] font-bold px-6 py-3 rounded-full"
           >
             {t("directory.cta_button")}
           </Link>

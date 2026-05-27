@@ -10,7 +10,7 @@ import { createBillingPortalSession } from "@/lib/stripe.functions";
 import { supabase } from "@/integrations/supabase/client";
 
 const PRESET_COLORS = [
-  { name: "Verde Latino", value: "#1A5336" },
+  { name: "Verde Latino", value: "#000000" },
   { name: "Azul Oceano", value: "#1E3A8A" },
   { name: "Vinho", value: "#7F1D1D" },
   { name: "Roxo", value: "#5B21B6" },
@@ -76,7 +76,7 @@ function SettingsPage() {
           type="button"
           onClick={handleChangePlan}
           disabled={portalLoading}
-          className="inline-flex mt-4 bg-[#1A5336] hover:bg-[#123F27] disabled:opacity-60 text-white font-bold rounded-xl px-5 py-2.5 text-sm"
+          className="inline-flex mt-4 bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 text-white font-bold rounded-xl px-5 py-2.5 text-sm"
         >
           {portalLoading ? "Abrindo..." : t("settings.change_plan")}
         </button>
@@ -154,7 +154,7 @@ function SettingsPage() {
             className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
           />
         </div>
-        <button className="bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-xl px-5 py-2.5 text-sm">
+        <button className="bg-[#000000] hover:bg-[#1a1a1a] text-white font-bold rounded-xl px-5 py-2.5 text-sm">
           {t("settings.save_button")}
         </button>
       </div>

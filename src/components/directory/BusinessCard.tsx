@@ -20,7 +20,7 @@ export function BusinessCard({ business }: { business: Business }) {
     <Link
       to="/business/$slug"
       params={{ slug: business.slug }}
-      className="group block bg-white border border-gray-200 hover:border-[#1A5336]/40 hover:shadow-lg transition rounded-3xl overflow-hidden"
+      className="group block bg-white border border-gray-200 hover:border-[#000000]/40 hover:shadow-lg transition rounded-3xl overflow-hidden"
     >
       <div className="aspect-[4/3] bg-gradient-to-br from-emerald-50 via-amber-50 to-emerald-100 relative flex items-center justify-center">
         {business.logoUrl ? (
@@ -39,7 +39,7 @@ export function BusinessCard({ business }: { business: Business }) {
         </div>
       </div>
       <div className="p-5">
-        <h3 className="font-extrabold text-gray-900 group-hover:text-[#1A5336]">{business.name}</h3>
+        <h3 className="font-extrabold text-gray-900 group-hover:text-[#000000]">{business.name}</h3>
         <p className="text-xs text-gray-500 mt-0.5">{business.subcategory}</p>
         <p className="text-sm text-gray-600 mt-3 line-clamp-2">{business.description}</p>
         <div className="flex items-center justify-between mt-4 text-xs text-gray-500">

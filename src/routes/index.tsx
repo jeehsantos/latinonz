@@ -78,7 +78,7 @@ function WaitlistLanding() {
       {!isWaitlistOpen && (
         <button
           onClick={() => setIsWaitlistOpen(true)}
-          className="fixed bottom-8 right-8 z-40 bg-[#1A5336] text-white font-bold px-6 py-4 rounded-full hover:bg-[#123F27] transition-colors animate-inflate"
+          className="fixed bottom-8 right-8 z-40 bg-[#000000] text-white font-bold px-6 py-4 rounded-full hover:bg-[#1a1a1a] transition-colors animate-inflate"
         >
           {t("waitlist_button")}
         </button>
@@ -111,7 +111,7 @@ function Landing() {
       </header>
 
       <section>
-        <div className="relative w-full overflow-hidden bg-[#0F3D24] text-white px-6 py-24 text-center">
+        <div className="relative w-full overflow-hidden bg-[#000000] text-white px-6 py-24 text-center">
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -121,12 +121,12 @@ function Landing() {
           />
           <div className="relative">
             <div className="inline-flex items-center gap-2 bg-black/30 backdrop-blur-sm text-white text-xs font-bold px-4 py-2 rounded-full mb-8 uppercase tracking-wider">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#EFC64E]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#df991b]" />
               {t("hero.badge")}
             </div>
             <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
               {t("hero.headline_1")}{" "}
-              <span className="text-[#EFC64E]">{t("hero.headline_highlight")}</span>
+              <span className="text-[#df991b]">{t("hero.headline_highlight")}</span>
               <br />
               {t("hero.headline_2")}
             </h1>
@@ -140,7 +140,7 @@ function Landing() {
       <section className="max-w-6xl mx-auto px-6 pb-24 grid md:grid-cols-3 gap-6">
         {features.map((f) => (
           <div key={f.title} className="rounded-2xl border border-gray-100 p-6 bg-gray-50/50">
-            <div className="w-10 h-10 rounded-xl bg-[#1A5336]/10 text-[#1A5336] flex items-center justify-center font-black mb-4">
+            <div className="w-10 h-10 rounded-xl bg-[#000000]/10 text-[#000000] flex items-center justify-center font-black mb-4">
               ★
             </div>
             <h3 className="font-extrabold text-gray-900 mb-1">{f.title}</h3>
