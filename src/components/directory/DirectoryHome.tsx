@@ -84,30 +84,30 @@ export function DirectoryHome() {
       </section>
 
       {/* Categories */}
-      <section className="max-w-7xl mx-auto px-6 py-16">
-        <div className="flex items-end justify-between mb-6">
+      <section className="max-w-7xl mx-auto px-5 sm:px-6 py-10 sm:py-16">
+        <div className="flex items-end justify-between mb-5 sm:mb-6">
           <div>
-            <h2 className="text-2xl md:text-3xl font-black text-gray-900">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-gray-900">
               {t("directory.categories_title")}
             </h2>
-            <p className="text-gray-500 mt-1">{t("directory.categories_subtitle")}</p>
+            <p className="text-sm text-gray-500 mt-1">{t("directory.categories_subtitle")}</p>
           </div>
           <Link
             to="/directory"
-            className="hidden sm:inline-flex text-sm font-bold text-[#000000] items-center gap-1"
+            className="hidden sm:inline-flex text-sm font-bold text-[#df991b] items-center gap-1"
           >
             {t("directory.see_all")} <ArrowRight size={14} />
           </Link>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
           {catsLoading && categories.length === 0
             ? Array.from({ length: 10 }).map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white border border-gray-200 rounded-3xl p-5 animate-pulse"
+                  className="bg-white border border-gray-200 rounded-2xl sm:rounded-3xl p-4 sm:p-5 animate-pulse"
                 >
-                  <div className="w-11 h-11 rounded-2xl bg-gray-100" />
-                  <div className="mt-4 h-4 bg-gray-100 rounded w-3/4" />
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gray-100" />
+                  <div className="mt-3 sm:mt-4 h-4 bg-gray-100 rounded w-3/4" />
                   <div className="mt-2 h-3 bg-gray-50 rounded w-1/2" />
                 </div>
               ))
@@ -118,14 +118,14 @@ export function DirectoryHome() {
                   <Link
                     key={c.id}
                     to="/directory"
-                    className="group bg-white border border-gray-200 hover:border-[#000000]/40 hover:shadow-md transition rounded-3xl p-5"
+                    className="group bg-white border border-gray-200 hover:border-[#df991b]/60 hover:shadow-md transition rounded-2xl sm:rounded-3xl p-4 sm:p-5"
                   >
                     <div
-                      className={`w-11 h-11 rounded-2xl ${color.bg} ${color.text} flex items-center justify-center`}
+                      className={`w-10 h-10 sm:w-11 sm:h-11 rounded-2xl ${color.bg} ${color.text} flex items-center justify-center`}
                     >
                       <Icon size={20} />
                     </div>
-                    <p className="mt-4 font-extrabold text-gray-900 text-sm leading-tight group-hover:text-[#000000]">
+                    <p className="mt-3 sm:mt-4 font-extrabold text-gray-900 text-sm leading-tight group-hover:text-[#000000]">
                       {c.name}
                     </p>
                     <p className="text-xs text-gray-400 mt-1">
@@ -138,22 +138,22 @@ export function DirectoryHome() {
       </section>
 
       {/* Featured */}
-      <section className="max-w-7xl mx-auto px-6 pb-16">
-        <div className="flex items-end justify-between mb-6">
+      <section className="max-w-7xl mx-auto px-5 sm:px-6 pb-10 sm:pb-16">
+        <div className="flex items-end justify-between mb-5 sm:mb-6">
           <div>
-            <h2 className="text-2xl md:text-3xl font-black text-gray-900">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-gray-900">
               {t("directory.featured_title")}
             </h2>
-            <p className="text-gray-500 mt-1">{t("directory.featured_subtitle")}</p>
+            <p className="text-sm text-gray-500 mt-1">{t("directory.featured_subtitle")}</p>
           </div>
           <Link
             to="/directory"
-            className="text-sm font-bold text-[#000000] inline-flex items-center gap-1"
+            className="text-sm font-bold text-[#df991b] inline-flex items-center gap-1"
           >
             {t("directory.see_more")} <ArrowRight size={14} />
           </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {featured.map((b) => (
             <BusinessCard key={b.id} business={b} />
           ))}
@@ -161,16 +161,25 @@ export function DirectoryHome() {
       </section>
 
       {/* CTA */}
-      <section className="max-w-7xl mx-auto px-6 pb-20">
-        <div className="rounded-3xl bg-gradient-to-br from-[#000000] to-[#000000] text-white p-10 md:p-16 text-center">
-          <h2 className="text-3xl md:text-4xl font-black">{t("directory.cta_title")}</h2>
-          <p className="mt-3 text-white/80 max-w-xl mx-auto">{t("directory.cta_body")}</p>
-          <Link
-            to="/cadastro"
-            className="inline-flex mt-6 bg-white text-[#000000] font-bold px-6 py-3 rounded-full"
-          >
-            {t("directory.cta_button")}
-          </Link>
+      <section className="max-w-7xl mx-auto px-5 sm:px-6 pb-16 sm:pb-20">
+        <div className="rounded-3xl bg-gradient-to-br from-[#000000] via-[#1a1a1a] to-[#000000] text-white p-8 sm:p-10 md:p-16 text-center relative overflow-hidden">
+          <div
+            className="absolute inset-0 pointer-events-none opacity-60"
+            style={{
+              background:
+                "radial-gradient(circle at 80% 20%, rgba(223,153,27,0.35), transparent 50%)",
+            }}
+          />
+          <div className="relative">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black">{t("directory.cta_title")}</h2>
+            <p className="mt-3 text-sm sm:text-base text-white/80 max-w-xl mx-auto">{t("directory.cta_body")}</p>
+            <Link
+              to="/cadastro"
+              className="inline-flex mt-6 bg-[#df991b] text-white font-bold px-6 py-3 rounded-full hover:bg-[#c4861a] transition"
+            >
+              {t("directory.cta_button")}
+            </Link>
+          </div>
         </div>
       </section>
     </SiteShell>
