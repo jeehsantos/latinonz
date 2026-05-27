@@ -62,27 +62,35 @@ function DirectoryPage() {
 
   return (
     <SiteShell>
-      <section className="bg-[#000000] text-white">
-        <div className="max-w-7xl mx-auto px-6 py-16">
-          <h1 className="text-3xl md:text-5xl font-black">{t("directory.title")}</h1>
-          <p className="mt-3 text-white/70 max-w-2xl">{t("directory.subtitle")}</p>
-          <div className="mt-8">
+      <section
+        className="relative text-white overflow-hidden"
+        style={{
+          background:
+            "radial-gradient(ellipse at top, #1a1a1a 0%, #000000 60%), radial-gradient(circle at 90% 100%, rgba(223,153,27,0.22), transparent 55%)",
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 py-10 sm:py-16">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight">
+            {t("directory.title")}
+          </h1>
+          <p className="mt-3 text-sm sm:text-base text-white/70 max-w-2xl">{t("directory.subtitle")}</p>
+          <div className="mt-6 sm:mt-8">
             <SearchBar value={search} onChange={setSearch} />
           </div>
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-6 py-12">
+      <section className="max-w-7xl mx-auto px-5 sm:px-6 py-8 sm:py-12">
         <h2 className="text-xs uppercase tracking-wider font-bold text-gray-500">
           {t("directory.categories_label")}
         </h2>
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-4 flex gap-2 overflow-x-auto sm:flex-wrap pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 scrollbar-hide">
           <button
             onClick={() => setSearch({ ...search, category: "" })}
-            className={`text-sm font-semibold px-4 py-2 rounded-full border ${
+            className={`shrink-0 text-sm font-semibold px-4 py-2 rounded-full border whitespace-nowrap transition ${
               !search.category
                 ? "bg-[#000000] text-white border-[#000000]"
-                : "bg-white border-gray-200 hover:border-[#000000]"
+                : "bg-white border-gray-200 hover:border-[#df991b] text-gray-700"
             }`}
           >
             {t("directory.all_categories")}
@@ -91,10 +99,10 @@ function DirectoryPage() {
             <button
               key={c.id}
               onClick={() => setSearch({ ...search, category: c.canonicalName })}
-              className={`text-sm font-semibold px-4 py-2 rounded-full border ${
+              className={`shrink-0 text-sm font-semibold px-4 py-2 rounded-full border whitespace-nowrap transition ${
                 search.category === c.canonicalName
                   ? "bg-[#000000] text-white border-[#000000]"
-                  : "bg-white border-gray-200 hover:border-[#000000]"
+                  : "bg-white border-gray-200 hover:border-[#df991b] text-gray-700"
               }`}
             >
               {c.name}
