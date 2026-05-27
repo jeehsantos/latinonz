@@ -27,7 +27,7 @@ function BlogPage() {
   
   return (
     <SiteShell>
-      <section className="bg-[#000000] text-white">
+      <section className="bg-white text-[#000000]">
         <div className="max-w-5xl mx-auto px-6 py-16">
           <p className="text-xs font-bold uppercase tracking-wider text-amber-300">
             {t("blog.badge")}
@@ -38,7 +38,7 @@ function BlogPage() {
       </section>
 
       <section className="max-w-5xl mx-auto px-6 py-16 md:py-24">
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#000000] via-[#000000] to-[#051c0d] shadow-2xl group">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-white via-white to-[#051c0d] shadow-2xl group">
           {/* Animated glow effect */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,#34d399,transparent_60%)] opacity-20 group-hover:opacity-30 transition-opacity duration-1000 animate-pulse"></div>
           

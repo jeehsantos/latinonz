@@ -151,7 +151,7 @@ function CadastroPage() {
             <button
               type="submit"
               disabled={loading}
-              className="block w-full text-center bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 text-white font-bold rounded-xl py-3 text-sm"
+              className="block w-full text-center bg-white hover:bg-gray-100 disabled:opacity-60 text-[#000000] font-bold rounded-xl py-3 text-sm"
             >
               {loading ? "..." : t("register.submit")}
             </button>

@@ -145,7 +145,7 @@ export function DashboardLayout() {
               className="w-9 h-9 rounded-full object-cover border border-gray-200"
             />
           ) : (
-            <div className="w-9 h-9 rounded-full bg-[#000000] text-white font-bold flex items-center justify-center">
+            <div className="w-9 h-9 rounded-full bg-white text-[#000000] font-bold flex items-center justify-center">
               {initial}
             </div>
           )}

@@ -226,7 +226,7 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 disabled:cursor-not-allowed disabled:animate-none text-white font-bold py-3.5 rounded-xl transition-colors mt-2 flex items-center justify-center gap-2 animate-inflate"
+                className="w-full bg-white hover:bg-gray-100 disabled:opacity-60 disabled:cursor-not-allowed disabled:animate-none text-[#000000] font-bold py-3.5 rounded-xl transition-colors mt-2 flex items-center justify-center gap-2 animate-inflate"
               >
                 {submitting && <Loader2 size={16} className="animate-spin" />}
                 {t("modal.submit_button")}

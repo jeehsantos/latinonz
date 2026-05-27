@@ -210,7 +210,7 @@ function AcceptInvitePage() {
             <button
               type="submit"
               disabled={status === "saving" || status === "done"}
-              className="w-full bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 text-white font-bold rounded-xl py-3 text-sm"
+              className="w-full bg-white hover:bg-gray-100 disabled:opacity-60 text-[#000000] font-bold rounded-xl py-3 text-sm"
             >
               {status === "saving"
                 ? t("auth.accept_invite.saving")

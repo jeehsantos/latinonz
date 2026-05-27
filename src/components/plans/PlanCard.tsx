@@ -27,7 +27,7 @@ export function PlanCard({
       }`}
     >
       {highlight && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#000000] text-white text-[10px] font-bold uppercase px-3 py-1 rounded-full">
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white text-[#000000] text-[10px] font-bold uppercase px-3 py-1 rounded-full">
           {t("plans.most_popular")}
         </span>
       )}

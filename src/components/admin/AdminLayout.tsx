@@ -111,7 +111,7 @@ export function AdminLayout() {
           <div className="flex flex-col gap-2">
             <button
               onClick={logout}
-              className="w-full bg-[#000000] hover:bg-[#1a1a1a] text-white font-bold py-3 rounded-xl inline-flex items-center justify-center gap-2"
+              className="w-full bg-white hover:bg-gray-100 text-[#000000] font-bold py-3 rounded-xl inline-flex items-center justify-center gap-2"
             >
               <LogOut size={16} /> Sair
             </button>

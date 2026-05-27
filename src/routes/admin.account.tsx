@@ -130,7 +130,7 @@ function AdminAccountPage() {
         <button
           type="submit"
           disabled={savingProfile}
-          className="bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 text-white font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 text-sm"
+          className="bg-white hover:bg-gray-100 disabled:opacity-60 text-[#000000] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 text-sm"
         >
           <Save size={16} /> {savingProfile ? "Salvando..." : "Salvar perfil"}
         </button>
@@ -174,7 +174,7 @@ function AdminAccountPage() {
         <button
           type="submit"
           disabled={savingPw}
-          className="bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 text-white font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 text-sm"
+          className="bg-white hover:bg-gray-100 disabled:opacity-60 text-[#000000] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 text-sm"
         >
           <KeyRound size={16} /> {savingPw ? "Salvando..." : "Atualizar senha"}
         </button>

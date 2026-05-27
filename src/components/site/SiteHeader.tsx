@@ -49,7 +49,7 @@ export function SiteHeader() {
           </Link>
           <Link
             to="/cadastro"
-            className="hidden md:inline-flex text-sm font-bold bg-[#000000] text-white px-4 py-2 rounded-full hover:bg-[#1a1a1a]"
+            className="hidden md:inline-flex text-sm font-bold bg-white text-[#000000] px-4 py-2 rounded-full hover:bg-gray-100"
           >
             {t("nav.register")}
           </Link>
@@ -96,7 +96,7 @@ export function SiteHeader() {
             <Link
               to="/cadastro"
               onClick={() => setMobileOpen(false)}
-              className="block text-center px-4 py-2.5 rounded-xl bg-[#000000] text-white font-bold text-sm hover:bg-[#1a1a1a]"
+              className="block text-center px-4 py-2.5 rounded-xl bg-white text-[#000000] font-bold text-sm hover:bg-gray-100"
             >
               {t("nav.register")}
             </Link>

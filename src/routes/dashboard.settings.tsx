@@ -76,7 +76,7 @@ function SettingsPage() {
           type="button"
           onClick={handleChangePlan}
           disabled={portalLoading}
-          className="inline-flex mt-4 bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 text-white font-bold rounded-xl px-5 py-2.5 text-sm"
+          className="inline-flex mt-4 bg-white hover:bg-gray-100 disabled:opacity-60 text-[#000000] font-bold rounded-xl px-5 py-2.5 text-sm"
         >
           {portalLoading ? "Abrindo..." : t("settings.change_plan")}
         </button>
@@ -154,7 +154,7 @@ function SettingsPage() {
             className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
           />
         </div>
-        <button className="bg-[#000000] hover:bg-[#1a1a1a] text-white font-bold rounded-xl px-5 py-2.5 text-sm">
+        <button className="bg-white hover:bg-gray-100 text-[#000000] font-bold rounded-xl px-5 py-2.5 text-sm">
           {t("settings.save_button")}
         </button>
       </div>

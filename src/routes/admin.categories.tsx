@@ -140,7 +140,7 @@ function AdminCategoriesPage() {
         </div>
         <button
           onClick={openCreate}
-          className="bg-[#000000] hover:bg-[#1a1a1a] text-white font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2"
+          className="bg-white hover:bg-gray-100 text-[#000000] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2"
         >
           <Plus size={16} /> Nova categoria
         </button>
@@ -411,7 +411,7 @@ function AdminCategoriesPage() {
               <button
                 type="submit"
                 disabled={saveMut.isPending}
-                className="bg-[#000000] hover:bg-[#1a1a1a] text-white font-bold px-5 py-2 rounded-xl text-sm disabled:opacity-50 inline-flex items-center gap-2"
+                className="bg-white hover:bg-gray-100 text-[#000000] font-bold px-5 py-2 rounded-xl text-sm disabled:opacity-50 inline-flex items-center gap-2"
               >
                 {saveMut.isPending && <Loader2 size={14} className="animate-spin" />}
                 {form.id ? "Salvar alterações" : "Criar categoria"}

@@ -787,7 +787,7 @@ function ProfileEditor() {
             }
           }}
           disabled={saving}
-          className="bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 text-white font-bold rounded-xl px-6 py-2.5 text-sm"
+          className="bg-white hover:bg-gray-100 disabled:opacity-60 text-[#000000] font-bold rounded-xl px-6 py-2.5 text-sm"
         >
           {saving ? "..." : t("profile.save_button")}
         </button>
@@ -817,7 +817,7 @@ function ProfileEditor() {
               <button
                 onClick={() => logoRef.current?.click()}
                 disabled={logoUploading}
-                className="flex-1 inline-flex items-center justify-center gap-2 bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 text-white font-bold py-2 rounded-xl text-sm transition-colors"
+                className="flex-1 inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-100 disabled:opacity-60 text-[#000000] font-bold py-2 rounded-xl text-sm transition-colors"
               >
                 <Upload size={14} />{" "}
                 {logoUploading ? "..." : logo ? t("profile.logo_change") : t("profile.logo_upload")}
@@ -864,14 +864,14 @@ function ProfileEditor() {
             <button
               onClick={handleGenerateQr}
               disabled={generating || !qrUrl}
-              className="w-full flex items-center justify-center gap-2 bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 text-white font-bold py-2.5 rounded-xl text-sm transition-colors"
+              className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-100 disabled:opacity-60 text-[#000000] font-bold py-2.5 rounded-xl text-sm transition-colors"
             >
               {generating ? t("profile.qr_generating") : t("profile.qr_generate")}
             </button>
           ) : (
             <button
               onClick={handleDownloadQr}
-              className="w-full flex items-center justify-center gap-2 bg-[#0B2C1A] text-white font-bold py-2.5 rounded-xl text-sm hover:bg-[#000000] transition-colors"
+              className="w-full flex items-center justify-center gap-2 bg-[#0B2C1A] text-white font-bold py-2.5 rounded-xl text-sm hover:bg-white hover:text-[#000000] transition-colors"
             >
               <Download size={16} /> {t("profile.qr_download")}
             </button>
@@ -965,7 +965,7 @@ function ServiceOptionsSection({
           </p>
           <Link
             to="/dashboard/upgrade"
-            className="inline-flex mt-4 bg-[#000000] hover:bg-[#1a1a1a] text-white text-xs font-bold px-4 py-2 rounded-xl"
+            className="inline-flex mt-4 bg-white hover:bg-gray-100 text-[#000000] text-xs font-bold px-4 py-2 rounded-xl"
           >
             {t("profile.service_options_upgrade")}
           </Link>
@@ -1025,7 +1025,7 @@ function ServiceOptionsSection({
                     className="rounded-xl border border-gray-200 p-3 bg-gray-50/40 space-y-2"
                   >
                     <div className="flex items-start gap-3">
-                      <span className="flex items-center justify-center h-10 w-10 rounded-lg bg-[#000000] text-white shrink-0">
+                      <span className="flex items-center justify-center h-10 w-10 rounded-lg bg-white text-[#000000] shrink-0">
                         <Icon size={18} />
                       </span>
                       <div className="flex-1 space-y-2">
@@ -1217,7 +1217,7 @@ function GoogleReviewsSection({
           type="button"
           onClick={handleConnect}
           disabled={busy || !isValid}
-          className="inline-flex items-center gap-2 bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-60 text-white font-bold rounded-xl px-4 py-2 text-sm"
+          className="inline-flex items-center gap-2 bg-white hover:bg-gray-100 disabled:opacity-60 text-[#000000] font-bold rounded-xl px-4 py-2 text-sm"
         >
           {busy ? "..." : initialPlaceId ? "Atualizar e sincronizar" : "Conectar"}
         </button>

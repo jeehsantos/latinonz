@@ -114,7 +114,7 @@ function CouponsPage() {
               resetForm();
               setFormOpen(true);
             }}
-            className="bg-[#000000] hover:bg-[#1a1a1a] text-white font-bold rounded-xl px-4 py-2.5 text-sm flex items-center gap-2"
+            className="bg-white hover:bg-gray-100 text-[#000000] font-bold rounded-xl px-4 py-2.5 text-sm flex items-center gap-2"
           >
             <Plus size={16} /> {t("coupons.new_button")}
           </button>
@@ -289,7 +289,7 @@ function CouponsPage() {
               <button
                 type="submit"
                 disabled={createMutation.isPending}
-                className="w-full bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-50 text-white font-bold rounded-2xl py-3 text-sm"
+                className="w-full bg-white hover:bg-gray-100 disabled:opacity-50 text-[#000000] font-bold rounded-2xl py-3 text-sm"
               >
                 {createMutation.isPending ? "Criando..." : "Criar cupom"}
               </button>

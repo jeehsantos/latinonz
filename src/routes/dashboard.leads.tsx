@@ -136,7 +136,7 @@ function LeadsPage() {
                 <button
                   disabled={mutation.isPending}
                   onClick={() => mutation.mutate({ leadId: selected.id, status: "Contatado" })}
-                  className="flex-1 bg-[#000000] hover:bg-[#1a1a1a] disabled:opacity-50 text-white font-bold rounded-xl py-2 text-sm"
+                  className="flex-1 bg-white hover:bg-gray-100 disabled:opacity-50 text-[#000000] font-bold rounded-xl py-2 text-sm"
                 >
                   {t("leads.reply_button")}
                 </button>
