@@ -66,18 +66,18 @@ export function DirectoryHome() {
       </section>
 
       {/* Trust strip */}
-      <section className="max-w-7xl mx-auto px-6 -mt-8 grid sm:grid-cols-3 gap-4 relative z-10">
+      <section className="max-w-7xl mx-auto px-5 sm:px-6 -mt-6 sm:-mt-8 grid grid-cols-3 gap-2 sm:gap-4 relative z-10">
         {trustItems.map(({ icon: Icon, value, label }) => (
           <div
             key={label}
-            className="bg-white border border-gray-100 rounded-3xl p-5 flex items-center gap-4 shadow-sm"
+            className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-3 sm:p-5 flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 shadow-sm text-center sm:text-left"
           >
-            <div className="w-11 h-11 rounded-2xl bg-[#000000]/10 text-[#000000] flex items-center justify-center">
-              <Icon size={20} />
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#df991b]/15 text-[#df991b] flex items-center justify-center shrink-0">
+              <Icon size={18} />
             </div>
             <div>
-              <p className="text-xl font-black text-gray-900">{value}</p>
-              <p className="text-xs text-gray-500">{label}</p>
+              <p className="text-base sm:text-xl font-black text-gray-900 leading-tight">{value}</p>
+              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight">{label}</p>
             </div>
           </div>
         ))}
