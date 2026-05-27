@@ -111,7 +111,7 @@ function Landing() {
       </header>
 
       <section>
-        <div className="relative w-full overflow-hidden bg-[#000000] text-white px-5 sm:px-6 py-16 sm:py-24 text-center">
+        <div className="relative w-full overflow-hidden bg-white text-[#000000] px-5 sm:px-6 py-16 sm:py-24 text-center">
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
