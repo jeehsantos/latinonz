@@ -4,7 +4,7 @@ import { PLAN_LABELS } from "@/lib/plans";
 const STYLES: Record<PlanTier, string> = {
   starter: "bg-gray-100 text-gray-700 border-gray-200",
   premium: "bg-amber-50 text-amber-700 border-amber-200",
-  ultra: "bg-[#1A5336]/10 text-[#1A5336] border-[#1A5336]/20",
+  ultra: "bg-[#000000]/10 text-[#000000] border-[#000000]/20",
 };
 
 export function PlanBadge({ plan, className = "" }: { plan: PlanTier; className?: string }) {

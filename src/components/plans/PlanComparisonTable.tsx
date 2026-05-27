@@ -22,7 +22,7 @@ export function PlanComparisonTable() {
               <th className="p-4 font-bold">{t("plans.table_feature")}</th>
               <th className="p-4 font-bold text-center">{PLAN_LABELS.starter}</th>
               <th className="p-4 font-bold text-center">{PLAN_LABELS.premium}</th>
-              <th className="p-4 font-bold text-center text-[#1A5336]">{PLAN_LABELS.ultra}</th>
+              <th className="p-4 font-bold text-center text-[#000000]">{PLAN_LABELS.ultra}</th>
             </tr>
           </thead>
           <tbody className="text-sm divide-y divide-gray-100">
@@ -31,7 +31,7 @@ export function PlanComparisonTable() {
                 <td className="p-4 font-semibold text-gray-800">{row.feature}</td>
                 <td className="p-4 text-center text-gray-600">{row.starter}</td>
                 <td className="p-4 text-center text-gray-600">{row.premium}</td>
-                <td className="p-4 text-center text-[#1A5336] font-bold">{row.ultra}</td>
+                <td className="p-4 text-center text-[#000000] font-bold">{row.ultra}</td>
               </tr>
             ))}
           </tbody>

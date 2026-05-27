@@ -110,7 +110,7 @@ function GalleryPage() {
           <button
             onClick={handlePick}
             disabled={uploading}
-            className="aspect-square rounded-2xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-[#1A5336] hover:text-[#1A5336] disabled:opacity-60 flex flex-col items-center justify-center gap-2"
+            className="aspect-square rounded-2xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-[#000000] hover:text-[#000000] disabled:opacity-60 flex flex-col items-center justify-center gap-2"
           >
             <Plus size={20} />
             <span className="text-xs font-bold">{uploading ? "..." : t("gallery.add_button")}</span>

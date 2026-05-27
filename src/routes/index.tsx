@@ -78,7 +78,7 @@ function WaitlistLanding() {
       {!isWaitlistOpen && (
         <button
           onClick={() => setIsWaitlistOpen(true)}
-          className="fixed bottom-8 right-8 z-40 bg-[#1A5336] text-white font-bold px-6 py-4 rounded-full hover:bg-[#123F27] transition-colors animate-inflate"
+          className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-40 bg-[#df991b] text-white font-bold px-5 py-3 sm:px-6 sm:py-4 rounded-full hover:bg-[#c4861a] transition-colors animate-inflate text-sm sm:text-base"
         >
           {t("waitlist_button")}
         </button>
@@ -111,36 +111,36 @@ function Landing() {
       </header>
 
       <section>
-        <div className="relative w-full overflow-hidden bg-[#0F3D24] text-white px-6 py-24 text-center">
+        <div className="relative w-full overflow-hidden bg-[#000000] text-white px-5 sm:px-6 py-16 sm:py-24 text-center">
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
               background:
-                "radial-gradient(circle at top left, rgba(239,198,78,0.25) 0%, rgba(15,61,36,0) 45%), radial-gradient(circle at bottom right, rgba(26,83,54,0.9) 0%, rgba(15,61,36,0) 55%), radial-gradient(ellipse at top, rgba(26,83,54,0.6) 0%, rgba(15,61,36,0) 70%)",
+                "radial-gradient(circle at top left, rgba(223,153,27,0.28) 0%, rgba(0,0,0,0) 45%), radial-gradient(circle at bottom right, rgba(223,153,27,0.18) 0%, rgba(0,0,0,0) 55%)",
             }}
           />
           <div className="relative">
-            <div className="inline-flex items-center gap-2 bg-black/30 backdrop-blur-sm text-white text-xs font-bold px-4 py-2 rounded-full mb-8 uppercase tracking-wider">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#EFC64E]" />
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white text-[10px] sm:text-xs font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-5 sm:mb-8 uppercase tracking-wider">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#df991b]" />
               {t("hero.badge")}
             </div>
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
               {t("hero.headline_1")}{" "}
-              <span className="text-[#EFC64E]">{t("hero.headline_highlight")}</span>
+              <span className="text-[#df991b]">{t("hero.headline_highlight")}</span>
               <br />
               {t("hero.headline_2")}
             </h1>
-            <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">
+            <p className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg text-white/70 max-w-2xl mx-auto">
               {t("hero.subheadline")}
             </p>
           </div>
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-6 pb-24 grid md:grid-cols-3 gap-6">
+      <section className="max-w-6xl mx-auto px-5 sm:px-6 py-12 sm:pb-24 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         {features.map((f) => (
-          <div key={f.title} className="rounded-2xl border border-gray-100 p-6 bg-gray-50/50">
-            <div className="w-10 h-10 rounded-xl bg-[#1A5336]/10 text-[#1A5336] flex items-center justify-center font-black mb-4">
+          <div key={f.title} className="rounded-2xl border border-gray-100 p-5 sm:p-6 bg-gray-50/50">
+            <div className="w-10 h-10 rounded-xl bg-[#df991b]/15 text-[#df991b] flex items-center justify-center font-black mb-4">
               ★
             </div>
             <h3 className="font-extrabold text-gray-900 mb-1">{f.title}</h3>

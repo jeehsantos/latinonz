@@ -111,7 +111,7 @@ export function AdminLayout() {
           <div className="flex flex-col gap-2">
             <button
               onClick={logout}
-              className="w-full bg-[#1A5336] hover:bg-[#123F27] text-white font-bold py-3 rounded-xl inline-flex items-center justify-center gap-2"
+              className="w-full bg-[#000000] hover:bg-[#1a1a1a] text-white font-bold py-3 rounded-xl inline-flex items-center justify-center gap-2"
             >
               <LogOut size={16} /> Sair
             </button>
@@ -133,7 +133,7 @@ export function AdminLayout() {
         <Link to="/" className="flex items-center shrink-0">
           <img src={logo} alt="Latino Connect" className="h-9 w-auto" />
         </Link>
-        <span className="hidden sm:inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border bg-[#1A5336]/10 text-[#1A5336] border-[#1A5336]/20">
+        <span className="hidden sm:inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border bg-[#000000]/10 text-[#000000] border-[#000000]/20">
           Admin
         </span>
         <div className="ml-auto flex items-center gap-3">
@@ -153,7 +153,7 @@ export function AdminLayout() {
 
       <div className="flex flex-1 min-h-0">
         <aside
-          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-[#0F3D24] border-r border-[#0a2d1a] flex flex-col transform transition-transform lg:translate-x-0 ${
+          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-[#000000] border-r border-[#0a2d1a] flex flex-col transform transition-transform lg:translate-x-0 ${
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -174,7 +174,7 @@ export function AdminLayout() {
                   onClick={() => setMobileOpen(false)}
                   className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition ${
                     active
-                      ? "bg-[#1A5336] text-white font-bold"
+                      ? "bg-[#000000] text-white font-bold"
                       : "text-white/70 hover:bg-[#143d27] font-medium"
                   }`}
                 >

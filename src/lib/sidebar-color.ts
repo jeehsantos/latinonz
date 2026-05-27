@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 const KEY = "latinonz_sidebar_color";
 const EVENT = "latinonz:sidebar-color-change";
-export const DEFAULT_SIDEBAR_COLOR = "#0F3D24";
+export const DEFAULT_SIDEBAR_COLOR = "#000000";
 
 const HEX_RE = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 

@@ -23,7 +23,7 @@ export function SearchBar({
         e.preventDefault();
         onSubmit?.();
       }}
-      className="bg-white rounded-3xl shadow-xl p-3 md:p-4 grid grid-cols-1 md:grid-cols-12 gap-2 items-stretch border border-gray-100"
+      className="bg-white rounded-2xl sm:rounded-3xl shadow-xl p-2.5 sm:p-4 grid grid-cols-1 md:grid-cols-12 gap-2 items-stretch border border-gray-100"
     >
       <div className="md:col-span-5 relative">
         <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -31,36 +31,38 @@ export function SearchBar({
           value={value.q}
           onChange={(e) => onChange({ ...value, q: e.target.value })}
           placeholder={t("directory.search_placeholder")}
-          className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-3 text-sm outline-none focus:border-[#1A5336] text-gray-900"
+          className="w-full bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl pl-10 pr-4 py-3 text-sm outline-none focus:border-[#df991b] focus:ring-1 focus:ring-[#df991b]/40 text-gray-900"
         />
       </div>
-      <select
-        value={value.category}
-        onChange={(e) => onChange({ ...value, category: e.target.value })}
-        className="md:col-span-3 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#1A5336] text-gray-900"
-      >
-        <option value="">{t("directory.all_areas")}</option>
-        {categories.map((c) => (
-          <option key={c.id} value={c.canonicalName}>
-            {c.name}
-          </option>
-        ))}
-      </select>
-      <select
-        value={value.city}
-        onChange={(e) => onChange({ ...value, city: e.target.value })}
-        className="md:col-span-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#1A5336] text-gray-900"
-      >
-        <option value="">{t("directory.all_nz")}</option>
-        {NZ_CITIES.map((c) => (
-          <option key={c} value={c}>
-            {c}
-          </option>
-        ))}
-      </select>
+      <div className="grid grid-cols-2 gap-2 md:contents">
+        <select
+          value={value.category}
+          onChange={(e) => onChange({ ...value, category: e.target.value })}
+          className="md:col-span-3 bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-3 text-sm outline-none focus:border-[#df991b] text-gray-900"
+        >
+          <option value="">{t("directory.all_areas")}</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.canonicalName}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        <select
+          value={value.city}
+          onChange={(e) => onChange({ ...value, city: e.target.value })}
+          className="md:col-span-2 bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-3 text-sm outline-none focus:border-[#df991b] text-gray-900"
+        >
+          <option value="">{t("directory.all_nz")}</option>
+          {NZ_CITIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+      </div>
       <button
         type="submit"
-        className="md:col-span-2 bg-[#1A5336] hover:bg-[#123F27] text-white font-bold rounded-2xl px-4 py-3 text-sm"
+        className="md:col-span-2 bg-[#000000] hover:bg-[#df991b] transition-colors text-white font-bold rounded-xl sm:rounded-2xl px-4 py-3 text-sm"
       >
         {t("directory.search_button")}
       </button>
