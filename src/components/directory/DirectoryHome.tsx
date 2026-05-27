@@ -42,23 +42,24 @@ export function DirectoryHome() {
       <section
         className="relative text-white overflow-hidden"
         style={{
-          background: "radial-gradient(ellipse at top, #000000 0%, #000000 50%, #0A2A19 100%)",
+          background:
+            "radial-gradient(ellipse at top, #1a1a1a 0%, #000000 60%), radial-gradient(circle at bottom right, rgba(223,153,27,0.25), transparent 60%)",
         }}
       >
-        <div className="relative max-w-6xl mx-auto px-6 py-20 md:py-28 text-center">
-          <div className="inline-flex items-center gap-2 bg-black/30 backdrop-blur-sm text-white text-[11px] font-bold px-4 py-2 rounded-full mb-8 uppercase tracking-[0.18em]">
+        <div className="relative max-w-6xl mx-auto px-5 sm:px-6 py-14 sm:py-20 md:py-28 text-center">
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white text-[10px] sm:text-[11px] font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-5 sm:mb-8 uppercase tracking-[0.18em]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#df991b]" />
             {t("directory.home_badge")}
           </div>
-          <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
             {t("directory.home_headline_before")}
             <span className="text-[#df991b]">{t("directory.home_headline_highlight")}</span>
             {t("directory.home_headline_after")}
           </h1>
-          <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">
+          <p className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg text-white/70 max-w-2xl mx-auto">
             {t("directory.home_subheadline")}
           </p>
-          <div className="mt-10 max-w-4xl mx-auto">
+          <div className="mt-6 sm:mt-10 max-w-4xl mx-auto">
             <SearchBar value={search} onChange={setSearch} />
           </div>
         </div>
