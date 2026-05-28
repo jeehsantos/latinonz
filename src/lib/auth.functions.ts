@@ -43,23 +43,30 @@ async function buildAndSendActivation(args: {
   ownerName: string;
   siteOrigin: string;
 }) {
-  const { data: link, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
-    type: "signup",
-    email: args.email,
-    password: args.password,
-    options: {
-      redirectTo: `${args.siteOrigin}/auth/confirm`,
-    },
-  });
+  const redirectTo = `${args.siteOrigin}/auth/confirm`;
+  const linkResult = args.password
+    ? await supabaseAdmin.auth.admin.generateLink({
+        type: "signup",
+        email: args.email,
+        password: args.password,
+        options: { redirectTo },
+      })
+    : await supabaseAdmin.auth.admin.generateLink({
+        type: "magiclink",
+        email: args.email,
+        options: { redirectTo },
+      });
 
+  const { data: link, error: linkError } = linkResult;
   if (linkError || !link?.properties?.hashed_token) {
     throw new Error(linkError?.message ?? "Não foi possível gerar o link de ativação.");
   }
 
+  const linkType = args.password ? "signup" : "magiclink";
   const tokenHash = link.properties.hashed_token;
   const activationUrl = `${args.siteOrigin}/auth/confirm?token_hash=${encodeURIComponent(
     tokenHash,
-  )}&type=signup`;
+  )}&type=${linkType}`;
 
   await sendActivationEmail({
     to: args.email,

@@ -12,6 +12,7 @@ import {
 import { useEffect } from "react";
 import { I18nProvider } from "@/lib/i18n";
 import { useSiteMode } from "@/lib/site-mode";
+import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 
@@ -134,6 +135,7 @@ function RootComponent() {
         <SiteGate>
           <Outlet />
         </SiteGate>
+        <Toaster position="top-right" richColors closeButton />
       </I18nProvider>
     </QueryClientProvider>
   );
