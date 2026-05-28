@@ -2,10 +2,17 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { sendActivationEmail } from "@/lib/email/activation.server";
 
 // Accept NZ numbers in flexible formats: +64..., 0064..., or local 0xx...
-// Allows spaces, dashes, and parentheses between digits.
 const nzPhoneRegex = /^(?:\+?64|0)[\s\-()]*\d(?:[\s\-()]*\d){7,11}$/;
+
+const siteOriginSchema = z
+  .string()
+  .trim()
+  .url()
+  .max(2048)
+  .refine((u) => /^https?:\/\//i.test(u), "Origem inválida");
 
 const signUpSchema = z.object({
   email: z.string().trim().toLowerCase().email().max(320),
@@ -17,6 +24,7 @@ const signUpSchema = z.object({
     .trim()
     .max(32)
     .regex(nzPhoneRegex, "Número NZ inválido (ex: +64 21 000 0000 ou 021 000 0000)"),
+  siteOrigin: siteOriginSchema,
 });
 
 const signInSchema = z.object({
@@ -24,13 +32,49 @@ const signInSchema = z.object({
   password: z.string().min(1).max(128),
 });
 
+const resendActivationSchema = z.object({
+  email: z.string().trim().toLowerCase().email().max(320),
+  siteOrigin: siteOriginSchema,
+});
+
+async function buildAndSendActivation(args: {
+  email: string;
+  password?: string;
+  ownerName: string;
+  siteOrigin: string;
+}) {
+  const { data: link, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+    type: "signup",
+    email: args.email,
+    password: args.password,
+    options: {
+      redirectTo: `${args.siteOrigin}/auth/confirm`,
+    },
+  });
+
+  if (linkError || !link?.properties?.hashed_token) {
+    throw new Error(linkError?.message ?? "Não foi possível gerar o link de ativação.");
+  }
+
+  const tokenHash = link.properties.hashed_token;
+  const activationUrl = `${args.siteOrigin}/auth/confirm?token_hash=${encodeURIComponent(
+    tokenHash,
+  )}&type=signup`;
+
+  await sendActivationEmail({
+    to: args.email,
+    ownerName: args.ownerName,
+    activationUrl,
+  });
+}
+
 export const signUp = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => signUpSchema.parse(input))
   .handler(async ({ data }) => {
     const { data: created, error: createError } = await supabaseAdmin.auth.admin.createUser({
       email: data.email,
       password: data.password,
-      email_confirm: true,
+      email_confirm: false,
       user_metadata: {
         business_name: data.businessName,
         owner_name: data.ownerName,
@@ -44,24 +88,64 @@ export const signUp = createServerFn({ method: "POST" })
       return { ok: false as const, error: message };
     }
 
-    const { data: session, error: signInError } = await supabaseAdmin.auth.signInWithPassword({
-      email: data.email,
-      password: data.password,
-    });
-
-    if (signInError || !session.session) {
-      console.error("signUp signIn error", signInError);
+    try {
+      await buildAndSendActivation({
+        email: data.email,
+        password: data.password,
+        ownerName: data.ownerName,
+        siteOrigin: data.siteOrigin,
+      });
+    } catch (err) {
+      console.error("signUp activation email error", err);
       return {
         ok: false as const,
-        error: signInError?.message ?? "Conta criada, mas login falhou.",
+        error:
+          "Conta criada, mas falhou ao enviar o e-mail de ativação. Tente reenviar em alguns minutos.",
       };
     }
 
     return {
       ok: true as const,
-      session: session.session,
-      user: session.user,
+      requiresActivation: true as const,
+      email: data.email,
     };
+  });
+
+export const resendActivation = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => resendActivationSchema.parse(input))
+  .handler(async ({ data }) => {
+    // Look up user by email so we have the owner name for the email template.
+    const { data: list, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+    if (listError) {
+      console.error("resendActivation list error", listError);
+      return { ok: false as const, error: "Não foi possível reenviar o e-mail." };
+    }
+    const user = list.users.find((u) => u.email?.toLowerCase() === data.email);
+    if (!user) {
+      // Don't reveal whether the email exists.
+      return { ok: true as const };
+    }
+    if (user.email_confirmed_at) {
+      return { ok: false as const, error: "Esta conta já está ativada. Faça login." };
+    }
+
+    const ownerName =
+      (user.user_metadata?.owner_name as string | undefined) ??
+      (user.user_metadata?.business_name as string | undefined) ??
+      "";
+
+    try {
+      await buildAndSendActivation({
+        email: data.email,
+        ownerName,
+        siteOrigin: data.siteOrigin,
+      });
+    } catch (err) {
+      console.error("resendActivation send error", err);
+      return { ok: false as const, error: "Falha ao enviar o e-mail de ativação." };
+    }
+
+    return { ok: true as const };
   });
 
 export const signIn = createServerFn({ method: "POST" })
@@ -74,9 +158,13 @@ export const signIn = createServerFn({ method: "POST" })
 
     if (error || !result.session) {
       console.error("signIn error", error);
+      const isUnconfirmed = /confirm/i.test(error?.message ?? "");
       return {
         ok: false as const,
-        error: error?.message ?? "E-mail ou senha incorretos.",
+        error: isUnconfirmed
+          ? "Sua conta ainda não foi ativada. Verifique o e-mail de ativação."
+          : (error?.message ?? "E-mail ou senha incorretos."),
+        needsActivation: isUnconfirmed,
       };
     }
 
