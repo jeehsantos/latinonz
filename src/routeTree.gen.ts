@@ -32,6 +32,7 @@ import { Route as DashboardCouponsRouteImport } from './routes/dashboard.coupons
 import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 import { Route as BusinessSlugRouteImport } from './routes/business.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as AuthAcceptInviteRouteImport } from './routes/auth.accept-invite'
 import { Route as AdminWaitlistRouteImport } from './routes/admin.waitlist'
 import { Route as AdminManagersRouteImport } from './routes/admin.managers'
@@ -155,6 +156,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BlogRoute,
 } as any)
+const AuthConfirmRoute = AuthConfirmRouteImport.update({
+  id: '/auth/confirm',
+  path: '/auth/confirm',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthAcceptInviteRoute = AuthAcceptInviteRouteImport.update({
   id: '/auth/accept-invite',
   path: '/auth/accept-invite',
@@ -209,6 +215,7 @@ export interface FileRoutesByFullPath {
   '/admin/managers': typeof AdminManagersRoute
   '/admin/waitlist': typeof AdminWaitlistRoute
   '/auth/accept-invite': typeof AuthAcceptInviteRoute
+  '/auth/confirm': typeof AuthConfirmRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/business/$slug': typeof BusinessSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
@@ -239,6 +246,7 @@ export interface FileRoutesByTo {
   '/admin/managers': typeof AdminManagersRoute
   '/admin/waitlist': typeof AdminWaitlistRoute
   '/auth/accept-invite': typeof AuthAcceptInviteRoute
+  '/auth/confirm': typeof AuthConfirmRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/business/$slug': typeof BusinessSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
@@ -272,6 +280,7 @@ export interface FileRoutesById {
   '/admin/managers': typeof AdminManagersRoute
   '/admin/waitlist': typeof AdminWaitlistRoute
   '/auth/accept-invite': typeof AuthAcceptInviteRoute
+  '/auth/confirm': typeof AuthConfirmRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/business/$slug': typeof BusinessSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
@@ -306,6 +315,7 @@ export interface FileRouteTypes {
     | '/admin/managers'
     | '/admin/waitlist'
     | '/auth/accept-invite'
+    | '/auth/confirm'
     | '/blog/$slug'
     | '/business/$slug'
     | '/dashboard/analytics'
@@ -336,6 +346,7 @@ export interface FileRouteTypes {
     | '/admin/managers'
     | '/admin/waitlist'
     | '/auth/accept-invite'
+    | '/auth/confirm'
     | '/blog/$slug'
     | '/business/$slug'
     | '/dashboard/analytics'
@@ -368,6 +379,7 @@ export interface FileRouteTypes {
     | '/admin/managers'
     | '/admin/waitlist'
     | '/auth/accept-invite'
+    | '/auth/confirm'
     | '/blog/$slug'
     | '/business/$slug'
     | '/dashboard/analytics'
@@ -396,6 +408,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
   AuthAcceptInviteRoute: typeof AuthAcceptInviteRoute
+  AuthConfirmRoute: typeof AuthConfirmRoute
   BusinessSlugRoute: typeof BusinessSlugRoute
   ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
 }
@@ -563,6 +576,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
     }
+    '/auth/confirm': {
+      id: '/auth/confirm'
+      path: '/auth/confirm'
+      fullPath: '/auth/confirm'
+      preLoaderRoute: typeof AuthConfirmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/accept-invite': {
       id: '/auth/accept-invite'
       path: '/auth/accept-invite'
@@ -686,19 +706,10 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
   AuthAcceptInviteRoute: AuthAcceptInviteRoute,
+  AuthConfirmRoute: AuthConfirmRoute,
   BusinessSlugRoute: BusinessSlugRoute,
   ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
