@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { I18nProvider } from "@/lib/i18n";
 import { useSiteMode } from "@/lib/site-mode";
 import { Toaster } from "@/components/ui/sonner";
+import { CookieConsent } from "@/components/site/CookieConsent";
 
 import appCss from "../styles.css?url";
 
@@ -135,13 +136,22 @@ function RootComponent() {
         <SiteGate>
           <Outlet />
         </SiteGate>
+        <CookieConsent />
         <Toaster position="top-right" richColors closeButton />
       </I18nProvider>
     </QueryClientProvider>
   );
 }
 
-const ALLOWED_IN_WAITLIST_PREFIXES = ["/admin", "/login", "/auth", "/dashboard", "/cadastro"];
+const ALLOWED_IN_WAITLIST_PREFIXES = [
+  "/admin",
+  "/login",
+  "/auth",
+  "/dashboard",
+  "/cadastro",
+  "/privacy",
+  "/terms",
+];
 
 function SiteGate({ children }: { children: React.ReactNode }) {
   const { mode, ready } = useSiteMode();

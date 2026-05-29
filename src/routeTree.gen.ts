@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DirectoryRouteImport } from './routes/directory'
@@ -41,6 +43,11 @@ import { Route as AdminBusinessesRouteImport } from './routes/admin.businesses'
 import { Route as AdminAccountRouteImport } from './routes/admin.account'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe-webhook'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
@@ -49,6 +56,11 @@ const SobreRoute = SobreRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlanosRoute = PlanosRouteImport.update({
@@ -207,8 +219,10 @@ export interface FileRoutesByFullPath {
   '/directory': typeof DirectoryRoute
   '/login': typeof LoginRoute
   '/planos': typeof PlanosRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/terms': typeof TermsRoute
   '/admin/account': typeof AdminAccountRoute
   '/admin/businesses': typeof AdminBusinessesRoute
   '/admin/categories': typeof AdminCategoriesRoute
@@ -238,8 +252,10 @@ export interface FileRoutesByTo {
   '/directory': typeof DirectoryRoute
   '/login': typeof LoginRoute
   '/planos': typeof PlanosRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/terms': typeof TermsRoute
   '/admin/account': typeof AdminAccountRoute
   '/admin/businesses': typeof AdminBusinessesRoute
   '/admin/categories': typeof AdminCategoriesRoute
@@ -272,8 +288,10 @@ export interface FileRoutesById {
   '/directory': typeof DirectoryRoute
   '/login': typeof LoginRoute
   '/planos': typeof PlanosRoute
+  '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sobre': typeof SobreRoute
+  '/terms': typeof TermsRoute
   '/admin/account': typeof AdminAccountRoute
   '/admin/businesses': typeof AdminBusinessesRoute
   '/admin/categories': typeof AdminCategoriesRoute
@@ -307,8 +325,10 @@ export interface FileRouteTypes {
     | '/directory'
     | '/login'
     | '/planos'
+    | '/privacy'
     | '/sitemap.xml'
     | '/sobre'
+    | '/terms'
     | '/admin/account'
     | '/admin/businesses'
     | '/admin/categories'
@@ -338,8 +358,10 @@ export interface FileRouteTypes {
     | '/directory'
     | '/login'
     | '/planos'
+    | '/privacy'
     | '/sitemap.xml'
     | '/sobre'
+    | '/terms'
     | '/admin/account'
     | '/admin/businesses'
     | '/admin/categories'
@@ -371,8 +393,10 @@ export interface FileRouteTypes {
     | '/directory'
     | '/login'
     | '/planos'
+    | '/privacy'
     | '/sitemap.xml'
     | '/sobre'
+    | '/terms'
     | '/admin/account'
     | '/admin/businesses'
     | '/admin/categories'
@@ -405,8 +429,10 @@ export interface RootRouteChildren {
   DirectoryRoute: typeof DirectoryRoute
   LoginRoute: typeof LoginRoute
   PlanosRoute: typeof PlanosRoute
+  PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SobreRoute: typeof SobreRoute
+  TermsRoute: typeof TermsRoute
   AuthAcceptInviteRoute: typeof AuthAcceptInviteRoute
   AuthConfirmRoute: typeof AuthConfirmRoute
   BusinessSlugRoute: typeof BusinessSlugRoute
@@ -415,6 +441,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sobre': {
       id: '/sobre'
       path: '/sobre'
@@ -427,6 +460,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/planos': {
@@ -703,8 +743,10 @@ const rootRouteChildren: RootRouteChildren = {
   DirectoryRoute: DirectoryRoute,
   LoginRoute: LoginRoute,
   PlanosRoute: PlanosRoute,
+  PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SobreRoute: SobreRoute,
+  TermsRoute: TermsRoute,
   AuthAcceptInviteRoute: AuthAcceptInviteRoute,
   AuthConfirmRoute: AuthConfirmRoute,
   BusinessSlugRoute: BusinessSlugRoute,

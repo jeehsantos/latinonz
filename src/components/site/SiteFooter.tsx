@@ -64,7 +64,15 @@ export function SiteFooter() {
           <p>
             © {new Date().getFullYear()} Latino Connect Hub. {t("footer_rights")}
           </p>
-          <p>{t("footer_made_with")}</p>
+          <div className="flex flex-wrap gap-4">
+            <Link to="/privacy" className="hover:text-white">
+              Política de Privacidade
+            </Link>
+            <Link to="/terms" className="hover:text-white">
+              Termos de Uso
+            </Link>
+            <span>{t("footer_made_with")}</span>
+          </div>
         </div>
       </div>
     </footer>

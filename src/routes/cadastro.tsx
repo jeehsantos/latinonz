@@ -42,6 +42,8 @@ function CadastroPage() {
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [password, setPassword] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [consentError, setConsentError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [sent, setSent] = useState<string | null>(null);
@@ -68,8 +70,12 @@ function CadastroPage() {
     e.preventDefault();
     const errs = validate();
     setFieldErrors(errs);
-    if (Object.keys(errs).length > 0) {
-      const firstError = Object.values(errs)[0]!;
+    const missingConsent = !consent;
+    setConsentError(missingConsent ? "Você precisa aceitar para continuar." : null);
+    if (Object.keys(errs).length > 0 || missingConsent) {
+      const firstError = missingConsent
+        ? "Aceite a Política de Privacidade e Termos de Uso."
+        : Object.values(errs)[0]!;
       toast.error("Preencha todos os campos corretamente", {
         description: firstError,
         icon: <AlertCircle className="h-4 w-4" />,
@@ -274,6 +280,39 @@ function CadastroPage() {
               {fieldErrors.password && (
                 <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
                   <AlertCircle className="h-3 w-3" /> {fieldErrors.password}
+                </p>
+              )}
+            </div>
+            <div>
+              <label
+                className={`flex items-start gap-2 text-xs leading-snug cursor-pointer ${
+                  consentError ? "text-red-600" : "text-gray-600"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={consent}
+                  onChange={(e) => {
+                    setConsent(e.target.checked);
+                    if (e.target.checked) setConsentError(null);
+                  }}
+                  className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-black"
+                />
+                <span>
+                  Li e concordo com a{" "}
+                  <Link to="/privacy" target="_blank" className="underline font-semibold">
+                    Política de Privacidade
+                  </Link>{" "}
+                  e os{" "}
+                  <Link to="/terms" target="_blank" className="underline font-semibold">
+                    Termos de Uso
+                  </Link>
+                  . Meus dados serão tratados conforme o Privacy Act 2020 (NZ).
+                </span>
+              </label>
+              {consentError && (
+                <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                  <AlertCircle className="h-3 w-3" /> {consentError}
                 </p>
               )}
             </div>

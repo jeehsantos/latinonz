@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CheckCircle2, X, Loader2, AlertCircle } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
+import { Link } from "@tanstack/react-router";
 import { submitWaitlist } from "@/lib/waitlist.functions";
 import { SERVICE_CATEGORIES, CATEGORY_I18N_KEYS } from "@/lib/categories";
 import { useI18n } from "@/lib/i18n";
@@ -34,6 +35,7 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
   });
 
   const submit = useServerFn(submitWaitlist);
+  const [consent, setConsent] = useState(false);
 
   const isOther = form.service_category === "Outro";
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim());
@@ -46,6 +48,7 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
     email: !form.email.trim() || !emailValid,
     service_category: !form.service_category,
     service_category_other: isOther && !form.service_category_other.trim(),
+    consent: !consent,
   };
   const hasErrors = Object.values(errors).some(Boolean);
 
@@ -216,6 +219,38 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
                   />
                 </Field>
               )}
+
+              <div>
+                <label
+                  className={`flex items-start gap-2 text-[11px] leading-snug cursor-pointer ${
+                    showErr("consent") ? "text-red-600" : "text-gray-600"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={consent}
+                    onChange={(e) => setConsent(e.target.checked)}
+                    className="mt-0.5 h-3.5 w-3.5 rounded border-gray-300 accent-black"
+                  />
+                  <span>
+                    Concordo com a{" "}
+                    <Link to="/privacy" className="underline font-semibold" target="_blank">
+                      Política de Privacidade
+                    </Link>{" "}
+                    e os{" "}
+                    <Link to="/terms" className="underline font-semibold" target="_blank">
+                      Termos de Uso
+                    </Link>
+                    , conforme o Privacy Act 2020 (NZ).
+                  </span>
+                </label>
+                {showErr("consent") && (
+                  <p className="mt-1 flex items-center gap-1 text-[11px] font-semibold text-red-600">
+                    <AlertCircle size={12} />
+                    É necessário aceitar para continuar.
+                  </p>
+                )}
+              </div>
 
               {error && (
                 <p className="text-xs font-semibold text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
