@@ -907,8 +907,6 @@ type ServiceOptionsSectionProps = {
   plan: string;
   flags: Record<ServiceOptionKey, boolean>;
   onToggleFlag: (k: ServiceOptionKey) => void;
-  extra: string;
-  onChangeExtra: (v: string) => void;
   items: { title: string; description: string; icon_key: string }[];
   onChangeItems: (
     items: { title: string; description: string; icon_key: string }[],
@@ -919,8 +917,6 @@ function ServiceOptionsSection({
   plan,
   flags,
   onToggleFlag,
-  extra,
-  onChangeExtra,
   items,
   onChangeItems,
 }: ServiceOptionsSectionProps) {
