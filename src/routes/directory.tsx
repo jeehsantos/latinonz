@@ -66,19 +66,25 @@ function DirectoryPage() {
         className="relative text-white overflow-hidden"
         style={{
           background:
-            "radial-gradient(ellipse at top, #1a1a1a 0%, #facc15 60%), radial-gradient(circle at 90% 100%, rgba(223,153,27,0.22), transparent 55%)",
+            "radial-gradient(ellipse at top, rgba(250,204,21,0.18) 0%, #0a0a0a 60%), radial-gradient(circle at 90% 100%, rgba(250,204,21,0.12), transparent 55%), #050505",
         }}
       >
-        <div className="max-w-7xl mx-auto px-5 sm:px-6 py-10 sm:py-16">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight">
+        <div className="absolute inset-0 -z-0 opacity-[0.04] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:48px_48px]" />
+        <div className="relative max-w-7xl mx-auto px-5 sm:px-6 py-12 sm:py-20">
+          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 backdrop-blur-sm text-white/90 text-[10px] sm:text-[11px] font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-5 uppercase tracking-[0.18em]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#facc15]" />
+            {t("directory.home_badge")}
+          </div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight text-white">
             {t("directory.title")}
           </h1>
-          <p className="mt-3 text-sm sm:text-base text-white/70 max-w-2xl">{t("directory.subtitle")}</p>
+          <p className="mt-3 text-sm sm:text-base text-white/60 max-w-2xl">{t("directory.subtitle")}</p>
           <div className="mt-6 sm:mt-8">
             <SearchBar value={search} onChange={setSearch} />
           </div>
         </div>
       </section>
+
 
       <section className="max-w-7xl mx-auto px-5 sm:px-6 py-8 sm:py-12">
         <h2 className="text-xs uppercase tracking-wider font-bold text-neutral-400">
