@@ -187,7 +187,7 @@ function ProfileEditor() {
           delivery: !!so.delivery,
           booking: !!so.booking,
         });
-        setServiceExtra(so.other ?? "");
+        
       }
 
       // Seed custom service items
