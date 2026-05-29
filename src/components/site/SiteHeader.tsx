@@ -11,10 +11,7 @@ export function SiteHeader() {
   const NAV = [
     { to: "/", label: t("nav.home"), exact: true },
     { to: "/directory", label: t("nav.directory") },
-    { to: "/planos", label: t("nav.plans") },
     { to: "/blog", label: t("nav.blog") },
-    { to: "/sobre", label: t("nav.about") },
-    { to: "/contato", label: t("nav.contact") },
   ] as const;
 
   return (
