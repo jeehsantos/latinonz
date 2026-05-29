@@ -62,7 +62,7 @@ function renderActivationHtml({
         <td align="center">
           <table role="presentation" width="560" cellspacing="0" cellpadding="0" border="0" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e5e7eb;">
             <tr>
-              <td align="center" style="background:#000000;padding:32px 24px;">
+              <td align="center" style="background:#facc15;padding:32px 24px;">
                 <img src="${LOGO_URL}" alt="Latino Connect Hub" width="160" style="display:block;max-width:160px;height:auto;" />
               </td>
             </tr>
@@ -75,7 +75,7 @@ function renderActivationHtml({
                   Estamos quase lá. Para ativar sua conta no Latino Connect Hub e começar a divulgar seu negócio na maior rede latina da Nova Zelândia, confirme seu e-mail clicando no botão abaixo.
                 </p>
                 <div style="text-align:center;margin:28px 0 24px;">
-                  <a href="${safeUrl}" style="display:inline-block;background:#df991b;color:#000000;text-decoration:none;font-weight:800;font-size:15px;padding:14px 28px;border-radius:12px;">
+                  <a href="${safeUrl}" style="display:inline-block;background:#df991b;color:#facc15;text-decoration:none;font-weight:800;font-size:15px;padding:14px 28px;border-radius:12px;">
                     Ativar minha conta
                   </a>
                 </div>

@@ -27,7 +27,7 @@ function BlogPage() {
   
   return (
     <SiteShell>
-      <section className="bg-white text-[#000000]">
+      <section className="bg-black text-[#facc15]">
         <div className="max-w-5xl mx-auto px-6 py-16">
           <p className="text-xs font-bold uppercase tracking-wider text-amber-300">
             {t("blog.badge")}
@@ -44,7 +44,7 @@ function BlogPage() {
           
           {/* Glassmorphism content */}
           <div className="relative p-12 md:p-24 text-center">
-            <div className="inline-flex items-center justify-center p-4 bg-white/10 rounded-2xl mb-8 shadow-inner ring-1 ring-white/20 backdrop-blur-md">
+            <div className="inline-flex items-center justify-center p-4 bg-neutral-900/10 rounded-2xl mb-8 shadow-inner ring-1 ring-white/20 backdrop-blur-md">
               <Sparkles className="w-10 h-10 text-amber-300" />
             </div>
             

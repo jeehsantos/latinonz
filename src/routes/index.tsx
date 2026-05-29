@@ -63,7 +63,7 @@ function WaitlistLanding() {
   const { t } = useI18n();
 
   return (
-    <div className="relative min-h-screen bg-white font-sans text-gray-800">
+    <div className="relative min-h-screen bg-neutral-900 font-sans text-neutral-100">
       <div
         className={`transition-all duration-500 ${
           isWaitlistOpen ? "filter blur-md brightness-75 pointer-events-none select-none" : ""
@@ -98,12 +98,12 @@ function Landing() {
 
   return (
     <div>
-      <header className="bg-white">
+      <header className="bg-neutral-900">
         <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
           <img src={logo} alt="Latino Connect Hub" className="h-6 md:h-12 w-auto" />
 
-          <nav className="hidden md:flex items-center gap-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-full px-2 py-1.5">
-            <a className="px-4 py-1.5 rounded-full bg-white shadow-sm">{t("nav.home")}</a>
+          <nav className="hidden md:flex items-center gap-2 text-sm font-semibold text-neutral-200 bg-white/5 rounded-full px-2 py-1.5">
+            <a className="px-4 py-1.5 rounded-full bg-neutral-900 shadow-sm">{t("nav.home")}</a>
             <a className="px-4 py-1.5 rounded-full"> </a>
             <a className="px-4 py-1.5 rounded-full">{t("nav.blog")}</a>
           </nav>
@@ -111,7 +111,7 @@ function Landing() {
       </header>
 
       <section>
-        <div className="relative w-full overflow-hidden bg-white text-[#000000] px-5 sm:px-6 py-16 sm:py-24 text-center">
+        <div className="relative w-full overflow-hidden bg-black text-[#facc15] px-5 sm:px-6 py-16 sm:py-24 text-center">
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
@@ -120,7 +120,7 @@ function Landing() {
             }}
           />
           <div className="relative">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white text-[10px] sm:text-xs font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-5 sm:mb-8 uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 bg-neutral-900/10 backdrop-blur-sm text-white text-[10px] sm:text-xs font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-5 sm:mb-8 uppercase tracking-wider">
               <span className="w-1.5 h-1.5 rounded-full bg-[#df991b]" />
               {t("hero.badge")}
             </div>
@@ -139,17 +139,17 @@ function Landing() {
 
       <section className="max-w-6xl mx-auto px-5 sm:px-6 py-12 sm:pb-24 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         {features.map((f) => (
-          <div key={f.title} className="rounded-2xl border border-gray-100 p-5 sm:p-6 bg-gray-50/50">
+          <div key={f.title} className="rounded-2xl border border-white/10 p-5 sm:p-6 bg-neutral-950/50">
             <div className="w-10 h-10 rounded-xl bg-[#df991b]/15 text-[#df991b] flex items-center justify-center font-black mb-4">
               ★
             </div>
-            <h3 className="font-extrabold text-gray-900 mb-1">{f.title}</h3>
-            <p className="text-sm text-gray-600">{f.body}</p>
+            <h3 className="font-extrabold text-white mb-1">{f.title}</h3>
+            <p className="text-sm text-neutral-300">{f.body}</p>
           </div>
         ))}
       </section>
 
-      <footer className="border-t border-gray-100 py-8 text-center text-xs text-gray-400">
+      <footer className="border-t border-white/10 py-8 text-center text-xs text-neutral-500">
         © {new Date().getFullYear()} {t("footer")}
       </footer>
     </div>

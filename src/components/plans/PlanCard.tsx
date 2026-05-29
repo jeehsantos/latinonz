@@ -22,28 +22,28 @@ export function PlanCard({
 
   return (
     <div
-      className={`relative rounded-3xl border p-8 flex flex-col bg-white ${
-        highlight ? "border-[#000000] shadow-2xl scale-[1.02]" : "border-gray-200"
+      className={`relative rounded-3xl border p-8 flex flex-col bg-neutral-900 ${
+        highlight ? "border-[#facc15] shadow-2xl scale-[1.02]" : "border-white/10"
       }`}
     >
       {highlight && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white text-[#000000] text-[10px] font-bold uppercase px-3 py-1 rounded-full">
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-black text-[#facc15] text-[10px] font-bold uppercase px-3 py-1 rounded-full">
           {t("plans.most_popular")}
         </span>
       )}
-      <p className="text-sm font-bold uppercase tracking-wider text-gray-500">
+      <p className="text-sm font-bold uppercase tracking-wider text-neutral-400">
         {PLAN_LABELS[plan]}
       </p>
-      <p className="mt-3 text-4xl font-black text-gray-900">
+      <p className="mt-3 text-4xl font-black text-white">
         {price === 0 ? t("plans.free") : `NZ$ ${price}`}
         {price > 0 && (
-          <span className="text-base font-bold text-gray-400">{t("plans.per_month")}</span>
+          <span className="text-base font-bold text-neutral-500">{t("plans.per_month")}</span>
         )}
       </p>
-      <ul className="mt-6 space-y-3 text-sm text-gray-700 flex-1">
+      <ul className="mt-6 space-y-3 text-sm text-neutral-200 flex-1">
         {features.map((f) => (
           <li key={f} className="flex items-start gap-2">
-            <Check size={16} className="text-[#000000] mt-0.5 flex-shrink-0" />
+            <Check size={16} className="text-[#facc15] mt-0.5 flex-shrink-0" />
             <span>{f}</span>
           </li>
         ))}
@@ -52,8 +52,8 @@ export function PlanCard({
         onClick={onSelect}
         className={`mt-8 w-full font-bold rounded-2xl py-3 text-sm ${
           highlight
-            ? "bg-[#000000] hover:bg-[#1a1a1a] text-white"
-            : "bg-gray-100 hover:bg-gray-200 text-gray-900"
+            ? "bg-[#facc15] hover:bg-[#1a1a1a] text-white"
+            : "bg-white/5 hover:bg-white/10 text-white"
         }`}
       >
         {label}

@@ -36,12 +36,12 @@ export function CookieConsent() {
       aria-label="Aviso de cookies"
       className="fixed bottom-4 inset-x-4 md:inset-x-auto md:right-6 md:bottom-6 md:max-w-md z-[60] animate-in fade-in slide-in-from-bottom-4 duration-300"
     >
-      <div className="bg-white border border-gray-200 shadow-2xl rounded-2xl p-5 relative">
+      <div className="bg-neutral-900 border border-white/10 shadow-2xl rounded-2xl p-5 relative">
         <button
           type="button"
           aria-label="Fechar"
           onClick={() => save("essential")}
-          className="absolute top-3 right-3 text-gray-400 hover:text-gray-700"
+          className="absolute top-3 right-3 text-neutral-500 hover:text-neutral-200"
         >
           <X size={16} />
         </button>
@@ -50,8 +50,8 @@ export function CookieConsent() {
             <Cookie size={18} />
           </div>
           <div className="flex-1">
-            <p className="font-bold text-gray-900 text-sm">Sua privacidade importa</p>
-            <p className="mt-1 text-xs text-gray-600 leading-relaxed">
+            <p className="font-bold text-white text-sm">Sua privacidade importa</p>
+            <p className="mt-1 text-xs text-neutral-300 leading-relaxed">
               Usamos cookies essenciais para que o site funcione e, com seu consentimento, cookies
               de análise para melhorar a experiência. Saiba mais na{" "}
               <Link to="/privacy" className="text-[#df991b] underline font-semibold">
@@ -70,7 +70,7 @@ export function CookieConsent() {
               <button
                 type="button"
                 onClick={() => save("essential")}
-                className="bg-gray-100 text-gray-800 text-xs font-bold px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+                className="bg-white/5 text-neutral-100 text-xs font-bold px-4 py-2 rounded-lg hover:bg-white/10 transition-colors"
               >
                 Apenas essenciais
               </button>

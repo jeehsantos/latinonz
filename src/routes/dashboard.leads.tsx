@@ -77,14 +77,14 @@ function LeadsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-black text-gray-900">{t("leads.title")}</h1>
-        <p className="text-gray-500 mt-1">{t("leads.subtitle")}</p>
+        <h1 className="text-3xl font-black text-white">{t("leads.title")}</h1>
+        <p className="text-neutral-400 mt-1">{t("leads.subtitle")}</p>
       </div>
       <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white border border-gray-200 rounded-3xl overflow-hidden">
+        <div className="lg:col-span-2 bg-neutral-900 border border-white/10 rounded-3xl overflow-hidden">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="bg-gray-50 text-xs uppercase tracking-wider text-gray-500">
+              <tr className="bg-neutral-950 text-xs uppercase tracking-wider text-neutral-400">
                 <th className="p-4 font-bold">{t("leads.col_client")}</th>
                 <th className="p-4 font-bold">{t("leads.col_source")}</th>
                 <th className="p-4 font-bold">{t("leads.col_date")}</th>
@@ -98,16 +98,16 @@ function LeadsPage() {
                   <tr
                     key={l.id}
                     onClick={() => setSelectedId(l.id)}
-                    className={`hover:bg-gray-50 cursor-pointer ${selectedId === l.id ? "bg-emerald-50" : ""}`}
+                    className={`hover:bg-neutral-950 cursor-pointer ${selectedId === l.id ? "bg-emerald-50" : ""}`}
                   >
-                    <td className="p-4 font-bold text-gray-900">
+                    <td className="p-4 font-bold text-white">
                       {l.name}
-                      <div className="text-xs font-normal text-gray-500">
+                      <div className="text-xs font-normal text-neutral-400">
                         {l.phone ?? l.email ?? ""}
                       </div>
                     </td>
-                    <td className="p-4 text-gray-600">{l.source}</td>
-                    <td className="p-4 text-gray-500">
+                    <td className="p-4 text-neutral-300">{l.source}</td>
+                    <td className="p-4 text-neutral-400">
                       {date} {time}
                     </td>
                     <td className="p-4">
@@ -123,34 +123,34 @@ function LeadsPage() {
             </tbody>
           </table>
         </div>
-        <div className="bg-white border border-gray-200 rounded-3xl p-6">
+        <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
           {selected ? (
             <>
-              <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
+              <p className="text-xs font-bold uppercase tracking-wider text-neutral-400">
                 {selected.source}
               </p>
-              <h3 className="font-extrabold text-gray-900 mt-1">{selected.name}</h3>
-              <p className="text-sm text-gray-500">{selected.phone ?? selected.email ?? ""}</p>
-              <p className="mt-4 text-sm text-gray-700">{selected.message ?? ""}</p>
+              <h3 className="font-extrabold text-white mt-1">{selected.name}</h3>
+              <p className="text-sm text-neutral-400">{selected.phone ?? selected.email ?? ""}</p>
+              <p className="mt-4 text-sm text-neutral-200">{selected.message ?? ""}</p>
               <div className="mt-6 flex gap-2">
                 <button
                   disabled={mutation.isPending}
                   onClick={() => mutation.mutate({ leadId: selected.id, status: "Contatado" })}
-                  className="flex-1 bg-white hover:bg-gray-100 disabled:opacity-50 text-[#000000] font-bold rounded-xl py-2 text-sm"
+                  className="flex-1 bg-neutral-900 hover:bg-white/5 disabled:opacity-50 text-[#facc15] font-bold rounded-xl py-2 text-sm"
                 >
                   {t("leads.reply_button")}
                 </button>
                 <button
                   disabled={mutation.isPending}
                   onClick={() => mutation.mutate({ leadId: selected.id, status: "Convertido" })}
-                  className="flex-1 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 text-gray-700 font-bold rounded-xl py-2 text-sm"
+                  className="flex-1 bg-white/5 hover:bg-white/10 disabled:opacity-50 text-neutral-200 font-bold rounded-xl py-2 text-sm"
                 >
                   {t("leads.resolve_button")}
                 </button>
               </div>
             </>
           ) : (
-            <p className="text-sm text-gray-400 text-center py-8">{t("leads.select_hint")}</p>
+            <p className="text-sm text-neutral-500 text-center py-8">{t("leads.select_hint")}</p>
           )}
         </div>
       </div>

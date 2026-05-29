@@ -27,12 +27,12 @@ function PrivacyPage() {
   const lastUpdated = "29 de maio de 2026";
   return (
     <SiteShell>
-      <article className="max-w-3xl mx-auto px-6 py-16 text-gray-800">
+      <article className="max-w-3xl mx-auto px-6 py-16 text-neutral-100">
         <p className="text-xs font-bold uppercase tracking-wider text-[#df991b]">Legal</p>
-        <h1 className="mt-3 text-4xl md:text-5xl font-black text-gray-900">
+        <h1 className="mt-3 text-4xl md:text-5xl font-black text-white">
           Política de Privacidade
         </h1>
-        <p className="mt-3 text-sm text-gray-500">Última atualização: {lastUpdated}</p>
+        <p className="mt-3 text-sm text-neutral-400">Última atualização: {lastUpdated}</p>
 
         <section className="mt-10 space-y-4">
           <p>
@@ -188,7 +188,7 @@ function PrivacyPage() {
           </p>
         </Section>
 
-        <div className="mt-12 text-sm text-gray-500">
+        <div className="mt-12 text-sm text-neutral-400">
           Veja também os{" "}
           <Link to="/terms" className="text-[#df991b] underline">
             Termos de Uso
@@ -203,7 +203,7 @@ function PrivacyPage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-10 space-y-3">
-      <h2 className="text-xl font-extrabold text-gray-900">{title}</h2>
+      <h2 className="text-xl font-extrabold text-white">{title}</h2>
       <div className="space-y-3 text-[15px] leading-relaxed">{children}</div>
     </section>
   );

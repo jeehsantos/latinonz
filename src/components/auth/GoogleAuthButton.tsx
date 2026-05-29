@@ -53,7 +53,7 @@ export function GoogleAuthButton({ label, onError }: Props) {
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className="w-full flex items-center justify-center gap-3 border border-gray-300 hover:bg-gray-50 disabled:opacity-60 rounded-xl py-2.5 text-sm font-bold text-gray-700 transition"
+      className="w-full flex items-center justify-center gap-3 border border-gray-300 hover:bg-neutral-950 disabled:opacity-60 rounded-xl py-2.5 text-sm font-bold text-neutral-200 transition"
     >
       <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
         <path

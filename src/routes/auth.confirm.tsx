@@ -62,7 +62,7 @@ function ConfirmPage() {
   return (
     <SiteShell>
       <section className="max-w-md mx-auto px-6 py-24">
-        <div className="bg-white border border-gray-200 rounded-3xl p-10 text-center">
+        <div className="bg-neutral-900 border border-white/10 rounded-3xl p-10 text-center">
           {status === "loading" && (
             <Loader2 className="h-10 w-10 mx-auto text-[#df991b] animate-spin" />
           )}
@@ -70,14 +70,14 @@ function ConfirmPage() {
             <CheckCircle2 className="h-12 w-12 mx-auto text-green-600" />
           )}
           {status === "error" && <XCircle className="h-12 w-12 mx-auto text-red-600" />}
-          <h1 className="mt-5 text-xl font-black text-gray-900">
+          <h1 className="mt-5 text-xl font-black text-white">
             {status === "loading"
               ? "Ativando sua conta"
               : status === "success"
                 ? "Tudo certo!"
                 : "Algo deu errado"}
           </h1>
-          <p className="mt-2 text-sm text-gray-600">{message}</p>
+          <p className="mt-2 text-sm text-neutral-300">{message}</p>
           {status === "error" && (
             <a
               href="/cadastro"

@@ -80,21 +80,21 @@ function AdminManagersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-black text-gray-900">Gerentes do site</h1>
-        <p className="text-gray-500 mt-1">
+        <h1 className="text-3xl font-black text-white">Gerentes do site</h1>
+        <p className="text-neutral-400 mt-1">
           Convide membros com acesso restrito ao painel administrativo.
         </p>
       </div>
 
       <form
         onSubmit={add}
-        className="bg-white border border-gray-200 rounded-3xl p-6 grid md:grid-cols-[1fr_1.5fr_auto_auto] gap-3"
+        className="bg-neutral-900 border border-white/10 rounded-3xl p-6 grid md:grid-cols-[1fr_1.5fr_auto_auto] gap-3"
       >
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Nome"
-          className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#000000]"
+          className="bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
         />
         <input
           value={email}
@@ -102,12 +102,12 @@ function AdminManagersPage() {
           type="email"
           required
           placeholder="email@exemplo.com"
-          className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#000000]"
+          className="bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
         />
         <select
           value={role}
           onChange={(e) => setRole(e.target.value as RoleValue)}
-          className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#000000]"
+          className="bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
         >
           <option value="manager">Gerente</option>
           <option value="admin">Admin</option>
@@ -115,7 +115,7 @@ function AdminManagersPage() {
         <button
           type="submit"
           disabled={inviteMut.isPending}
-          className="bg-white hover:bg-gray-100 text-[#000000] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 disabled:opacity-50"
+          className="bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 disabled:opacity-50"
         >
           <UserPlus size={16} /> {inviteMut.isPending ? "Convidando..." : "Convidar"}
         </button>
@@ -132,10 +132,10 @@ function AdminManagersPage() {
         </div>
       )}
 
-      <div className="bg-white border border-gray-200 rounded-3xl overflow-hidden">
+      <div className="bg-neutral-900 border border-white/10 rounded-3xl overflow-hidden">
         <table className="w-full text-left">
           <thead>
-            <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
+            <tr className="bg-neutral-950 text-neutral-400 text-xs uppercase tracking-wider border-b border-white/10">
               <th className="p-4 font-bold">Pessoa</th>
               <th className="p-4 font-bold">E-mail</th>
               <th className="p-4 font-bold">Função</th>
@@ -146,13 +146,13 @@ function AdminManagersPage() {
           <tbody className="text-sm divide-y divide-gray-100">
             {isLoading ? (
               <tr>
-                <td colSpan={5} className="p-8 text-center text-gray-400">
+                <td colSpan={5} className="p-8 text-center text-neutral-500">
                   Carregando...
                 </td>
               </tr>
             ) : list.length === 0 ? (
               <tr>
-                <td colSpan={5} className="p-8 text-center text-gray-400">
+                <td colSpan={5} className="p-8 text-center text-neutral-500">
                   Nenhum gerente cadastrado.
                 </td>
               </tr>
@@ -161,33 +161,33 @@ function AdminManagersPage() {
                 const displayName = m.name ?? m.email ?? "—";
                 const initial = (m.name ?? m.email ?? "?").charAt(0).toUpperCase();
                 return (
-                  <tr key={m.id} className="hover:bg-gray-50">
+                  <tr key={m.id} className="hover:bg-neutral-950">
                     <td className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-white text-[#000000] font-bold flex items-center justify-center text-sm">
+                        <div className="w-9 h-9 rounded-full bg-black text-[#facc15] font-bold flex items-center justify-center text-sm">
                           {initial}
                         </div>
                         <div className="flex flex-col">
-                          <span className="font-bold text-gray-900">{displayName}</span>
+                          <span className="font-bold text-white">{displayName}</span>
                           {m.name && m.email && (
-                            <span className="text-xs text-gray-400">{m.email}</span>
+                            <span className="text-xs text-neutral-500">{m.email}</span>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td className="p-4 text-gray-600">{m.email ?? "—"}</td>
+                    <td className="p-4 text-neutral-300">{m.email ?? "—"}</td>
                     <td className="p-4">
                       <span
                         className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full border ${
                           m.role === "admin"
                             ? "bg-amber-50 text-amber-700 border-amber-200"
-                            : "bg-[#000000]/10 text-[#000000] border-[#000000]/20"
+                            : "bg-[#facc15]/10 text-[#facc15] border-[#facc15]/20"
                         }`}
                       >
                         <Shield size={12} /> {m.role === "admin" ? "Admin" : "Gerente"}
                       </span>
                     </td>
-                    <td className="p-4 text-gray-400 text-xs">
+                    <td className="p-4 text-neutral-500 text-xs">
                       {new Date(m.createdAt).toLocaleDateString("pt-BR")}
                     </td>
                     <td className="p-4 text-right">

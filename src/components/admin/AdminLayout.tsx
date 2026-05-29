@@ -87,35 +87,35 @@ export function AdminLayout() {
 
   if (auth.status === "loading" || auth.status === "anonymous") {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="animate-spin text-gray-400" size={24} />
+      <div className="min-h-screen bg-neutral-950 flex items-center justify-center">
+        <Loader2 className="animate-spin text-neutral-500" size={24} />
       </div>
     );
   }
 
   if (auth.status === "denied") {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 border border-gray-100 text-center">
+      <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-neutral-900 rounded-3xl shadow-xl p-8 border border-white/10 text-center">
           <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mx-auto mb-4">
             <ShieldAlert size={20} />
           </div>
-          <h1 className="text-xl font-extrabold text-gray-900 mb-1">Acesso negado</h1>
-          <p className="text-sm text-gray-500 mb-1">
+          <h1 className="text-xl font-extrabold text-white mb-1">Acesso negado</h1>
+          <p className="text-sm text-neutral-400 mb-1">
             Sua conta {auth.email ? <span className="font-semibold">{auth.email}</span> : null} não
             tem permissão para acessar o painel administrativo.
           </p>
-          <p className="text-xs text-gray-400 mb-6">
+          <p className="text-xs text-neutral-500 mb-6">
             Solicite a um administrador para conceder acesso.
           </p>
           <div className="flex flex-col gap-2">
             <button
               onClick={logout}
-              className="w-full bg-white hover:bg-gray-100 text-[#000000] font-bold py-3 rounded-xl inline-flex items-center justify-center gap-2"
+              className="w-full bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold py-3 rounded-xl inline-flex items-center justify-center gap-2"
             >
               <LogOut size={16} /> Sair
             </button>
-            <Link to="/" className="text-xs text-gray-400 hover:text-gray-600">
+            <Link to="/" className="text-xs text-neutral-500 hover:text-neutral-300">
               ← Voltar ao site
             </Link>
           </div>
@@ -125,26 +125,26 @@ export function AdminLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <header className="bg-white border-b border-gray-200 px-4 md:px-6 py-3 flex items-center gap-4 sticky top-0 z-30">
-        <button className="lg:hidden text-gray-700" onClick={() => setMobileOpen(true)}>
+    <div className="min-h-screen bg-neutral-950 flex flex-col">
+      <header className="bg-neutral-900 border-b border-white/10 px-4 md:px-6 py-3 flex items-center gap-4 sticky top-0 z-30">
+        <button className="lg:hidden text-neutral-200" onClick={() => setMobileOpen(true)}>
           <Menu size={20} />
         </button>
         <Link to="/" className="flex items-center shrink-0">
           <img src={logo} alt="Latino Connect" className="h-9 w-auto" />
         </Link>
-        <span className="hidden sm:inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border bg-[#000000]/10 text-[#000000] border-[#000000]/20">
+        <span className="hidden sm:inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border bg-[#facc15]/10 text-[#facc15] border-[#facc15]/20">
           Admin
         </span>
         <div className="ml-auto flex items-center gap-3">
           {auth.email && (
-            <span className="hidden sm:inline text-xs text-gray-500 font-semibold">
+            <span className="hidden sm:inline text-xs text-neutral-400 font-semibold">
               {auth.email}
             </span>
           )}
           <button
             onClick={logout}
-            className="text-sm font-semibold text-gray-600 hover:text-gray-900 inline-flex items-center gap-2"
+            className="text-sm font-semibold text-neutral-300 hover:text-white inline-flex items-center gap-2"
           >
             <LogOut size={16} /> Sair
           </button>
@@ -153,7 +153,7 @@ export function AdminLayout() {
 
       <div className="flex flex-1 min-h-0">
         <aside
-          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-[#000000] border-r border-[#0a2d1a] flex flex-col transform transition-transform lg:translate-x-0 ${
+          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-[#facc15] border-r border-[#0a2d1a] flex flex-col transform transition-transform lg:translate-x-0 ${
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -174,7 +174,7 @@ export function AdminLayout() {
                   onClick={() => setMobileOpen(false)}
                   className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition ${
                     active
-                      ? "bg-[#000000] text-white font-bold"
+                      ? "bg-[#facc15] text-white font-bold"
                       : "text-white/70 hover:bg-[#143d27] font-medium"
                   }`}
                 >

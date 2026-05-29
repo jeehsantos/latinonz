@@ -39,8 +39,8 @@ function UpgradePage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-black text-gray-900">{t("upgrade.title")}</h1>
-        <p className="text-gray-500 mt-1">
+        <h1 className="text-3xl font-black text-white">{t("upgrade.title")}</h1>
+        <p className="text-neutral-400 mt-1">
           {t("upgrade.current_plan")} <span className="font-bold capitalize">{plan}</span>
         </p>
       </div>

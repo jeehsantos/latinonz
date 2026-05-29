@@ -138,14 +138,14 @@ function CadastroPage() {
     return (
       <SiteShell>
         <section className="max-w-md mx-auto px-6 py-20">
-          <div className="bg-white border border-gray-200 rounded-3xl p-10 text-center">
+          <div className="bg-neutral-900 border border-white/10 rounded-3xl p-10 text-center">
             <div className="mx-auto h-16 w-16 rounded-full bg-[#df991b]/15 flex items-center justify-center">
               <Mail className="h-8 w-8 text-[#df991b]" />
             </div>
-            <h1 className="mt-6 text-2xl font-black text-gray-900">Confirme seu e-mail</h1>
-            <p className="mt-3 text-sm text-gray-600 leading-relaxed">
+            <h1 className="mt-6 text-2xl font-black text-white">Confirme seu e-mail</h1>
+            <p className="mt-3 text-sm text-neutral-300 leading-relaxed">
               Enviamos um link de ativação para{" "}
-              <span className="font-bold text-gray-900">{sent}</span>. Clique no botão dentro do
+              <span className="font-bold text-white">{sent}</span>. Clique no botão dentro do
               e-mail para ativar sua conta e acessar seu painel.
             </p>
             <button
@@ -156,9 +156,9 @@ function CadastroPage() {
             >
               {resending ? "Reenviando..." : "Não recebi o e-mail — reenviar"}
             </button>
-            <p className="mt-6 text-xs text-gray-500">
+            <p className="mt-6 text-xs text-neutral-400">
               Já ativou?{" "}
-              <Link to="/login" className="font-bold text-gray-900 underline">
+              <Link to="/login" className="font-bold text-white underline">
                 Faça login
               </Link>
             </p>
@@ -169,37 +169,37 @@ function CadastroPage() {
   }
 
   const inputClass = (key: keyof FieldErrors) =>
-    `mt-1 w-full bg-gray-50 border rounded-xl px-4 py-2.5 text-sm transition focus:outline-none focus:ring-2 focus:ring-[#df991b]/40 ${
+    `mt-1 w-full bg-neutral-950 border rounded-xl px-4 py-2.5 text-sm transition focus:outline-none focus:ring-2 focus:ring-[#df991b]/40 ${
       fieldErrors[key]
         ? "border-red-400 focus:border-red-500"
-        : "border-gray-200 focus:border-gray-400"
+        : "border-white/10 focus:border-gray-400"
     }`;
 
   return (
     <SiteShell>
       <section className="max-w-2xl mx-auto px-6 py-20">
-        <p className="text-xs font-bold uppercase tracking-wider text-[#000000]">
+        <p className="text-xs font-bold uppercase tracking-wider text-[#facc15]">
           {t("register.badge")}
         </p>
-        <h1 className="mt-3 text-3xl md:text-4xl font-black text-gray-900">
+        <h1 className="mt-3 text-3xl md:text-4xl font-black text-white">
           {t("register.title")}
         </h1>
-        <p className="mt-3 text-gray-600">{t("register.subtitle")}</p>
+        <p className="mt-3 text-neutral-300">{t("register.subtitle")}</p>
 
-        <div className="mt-10 bg-white border border-gray-200 rounded-3xl p-8">
+        <div className="mt-10 bg-neutral-900 border border-white/10 rounded-3xl p-8">
           <GoogleAuthButton
             label={t("auth.google_signup")}
             onError={(m) => toast.error("Erro no Google", { description: m })}
           />
           <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-gray-200" />
-            <span className="text-xs uppercase tracking-wider text-gray-400">{t("auth.or")}</span>
-            <div className="flex-1 h-px bg-gray-200" />
+            <div className="flex-1 h-px bg-white/10" />
+            <span className="text-xs uppercase tracking-wider text-neutral-500">{t("auth.or")}</span>
+            <div className="flex-1 h-px bg-white/10" />
           </div>
 
           <form className="space-y-4" onSubmit={onSubmit} noValidate>
             <div>
-              <label className="text-xs font-bold uppercase text-gray-500">
+              <label className="text-xs font-bold uppercase text-neutral-400">
                 {t("register.business_name")}
               </label>
               <input
@@ -215,7 +215,7 @@ function CadastroPage() {
               )}
             </div>
             <div>
-              <label className="text-xs font-bold uppercase text-gray-500">
+              <label className="text-xs font-bold uppercase text-neutral-400">
                 {t("register.owner_name")}
               </label>
               <input
@@ -232,7 +232,7 @@ function CadastroPage() {
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-bold uppercase text-gray-500">
+                <label className="text-xs font-bold uppercase text-neutral-400">
                   {t("register.email")}
                 </label>
                 <input
@@ -249,7 +249,7 @@ function CadastroPage() {
                 )}
               </div>
               <div>
-                <label className="text-xs font-bold uppercase text-gray-500">
+                <label className="text-xs font-bold uppercase text-neutral-400">
                   {t("register.whatsapp")}
                 </label>
                 <input
@@ -267,7 +267,7 @@ function CadastroPage() {
               </div>
             </div>
             <div>
-              <label className="text-xs font-bold uppercase text-gray-500">
+              <label className="text-xs font-bold uppercase text-neutral-400">
                 {t("register.password")}
               </label>
               <input
@@ -286,7 +286,7 @@ function CadastroPage() {
             <div>
               <label
                 className={`flex items-start gap-2 text-xs leading-snug cursor-pointer ${
-                  consentError ? "text-red-600" : "text-gray-600"
+                  consentError ? "text-red-600" : "text-neutral-300"
                 }`}
               >
                 <input
@@ -323,9 +323,9 @@ function CadastroPage() {
             >
               {loading ? "Enviando..." : t("register.submit")}
             </button>
-            <p className="text-xs text-gray-500 text-center">
+            <p className="text-xs text-neutral-400 text-center">
               {t("register.has_account")}{" "}
-              <Link to="/login" className="font-bold text-[#000000]">
+              <Link to="/login" className="font-bold text-[#facc15]">
                 {t("register.login_link")}
               </Link>
             </p>

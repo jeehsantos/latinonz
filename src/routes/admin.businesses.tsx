@@ -99,25 +99,25 @@ function AdminBusinessesPage() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-gray-900">Negócios</h1>
-          <p className="text-gray-500 mt-1">Aprove, bloqueie e gerencie os negócios cadastrados.</p>
+          <h1 className="text-3xl font-black text-white">Negócios</h1>
+          <p className="text-neutral-400 mt-1">Aprove, bloqueie e gerencie os negócios cadastrados.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
-            <Search size={16} className="absolute left-3 top-2.5 text-gray-400" />
+            <Search size={16} className="absolute left-3 top-2.5 text-neutral-500" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Buscar nome, categoria, cidade..."
-              className="bg-white border border-gray-200 rounded-xl pl-9 pr-3 py-2 text-sm outline-none focus:border-[#000000] w-72"
+              className="bg-neutral-900 border border-white/10 rounded-xl pl-9 pr-3 py-2 text-sm outline-none focus:border-[#facc15] w-72"
             />
           </div>
           <div className="relative">
-            <Filter size={14} className="absolute left-3 top-2.5 text-gray-400" />
+            <Filter size={14} className="absolute left-3 top-2.5 text-neutral-500" />
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value as FilterValue)}
-              className="bg-white border border-gray-200 rounded-xl pl-8 pr-3 py-2 text-sm outline-none focus:border-[#000000]"
+              className="bg-neutral-900 border border-white/10 rounded-xl pl-8 pr-3 py-2 text-sm outline-none focus:border-[#facc15]"
             >
               <option value="all">Todos</option>
               <option value="active">Aprovados</option>
@@ -128,11 +128,11 @@ function AdminBusinessesPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-3xl overflow-hidden">
+      <div className="bg-neutral-900 border border-white/10 rounded-3xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
+              <tr className="bg-neutral-950 text-neutral-400 text-xs uppercase tracking-wider border-b border-white/10">
                 <th className="p-4 font-bold">Negócio</th>
                 <th className="p-4 font-bold">Categoria</th>
                 <th className="p-4 font-bold">Cidade</th>
@@ -144,13 +144,13 @@ function AdminBusinessesPage() {
             <tbody className="text-sm divide-y divide-gray-100">
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-400">
+                  <td colSpan={6} className="p-8 text-center text-neutral-500">
                     Carregando...
                   </td>
                 </tr>
               ) : businesses.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-400">
+                  <td colSpan={6} className="p-8 text-center text-neutral-500">
                     Nenhum negócio encontrado.
                   </td>
                 </tr>
@@ -158,13 +158,13 @@ function AdminBusinessesPage() {
                 businesses.map((b) => {
                   const status = statusOf(b);
                   return (
-                    <tr key={b.id} className="hover:bg-gray-50">
+                    <tr key={b.id} className="hover:bg-neutral-950">
                       <td className="p-4">
-                        <p className="font-bold text-gray-900">{b.name}</p>
-                        <p className="text-xs text-gray-400">{b.subcategory ?? ""}</p>
+                        <p className="font-bold text-white">{b.name}</p>
+                        <p className="text-xs text-neutral-500">{b.subcategory ?? ""}</p>
                       </td>
-                      <td className="p-4 text-gray-600">{b.macro_category}</td>
-                      <td className="p-4 text-gray-600">{b.city ?? "—"}</td>
+                      <td className="p-4 text-neutral-300">{b.macro_category}</td>
+                      <td className="p-4 text-neutral-300">{b.city ?? "—"}</td>
                       <td className="p-4">
                         {isAdmin ? (
                           <select
@@ -176,7 +176,7 @@ function AdminBusinessesPage() {
                                 plan: e.target.value as PlanTier,
                               })
                             }
-                            className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-bold outline-none focus:border-[#000000] disabled:opacity-50"
+                            className="bg-neutral-900 border border-white/10 rounded-lg px-2 py-1 text-xs font-bold outline-none focus:border-[#facc15] disabled:opacity-50"
                             title="Alterar plano do negócio"
                           >
                             <option value="starter">Starter</option>
@@ -228,7 +228,7 @@ function AdminBusinessesPage() {
                             <button
                               disabled={unlockMut.isPending}
                               onClick={() => unlockMut.mutate(b.id)}
-                              className="text-xs font-bold text-gray-700 bg-gray-100 border border-gray-200 hover:bg-gray-200 px-3 py-1.5 rounded-lg inline-flex items-center gap-1 disabled:opacity-50"
+                              className="text-xs font-bold text-neutral-200 bg-white/5 border border-white/10 hover:bg-white/10 px-3 py-1.5 rounded-lg inline-flex items-center gap-1 disabled:opacity-50"
                             >
                               <Unlock size={12} /> Desbloquear
                             </button>
@@ -237,7 +237,7 @@ function AdminBusinessesPage() {
                             href={`/business/${b.slug}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-xs font-bold text-gray-500 hover:text-gray-900 inline-flex items-center gap-1 px-2 py-1.5"
+                            className="text-xs font-bold text-neutral-400 hover:text-white inline-flex items-center gap-1 px-2 py-1.5"
                           >
                             <ExternalLink size={12} />
                           </a>

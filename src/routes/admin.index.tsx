@@ -22,15 +22,15 @@ function MetricCard({
   accent: string;
 }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-3xl p-6">
+    <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-bold uppercase tracking-wider text-gray-500">{label}</p>
+        <p className="text-xs font-bold uppercase tracking-wider text-neutral-400">{label}</p>
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${accent}`}>
           <Icon size={16} />
         </div>
       </div>
-      <p className="text-3xl font-black text-gray-900 mt-3">{value}</p>
-      {hint && <p className="text-xs text-gray-400 mt-1">{hint}</p>}
+      <p className="text-3xl font-black text-white mt-3">{value}</p>
+      {hint && <p className="text-xs text-neutral-500 mt-1">{hint}</p>}
     </div>
   );
 }
@@ -64,8 +64,8 @@ function AdminMetricsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-black text-gray-900">Métricas do site</h1>
-        <p className="text-gray-500 mt-1">
+        <h1 className="text-3xl font-black text-white">Métricas do site</h1>
+        <p className="text-neutral-400 mt-1">
           {isLoading ? "Carregando..." : "Visão geral da plataforma Latino Connect."}
         </p>
       </div>
@@ -102,13 +102,13 @@ function AdminMetricsPage() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
-        <div className="bg-white border border-gray-200 rounded-3xl p-6">
+        <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-extrabold text-gray-900">Negócios por categoria</h2>
-            <span className="text-xs text-gray-400">{byCategory.length} categorias</span>
+            <h2 className="text-lg font-extrabold text-white">Negócios por categoria</h2>
+            <span className="text-xs text-neutral-500">{byCategory.length} categorias</span>
           </div>
           {byCategory.length === 0 ? (
-            <p className="text-sm text-gray-400 py-6 text-center">Nenhum negócio ativo ainda.</p>
+            <p className="text-sm text-neutral-500 py-6 text-center">Nenhum negócio ativo ainda.</p>
           ) : (
             <ul className="space-y-3">
               {byCategory.map((row) => {
@@ -116,11 +116,11 @@ function AdminMetricsPage() {
                 return (
                   <li key={row.name}>
                     <div className="flex justify-between text-sm mb-1">
-                      <span className="font-semibold text-gray-700">{row.name}</span>
-                      <span className="font-bold text-gray-900">{row.count}</span>
+                      <span className="font-semibold text-neutral-200">{row.name}</span>
+                      <span className="font-bold text-white">{row.count}</span>
                     </div>
-                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-[#000000]" style={{ width: `${pct}%` }} />
+                    <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#facc15]" style={{ width: `${pct}%` }} />
                     </div>
                   </li>
                 );
@@ -129,12 +129,12 @@ function AdminMetricsPage() {
           )}
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-3xl p-6">
+        <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-extrabold text-gray-900">Buscas mais populares</h2>
-            <span className="text-xs text-gray-400">últimos 30 dias</span>
+            <h2 className="text-lg font-extrabold text-white">Buscas mais populares</h2>
+            <span className="text-xs text-neutral-500">últimos 30 dias</span>
           </div>
-          <div className="py-12 text-center text-sm text-gray-400">
+          <div className="py-12 text-center text-sm text-neutral-500">
             <Search size={20} className="mx-auto mb-2 text-gray-300" />
             Sem dados de busca ainda.
           </div>
@@ -142,21 +142,21 @@ function AdminMetricsPage() {
       </div>
 
       <div className="grid sm:grid-cols-3 gap-4">
-        <div className="bg-white border border-gray-200 rounded-3xl p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
+        <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
+          <p className="text-xs font-bold uppercase tracking-wider text-neutral-400">
             Plano Starter (grátis)
           </p>
           <p className="text-2xl font-black mt-2">{planCounts.starter ?? 0}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-3xl p-6">
+        <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
           <p className="text-xs font-bold uppercase tracking-wider text-amber-700">Plano Premium</p>
           <p className="text-2xl font-black mt-2">{planCounts.premium ?? 0}</p>
-          <p className="text-xs text-gray-400 mt-1">NZ$ 49 / mês</p>
+          <p className="text-xs text-neutral-500 mt-1">NZ$ 49 / mês</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-3xl p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-[#000000]">Plano Ultra</p>
+        <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
+          <p className="text-xs font-bold uppercase tracking-wider text-[#facc15]">Plano Ultra</p>
           <p className="text-2xl font-black mt-2">{planCounts.ultra ?? 0}</p>
-          <p className="text-xs text-gray-400 mt-1">NZ$ 99 / mês</p>
+          <p className="text-xs text-neutral-500 mt-1">NZ$ 99 / mês</p>
         </div>
       </div>
     </div>

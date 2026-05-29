@@ -53,7 +53,7 @@ function BlogNotFound() {
         <h1 className="text-3xl font-black">{t("blog.not_found_title")}</h1>
         <Link
           to="/blog"
-          className="inline-flex mt-6 bg-white text-[#000000] font-bold px-5 py-2.5 rounded-xl"
+          className="inline-flex mt-6 bg-black text-[#facc15] font-bold px-5 py-2.5 rounded-xl"
         >
           {t("blog.back_to_blog")}
         </Link>
@@ -76,17 +76,17 @@ function BlogArticle() {
   return (
     <SiteShell>
       <article className="max-w-3xl mx-auto px-6 py-16">
-        <Link to="/blog" className="text-sm text-gray-500 hover:text-[#000000]">
+        <Link to="/blog" className="text-sm text-neutral-400 hover:text-[#facc15]">
           {t("blog.back_to_blog")}
         </Link>
-        <p className="mt-6 text-xs font-bold uppercase tracking-wider text-[#000000]">
+        <p className="mt-6 text-xs font-bold uppercase tracking-wider text-[#facc15]">
           {item.category}
         </p>
-        <h1 className="mt-2 text-4xl font-black text-gray-900">{item.title}</h1>
-        <p className="text-sm text-gray-400 mt-2">{item.date}</p>
+        <h1 className="mt-2 text-4xl font-black text-white">{item.title}</h1>
+        <p className="text-sm text-neutral-500 mt-2">{item.date}</p>
         <div className="aspect-[16/9] mt-8 rounded-3xl bg-gradient-to-br from-emerald-100 to-amber-100" />
-        <p className="mt-8 text-lg text-gray-700 leading-relaxed">{item.excerpt}</p>
-        <div className="mt-6 space-y-4 text-gray-700 leading-relaxed">
+        <p className="mt-8 text-lg text-neutral-200 leading-relaxed">{item.excerpt}</p>
+        <div className="mt-6 space-y-4 text-neutral-200 leading-relaxed">
           <p>{t("blog.placeholder_body")}</p>
           <p>{t("blog.placeholder_cta")}</p>
         </div>

@@ -90,13 +90,13 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50" />
 
-      <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-3xl shadow-2xl p-6 animate-in zoom-in-95 fade-in duration-300">
+      <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-neutral-900 rounded-3xl shadow-2xl p-6 animate-in zoom-in-95 fade-in duration-300">
         {step === "success" && (
           <button
             type="button"
             onClick={onClose}
             aria-label="Fechar"
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors"
+            className="absolute top-4 right-4 text-neutral-500 hover:text-white transition-colors"
           >
             <X size={20} />
           </button>
@@ -105,14 +105,14 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
         {step === "form" ? (
           <div className="animate-in fade-in duration-300">
             {/* Social proof bar */}
-            <div className="flex items-center justify-center gap-2 bg-[#000000]/8 border border-[#000000]/15 rounded-2xl px-3 py-2 mb-3">
+            <div className="flex items-center justify-center gap-2 bg-[#facc15]/8 border border-[#facc15]/15 rounded-2xl px-3 py-2 mb-3">
               <span className="relative flex h-2 w-2 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
-              <p className="text-xs text-gray-700 font-semibold">
-                <span className="text-[#000000] font-extrabold">{t("modal.social_proof")}</span>{" "}
-                <span className="text-gray-500 font-medium">{t("modal.social_proof_cta")}</span>
+              <p className="text-xs text-neutral-200 font-semibold">
+                <span className="text-[#facc15] font-extrabold">{t("modal.social_proof")}</span>{" "}
+                <span className="text-neutral-400 font-medium">{t("modal.social_proof_cta")}</span>
               </p>
             </div>
 
@@ -120,8 +120,8 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
               <div className="inline-block bg-[#df991b]/20 text-[#8a6a16] text-[10px] font-bold px-3 py-0.5 rounded-full mb-2 uppercase tracking-wider">
                 {t("modal.badge")}
               </div>
-              <h2 className="text-xl font-extrabold text-gray-900 mb-1">{t("modal.title")}</h2>
-              <p className="text-xs text-gray-500">{t("modal.subtitle")}</p>
+              <h2 className="text-xl font-extrabold text-white mb-1">{t("modal.title")}</h2>
+              <p className="text-xs text-neutral-400">{t("modal.subtitle")}</p>
             </div>
 
             <form onSubmit={handleSubmit} noValidate className="space-y-2.5">
@@ -223,7 +223,7 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
               <div>
                 <label
                   className={`flex items-start gap-2 text-[11px] leading-snug cursor-pointer ${
-                    showErr("consent") ? "text-red-600" : "text-gray-600"
+                    showErr("consent") ? "text-red-600" : "text-neutral-300"
                   }`}
                 >
                   <input
@@ -261,7 +261,7 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-white hover:bg-gray-100 disabled:opacity-60 disabled:cursor-not-allowed disabled:animate-none text-[#000000] font-bold py-3.5 rounded-xl transition-colors mt-2 flex items-center justify-center gap-2 animate-inflate"
+                className="w-full bg-neutral-900 hover:bg-white/5 disabled:opacity-60 disabled:cursor-not-allowed disabled:animate-none text-[#facc15] font-bold py-3.5 rounded-xl transition-colors mt-2 flex items-center justify-center gap-2 animate-inflate"
               >
                 {submitting && <Loader2 size={16} className="animate-spin" />}
                 {t("modal.submit_button")}
@@ -271,13 +271,13 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
         ) : (
           <div className="text-center py-8 animate-in fade-in duration-300">
             <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-in zoom-in-50 duration-500">
-              <CheckCircle2 size={44} className="text-[#000000]" strokeWidth={2.5} />
+              <CheckCircle2 size={44} className="text-[#facc15]" strokeWidth={2.5} />
             </div>
-            <h2 className="text-2xl font-extrabold text-gray-900 mb-2">
+            <h2 className="text-2xl font-extrabold text-white mb-2">
               {t("modal.success_title")}
             </h2>
-            <p className="text-gray-500 mb-6 text-sm">{t("modal.success_body")}</p>
-            <button onClick={onClose} className="text-[#000000] font-bold text-sm hover:underline">
+            <p className="text-neutral-400 mb-6 text-sm">{t("modal.success_body")}</p>
+            <button onClick={onClose} className="text-[#facc15] font-bold text-sm hover:underline">
               {t("modal.success_back")}
             </button>
           </div>
@@ -289,10 +289,10 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
 
 const inputCls = (invalid?: boolean) =>
   [
-    "w-full bg-gray-50 border rounded-xl px-4 py-2.5 text-sm outline-none transition-all",
+    "w-full bg-neutral-950 border rounded-xl px-4 py-2.5 text-sm outline-none transition-all",
     invalid
       ? "border-red-400 ring-1 ring-red-200 bg-red-50/40 focus:border-red-500 focus:ring-red-300 animate-shake"
-      : "border-gray-200 focus:border-[#000000] focus:ring-1 focus:ring-[#000000]",
+      : "border-white/10 focus:border-[#facc15] focus:ring-1 focus:ring-[#facc15]",
   ].join(" ");
 
 function Field({
@@ -308,7 +308,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="block text-xs font-bold text-gray-700 mb-1">{label}</label>
+      <label className="block text-xs font-bold text-neutral-200 mb-1">{label}</label>
       {children}
       {invalid && message && (
         <p className="mt-1 flex items-center gap-1 text-[11px] font-semibold text-red-600 animate-in fade-in slide-in-from-top-1 duration-200">

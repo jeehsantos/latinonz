@@ -55,8 +55,8 @@ async function sendOwnerEmail(params: {
 
   const { to, businessName, lead } = params;
   const html = `
-    <div style="font-family:system-ui,Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#000000">
-      <h2 style="margin:0 0 12px;color:#000000">Novo lead para ${escapeHtml(businessName)}</h2>
+    <div style="font-family:system-ui,Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#facc15">
+      <h2 style="margin:0 0 12px;color:#facc15">Novo lead para ${escapeHtml(businessName)}</h2>
       <p style="margin:0 0 16px;color:#374151">Você recebeu um novo contato pelo Latino Connect.</p>
       <table style="width:100%;border-collapse:collapse;font-size:14px">
         <tr><td style="padding:6px 0;color:#6b7280">Nome</td><td style="padding:6px 0;font-weight:600">${escapeHtml(lead.name)}</td></tr>

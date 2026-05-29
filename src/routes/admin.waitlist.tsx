@@ -71,34 +71,34 @@ function AdminWaitlistPage() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-gray-900">Lista de espera</h1>
-          <p className="text-gray-500 mt-1">Empresas registradas antes do lançamento.</p>
+          <h1 className="text-3xl font-black text-white">Lista de espera</h1>
+          <p className="text-neutral-400 mt-1">Empresas registradas antes do lançamento.</p>
         </div>
-        <div className="bg-white px-4 py-3 rounded-xl border border-gray-200 flex items-center gap-3">
+        <div className="bg-neutral-900 px-4 py-3 rounded-xl border border-white/10 flex items-center gap-3">
           <div className="p-2 bg-emerald-50 rounded-lg">
-            <Users size={18} className="text-[#000000]" />
+            <Users size={18} className="text-[#facc15]" />
           </div>
           <div>
-            <p className="text-xs text-gray-500 font-bold uppercase">Total</p>
-            <p className="text-xl font-black text-gray-900">{rows.length}</p>
+            <p className="text-xs text-neutral-400 font-bold uppercase">Total</p>
+            <p className="text-xl font-black text-white">{rows.length}</p>
           </div>
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-3xl overflow-hidden">
-        <div className="p-4 border-b border-gray-200 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 bg-gray-50">
+      <div className="bg-neutral-900 border border-white/10 rounded-3xl overflow-hidden">
+        <div className="p-4 border-b border-white/10 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 bg-neutral-950">
           <div className="relative w-full sm:w-72">
-            <Search size={16} className="absolute left-3 top-2.5 text-gray-400" />
+            <Search size={16} className="absolute left-3 top-2.5 text-neutral-500" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Buscar..."
-              className="w-full bg-white border border-gray-200 rounded-lg pl-9 pr-3 py-1.5 text-sm outline-none focus:border-[#000000]"
+              className="w-full bg-neutral-900 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm outline-none focus:border-[#facc15]"
             />
           </div>
           <button
             onClick={exportCsv}
-            className="text-sm font-semibold text-[#000000] bg-[#EBF4ED] border border-[#000000]/20 px-3 py-1.5 rounded-lg hover:bg-[#000000]/10 flex items-center gap-2"
+            className="text-sm font-semibold text-[#facc15] bg-[#EBF4ED] border border-[#facc15]/20 px-3 py-1.5 rounded-lg hover:bg-[#facc15]/10 flex items-center gap-2"
           >
             <Download size={16} /> Exportar CSV
           </button>
@@ -106,7 +106,7 @@ function AdminWaitlistPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-white text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
+              <tr className="bg-neutral-900 text-neutral-400 text-xs uppercase tracking-wider border-b border-white/10">
                 <th className="p-4 font-bold">Negócio</th>
                 <th className="p-4 font-bold">Responsável</th>
                 <th className="p-4 font-bold">WhatsApp</th>
@@ -118,7 +118,7 @@ function AdminWaitlistPage() {
             <tbody className="text-sm divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-400">
+                  <td colSpan={6} className="p-8 text-center text-neutral-500">
                     <Loader2 size={16} className="animate-spin inline mr-2" /> Carregando...
                   </td>
                 </tr>
@@ -130,19 +130,19 @@ function AdminWaitlistPage() {
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-400">
+                  <td colSpan={6} className="p-8 text-center text-neutral-500">
                     Nenhum registro.
                   </td>
                 </tr>
               ) : (
                 filtered.map((r) => (
-                  <tr key={r.id} className="hover:bg-gray-50">
-                    <td className="p-4 font-bold text-gray-900">{r.business_name}</td>
-                    <td className="p-4 text-gray-600">{r.owner_name}</td>
-                    <td className="p-4 text-gray-600 font-medium">{r.whatsapp_number}</td>
-                    <td className="p-4 text-gray-500">{r.email}</td>
-                    <td className="p-4 text-gray-500">{r.service_category}</td>
-                    <td className="p-4 text-gray-400 text-xs">
+                  <tr key={r.id} className="hover:bg-neutral-950">
+                    <td className="p-4 font-bold text-white">{r.business_name}</td>
+                    <td className="p-4 text-neutral-300">{r.owner_name}</td>
+                    <td className="p-4 text-neutral-300 font-medium">{r.whatsapp_number}</td>
+                    <td className="p-4 text-neutral-400">{r.email}</td>
+                    <td className="p-4 text-neutral-400">{r.service_category}</td>
+                    <td className="p-4 text-neutral-500 text-xs">
                       {new Date(r.created_at).toLocaleDateString("pt-BR")}
                     </td>
                   </tr>

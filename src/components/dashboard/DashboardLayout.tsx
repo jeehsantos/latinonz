@@ -110,9 +110,9 @@ export function DashboardLayout() {
   const mutedText = lighten(sidebarColor, 0.55);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-4 sticky top-0 z-30">
-        <button className="lg:hidden text-gray-700" onClick={() => setMobileOpen(true)}>
+    <div className="min-h-screen bg-neutral-950 flex flex-col">
+      <header className="bg-neutral-900 border-b border-white/10 px-6 py-3 flex items-center gap-4 sticky top-0 z-30">
+        <button className="lg:hidden text-neutral-200" onClick={() => setMobileOpen(true)}>
           <Menu size={20} />
         </button>
         <Link to="/" className="flex items-center shrink-0">
@@ -124,7 +124,7 @@ export function DashboardLayout() {
             <select
               value={plan}
               onChange={(e) => setPlan(e.target.value as PlanTier)}
-              className="text-xs border border-gray-200 rounded-lg px-2 py-1 bg-amber-50"
+              className="text-xs border border-white/10 rounded-lg px-2 py-1 bg-amber-50"
               title="Dev plan switcher (?dev=1)"
             >
               <option value="starter">Starter</option>
@@ -135,24 +135,24 @@ export function DashboardLayout() {
         </div>
         <div className="ml-auto flex items-center gap-3">
           <div className="hidden sm:block text-right">
-            <p className="text-sm font-bold text-gray-900">{businessName}</p>
-            {businessLocation && <p className="text-xs text-gray-500">{businessLocation}</p>}
+            <p className="text-sm font-bold text-white">{businessName}</p>
+            {businessLocation && <p className="text-xs text-neutral-400">{businessLocation}</p>}
           </div>
           {logoUrl ? (
             <img
               src={logoUrl}
               alt={businessName}
-              className="w-9 h-9 rounded-full object-cover border border-gray-200"
+              className="w-9 h-9 rounded-full object-cover border border-white/10"
             />
           ) : (
-            <div className="w-9 h-9 rounded-full bg-white text-[#000000] font-bold flex items-center justify-center">
+            <div className="w-9 h-9 rounded-full bg-black text-[#facc15] font-bold flex items-center justify-center">
               {initial}
             </div>
           )}
           <button
             onClick={handleSignOut}
             title={t("dashboard.sign_out")}
-            className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 border border-gray-200 rounded-lg px-2.5 py-1.5 hover:bg-gray-50 transition"
+            className="flex items-center gap-1.5 text-sm text-neutral-300 hover:text-white border border-white/10 rounded-lg px-2.5 py-1.5 hover:bg-neutral-950 transition"
           >
             <LogOut size={16} />
             <span className="hidden sm:inline">{t("dashboard.sign_out")}</span>
@@ -174,7 +174,7 @@ export function DashboardLayout() {
             <img
               src={logo}
               alt="Latino Connect"
-              className="h-8 w-auto bg-white rounded px-2 py-1"
+              className="h-8 w-auto bg-neutral-900 rounded px-2 py-1"
             />
             <button className="text-white/80" onClick={() => setMobileOpen(false)}>
               <X size={20} />
@@ -206,7 +206,7 @@ export function DashboardLayout() {
                   <Icon size={18} />
                   <span className="flex-1">{n.label}</span>
                   {n.badge ? (
-                    <span className="bg-amber-400 text-[#000000] text-[11px] font-bold rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center">
+                    <span className="bg-amber-400 text-[#facc15] text-[11px] font-bold rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center">
                       {n.badge}
                     </span>
                   ) : null}

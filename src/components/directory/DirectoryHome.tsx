@@ -43,11 +43,11 @@ export function DirectoryHome() {
         className="relative text-white overflow-hidden"
         style={{
           background:
-            "radial-gradient(ellipse at top, #1a1a1a 0%, #000000 60%), radial-gradient(circle at bottom right, rgba(223,153,27,0.25), transparent 60%)",
+            "radial-gradient(ellipse at top, #1a1a1a 0%, #facc15 60%), radial-gradient(circle at bottom right, rgba(223,153,27,0.25), transparent 60%)",
         }}
       >
         <div className="relative max-w-6xl mx-auto px-5 sm:px-6 py-14 sm:py-20 md:py-28 text-center">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white text-[10px] sm:text-[11px] font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-5 sm:mb-8 uppercase tracking-[0.18em]">
+          <div className="inline-flex items-center gap-2 bg-neutral-900/10 backdrop-blur-sm text-white text-[10px] sm:text-[11px] font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-5 sm:mb-8 uppercase tracking-[0.18em]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#df991b]" />
             {t("directory.home_badge")}
           </div>
@@ -70,14 +70,14 @@ export function DirectoryHome() {
         {trustItems.map(({ icon: Icon, value, label }) => (
           <div
             key={label}
-            className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-3 sm:p-5 flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 shadow-sm text-center sm:text-left"
+            className="bg-neutral-900 border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-5 flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 shadow-sm text-center sm:text-left"
           >
             <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#df991b]/15 text-[#df991b] flex items-center justify-center shrink-0">
               <Icon size={18} />
             </div>
             <div>
-              <p className="text-base sm:text-xl font-black text-gray-900 leading-tight">{value}</p>
-              <p className="text-[10px] sm:text-xs text-gray-500 leading-tight">{label}</p>
+              <p className="text-base sm:text-xl font-black text-white leading-tight">{value}</p>
+              <p className="text-[10px] sm:text-xs text-neutral-400 leading-tight">{label}</p>
             </div>
           </div>
         ))}
@@ -87,10 +87,10 @@ export function DirectoryHome() {
       <section className="max-w-7xl mx-auto px-5 sm:px-6 py-10 sm:py-16">
         <div className="flex items-end justify-between mb-5 sm:mb-6">
           <div>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-gray-900">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white">
               {t("directory.categories_title")}
             </h2>
-            <p className="text-sm text-gray-500 mt-1">{t("directory.categories_subtitle")}</p>
+            <p className="text-sm text-neutral-400 mt-1">{t("directory.categories_subtitle")}</p>
           </div>
           <Link
             to="/directory"
@@ -104,11 +104,11 @@ export function DirectoryHome() {
             ? Array.from({ length: 10 }).map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white border border-gray-200 rounded-2xl sm:rounded-3xl p-4 sm:p-5 animate-pulse"
+                  className="bg-neutral-900 border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-5 animate-pulse"
                 >
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gray-100" />
-                  <div className="mt-3 sm:mt-4 h-4 bg-gray-100 rounded w-3/4" />
-                  <div className="mt-2 h-3 bg-gray-50 rounded w-1/2" />
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-white/5" />
+                  <div className="mt-3 sm:mt-4 h-4 bg-white/5 rounded w-3/4" />
+                  <div className="mt-2 h-3 bg-neutral-950 rounded w-1/2" />
                 </div>
               ))
             : categories.slice(0, 10).map((c) => {
@@ -118,17 +118,17 @@ export function DirectoryHome() {
                   <Link
                     key={c.id}
                     to="/directory"
-                    className="group bg-white border border-gray-200 hover:border-[#df991b]/60 hover:shadow-md transition rounded-2xl sm:rounded-3xl p-4 sm:p-5"
+                    className="group bg-neutral-900 border border-white/10 hover:border-[#df991b]/60 hover:shadow-md transition rounded-2xl sm:rounded-3xl p-4 sm:p-5"
                   >
                     <div
                       className={`w-10 h-10 sm:w-11 sm:h-11 rounded-2xl ${color.bg} ${color.text} flex items-center justify-center`}
                     >
                       <Icon size={20} />
                     </div>
-                    <p className="mt-3 sm:mt-4 font-extrabold text-gray-900 text-sm leading-tight group-hover:text-[#000000]">
+                    <p className="mt-3 sm:mt-4 font-extrabold text-white text-sm leading-tight group-hover:text-[#facc15]">
                       {c.name}
                     </p>
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-xs text-neutral-500 mt-1">
                       {c.count} {t("directory.listings_count")}
                     </p>
                   </Link>
@@ -141,10 +141,10 @@ export function DirectoryHome() {
       <section className="max-w-7xl mx-auto px-5 sm:px-6 pb-10 sm:pb-16">
         <div className="flex items-end justify-between mb-5 sm:mb-6">
           <div>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-gray-900">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white">
               {t("directory.featured_title")}
             </h2>
-            <p className="text-sm text-gray-500 mt-1">{t("directory.featured_subtitle")}</p>
+            <p className="text-sm text-neutral-400 mt-1">{t("directory.featured_subtitle")}</p>
           </div>
           <Link
             to="/directory"
@@ -162,7 +162,7 @@ export function DirectoryHome() {
 
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-5 sm:px-6 pb-16 sm:pb-20">
-        <div className="rounded-3xl bg-gradient-to-br from-white via-gray-100 to-white text-[#000000] p-8 sm:p-10 md:p-16 text-center relative overflow-hidden">
+        <div className="rounded-3xl bg-gradient-to-br from-white via-gray-100 to-white text-[#facc15] p-8 sm:p-10 md:p-16 text-center relative overflow-hidden">
           <div
             className="absolute inset-0 pointer-events-none opacity-60"
             style={{

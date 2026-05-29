@@ -61,22 +61,22 @@ function LoginPage() {
   return (
     <SiteShell>
       <section className="max-w-md mx-auto px-6 py-20">
-        <div className="bg-white border border-gray-200 rounded-3xl p-8">
-          <h1 className="text-2xl font-black text-gray-900">{t("login.title")}</h1>
-          <p className="text-sm text-gray-500 mt-1">{t("login.subtitle")}</p>
+        <div className="bg-neutral-900 border border-white/10 rounded-3xl p-8 shadow-2xl shadow-black/40">
+          <h1 className="text-2xl font-black text-white">{t("login.title")}</h1>
+          <p className="text-sm text-neutral-400 mt-1">{t("login.subtitle")}</p>
 
           <div className="mt-6">
             <GoogleAuthButton label={t("auth.google_login")} onError={setError} />
           </div>
           <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-gray-200" />
-            <span className="text-xs uppercase tracking-wider text-gray-400">{t("auth.or")}</span>
-            <div className="flex-1 h-px bg-gray-200" />
+            <div className="flex-1 h-px bg-neutral-900/10" />
+            <span className="text-xs uppercase tracking-wider text-neutral-500">{t("auth.or")}</span>
+            <div className="flex-1 h-px bg-neutral-900/10" />
           </div>
 
           <form className="space-y-4" onSubmit={onSubmit}>
             <div>
-              <label className="text-xs font-bold uppercase text-gray-500">
+              <label className="text-xs font-bold uppercase text-neutral-400">
                 {t("login.email")}
               </label>
               <input
@@ -84,11 +84,11 @@ function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
+                className="mt-1 w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#facc15]/50"
               />
             </div>
             <div>
-              <label className="text-xs font-bold uppercase text-gray-500">
+              <label className="text-xs font-bold uppercase text-neutral-400">
                 {t("login.password")}
               </label>
               <input
@@ -96,26 +96,27 @@ function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm"
+                className="mt-1 w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#facc15]/50"
               />
             </div>
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && <p className="text-sm text-red-400">{error}</p>}
             <button
               type="submit"
               disabled={loading}
-              className="block w-full text-center bg-white hover:bg-gray-100 disabled:opacity-60 text-[#000000] font-bold rounded-xl py-3 text-sm"
+              className="block w-full text-center bg-[#facc15] hover:bg-yellow-300 disabled:opacity-60 text-black font-bold rounded-xl py-3 text-sm transition"
             >
               {loading ? "..." : t("login.submit")}
             </button>
           </form>
-          <p className="text-xs text-gray-500 text-center mt-4">
+          <p className="text-xs text-neutral-400 text-center mt-4">
             {t("login.no_account")}{" "}
-            <Link to="/cadastro" className="font-bold text-[#000000]">
+            <Link to="/cadastro" className="font-bold text-[#facc15] hover:text-yellow-300">
               {t("login.register_link")}
             </Link>
           </p>
         </div>
       </section>
+
     </SiteShell>
   );
 }
