@@ -694,8 +694,6 @@ function ProfileEditor() {
           plan={plan}
           flags={serviceFlags}
           onToggleFlag={(k) => setServiceFlags((p) => ({ ...p, [k]: !p[k] }))}
-          extra={serviceExtra}
-          onChangeExtra={setServiceExtra}
           items={customServiceItems}
           onChangeItems={setCustomServiceItems}
         />
