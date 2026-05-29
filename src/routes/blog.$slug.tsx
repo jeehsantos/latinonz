@@ -53,7 +53,7 @@ function BlogNotFound() {
         <h1 className="text-3xl font-black">{t("blog.not_found_title")}</h1>
         <Link
           to="/blog"
-          className="inline-flex mt-6 bg-white text-[#facc15] font-bold px-5 py-2.5 rounded-xl"
+          className="inline-flex mt-6 bg-black text-[#facc15] font-bold px-5 py-2.5 rounded-xl"
         >
           {t("blog.back_to_blog")}
         </Link>

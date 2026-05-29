@@ -164,7 +164,7 @@ function AdminManagersPage() {
                   <tr key={m.id} className="hover:bg-gray-50">
                     <td className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-white text-[#facc15] font-bold flex items-center justify-center text-sm">
+                        <div className="w-9 h-9 rounded-full bg-black text-[#facc15] font-bold flex items-center justify-center text-sm">
                           {initial}
                         </div>
                         <div className="flex flex-col">

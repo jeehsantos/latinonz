@@ -405,13 +405,13 @@ function ProfileEditor() {
           <div className="flex bg-gray-100 p-1 rounded-xl">
             <button
               onClick={() => setBusinessType("Serviço")}
-              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${businessType === "Serviço" ? "bg-white text-[#facc15] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${businessType === "Serviço" ? "bg-black text-[#facc15] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
             >
               {t("profile.type_service")}
             </button>
             <button
               onClick={() => setBusinessType("Produto")}
-              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${businessType === "Produto" ? "bg-white text-[#facc15] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${businessType === "Produto" ? "bg-black text-[#facc15] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
             >
               {t("profile.type_product")}
             </button>
@@ -588,7 +588,7 @@ function ProfileEditor() {
                       key={c}
                       type="button"
                       onClick={() => setActiveBranch(c)}
-                      className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${activeBranch === c ? "bg-white text-[#facc15] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+                      className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${activeBranch === c ? "bg-black text-[#facc15] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
                     >
                       {c}
                     </button>
@@ -1025,7 +1025,7 @@ function ServiceOptionsSection({
                     className="rounded-xl border border-gray-200 p-3 bg-gray-50/40 space-y-2"
                   >
                     <div className="flex items-start gap-3">
-                      <span className="flex items-center justify-center h-10 w-10 rounded-lg bg-white text-[#facc15] shrink-0">
+                      <span className="flex items-center justify-center h-10 w-10 rounded-lg bg-black text-[#facc15] shrink-0">
                         <Icon size={18} />
                       </span>
                       <div className="flex-1 space-y-2">

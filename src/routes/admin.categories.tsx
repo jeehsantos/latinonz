@@ -275,7 +275,7 @@ function AdminCategoriesPage() {
                       onClick={() => setForm({ ...form, kind: k })}
                       className={`px-4 py-1.5 text-sm font-bold rounded-lg transition ${
                         form.kind === k
-                          ? "bg-white text-[#facc15] shadow-sm"
+                          ? "bg-black text-[#facc15] shadow-sm"
                           : "text-gray-500 hover:text-gray-700"
                       }`}
                     >

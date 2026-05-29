@@ -492,7 +492,7 @@ function BusinessPage() {
                       const Icon = CUSTOM_ICON_MAP[it.icon_key] ?? Sparkles;
                       return (
                         <div key={it.id} className="flex items-start gap-3">
-                          <span className="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-[#facc15] shrink-0">
+                          <span className="flex items-center justify-center h-9 w-9 rounded-lg bg-black text-[#facc15] shrink-0">
                             <Icon size={16} />
                           </span>
                           <div className="flex-1">
@@ -643,7 +643,7 @@ function BusinessNotFound() {
         <h1 className="text-3xl font-black text-gray-900">{t("business.not_found_title")}</h1>
         <Link
           to="/directory"
-          className="inline-flex mt-6 bg-white text-[#facc15] font-bold px-5 py-2.5 rounded-xl"
+          className="inline-flex mt-6 bg-black text-[#facc15] font-bold px-5 py-2.5 rounded-xl"
         >
           {t("business.back_to_directory_btn")}
         </Link>
