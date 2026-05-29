@@ -109,7 +109,7 @@ function AdminBusinessesPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Buscar nome, categoria, cidade..."
-              className="bg-white border border-gray-200 rounded-xl pl-9 pr-3 py-2 text-sm outline-none focus:border-[#000000] w-72"
+              className="bg-white border border-gray-200 rounded-xl pl-9 pr-3 py-2 text-sm outline-none focus:border-[#facc15] w-72"
             />
           </div>
           <div className="relative">
@@ -117,7 +117,7 @@ function AdminBusinessesPage() {
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value as FilterValue)}
-              className="bg-white border border-gray-200 rounded-xl pl-8 pr-3 py-2 text-sm outline-none focus:border-[#000000]"
+              className="bg-white border border-gray-200 rounded-xl pl-8 pr-3 py-2 text-sm outline-none focus:border-[#facc15]"
             >
               <option value="all">Todos</option>
               <option value="active">Aprovados</option>
@@ -176,7 +176,7 @@ function AdminBusinessesPage() {
                                 plan: e.target.value as PlanTier,
                               })
                             }
-                            className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-bold outline-none focus:border-[#000000] disabled:opacity-50"
+                            className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-bold outline-none focus:border-[#facc15] disabled:opacity-50"
                             title="Alterar plano do negócio"
                           >
                             <option value="starter">Starter</option>

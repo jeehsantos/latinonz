@@ -250,7 +250,7 @@ function BusinessPage() {
 
   return (
     <SiteShell>
-      <section className="bg-gradient-to-br from-white via-white to-white text-[#000000]">
+      <section className="bg-gradient-to-br from-white via-white to-white text-[#facc15]">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <Link to="/directory" className="text-sm text-white/60 hover:text-white">
             {t("business.back_to_directory")}
@@ -388,7 +388,7 @@ function BusinessPage() {
               {business.phone && (
                 <a
                   href={`tel:${business.phone}`}
-                  className="flex items-center gap-3 text-gray-700 hover:text-[#000000]"
+                  className="flex items-center gap-3 text-gray-700 hover:text-[#facc15]"
                 >
                   <Phone size={16} /> {business.phone}
                 </a>
@@ -398,7 +398,7 @@ function BusinessPage() {
                   href={`https://wa.me/${business.phone.replace(/\D/g, "")}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-3 text-gray-700 hover:text-[#000000]"
+                  className="flex items-center gap-3 text-gray-700 hover:text-[#facc15]"
                 >
                   <MessageCircle size={16} /> {t("business.whatsapp_label")}
                 </a>
@@ -406,7 +406,7 @@ function BusinessPage() {
               {business.email && (
                 <a
                   href={`mailto:${business.email}`}
-                  className="flex items-center gap-3 text-gray-700 hover:text-[#000000]"
+                  className="flex items-center gap-3 text-gray-700 hover:text-[#facc15]"
                 >
                   <Mail size={16} /> {business.email}
                 </a>
@@ -414,7 +414,7 @@ function BusinessPage() {
               {business.website && (
                 <a
                   href={business.website}
-                  className="flex items-center gap-3 text-gray-700 hover:text-[#000000]"
+                  className="flex items-center gap-3 text-gray-700 hover:text-[#facc15]"
                 >
                   <Globe size={16} /> {t("business.website_label")}
                 </a>
@@ -427,7 +427,7 @@ function BusinessPage() {
                 href={`https://wa.me/${business.phone.replace(/\D/g, "")}`}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-6 w-full bg-white hover:bg-gray-100 text-[#000000] font-bold rounded-2xl py-3 text-sm flex items-center justify-center gap-2"
+                className="mt-6 w-full bg-white hover:bg-gray-100 text-[#facc15] font-bold rounded-2xl py-3 text-sm flex items-center justify-center gap-2"
               >
                 <MessageCircle size={16} /> {t("business.whatsapp_cta")}
               </a>
@@ -438,7 +438,7 @@ function BusinessPage() {
                   setLeadError(null);
                   setLeadOpen(true);
                 }}
-                className="mt-6 w-full bg-white hover:bg-gray-100 text-[#000000] font-bold rounded-2xl py-3 text-sm"
+                className="mt-6 w-full bg-white hover:bg-gray-100 text-[#facc15] font-bold rounded-2xl py-3 text-sm"
               >
                 {t("business.send_message")}
               </button>
@@ -492,7 +492,7 @@ function BusinessPage() {
                       const Icon = CUSTOM_ICON_MAP[it.icon_key] ?? Sparkles;
                       return (
                         <div key={it.id} className="flex items-start gap-3">
-                          <span className="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-[#000000] shrink-0">
+                          <span className="flex items-center justify-center h-9 w-9 rounded-lg bg-white text-[#facc15] shrink-0">
                             <Icon size={16} />
                           </span>
                           <div className="flex-1">
@@ -579,7 +579,7 @@ function BusinessPage() {
                 <p className="text-sm text-gray-600">{t("business.lead_modal.success_body")}</p>
                 <button
                   onClick={() => setLeadOpen(false)}
-                  className="mt-2 bg-white hover:bg-gray-100 text-[#000000] font-bold rounded-2xl py-2 px-5 text-sm"
+                  className="mt-2 bg-white hover:bg-gray-100 text-[#facc15] font-bold rounded-2xl py-2 px-5 text-sm"
                 >
                   {t("business.lead_modal.close")}
                 </button>
@@ -620,7 +620,7 @@ function BusinessPage() {
                 <button
                   type="submit"
                   disabled={leadStatus === "submitting"}
-                  className="w-full bg-white hover:bg-gray-100 disabled:opacity-50 text-[#000000] font-bold rounded-2xl py-3 text-sm"
+                  className="w-full bg-white hover:bg-gray-100 disabled:opacity-50 text-[#facc15] font-bold rounded-2xl py-3 text-sm"
                 >
                   {leadStatus === "submitting"
                     ? t("business.lead_modal.submitting")
@@ -643,7 +643,7 @@ function BusinessNotFound() {
         <h1 className="text-3xl font-black text-gray-900">{t("business.not_found_title")}</h1>
         <Link
           to="/directory"
-          className="inline-flex mt-6 bg-white text-[#000000] font-bold px-5 py-2.5 rounded-xl"
+          className="inline-flex mt-6 bg-white text-[#facc15] font-bold px-5 py-2.5 rounded-xl"
         >
           {t("business.back_to_directory_btn")}
         </Link>

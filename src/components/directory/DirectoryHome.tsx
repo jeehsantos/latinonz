@@ -43,7 +43,7 @@ export function DirectoryHome() {
         className="relative text-white overflow-hidden"
         style={{
           background:
-            "radial-gradient(ellipse at top, #1a1a1a 0%, #000000 60%), radial-gradient(circle at bottom right, rgba(223,153,27,0.25), transparent 60%)",
+            "radial-gradient(ellipse at top, #1a1a1a 0%, #facc15 60%), radial-gradient(circle at bottom right, rgba(223,153,27,0.25), transparent 60%)",
         }}
       >
         <div className="relative max-w-6xl mx-auto px-5 sm:px-6 py-14 sm:py-20 md:py-28 text-center">
@@ -125,7 +125,7 @@ export function DirectoryHome() {
                     >
                       <Icon size={20} />
                     </div>
-                    <p className="mt-3 sm:mt-4 font-extrabold text-gray-900 text-sm leading-tight group-hover:text-[#000000]">
+                    <p className="mt-3 sm:mt-4 font-extrabold text-gray-900 text-sm leading-tight group-hover:text-[#facc15]">
                       {c.name}
                     </p>
                     <p className="text-xs text-gray-400 mt-1">
@@ -162,7 +162,7 @@ export function DirectoryHome() {
 
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-5 sm:px-6 pb-16 sm:pb-20">
-        <div className="rounded-3xl bg-gradient-to-br from-white via-gray-100 to-white text-[#000000] p-8 sm:p-10 md:p-16 text-center relative overflow-hidden">
+        <div className="rounded-3xl bg-gradient-to-br from-white via-gray-100 to-white text-[#facc15] p-8 sm:p-10 md:p-16 text-center relative overflow-hidden">
           <div
             className="absolute inset-0 pointer-events-none opacity-60"
             style={{

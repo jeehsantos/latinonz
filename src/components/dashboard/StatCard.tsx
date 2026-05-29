@@ -15,7 +15,7 @@ export function StatCard({
     <div className="bg-white border border-gray-200 rounded-3xl p-6">
       <div className="flex items-center justify-between">
         <p className="text-xs font-bold uppercase tracking-wider text-gray-500">{label}</p>
-        <div className="w-9 h-9 rounded-xl bg-[#000000]/10 text-[#000000] flex items-center justify-center">
+        <div className="w-9 h-9 rounded-xl bg-[#facc15]/10 text-[#facc15] flex items-center justify-center">
           <Icon size={16} />
         </div>
       </div>

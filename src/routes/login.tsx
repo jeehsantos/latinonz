@@ -103,14 +103,14 @@ function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="block w-full text-center bg-white hover:bg-gray-100 disabled:opacity-60 text-[#000000] font-bold rounded-xl py-3 text-sm"
+              className="block w-full text-center bg-white hover:bg-gray-100 disabled:opacity-60 text-[#facc15] font-bold rounded-xl py-3 text-sm"
             >
               {loading ? "..." : t("login.submit")}
             </button>
           </form>
           <p className="text-xs text-gray-500 text-center mt-4">
             {t("login.no_account")}{" "}
-            <Link to="/cadastro" className="font-bold text-[#000000]">
+            <Link to="/cadastro" className="font-bold text-[#facc15]">
               {t("login.register_link")}
             </Link>
           </p>

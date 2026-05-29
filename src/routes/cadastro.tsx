@@ -178,7 +178,7 @@ function CadastroPage() {
   return (
     <SiteShell>
       <section className="max-w-2xl mx-auto px-6 py-20">
-        <p className="text-xs font-bold uppercase tracking-wider text-[#000000]">
+        <p className="text-xs font-bold uppercase tracking-wider text-[#facc15]">
           {t("register.badge")}
         </p>
         <h1 className="mt-3 text-3xl md:text-4xl font-black text-gray-900">
@@ -325,7 +325,7 @@ function CadastroPage() {
             </button>
             <p className="text-xs text-gray-500 text-center">
               {t("register.has_account")}{" "}
-              <Link to="/login" className="font-bold text-[#000000]">
+              <Link to="/login" className="font-bold text-[#facc15]">
                 {t("register.login_link")}
               </Link>
             </p>

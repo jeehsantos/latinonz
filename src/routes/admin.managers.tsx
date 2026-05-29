@@ -94,7 +94,7 @@ function AdminManagersPage() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Nome"
-          className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#000000]"
+          className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
         />
         <input
           value={email}
@@ -102,12 +102,12 @@ function AdminManagersPage() {
           type="email"
           required
           placeholder="email@exemplo.com"
-          className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#000000]"
+          className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
         />
         <select
           value={role}
           onChange={(e) => setRole(e.target.value as RoleValue)}
-          className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#000000]"
+          className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
         >
           <option value="manager">Gerente</option>
           <option value="admin">Admin</option>
@@ -115,7 +115,7 @@ function AdminManagersPage() {
         <button
           type="submit"
           disabled={inviteMut.isPending}
-          className="bg-white hover:bg-gray-100 text-[#000000] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 disabled:opacity-50"
+          className="bg-white hover:bg-gray-100 text-[#facc15] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 disabled:opacity-50"
         >
           <UserPlus size={16} /> {inviteMut.isPending ? "Convidando..." : "Convidar"}
         </button>
@@ -164,7 +164,7 @@ function AdminManagersPage() {
                   <tr key={m.id} className="hover:bg-gray-50">
                     <td className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-white text-[#000000] font-bold flex items-center justify-center text-sm">
+                        <div className="w-9 h-9 rounded-full bg-white text-[#facc15] font-bold flex items-center justify-center text-sm">
                           {initial}
                         </div>
                         <div className="flex flex-col">
@@ -181,7 +181,7 @@ function AdminManagersPage() {
                         className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full border ${
                           m.role === "admin"
                             ? "bg-amber-50 text-amber-700 border-amber-200"
-                            : "bg-[#000000]/10 text-[#000000] border-[#000000]/20"
+                            : "bg-[#facc15]/10 text-[#facc15] border-[#facc15]/20"
                         }`}
                       >
                         <Shield size={12} /> {m.role === "admin" ? "Admin" : "Gerente"}

@@ -114,7 +114,7 @@ function EventsPage() {
               resetForm();
               setFormOpen(true);
             }}
-            className="bg-white hover:bg-gray-100 text-[#000000] font-bold rounded-xl px-4 py-2.5 text-sm flex items-center gap-2"
+            className="bg-white hover:bg-gray-100 text-[#facc15] font-bold rounded-xl px-4 py-2.5 text-sm flex items-center gap-2"
           >
             <Plus size={16} /> Novo evento
           </button>
@@ -298,7 +298,7 @@ function EventsPage() {
                 <button
                   type="submit"
                   disabled={createMutation.isPending}
-                  className="px-4 py-2 text-sm rounded-xl bg-white hover:bg-gray-100 text-[#000000] font-bold disabled:opacity-60"
+                  className="px-4 py-2 text-sm rounded-xl bg-white hover:bg-gray-100 text-[#facc15] font-bold disabled:opacity-60"
                 >
                   {createMutation.isPending ? "Criando…" : "Criar evento"}
                 </button>

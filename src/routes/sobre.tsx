@@ -29,7 +29,7 @@ function SobrePage() {
   return (
     <SiteShell>
       <section className="max-w-3xl mx-auto px-6 py-20">
-        <p className="text-xs font-bold uppercase tracking-wider text-[#000000]">
+        <p className="text-xs font-bold uppercase tracking-wider text-[#facc15]">
           {t("about.badge")}
         </p>
         <h1 className="mt-3 text-4xl md:text-5xl font-black text-gray-900">{t("about.title")}</h1>

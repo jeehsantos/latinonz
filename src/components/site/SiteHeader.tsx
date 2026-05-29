@@ -31,7 +31,7 @@ export function SiteHeader() {
               key={n.to}
               to={n.to}
               activeProps={{
-                className: "px-4 py-1.5 rounded-full bg-white shadow-sm text-[#000000]",
+                className: "px-4 py-1.5 rounded-full bg-white shadow-sm text-[#facc15]",
               }}
               inactiveProps={{ className: "px-4 py-1.5 rounded-full hover:bg-white/60" }}
             >
@@ -43,13 +43,13 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           <Link
             to="/login"
-            className="hidden md:inline-flex text-sm font-semibold text-gray-700 hover:text-[#000000] px-3 py-2"
+            className="hidden md:inline-flex text-sm font-semibold text-gray-700 hover:text-[#facc15] px-3 py-2"
           >
             {t("nav.login")}
           </Link>
           <Link
             to="/cadastro"
-            className="hidden md:inline-flex text-sm font-bold bg-white text-[#000000] px-4 py-2 rounded-full hover:bg-gray-100"
+            className="hidden md:inline-flex text-sm font-bold bg-white text-[#facc15] px-4 py-2 rounded-full hover:bg-gray-100"
           >
             {t("nav.register")}
           </Link>
@@ -75,7 +75,7 @@ export function SiteHeader() {
               onClick={() => setMobileOpen(false)}
               activeProps={{
                 className:
-                  "block px-4 py-2.5 rounded-xl bg-[#000000]/10 text-[#000000] font-bold text-sm",
+                  "block px-4 py-2.5 rounded-xl bg-[#facc15]/10 text-[#facc15] font-bold text-sm",
               }}
               inactiveProps={{
                 className:
@@ -96,7 +96,7 @@ export function SiteHeader() {
             <Link
               to="/cadastro"
               onClick={() => setMobileOpen(false)}
-              className="block text-center px-4 py-2.5 rounded-xl bg-white text-[#000000] font-bold text-sm hover:bg-gray-100"
+              className="block text-center px-4 py-2.5 rounded-xl bg-white text-[#facc15] font-bold text-sm hover:bg-gray-100"
             >
               {t("nav.register")}
             </Link>

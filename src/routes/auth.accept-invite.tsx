@@ -144,7 +144,7 @@ function AcceptInvitePage() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white border border-gray-200 rounded-3xl p-8 shadow-sm">
-        <div className="w-12 h-12 rounded-2xl bg-[#000000]/10 text-[#000000] flex items-center justify-center mb-4">
+        <div className="w-12 h-12 rounded-2xl bg-[#facc15]/10 text-[#facc15] flex items-center justify-center mb-4">
           <ShieldCheck size={20} />
         </div>
         <h1 className="text-2xl font-black text-gray-900">{t("auth.accept_invite.title")}</h1>
@@ -177,7 +177,7 @@ function AcceptInvitePage() {
               <input
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#000000]"
+                className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
               />
             </div>
             <div>
@@ -190,7 +190,7 @@ function AcceptInvitePage() {
                 minLength={8}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#000000]"
+                className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
               />
             </div>
             <div>
@@ -203,14 +203,14 @@ function AcceptInvitePage() {
                 minLength={8}
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
-                className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#000000]"
+                className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
               />
             </div>
             {error && <p className="text-sm text-red-600">{error}</p>}
             <button
               type="submit"
               disabled={status === "saving" || status === "done"}
-              className="w-full bg-white hover:bg-gray-100 disabled:opacity-60 text-[#000000] font-bold rounded-xl py-3 text-sm"
+              className="w-full bg-white hover:bg-gray-100 disabled:opacity-60 text-[#facc15] font-bold rounded-xl py-3 text-sm"
             >
               {status === "saving"
                 ? t("auth.accept_invite.saving")

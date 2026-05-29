@@ -27,7 +27,7 @@ function BlogPage() {
   
   return (
     <SiteShell>
-      <section className="bg-white text-[#000000]">
+      <section className="bg-white text-[#facc15]">
         <div className="max-w-5xl mx-auto px-6 py-16">
           <p className="text-xs font-bold uppercase tracking-wider text-amber-300">
             {t("blog.badge")}

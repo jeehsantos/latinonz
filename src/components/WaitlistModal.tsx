@@ -105,13 +105,13 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
         {step === "form" ? (
           <div className="animate-in fade-in duration-300">
             {/* Social proof bar */}
-            <div className="flex items-center justify-center gap-2 bg-[#000000]/8 border border-[#000000]/15 rounded-2xl px-3 py-2 mb-3">
+            <div className="flex items-center justify-center gap-2 bg-[#facc15]/8 border border-[#facc15]/15 rounded-2xl px-3 py-2 mb-3">
               <span className="relative flex h-2 w-2 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
               <p className="text-xs text-gray-700 font-semibold">
-                <span className="text-[#000000] font-extrabold">{t("modal.social_proof")}</span>{" "}
+                <span className="text-[#facc15] font-extrabold">{t("modal.social_proof")}</span>{" "}
                 <span className="text-gray-500 font-medium">{t("modal.social_proof_cta")}</span>
               </p>
             </div>
@@ -261,7 +261,7 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-white hover:bg-gray-100 disabled:opacity-60 disabled:cursor-not-allowed disabled:animate-none text-[#000000] font-bold py-3.5 rounded-xl transition-colors mt-2 flex items-center justify-center gap-2 animate-inflate"
+                className="w-full bg-white hover:bg-gray-100 disabled:opacity-60 disabled:cursor-not-allowed disabled:animate-none text-[#facc15] font-bold py-3.5 rounded-xl transition-colors mt-2 flex items-center justify-center gap-2 animate-inflate"
               >
                 {submitting && <Loader2 size={16} className="animate-spin" />}
                 {t("modal.submit_button")}
@@ -271,13 +271,13 @@ export function WaitlistModal({ onClose }: WaitlistModalProps) {
         ) : (
           <div className="text-center py-8 animate-in fade-in duration-300">
             <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-in zoom-in-50 duration-500">
-              <CheckCircle2 size={44} className="text-[#000000]" strokeWidth={2.5} />
+              <CheckCircle2 size={44} className="text-[#facc15]" strokeWidth={2.5} />
             </div>
             <h2 className="text-2xl font-extrabold text-gray-900 mb-2">
               {t("modal.success_title")}
             </h2>
             <p className="text-gray-500 mb-6 text-sm">{t("modal.success_body")}</p>
-            <button onClick={onClose} className="text-[#000000] font-bold text-sm hover:underline">
+            <button onClick={onClose} className="text-[#facc15] font-bold text-sm hover:underline">
               {t("modal.success_back")}
             </button>
           </div>
@@ -292,7 +292,7 @@ const inputCls = (invalid?: boolean) =>
     "w-full bg-gray-50 border rounded-xl px-4 py-2.5 text-sm outline-none transition-all",
     invalid
       ? "border-red-400 ring-1 ring-red-200 bg-red-50/40 focus:border-red-500 focus:ring-red-300 animate-shake"
-      : "border-gray-200 focus:border-[#000000] focus:ring-1 focus:ring-[#000000]",
+      : "border-gray-200 focus:border-[#facc15] focus:ring-1 focus:ring-[#facc15]",
   ].join(" ");
 
 function Field({

@@ -39,7 +39,7 @@ export function BusinessCard({ business }: { business: Business }) {
         </div>
       </div>
       <div className="p-4 sm:p-5">
-        <h3 className="font-extrabold text-gray-900 group-hover:text-[#000000] line-clamp-1">
+        <h3 className="font-extrabold text-gray-900 group-hover:text-[#facc15] line-clamp-1">
           {business.name}
         </h3>
         <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{business.subcategory}</p>
