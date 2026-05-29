@@ -250,50 +250,78 @@ function BusinessPage() {
 
   return (
     <SiteShell>
-      <section className="bg-gradient-to-br from-white via-white to-white text-[#facc15]">
-        <div className="max-w-7xl mx-auto px-6 py-12">
-          <Link to="/directory" className="text-sm text-white/60 hover:text-white">
+      <section
+        className="relative overflow-hidden border-b border-white/10"
+        style={{
+          background:
+            "radial-gradient(ellipse at top left, rgba(250,204,21,0.18) 0%, transparent 55%), radial-gradient(circle at 85% 110%, rgba(250,204,21,0.12), transparent 50%), #050505",
+        }}
+      >
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:48px_48px]"
+          aria-hidden
+        />
+        <div className="relative max-w-7xl mx-auto px-6 py-10 md:py-14">
+          <Link
+            to="/directory"
+            className="inline-flex items-center text-sm text-white/60 hover:text-[#facc15] transition"
+          >
             {t("business.back_to_directory")}
           </Link>
-          <div className="mt-6 flex flex-col md:flex-row md:items-center gap-6">
-            {business.logoUrl ? (
-              <img
-                src={business.logoUrl}
-                alt={business.name}
-                className="w-24 h-24 md:w-28 md:h-28 rounded-2xl object-cover bg-neutral-900/10 border border-white/20 shrink-0"
+          <div className="mt-8 flex flex-col md:flex-row md:items-end gap-6 md:gap-8">
+            <div className="relative shrink-0">
+              <div
+                className="absolute -inset-1 rounded-3xl bg-gradient-to-br from-[#facc15]/40 to-transparent blur-md"
+                aria-hidden
               />
-            ) : (
-              <div className="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-neutral-900/10 border border-white/20 flex items-center justify-center text-3xl font-black shrink-0">
-                {(business.name || "?").trim().charAt(0).toUpperCase()}
-              </div>
-            )}
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold uppercase bg-neutral-900/15 px-2 py-0.5 rounded-full">
+              {business.logoUrl ? (
+                <img
+                  src={business.logoUrl}
+                  alt={business.name}
+                  className="relative w-28 h-28 md:w-36 md:h-36 rounded-3xl object-cover bg-neutral-900 border border-white/15 shadow-xl"
+                />
+              ) : (
+                <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-3xl bg-neutral-900 border border-white/15 flex items-center justify-center text-4xl font-black text-[#facc15] shadow-xl">
+                  {(business.name || "?").trim().charAt(0).toUpperCase()}
+                </div>
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[10px] font-bold uppercase tracking-wider bg-white/10 text-white border border-white/15 px-2.5 py-1 rounded-full backdrop-blur">
                   {displayType}
                 </span>
                 <PlanBadge plan={business.plan} />
                 {business.fastResponder && (
-                  <span className="text-[10px] font-bold uppercase bg-amber-400 text-amber-950 px-2 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-[#facc15] text-black px-2.5 py-1 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
                     {t("business.fast_responder")}
                   </span>
                 )}
               </div>
-              <h1 className="mt-3 text-4xl md:text-5xl font-black">{business.name}</h1>
-              <p className="mt-2 text-white/70 max-w-2xl">{business.description}</p>
-              <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
-                <span className="inline-flex items-center gap-1 text-white/80">
-                  <MapPin size={14} />{" "}
+              <h1 className="mt-4 text-4xl md:text-6xl font-black tracking-tight text-white leading-[1.05]">
+                {business.name}
+              </h1>
+              {business.description && (
+                <p className="mt-3 text-white/70 max-w-2xl text-base md:text-lg leading-relaxed line-clamp-2">
+                  {business.description}
+                </p>
+              )}
+              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+                <span className="inline-flex items-center gap-1.5 text-white/80">
+                  <MapPin size={14} className="text-[#facc15]" />
                   {locations.length > 0 ? locations.join(", ") : business.location}
                 </span>
-                <span className="inline-flex items-center gap-1 text-amber-300 font-semibold">
-                  <Star size={14} className="fill-amber-400 text-amber-400" />{" "}
+                <span className="inline-flex items-center gap-1.5 font-semibold text-white">
+                  <Star size={14} className="fill-[#facc15] text-[#facc15]" />
                   {business.rating.toFixed(1)}
-                  <span className="text-white/50">
+                  <span className="text-white/50 font-normal">
                     ({business.reviewCount} {t("business.reviews_label")})
                   </span>
                 </span>
-                <span className="text-white/60">{business.subcategory}</span>
+                {business.subcategory && (
+                  <span className="text-white/60">{business.subcategory}</span>
+                )}
               </div>
             </div>
           </div>
