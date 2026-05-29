@@ -760,7 +760,7 @@ function ProfileEditor() {
                     dinein: serviceFlags.dinein,
                     delivery: serviceFlags.delivery,
                     booking: serviceFlags.booking,
-                    other: serviceExtra.trim() || null,
+                    other: null,
                   },
                 });
                 await saveServiceItemsFn({
