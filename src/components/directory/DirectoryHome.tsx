@@ -164,26 +164,27 @@ export function DirectoryHome() {
 
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-5 sm:px-6 pb-16 sm:pb-20">
-        <div className="rounded-3xl bg-gradient-to-br from-white via-gray-100 to-white text-[#facc15] p-8 sm:p-10 md:p-16 text-center relative overflow-hidden">
+        <div className="rounded-3xl bg-gradient-to-br from-[#facc15] via-[#fbbf24] to-[#f59e0b] text-black p-8 sm:p-10 md:p-16 text-center relative overflow-hidden shadow-2xl shadow-[#facc15]/10">
           <div
-            className="absolute inset-0 pointer-events-none opacity-60"
+            className="absolute inset-0 pointer-events-none opacity-40 mix-blend-overlay"
             style={{
               background:
-                "radial-gradient(circle at 80% 20%, rgba(223,153,27,0.35), transparent 50%)",
+                "radial-gradient(circle at 80% 20%, rgba(0,0,0,0.35), transparent 55%), radial-gradient(circle at 10% 90%, rgba(255,255,255,0.4), transparent 50%)",
             }}
           />
           <div className="relative">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black">{t("directory.cta_title")}</h2>
-            <p className="mt-3 text-sm sm:text-base text-white/80 max-w-xl mx-auto">{t("directory.cta_body")}</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight">{t("directory.cta_title")}</h2>
+            <p className="mt-3 text-sm sm:text-base text-black/75 max-w-xl mx-auto">{t("directory.cta_body")}</p>
             <Link
               to="/cadastro"
-              className="inline-flex mt-6 bg-[#df991b] text-white font-bold px-6 py-3 rounded-full hover:bg-[#c4861a] transition"
+              className="inline-flex mt-6 bg-black text-[#facc15] font-bold px-7 py-3 rounded-full hover:bg-neutral-900 transition shadow-lg"
             >
               {t("directory.cta_button")}
             </Link>
           </div>
         </div>
       </section>
+
     </SiteShell>
   );
 }
