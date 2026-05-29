@@ -223,10 +223,22 @@ function BusinessPage() {
     slots: { open: string; close: string }[];
     location: string;
   };
-  const sortedHours = [...(hours as HourRow[])].sort(
-    (a, b) => DAY_ORDER.indexOf(a.day_key as (typeof DAY_ORDER)[number]) -
-      DAY_ORDER.indexOf(b.day_key as (typeof DAY_ORDER)[number]),
-  );
+  // Group hours by location for clearer display
+  const hoursByLocation = new Map<string, HourRow[]>();
+  for (const h of hours as HourRow[]) {
+    const key = h.location || "—";
+    if (!hoursByLocation.has(key)) hoursByLocation.set(key, []);
+    hoursByLocation.get(key)!.push(h);
+  }
+  const hoursGroups = Array.from(hoursByLocation.entries()).map(([location, rows]) => ({
+    location,
+    rows: rows.sort(
+      (a, b) =>
+        DAY_ORDER.indexOf(a.day_key as (typeof DAY_ORDER)[number]) -
+        DAY_ORDER.indexOf(b.day_key as (typeof DAY_ORDER)[number]),
+    ),
+  }));
+  const totalHourRows = (hours as HourRow[]).length;
 
   const serviceOptionBadges: { key: string; label: string }[] = [];
   if (serviceOptions) {
@@ -477,20 +489,39 @@ function BusinessPage() {
           </div>
 
           {/* Hours — Premium+ only */}
-          {can(business.plan, "businessHours") && sortedHours.length > 0 && (
+          {can(business.plan, "businessHours") && totalHourRows > 0 && (
             <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
               <h3 className="font-extrabold text-white flex items-center gap-2">
                 <Clock size={16} /> {t("business.hours_title")}
               </h3>
-              <div className="mt-3 space-y-2 text-sm">
-                {sortedHours.map((h) => (
-                  <div key={`${h.location}-${h.day_key}`} className="flex justify-between">
-                    <span className="text-neutral-400">{DAY_LABELS[h.day_key] ?? h.day_key}</span>
-                    <span className="font-semibold text-neutral-100">
-                      {h.is_closed || h.slots.length === 0
-                        ? "—"
-                        : h.slots.map((s) => `${s.open}–${s.close}`).join(", ")}
-                    </span>
+              <div className="mt-4 space-y-5">
+                {hoursGroups.map((group) => (
+                  <div key={group.location}>
+                    {hoursGroups.length > 1 && (
+                      <div className="flex items-center gap-2 mb-2">
+                        <MapPin size={12} className="text-[#facc15]" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-[#facc15]">
+                          {group.location}
+                        </span>
+                      </div>
+                    )}
+                    <div className="space-y-1.5 text-sm">
+                      {group.rows.map((h) => (
+                        <div
+                          key={`${h.location}-${h.day_key}`}
+                          className="flex justify-between"
+                        >
+                          <span className="text-neutral-400">
+                            {DAY_LABELS[h.day_key] ?? h.day_key}
+                          </span>
+                          <span className="font-semibold text-neutral-100">
+                            {h.is_closed || h.slots.length === 0
+                              ? "—"
+                              : h.slots.map((s) => `${s.open}–${s.close}`).join(", ")}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
