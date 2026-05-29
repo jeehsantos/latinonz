@@ -43,20 +43,21 @@ export function DirectoryHome() {
         className="relative text-white overflow-hidden"
         style={{
           background:
-            "radial-gradient(ellipse at top, #1a1a1a 0%, #facc15 60%), radial-gradient(circle at bottom right, rgba(223,153,27,0.25), transparent 60%)",
+            "radial-gradient(ellipse at top, rgba(250,204,21,0.18) 0%, #0a0a0a 60%), radial-gradient(circle at bottom right, rgba(250,204,21,0.12), transparent 60%), #050505",
         }}
       >
+        <div className="absolute inset-0 -z-0 opacity-[0.04] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:48px_48px]" />
         <div className="relative max-w-6xl mx-auto px-5 sm:px-6 py-14 sm:py-20 md:py-28 text-center">
-          <div className="inline-flex items-center gap-2 bg-neutral-900/10 backdrop-blur-sm text-white text-[10px] sm:text-[11px] font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-5 sm:mb-8 uppercase tracking-[0.18em]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#df991b]" />
+          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 backdrop-blur-sm text-white/90 text-[10px] sm:text-[11px] font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-5 sm:mb-8 uppercase tracking-[0.18em]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#facc15]" />
             {t("directory.home_badge")}
           </div>
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight leading-[1.05] text-white">
             {t("directory.home_headline_before")}
-            <span className="text-[#df991b]">{t("directory.home_headline_highlight")}</span>
+            <span className="text-[#facc15]">{t("directory.home_headline_highlight")}</span>
             {t("directory.home_headline_after")}
           </h1>
-          <p className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg text-white/70 max-w-2xl mx-auto">
+          <p className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg text-white/60 max-w-2xl mx-auto">
             {t("directory.home_subheadline")}
           </p>
           <div className="mt-6 sm:mt-10 max-w-4xl mx-auto">
@@ -64,6 +65,7 @@ export function DirectoryHome() {
           </div>
         </div>
       </section>
+
 
       {/* Trust strip */}
       <section className="max-w-7xl mx-auto px-5 sm:px-6 -mt-6 sm:-mt-8 grid grid-cols-3 gap-2 sm:gap-4 relative z-10">
