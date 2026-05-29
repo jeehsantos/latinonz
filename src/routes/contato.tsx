@@ -229,7 +229,7 @@ function ContatoPage() {
                           onClick={() => setFormData({ ...formData, assunto: opt })}
                           className={`py-2 text-xs font-bold rounded-xl border transition-all ${
                             formData.assunto === opt
-                              ? "bg-[#facc15] text-white border-[#facc15]"
+                              ? "bg-[#facc15] text-black border-[#facc15]"
                               : "bg-neutral-900 text-slate-500 border-white/10 hover:border-slate-300"
                           }`}
                         >
