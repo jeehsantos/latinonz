@@ -44,7 +44,7 @@ function BlogPage() {
           
           {/* Glassmorphism content */}
           <div className="relative p-12 md:p-24 text-center">
-            <div className="inline-flex items-center justify-center p-4 bg-white/10 rounded-2xl mb-8 shadow-inner ring-1 ring-white/20 backdrop-blur-md">
+            <div className="inline-flex items-center justify-center p-4 bg-neutral-900/10 rounded-2xl mb-8 shadow-inner ring-1 ring-white/20 backdrop-blur-md">
               <Sparkles className="w-10 h-10 text-amber-300" />
             </div>
             

@@ -376,42 +376,42 @@ function ProfileEditor() {
 
   return (
     <div className="flex flex-col lg:flex-row gap-8">
-      <div className="flex-1 bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-6">
-        <h3 className="text-xl font-bold text-gray-900 border-b border-gray-100 pb-4">
+      <div className="flex-1 bg-neutral-900 rounded-2xl border border-white/10 shadow-sm p-6 space-y-6">
+        <h3 className="text-xl font-bold text-white border-b border-white/10 pb-4">
           {t("profile.title")}
         </h3>
 
         <div>
           <div className="flex justify-between mb-1">
-            <label className="block text-sm font-bold text-gray-700">
+            <label className="block text-sm font-bold text-neutral-200">
               {t("profile.description_label")}
             </label>
-            <span className="text-xs text-gray-400">240/500</span>
+            <span className="text-xs text-neutral-500">240/500</span>
           </div>
           <textarea
             rows={4}
             maxLength={500}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#facc15] resize-none"
+            className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15] resize-none"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <p className="text-xs text-gray-500 mt-1">{t("profile.description_hint")}</p>
+          <p className="text-xs text-neutral-400 mt-1">{t("profile.description_hint")}</p>
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">
+          <label className="block text-sm font-bold text-neutral-200 mb-2">
             {t("profile.type_label")}
           </label>
-          <div className="flex bg-gray-100 p-1 rounded-xl">
+          <div className="flex bg-white/5 p-1 rounded-xl">
             <button
               onClick={() => setBusinessType("Serviço")}
-              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${businessType === "Serviço" ? "bg-black text-[#facc15] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${businessType === "Serviço" ? "bg-black text-[#facc15] shadow-sm" : "text-neutral-400 hover:text-neutral-200"}`}
             >
               {t("profile.type_service")}
             </button>
             <button
               onClick={() => setBusinessType("Produto")}
-              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${businessType === "Produto" ? "bg-black text-[#facc15] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${businessType === "Produto" ? "bg-black text-[#facc15] shadow-sm" : "text-neutral-400 hover:text-neutral-200"}`}
             >
               {t("profile.type_product")}
             </button>
@@ -419,26 +419,26 @@ function ProfileEditor() {
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-1">
+          <label className="block text-sm font-bold text-neutral-200 mb-1">
             {t("profile.business_name_label")}
           </label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#facc15] focus:ring-1 focus:ring-[#facc15]"
+            className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15] focus:ring-1 focus:ring-[#facc15]"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-1">
+          <label className="block text-sm font-bold text-neutral-200 mb-1">
             {t("profile.category_label")}
           </label>
           <div className="relative">
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#facc15] appearance-none"
+              className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15] appearance-none"
             >
               {activeCategories.length === 0 && (
                 <option value="">Nenhuma categoria disponível</option>
@@ -451,13 +451,13 @@ function ProfileEditor() {
             </select>
             <ChevronDown
               size={16}
-              className="absolute right-4 top-4 text-gray-400 pointer-events-none"
+              className="absolute right-4 top-4 text-neutral-500 pointer-events-none"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-1">
+          <label className="block text-sm font-bold text-neutral-200 mb-1">
             {t("profile.phone_label")}
           </label>
           <input
@@ -465,29 +465,29 @@ function ProfileEditor() {
             placeholder="Ex: 021 000 0000"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#facc15]"
+            className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-1">
+          <label className="block text-sm font-bold text-neutral-200 mb-1">
             {t("profile.cities_label")}{" "}
-            <span className="font-normal text-gray-400">{t("profile.cities_multiple")}</span>
+            <span className="font-normal text-neutral-500">{t("profile.cities_multiple")}</span>
           </label>
           <div className="relative">
             <button
               type="button"
               onClick={() => setCitiesOpen((o) => !o)}
-              className="w-full flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-left text-gray-900 outline-none focus:border-[#facc15]"
+              className="w-full flex items-center justify-between bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-left text-white outline-none focus:border-[#facc15]"
             >
               <span className="truncate">{citiesLabel}</span>
               <ChevronDown
                 size={16}
-                className={`text-gray-400 transition-transform ${citiesOpen ? "rotate-180" : ""}`}
+                className={`text-neutral-500 transition-transform ${citiesOpen ? "rotate-180" : ""}`}
               />
             </button>
             {citiesOpen && (
-              <div className="absolute z-20 mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-lg p-2 max-h-72 overflow-y-auto">
+              <div className="absolute z-20 mt-2 w-full bg-neutral-900 border border-white/10 rounded-xl shadow-lg p-2 max-h-72 overflow-y-auto">
                 {NZ_CITIES.map((c) => {
                   const checked = cities.includes(c);
                   return (
@@ -495,14 +495,14 @@ function ProfileEditor() {
                       type="button"
                       key={c}
                       onClick={() => toggleCity(c)}
-                      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-50 text-left"
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-neutral-950 text-left"
                     >
                       <span
                         className={`h-4 w-4 rounded border flex items-center justify-center ${checked ? "bg-[#facc15] border-[#facc15]" : "border-gray-300"}`}
                       >
                         {checked && <Check size={12} className="text-white" />}
                       </span>
-                      <span className="text-sm text-gray-700">{c}</span>
+                      <span className="text-sm text-neutral-200">{c}</span>
                     </button>
                   );
                 })}
@@ -532,7 +532,7 @@ function ProfileEditor() {
         </div>
 
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-1">
+          <label className="block text-sm font-bold text-neutral-200 mb-1">
             {t("profile.keywords_label")}
           </label>
           <input
@@ -540,31 +540,31 @@ function ProfileEditor() {
             value={keywords}
             onChange={(e) => setKeywords(e.target.value)}
             placeholder={t("profile.keywords_placeholder")}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#facc15]"
+            className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
           />
-          <p className="text-xs text-gray-500 mt-1">{t("profile.keywords_hint")}</p>
+          <p className="text-xs text-neutral-400 mt-1">{t("profile.keywords_hint")}</p>
         </div>
 
         {/* Hours — Premium+ only */}
         {plan === "starter" ? (
-          <div className="pt-4 border-t border-gray-100">
+          <div className="pt-4 border-t border-white/10">
             <div className="flex items-center gap-2 mb-2">
-              <Clock size={18} className="text-gray-400" />
-              <label className="block text-sm font-bold text-gray-700">
+              <Clock size={18} className="text-neutral-500" />
+              <label className="block text-sm font-bold text-neutral-200">
                 {t("profile.hours_title")}
               </label>
               <span className="text-[10px] bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded font-bold">
                 PREMIUM+
               </span>
             </div>
-            <p className="text-xs text-gray-500">{t("profile.hours_upgrade_hint")}</p>
+            <p className="text-xs text-neutral-400">{t("profile.hours_upgrade_hint")}</p>
           </div>
         ) : (
-          <div className="pt-4 border-t border-gray-100">
+          <div className="pt-4 border-t border-white/10">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
               <div className="flex items-center gap-2">
                 <Clock size={18} className="text-[#facc15]" />
-                <label className="block text-sm font-bold text-gray-700">
+                <label className="block text-sm font-bold text-neutral-200">
                   {t("profile.hours_title")}
                 </label>
               </div>
@@ -573,7 +573,7 @@ function ProfileEditor() {
             {multiBranch && (
               <div className="mb-4">
                 <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
-                  <p className="text-xs text-gray-500">{t("profile.hours_configure_branches")}</p>
+                  <p className="text-xs text-neutral-400">{t("profile.hours_configure_branches")}</p>
                   <button
                     type="button"
                     onClick={copyScheduleToAll}
@@ -582,13 +582,13 @@ function ProfileEditor() {
                     <Copy size={12} /> {t("profile.hours_apply_all")}
                   </button>
                 </div>
-                <div className="flex flex-wrap gap-1.5 p-1 bg-gray-100 rounded-xl">
+                <div className="flex flex-wrap gap-1.5 p-1 bg-white/5 rounded-xl">
                   {cities.map((c) => (
                     <button
                       key={c}
                       type="button"
                       onClick={() => setActiveBranch(c)}
-                      className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${activeBranch === c ? "bg-black text-[#facc15] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+                      className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${activeBranch === c ? "bg-black text-[#facc15] shadow-sm" : "text-neutral-400 hover:text-neutral-200"}`}
                     >
                       {c}
                     </button>
@@ -597,21 +597,21 @@ function ProfileEditor() {
               </div>
             )}
 
-            <div className="rounded-xl border border-gray-200 overflow-hidden divide-y divide-gray-100">
+            <div className="rounded-xl border border-white/10 overflow-hidden divide-y divide-gray-100">
               {days.map(({ key, label, short }) => {
                 const day = branchSchedule[key];
                 return (
                   <div
                     key={key}
-                    className={`flex flex-col md:flex-row md:items-center gap-3 md:gap-4 px-4 py-3 transition-colors ${day.closed ? "bg-gray-50" : "bg-white hover:bg-gray-50/60"}`}
+                    className={`flex flex-col md:flex-row md:items-center gap-3 md:gap-4 px-4 py-3 transition-colors ${day.closed ? "bg-neutral-950" : "bg-neutral-900 hover:bg-neutral-950/60"}`}
                   >
                     <div className="flex items-center gap-3 md:w-44">
                       <span
-                        className={`flex items-center justify-center h-9 w-9 rounded-lg text-[11px] font-bold ${day.closed ? "bg-gray-200 text-gray-500" : "bg-emerald-50 text-[#facc15]"}`}
+                        className={`flex items-center justify-center h-9 w-9 rounded-lg text-[11px] font-bold ${day.closed ? "bg-white/10 text-neutral-400" : "bg-emerald-50 text-[#facc15]"}`}
                       >
                         {short}
                       </span>
-                      <span className="text-sm font-semibold text-gray-700">{label}</span>
+                      <span className="text-sm font-semibold text-neutral-200">{label}</span>
                     </div>
                     <div className="flex-1 flex flex-wrap items-center gap-2">
                       {day.closed ? (
@@ -623,26 +623,26 @@ function ProfileEditor() {
                           {day.slots.map((slot, idx) => (
                             <div
                               key={idx}
-                              className="inline-flex items-center gap-1.5 bg-white border border-gray-200 rounded-lg px-2 py-1"
+                              className="inline-flex items-center gap-1.5 bg-neutral-900 border border-white/10 rounded-lg px-2 py-1"
                             >
                               <input
                                 type="time"
                                 value={slot.open}
                                 onChange={(e) => updateSlot(key, idx, "open", e.target.value)}
-                                className="bg-transparent text-sm text-gray-900 outline-none w-[88px]"
+                                className="bg-transparent text-sm text-white outline-none w-[88px]"
                               />
-                              <span className="text-gray-400 text-xs">{t("profile.hours_at")}</span>
+                              <span className="text-neutral-500 text-xs">{t("profile.hours_at")}</span>
                               <input
                                 type="time"
                                 value={slot.close}
                                 onChange={(e) => updateSlot(key, idx, "close", e.target.value)}
-                                className="bg-transparent text-sm text-gray-900 outline-none w-[88px]"
+                                className="bg-transparent text-sm text-white outline-none w-[88px]"
                               />
                               {day.slots.length > 1 && (
                                 <button
                                   type="button"
                                   onClick={() => removeSlot(key, idx)}
-                                  className="text-gray-400 hover:text-red-600 ml-1"
+                                  className="text-neutral-500 hover:text-red-600 ml-1"
                                   aria-label="Remover horário"
                                 >
                                   <Trash2 size={13} />
@@ -661,7 +661,7 @@ function ProfileEditor() {
                       )}
                     </div>
                     <label className="inline-flex items-center gap-2 cursor-pointer select-none">
-                      <span className="text-xs font-semibold text-gray-500">
+                      <span className="text-xs font-semibold text-neutral-400">
                         {day.closed ? t("profile.hours_closed_label") : t("profile.hours_open")}
                       </span>
                       <span className="relative">
@@ -672,7 +672,7 @@ function ProfileEditor() {
                           className="sr-only peer"
                         />
                         <span className="block h-5 w-9 bg-gray-300 peer-checked:bg-[#facc15] rounded-full transition-colors" />
-                        <span className="absolute top-0.5 left-0.5 h-4 w-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4" />
+                        <span className="absolute top-0.5 left-0.5 h-4 w-4 bg-neutral-900 rounded-full shadow transition-transform peer-checked:translate-x-4" />
                       </span>
                     </label>
                   </div>
@@ -787,7 +787,7 @@ function ProfileEditor() {
             }
           }}
           disabled={saving}
-          className="bg-white hover:bg-gray-100 disabled:opacity-60 text-[#facc15] font-bold rounded-xl px-6 py-2.5 text-sm"
+          className="bg-neutral-900 hover:bg-white/5 disabled:opacity-60 text-[#facc15] font-bold rounded-xl px-6 py-2.5 text-sm"
         >
           {saving ? "..." : t("profile.save_button")}
         </button>
@@ -795,11 +795,11 @@ function ProfileEditor() {
 
       {/* Sidebar */}
       <div className="w-full lg:w-80 space-y-6">
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-          <h3 className="font-bold text-gray-900 mb-1">{t("profile.logo_title")}</h3>
-          <p className="text-xs text-gray-500 mb-4">{t("profile.logo_subtitle")}</p>
+        <div className="bg-neutral-900 rounded-2xl border border-white/10 shadow-sm p-6">
+          <h3 className="font-bold text-white mb-1">{t("profile.logo_title")}</h3>
+          <p className="text-xs text-neutral-400 mb-4">{t("profile.logo_subtitle")}</p>
           <div className="flex flex-col items-center">
-            <div className="w-32 h-32 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 overflow-hidden flex items-center justify-center mb-3">
+            <div className="w-32 h-32 rounded-2xl border-2 border-dashed border-white/10 bg-neutral-950 overflow-hidden flex items-center justify-center mb-3">
               {logo ? (
                 <img src={logo} alt="Logo" className="w-full h-full object-cover" />
               ) : (
@@ -817,7 +817,7 @@ function ProfileEditor() {
               <button
                 onClick={() => logoRef.current?.click()}
                 disabled={logoUploading}
-                className="flex-1 inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-100 disabled:opacity-60 text-[#facc15] font-bold py-2 rounded-xl text-sm transition-colors"
+                className="flex-1 inline-flex items-center justify-center gap-2 bg-neutral-900 hover:bg-white/5 disabled:opacity-60 text-[#facc15] font-bold py-2 rounded-xl text-sm transition-colors"
               >
                 <Upload size={14} />{" "}
                 {logoUploading ? "..." : logo ? t("profile.logo_change") : t("profile.logo_upload")}
@@ -826,7 +826,7 @@ function ProfileEditor() {
                 <button
                   onClick={() => setLogo(null)}
                   disabled={logoUploading}
-                  className="inline-flex items-center justify-center bg-gray-100 hover:bg-gray-200 disabled:opacity-60 text-gray-700 font-bold px-3 rounded-xl text-sm transition-colors"
+                  className="inline-flex items-center justify-center bg-white/5 hover:bg-white/10 disabled:opacity-60 text-neutral-200 font-bold px-3 rounded-xl text-sm transition-colors"
                   aria-label={t("profile.logo_remove")}
                 >
                   <Trash2 size={14} />
@@ -834,21 +834,21 @@ function ProfileEditor() {
               )}
             </div>
             {logoError && <p className="text-[11px] text-red-600 mt-2 text-center">{logoError}</p>}
-            <p className="text-[11px] text-gray-400 mt-2 text-center">{t("profile.logo_hint")}</p>
+            <p className="text-[11px] text-neutral-500 mt-2 text-center">{t("profile.logo_hint")}</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 flex flex-col items-center text-center">
-          <h3 className="font-bold text-gray-900 mb-4 w-full text-left">{t("profile.qr_title")}</h3>
-          <div className="w-32 h-32 bg-gray-50 border border-gray-200 rounded-xl p-2 mb-4 flex items-center justify-center">
+        <div className="bg-neutral-900 rounded-2xl border border-white/10 shadow-sm p-6 flex flex-col items-center text-center">
+          <h3 className="font-bold text-white mb-4 w-full text-left">{t("profile.qr_title")}</h3>
+          <div className="w-32 h-32 bg-neutral-950 border border-white/10 rounded-xl p-2 mb-4 flex items-center justify-center">
             {qrDataUrl ? (
               <img src={qrDataUrl} alt="QR code" className="w-full h-full object-contain" />
             ) : !canUseQr ? (
-              <span className="text-xs text-gray-400 px-2 inline-flex items-center gap-1">
+              <span className="text-xs text-neutral-500 px-2 inline-flex items-center gap-1">
                 <Lock size={12} /> Premium / Ultra
               </span>
             ) : (
-              <span className="text-xs text-gray-400 px-2">
+              <span className="text-xs text-neutral-500 px-2">
                 {generating ? t("profile.qr_generating") : t("profile.qr_not_generated")}
               </span>
             )}
@@ -864,20 +864,20 @@ function ProfileEditor() {
             <button
               onClick={handleGenerateQr}
               disabled={generating || !qrUrl}
-              className="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-100 disabled:opacity-60 text-[#facc15] font-bold py-2.5 rounded-xl text-sm transition-colors"
+              className="w-full flex items-center justify-center gap-2 bg-neutral-900 hover:bg-white/5 disabled:opacity-60 text-[#facc15] font-bold py-2.5 rounded-xl text-sm transition-colors"
             >
               {generating ? t("profile.qr_generating") : t("profile.qr_generate")}
             </button>
           ) : (
             <button
               onClick={handleDownloadQr}
-              className="w-full flex items-center justify-center gap-2 bg-[#0B2C1A] text-white font-bold py-2.5 rounded-xl text-sm hover:bg-white hover:text-[#facc15] transition-colors"
+              className="w-full flex items-center justify-center gap-2 bg-[#0B2C1A] text-white font-bold py-2.5 rounded-xl text-sm hover:bg-neutral-900 hover:text-[#facc15] transition-colors"
             >
               <Download size={16} /> {t("profile.qr_download")}
             </button>
           )}
           {qrError && <p className="text-[11px] text-red-600 mt-2">{qrError}</p>}
-          {qrUrl && canUseQr && <p className="text-[10px] text-gray-400 mt-2 break-all">{qrUrl}</p>}
+          {qrUrl && canUseQr && <p className="text-[10px] text-neutral-500 mt-2 break-all">{qrUrl}</p>}
         </div>
       </div>
     </div>
@@ -936,15 +936,15 @@ function ServiceOptionsSection({
   const removeItem = (idx: number) => onChangeItems(items.filter((_, i) => i !== idx));
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4">
+    <div className="bg-neutral-900 rounded-2xl border border-white/10 shadow-sm p-6 space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
         <div className="flex items-center gap-2">
           <Sparkles size={18} className="text-[#facc15]" />
           <div>
-            <h3 className="text-base font-bold text-gray-900">
+            <h3 className="text-base font-bold text-white">
               {t("profile.service_options_title")}
             </h3>
-            <p className="text-xs text-gray-500">{t("profile.service_options_subtitle")}</p>
+            <p className="text-xs text-neutral-400">{t("profile.service_options_subtitle")}</p>
           </div>
         </div>
         <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-full bg-amber-100 text-amber-800 uppercase tracking-wide">
@@ -953,19 +953,19 @@ function ServiceOptionsSection({
       </div>
 
       {!isPaid ? (
-        <div className="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/60 p-6 text-center">
+        <div className="rounded-xl border-2 border-dashed border-white/10 bg-neutral-950/60 p-6 text-center">
           <div className="w-11 h-11 mx-auto rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center">
             <Lock size={18} />
           </div>
-          <p className="mt-3 text-sm font-bold text-gray-900">
+          <p className="mt-3 text-sm font-bold text-white">
             {t("profile.service_options_locked_title")}
           </p>
-          <p className="text-xs text-gray-500 mt-1 max-w-sm mx-auto">
+          <p className="text-xs text-neutral-400 mt-1 max-w-sm mx-auto">
             {t("profile.service_options_locked_body")}
           </p>
           <Link
             to="/dashboard/upgrade"
-            className="inline-flex mt-4 bg-white hover:bg-gray-100 text-[#facc15] text-xs font-bold px-4 py-2 rounded-xl"
+            className="inline-flex mt-4 bg-neutral-900 hover:bg-white/5 text-[#facc15] text-xs font-bold px-4 py-2 rounded-xl"
           >
             {t("profile.service_options_upgrade")}
           </Link>
@@ -980,25 +980,25 @@ function ServiceOptionsSection({
                   key={key}
                   type="button"
                   onClick={() => onToggleFlag(key)}
-                  className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-colors ${on ? "border-[#facc15] bg-emerald-50/60" : "border-gray-200 bg-white hover:border-gray-300"}`}
+                  className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-colors ${on ? "border-[#facc15] bg-emerald-50/60" : "border-white/10 bg-neutral-900 hover:border-gray-300"}`}
                 >
                   <span
-                    className={`flex items-center justify-center h-10 w-10 rounded-lg ${on ? "bg-[#facc15] text-white" : "bg-gray-100 text-gray-500"}`}
+                    className={`flex items-center justify-center h-10 w-10 rounded-lg ${on ? "bg-[#facc15] text-white" : "bg-white/5 text-neutral-400"}`}
                   >
                     <Icon size={18} />
                   </span>
                   <span className="flex-1">
-                    <span className="block text-sm font-bold text-gray-900">{label}</span>
-                    <span className="block text-xs text-gray-500">{hint}</span>
+                    <span className="block text-sm font-bold text-white">{label}</span>
+                    <span className="block text-xs text-neutral-400">{hint}</span>
                   </span>
                 </button>
               );
             })}
           </div>
 
-          <div className="pt-4 border-t border-gray-100">
+          <div className="pt-4 border-t border-white/10">
             <div className="flex items-center justify-between mb-3">
-              <label className="block text-sm font-bold text-gray-700">
+              <label className="block text-sm font-bold text-neutral-200">
                 Opções personalizadas
               </label>
               <button
@@ -1011,7 +1011,7 @@ function ServiceOptionsSection({
             </div>
 
             {items.length === 0 && (
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-neutral-400">
                 Adicione opções extras com título, descrição e ícone (ex: Atendimento domiciliar, Consultoria online).
               </p>
             )}
@@ -1022,7 +1022,7 @@ function ServiceOptionsSection({
                 return (
                   <div
                     key={idx}
-                    className="rounded-xl border border-gray-200 p-3 bg-gray-50/40 space-y-2"
+                    className="rounded-xl border border-white/10 p-3 bg-neutral-950/40 space-y-2"
                   >
                     <div className="flex items-start gap-3">
                       <span className="flex items-center justify-center h-10 w-10 rounded-lg bg-black text-[#facc15] shrink-0">
@@ -1035,7 +1035,7 @@ function ServiceOptionsSection({
                           onChange={(e) => updateItem(idx, { title: e.target.value })}
                           placeholder="Título (ex: Atendimento domiciliar)"
                           maxLength={80}
-                          className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#facc15]"
+                          className="w-full bg-neutral-900 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#facc15]"
                         />
                         <input
                           type="text"
@@ -1043,13 +1043,13 @@ function ServiceOptionsSection({
                           onChange={(e) => updateItem(idx, { description: e.target.value })}
                           placeholder="Descrição (opcional)"
                           maxLength={200}
-                          className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#facc15]"
+                          className="w-full bg-neutral-900 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#facc15]"
                         />
                       </div>
                       <button
                         type="button"
                         onClick={() => removeItem(idx)}
-                        className="text-gray-400 hover:text-red-600 mt-2"
+                        className="text-neutral-500 hover:text-red-600 mt-2"
                         aria-label="Remover"
                       >
                         <Trash2 size={16} />
@@ -1063,7 +1063,7 @@ function ServiceOptionsSection({
                             key={key}
                             type="button"
                             onClick={() => updateItem(idx, { icon_key: key })}
-                            className={`flex items-center justify-center h-8 w-8 rounded-lg border transition-colors ${active ? "border-[#facc15] bg-emerald-50 text-[#facc15]" : "border-gray-200 text-gray-500 hover:border-gray-300"}`}
+                            className={`flex items-center justify-center h-8 w-8 rounded-lg border transition-colors ${active ? "border-[#facc15] bg-emerald-50 text-[#facc15]" : "border-white/10 text-neutral-400 hover:border-gray-300"}`}
                             aria-label={key}
                           >
                             <I size={14} />
@@ -1078,9 +1078,9 @@ function ServiceOptionsSection({
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">
+            <label className="block text-sm font-bold text-neutral-200 mb-1">
               {t("profile.service_options_other_label")}{" "}
-              <span className="font-normal text-gray-400">
+              <span className="font-normal text-neutral-500">
                 {t("profile.service_options_other_optional")}
               </span>
             </label>
@@ -1090,9 +1090,9 @@ function ServiceOptionsSection({
               onChange={(e) => onChangeExtra(e.target.value)}
               placeholder={t("profile.service_options_other_placeholder")}
               maxLength={60}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#facc15]"
+              className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
             />
-            <p className="text-xs text-gray-500 mt-1">{t("profile.service_options_other_hint")}</p>
+            <p className="text-xs text-neutral-400 mt-1">{t("profile.service_options_other_hint")}</p>
           </div>
         </>
       )}
@@ -1169,13 +1169,13 @@ function GoogleReviewsSection({
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-4">
+    <div className="bg-neutral-900 rounded-2xl border border-white/10 shadow-sm p-6 space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
         <div className="flex items-center gap-2">
           <Star size={18} className="text-[#facc15]" />
           <div>
-            <h3 className="text-base font-bold text-gray-900">Google Reviews</h3>
-            <p className="text-xs text-gray-500">
+            <h3 className="text-base font-bold text-white">Google Reviews</h3>
+            <p className="text-xs text-neutral-400">
               Conecte seu Google Place ID para exibir avaliações reais no seu perfil.
             </p>
           </div>
@@ -1183,16 +1183,16 @@ function GoogleReviewsSection({
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-gray-700 mb-1">Google Place ID</label>
+        <label className="block text-sm font-bold text-neutral-200 mb-1">Google Place ID</label>
         <input
           type="text"
           value={placeId}
           onChange={(e) => setPlaceId(e.target.value)}
           placeholder="Ex: ChIJN1t_tDeuEmsRUsoyG83frY4"
           maxLength={200}
-          className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 outline-none focus:border-[#facc15]"
+          className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
         />
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-neutral-400 mt-1">
           Encontre seu Place ID em{" "}
           <a
             href="https://developers.google.com/maps/documentation/places/web-service/place-id"
@@ -1217,7 +1217,7 @@ function GoogleReviewsSection({
           type="button"
           onClick={handleConnect}
           disabled={busy || !isValid}
-          className="inline-flex items-center gap-2 bg-white hover:bg-gray-100 disabled:opacity-60 text-[#facc15] font-bold rounded-xl px-4 py-2 text-sm"
+          className="inline-flex items-center gap-2 bg-neutral-900 hover:bg-white/5 disabled:opacity-60 text-[#facc15] font-bold rounded-xl px-4 py-2 text-sm"
         >
           {busy ? "..." : initialPlaceId ? "Atualizar e sincronizar" : "Conectar"}
         </button>
@@ -1226,7 +1226,7 @@ function GoogleReviewsSection({
             type="button"
             onClick={handleSync}
             disabled={busy}
-            className="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 disabled:opacity-60 text-gray-800 font-bold rounded-xl px-4 py-2 text-sm"
+            className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 disabled:opacity-60 text-neutral-100 font-bold rounded-xl px-4 py-2 text-sm"
           >
             <RefreshCw size={14} /> Sincronizar agora
           </button>

@@ -78,8 +78,8 @@ function GalleryPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-black text-gray-900">{t("gallery.title")}</h1>
-        <p className="text-gray-500 mt-1">
+        <h1 className="text-3xl font-black text-white">{t("gallery.title")}</h1>
+        <p className="text-neutral-400 mt-1">
           {t("gallery.subtitle_plan")} <span className="font-bold capitalize">{plan}</span>{" "}
           {t("gallery.subtitle_allows")}{" "}
           {Number.isFinite(limit)
@@ -94,12 +94,12 @@ function GalleryPage() {
         {photos.map((p: { id: string; url: string }) => (
           <div
             key={p.id}
-            className="relative aspect-square rounded-2xl overflow-hidden border border-gray-200 group"
+            className="relative aspect-square rounded-2xl overflow-hidden border border-white/10 group"
           >
             <img src={p.url} alt="" className="w-full h-full object-cover" />
             <button
               onClick={() => handleDelete(p.id)}
-              className="absolute top-2 right-2 bg-white/90 hover:bg-white text-red-600 rounded-lg p-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute top-2 right-2 bg-neutral-900/90 hover:bg-neutral-900 text-red-600 rounded-lg p-1.5 opacity-0 group-hover:opacity-100 transition-opacity"
               aria-label="Remover"
             >
               <Trash2 size={14} />
@@ -110,7 +110,7 @@ function GalleryPage() {
           <button
             onClick={handlePick}
             disabled={uploading}
-            className="aspect-square rounded-2xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-[#facc15] hover:text-[#facc15] disabled:opacity-60 flex flex-col items-center justify-center gap-2"
+            className="aspect-square rounded-2xl border-2 border-dashed border-gray-300 text-neutral-400 hover:border-[#facc15] hover:text-[#facc15] disabled:opacity-60 flex flex-col items-center justify-center gap-2"
           >
             <Plus size={20} />
             <span className="text-xs font-bold">{uploading ? "..." : t("gallery.add_button")}</span>
@@ -120,7 +120,7 @@ function GalleryPage() {
           Array.from({ length: placeholders }).map((_, i) => (
             <div
               key={`ph-${i}`}
-              className="aspect-square rounded-2xl bg-gradient-to-br from-emerald-100 via-amber-100 to-emerald-50 border border-gray-200"
+              className="aspect-square rounded-2xl bg-gradient-to-br from-emerald-100 via-amber-100 to-emerald-50 border border-white/10"
             />
           ))}
       </div>

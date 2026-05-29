@@ -80,44 +80,44 @@ function AdminAccountPage() {
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <h1 className="text-3xl font-black text-gray-900">Minha conta</h1>
-        <p className="text-gray-500 mt-1">
+        <h1 className="text-3xl font-black text-white">Minha conta</h1>
+        <p className="text-neutral-400 mt-1">
           Atualize seus dados de acesso ao painel administrativo.
         </p>
       </div>
 
       <form
         onSubmit={saveProfile}
-        className="bg-white border border-gray-200 rounded-3xl p-6 space-y-4"
+        className="bg-neutral-900 border border-white/10 rounded-3xl p-6 space-y-4"
       >
-        <div className="flex items-center gap-2 text-gray-900">
+        <div className="flex items-center gap-2 text-white">
           <UserCog size={18} />
           <h2 className="font-bold">Perfil</h2>
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-bold uppercase text-gray-500">E-mail</label>
+            <label className="text-xs font-bold uppercase text-neutral-400">E-mail</label>
             <input
               value={email ?? ""}
               disabled
-              className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-500"
+              className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-neutral-400"
             />
           </div>
           <div>
-            <label className="text-xs font-bold uppercase text-gray-500">Função</label>
+            <label className="text-xs font-bold uppercase text-neutral-400">Função</label>
             <input
               value={role ?? ""}
               disabled
-              className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-500 capitalize"
+              className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-neutral-400 capitalize"
             />
           </div>
         </div>
         <div>
-          <label className="text-xs font-bold uppercase text-gray-500">Nome completo</label>
+          <label className="text-xs font-bold uppercase text-neutral-400">Nome completo</label>
           <input
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
+            className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
           />
         </div>
         {profileMsg && (
@@ -130,7 +130,7 @@ function AdminAccountPage() {
         <button
           type="submit"
           disabled={savingProfile}
-          className="bg-white hover:bg-gray-100 disabled:opacity-60 text-[#facc15] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 text-sm"
+          className="bg-neutral-900 hover:bg-white/5 disabled:opacity-60 text-[#facc15] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 text-sm"
         >
           <Save size={16} /> {savingProfile ? "Salvando..." : "Salvar perfil"}
         </button>
@@ -138,31 +138,31 @@ function AdminAccountPage() {
 
       <form
         onSubmit={savePassword}
-        className="bg-white border border-gray-200 rounded-3xl p-6 space-y-4"
+        className="bg-neutral-900 border border-white/10 rounded-3xl p-6 space-y-4"
       >
-        <div className="flex items-center gap-2 text-gray-900">
+        <div className="flex items-center gap-2 text-white">
           <KeyRound size={18} />
           <h2 className="font-bold">Alterar senha</h2>
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-bold uppercase text-gray-500">Nova senha</label>
+            <label className="text-xs font-bold uppercase text-neutral-400">Nova senha</label>
             <input
               type="password"
               minLength={8}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
+              className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
             />
           </div>
           <div>
-            <label className="text-xs font-bold uppercase text-gray-500">Confirmar senha</label>
+            <label className="text-xs font-bold uppercase text-neutral-400">Confirmar senha</label>
             <input
               type="password"
               minLength={8}
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
-              className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
+              className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
             />
           </div>
         </div>
@@ -174,7 +174,7 @@ function AdminAccountPage() {
         <button
           type="submit"
           disabled={savingPw}
-          className="bg-white hover:bg-gray-100 disabled:opacity-60 text-[#facc15] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 text-sm"
+          className="bg-neutral-900 hover:bg-white/5 disabled:opacity-60 text-[#facc15] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 text-sm"
         >
           <KeyRound size={16} /> {savingPw ? "Salvando..." : "Atualizar senha"}
         </button>

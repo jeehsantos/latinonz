@@ -38,10 +38,10 @@ function PlanosPage() {
     <SiteShell>
       <Container className="py-16">
         <header className="text-center max-w-2xl mx-auto mb-12">
-          <h1 className="text-4xl md:text-5xl font-black text-gray-900">
+          <h1 className="text-4xl md:text-5xl font-black text-white">
             {t("plans.page_heading")}
           </h1>
-          <p className="mt-4 text-gray-600">{t("plans.page_subheading")}</p>
+          <p className="mt-4 text-neutral-300">{t("plans.page_subheading")}</p>
         </header>
 
         <div className="grid md:grid-cols-3 gap-6">
@@ -51,7 +51,7 @@ function PlanosPage() {
         </div>
 
         <section className="mt-16">
-          <h2 className="text-2xl font-black text-gray-900 mb-6 text-center">
+          <h2 className="text-2xl font-black text-white mb-6 text-center">
             {t("plans.comparison_title")}
           </h2>
           <PlanComparisonTable />

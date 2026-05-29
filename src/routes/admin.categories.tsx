@@ -133,14 +133,14 @@ function AdminCategoriesPage() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-gray-900">Categorias</h1>
-          <p className="text-gray-500 mt-1">
+          <h1 className="text-3xl font-black text-white">Categorias</h1>
+          <p className="text-neutral-400 mt-1">
             Cadastre categorias com ícone e traduções para PT / ES / EN.
           </p>
         </div>
         <button
           onClick={openCreate}
-          className="bg-white hover:bg-gray-100 text-[#facc15] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2"
+          className="bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2"
         >
           <Plus size={16} /> Nova categoria
         </button>
@@ -152,10 +152,10 @@ function AdminCategoriesPage() {
         </div>
       )}
 
-      <div className="bg-white border border-gray-200 rounded-3xl overflow-hidden">
+      <div className="bg-neutral-900 border border-white/10 rounded-3xl overflow-hidden">
         <table className="w-full text-left">
           <thead>
-            <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
+            <tr className="bg-neutral-950 text-neutral-400 text-xs uppercase tracking-wider border-b border-white/10">
               <th className="p-4 font-bold">Categoria</th>
               <th className="p-4 font-bold">Ícone</th>
               <th className="p-4 font-bold">Traduções</th>
@@ -166,13 +166,13 @@ function AdminCategoriesPage() {
           <tbody className="text-sm divide-y divide-gray-100">
             {isLoading ? (
               <tr>
-                <td colSpan={5} className="p-8 text-center text-gray-400">
+                <td colSpan={5} className="p-8 text-center text-neutral-500">
                   <Loader2 size={16} className="animate-spin inline mr-2" /> Carregando...
                 </td>
               </tr>
             ) : rows.length === 0 ? (
               <tr>
-                <td colSpan={5} className="p-8 text-center text-gray-400">
+                <td colSpan={5} className="p-8 text-center text-neutral-500">
                   Nenhuma categoria cadastrada.
                 </td>
               </tr>
@@ -187,11 +187,11 @@ function AdminCategoriesPage() {
                     (r.colorKey as ColorKey) in COLOR_MAP ? (r.colorKey as ColorKey) : "slate"
                   ];
                 return (
-                  <tr key={r.id} className="hover:bg-gray-50">
+                  <tr key={r.id} className="hover:bg-neutral-950">
                     <td className="p-4">
-                      <div className="font-bold text-gray-900">{r.namePt}</div>
-                      <p className="text-xs text-gray-400 mt-0.5">/{r.key}</p>
-                      {r.blurbPt && <p className="text-xs text-gray-500 mt-1">{r.blurbPt}</p>}
+                      <div className="font-bold text-white">{r.namePt}</div>
+                      <p className="text-xs text-neutral-500 mt-0.5">/{r.key}</p>
+                      {r.blurbPt && <p className="text-xs text-neutral-400 mt-1">{r.blurbPt}</p>}
                     </td>
                     <td className="p-4">
                       <div
@@ -200,21 +200,21 @@ function AdminCategoriesPage() {
                         <Icon size={18} />
                       </div>
                     </td>
-                    <td className="p-4 text-xs text-gray-600 space-y-0.5">
+                    <td className="p-4 text-xs text-neutral-300 space-y-0.5">
                       <div>
-                        <span className="font-bold text-gray-700">ES:</span>{" "}
+                        <span className="font-bold text-neutral-200">ES:</span>{" "}
                         {r.nameEs || <span className="text-gray-300">—</span>}
                       </div>
                       <div>
-                        <span className="font-bold text-gray-700">EN:</span>{" "}
+                        <span className="font-bold text-neutral-200">EN:</span>{" "}
                         {r.nameEn || <span className="text-gray-300">—</span>}
                       </div>
                     </td>
-                    <td className="p-4 text-gray-600 font-semibold">{r.count}</td>
+                    <td className="p-4 text-neutral-300 font-semibold">{r.count}</td>
                     <td className="p-4 text-right space-x-2 whitespace-nowrap">
                       <button
                         onClick={() => openEdit(r)}
-                        className="text-xs font-bold text-gray-700 bg-gray-50 border border-gray-200 hover:bg-gray-100 px-3 py-1.5 rounded-lg inline-flex items-center gap-1"
+                        className="text-xs font-bold text-neutral-200 bg-neutral-950 border border-white/10 hover:bg-white/5 px-3 py-1.5 rounded-lg inline-flex items-center gap-1"
                       >
                         <Pencil size={12} /> Editar
                       </button>
@@ -240,16 +240,16 @@ function AdminCategoriesPage() {
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 overflow-auto">
           <form
             onSubmit={submit}
-            className="bg-white rounded-3xl w-full max-w-3xl my-8 max-h-[90vh] overflow-auto"
+            className="bg-neutral-900 rounded-3xl w-full max-w-3xl my-8 max-h-[90vh] overflow-auto"
           >
-            <div className="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white rounded-t-3xl">
-              <h2 className="text-xl font-extrabold text-gray-900">
+            <div className="flex items-center justify-between p-6 border-b border-white/10 sticky top-0 bg-neutral-900 rounded-t-3xl">
+              <h2 className="text-xl font-extrabold text-white">
                 {form.id ? "Editar categoria" : "Nova categoria"}
               </h2>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="text-gray-400 hover:text-gray-700"
+                className="text-neutral-500 hover:text-neutral-200"
               >
                 <X size={20} />
               </button>
@@ -264,10 +264,10 @@ function AdminCategoriesPage() {
 
               {/* Kind: Service vs Product */}
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
+                <p className="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-2">
                   Tipo
                 </p>
-                <div className="inline-flex bg-gray-100 rounded-xl p-1">
+                <div className="inline-flex bg-white/5 rounded-xl p-1">
                   {(["service", "product"] as const).map((k) => (
                     <button
                       key={k}
@@ -276,14 +276,14 @@ function AdminCategoriesPage() {
                       className={`px-4 py-1.5 text-sm font-bold rounded-lg transition ${
                         form.kind === k
                           ? "bg-black text-[#facc15] shadow-sm"
-                          : "text-gray-500 hover:text-gray-700"
+                          : "text-neutral-400 hover:text-neutral-200"
                       }`}
                     >
                       {k === "service" ? "Serviço" : "Produto"}
                     </button>
                   ))}
                 </div>
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="text-xs text-neutral-500 mt-2">
                   Define em qual aba (Serviço / Produto) esta categoria aparece no cadastro de
                   negócios.
                 </p>
@@ -291,7 +291,7 @@ function AdminCategoriesPage() {
 
               {/* Translations */}
               <div className="space-y-4">
-                <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                <p className="text-xs font-bold uppercase tracking-wider text-neutral-400">
                   Traduções
                 </p>
                 {(["pt", "es", "en"] as const).map((lng) => {
@@ -307,23 +307,23 @@ function AdminCategoriesPage() {
                   return (
                     <div key={lng} className="grid md:grid-cols-2 gap-3">
                       <div>
-                        <label className="text-xs font-bold text-gray-600">
+                        <label className="text-xs font-bold text-neutral-300">
                           {labels} — Nome {lng === "pt" && <span className="text-red-500">*</span>}
                         </label>
                         <input
                           value={form[nameField]}
                           onChange={(e) => setForm({ ...form, [nameField]: e.target.value })}
-                          className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#facc15]"
+                          className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#facc15]"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-bold text-gray-600">
+                        <label className="text-xs font-bold text-neutral-300">
                           {labels} — Descrição curta
                         </label>
                         <input
                           value={form[blurbField]}
                           onChange={(e) => setForm({ ...form, [blurbField]: e.target.value })}
-                          className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#facc15]"
+                          className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#facc15]"
                         />
                       </div>
                     </div>
@@ -333,7 +333,7 @@ function AdminCategoriesPage() {
 
               {/* Icon picker */}
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">
+                <p className="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-2">
                   Ícone
                 </p>
                 <div className="grid grid-cols-7 sm:grid-cols-10 gap-2">
@@ -348,7 +348,7 @@ function AdminCategoriesPage() {
                         className={`w-11 h-11 rounded-xl flex items-center justify-center border transition ${
                           active
                             ? "bg-[#facc15] text-white border-[#facc15]"
-                            : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[#facc15]"
+                            : "bg-neutral-950 text-neutral-300 border-white/10 hover:border-[#facc15]"
                         }`}
                         title={k}
                       >
@@ -361,7 +361,7 @@ function AdminCategoriesPage() {
 
               {/* Color picker */}
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Cor</p>
+                <p className="text-xs font-bold uppercase tracking-wider text-neutral-400 mb-2">Cor</p>
                 <div className="flex flex-wrap gap-2">
                   {COLOR_KEYS.map((k) => {
                     const c = COLOR_MAP[k];
@@ -372,7 +372,7 @@ function AdminCategoriesPage() {
                         key={k}
                         onClick={() => setForm({ ...form, colorKey: k })}
                         className={`px-3 py-1.5 rounded-xl border text-xs font-bold inline-flex items-center gap-2 ${
-                          active ? "border-[#facc15] ring-2 ring-[#facc15]/30" : "border-gray-200"
+                          active ? "border-[#facc15] ring-2 ring-[#facc15]/30" : "border-white/10"
                         }`}
                       >
                         <span
@@ -389,29 +389,29 @@ function AdminCategoriesPage() {
 
               {/* Sort order */}
               <div className="max-w-xs">
-                <label className="text-xs font-bold text-gray-600">Ordem de exibição</label>
+                <label className="text-xs font-bold text-neutral-300">Ordem de exibição</label>
                 <input
                   type="number"
                   min={0}
                   value={form.sortOrder}
                   onChange={(e) => setForm({ ...form, sortOrder: Number(e.target.value) || 0 })}
-                  className="mt-1 w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#facc15]"
+                  className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#facc15]"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 p-6 border-t border-gray-100 sticky bottom-0 bg-white rounded-b-3xl">
+            <div className="flex justify-end gap-2 p-6 border-t border-white/10 sticky bottom-0 bg-neutral-900 rounded-b-3xl">
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="px-4 py-2 rounded-xl text-sm font-bold text-gray-600 hover:bg-gray-100"
+                className="px-4 py-2 rounded-xl text-sm font-bold text-neutral-300 hover:bg-white/5"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={saveMut.isPending}
-                className="bg-white hover:bg-gray-100 text-[#facc15] font-bold px-5 py-2 rounded-xl text-sm disabled:opacity-50 inline-flex items-center gap-2"
+                className="bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold px-5 py-2 rounded-xl text-sm disabled:opacity-50 inline-flex items-center gap-2"
               >
                 {saveMut.isPending && <Loader2 size={14} className="animate-spin" />}
                 {form.id ? "Salvar alterações" : "Criar categoria"}

@@ -260,16 +260,16 @@ function BusinessPage() {
               <img
                 src={business.logoUrl}
                 alt={business.name}
-                className="w-24 h-24 md:w-28 md:h-28 rounded-2xl object-cover bg-white/10 border border-white/20 shrink-0"
+                className="w-24 h-24 md:w-28 md:h-28 rounded-2xl object-cover bg-neutral-900/10 border border-white/20 shrink-0"
               />
             ) : (
-              <div className="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-3xl font-black shrink-0">
+              <div className="w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-neutral-900/10 border border-white/20 flex items-center justify-center text-3xl font-black shrink-0">
                 {(business.name || "?").trim().charAt(0).toUpperCase()}
               </div>
             )}
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold uppercase bg-white/15 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold uppercase bg-neutral-900/15 px-2 py-0.5 rounded-full">
                   {displayType}
                 </span>
                 <PlanBadge plan={business.plan} />
@@ -303,15 +303,15 @@ function BusinessPage() {
       <section className="max-w-7xl mx-auto px-6 py-12 grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
           {/* About */}
-          <div className="bg-white border border-gray-200 rounded-3xl p-8">
-            <h2 className="font-extrabold text-gray-900">{t("business.about_title")}</h2>
-            <p className="mt-3 text-gray-600">{business.description}</p>
+          <div className="bg-neutral-900 border border-white/10 rounded-3xl p-8">
+            <h2 className="font-extrabold text-white">{t("business.about_title")}</h2>
+            <p className="mt-3 text-neutral-300">{business.description}</p>
             {business.tags && (
               <div className="mt-5 flex flex-wrap gap-2">
                 {business.tags.map((tag: string) => (
                   <span
                     key={tag}
-                    className="text-xs font-semibold bg-gray-100 text-gray-700 px-3 py-1 rounded-full"
+                    className="text-xs font-semibold bg-white/5 text-neutral-200 px-3 py-1 rounded-full"
                   >
                     {tag}
                   </span>
@@ -321,19 +321,19 @@ function BusinessPage() {
           </div>
 
           {/* Gallery */}
-          <div className="bg-white border border-gray-200 rounded-3xl p-8">
+          <div className="bg-neutral-900 border border-white/10 rounded-3xl p-8">
             <div className="flex items-center justify-between">
-              <h2 className="font-extrabold text-gray-900 flex items-center gap-2">
+              <h2 className="font-extrabold text-white flex items-center gap-2">
                 <ImageIcon size={18} /> {t("business.gallery_title")}
               </h2>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-neutral-500">
                 {Number.isFinite(photoLimit)
                   ? `Até ${photoLimit} ${t("business.photos_limit")} (${planName})`
                   : t("business.gallery_full")}
               </p>
             </div>
             {visiblePhotos.length === 0 ? (
-              <p className="mt-4 text-sm text-gray-500">{t("business.no_reviews")}</p>
+              <p className="mt-4 text-sm text-neutral-400">{t("business.no_reviews")}</p>
             ) : (
               <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
                 {visiblePhotos.map((p: { id: string; url: string }) => (
@@ -341,7 +341,7 @@ function BusinessPage() {
                     key={p.id}
                     src={p.url}
                     alt={business.name}
-                    className="aspect-square rounded-2xl object-cover bg-gray-100"
+                    className="aspect-square rounded-2xl object-cover bg-white/5"
                     loading="lazy"
                   />
                 ))}
@@ -350,16 +350,16 @@ function BusinessPage() {
           </div>
 
           {/* Reviews */}
-          <div className="bg-white border border-gray-200 rounded-3xl p-8">
-            <h2 className="font-extrabold text-gray-900">{t("business.reviews_title")}</h2>
+          <div className="bg-neutral-900 border border-white/10 rounded-3xl p-8">
+            <h2 className="font-extrabold text-white">{t("business.reviews_title")}</h2>
             {reviews.length === 0 ? (
-              <p className="mt-3 text-sm text-gray-500">{t("business.no_reviews")}</p>
+              <p className="mt-3 text-sm text-neutral-400">{t("business.no_reviews")}</p>
             ) : (
               <div className="mt-4 space-y-4">
                 {reviews.map((r, i) => (
-                  <div key={i} className="border-b border-gray-100 pb-4 last:border-0">
+                  <div key={i} className="border-b border-white/10 pb-4 last:border-0">
                     <div className="flex items-center justify-between">
-                      <p className="font-bold text-gray-900">{r.name}</p>
+                      <p className="font-bold text-white">{r.name}</p>
                       <div className="flex">
                         {Array.from({ length: 5 }).map((_, j) => (
                           <Star
@@ -372,7 +372,7 @@ function BusinessPage() {
                         ))}
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600 mt-2">{r.text}</p>
+                    <p className="text-sm text-neutral-300 mt-2">{r.text}</p>
                   </div>
                 ))}
               </div>
@@ -382,13 +382,13 @@ function BusinessPage() {
 
         <aside className="space-y-6">
           {/* Contact card */}
-          <div className="bg-white border border-gray-200 rounded-3xl p-6 sticky top-24">
-            <h3 className="font-extrabold text-gray-900">{t("business.contact_title")}</h3>
+          <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6 sticky top-24">
+            <h3 className="font-extrabold text-white">{t("business.contact_title")}</h3>
             <div className="mt-4 space-y-3 text-sm">
               {business.phone && (
                 <a
                   href={`tel:${business.phone}`}
-                  className="flex items-center gap-3 text-gray-700 hover:text-[#facc15]"
+                  className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15]"
                 >
                   <Phone size={16} /> {business.phone}
                 </a>
@@ -398,7 +398,7 @@ function BusinessPage() {
                   href={`https://wa.me/${business.phone.replace(/\D/g, "")}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-3 text-gray-700 hover:text-[#facc15]"
+                  className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15]"
                 >
                   <MessageCircle size={16} /> {t("business.whatsapp_label")}
                 </a>
@@ -406,7 +406,7 @@ function BusinessPage() {
               {business.email && (
                 <a
                   href={`mailto:${business.email}`}
-                  className="flex items-center gap-3 text-gray-700 hover:text-[#facc15]"
+                  className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15]"
                 >
                   <Mail size={16} /> {business.email}
                 </a>
@@ -414,7 +414,7 @@ function BusinessPage() {
               {business.website && (
                 <a
                   href={business.website}
-                  className="flex items-center gap-3 text-gray-700 hover:text-[#facc15]"
+                  className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15]"
                 >
                   <Globe size={16} /> {t("business.website_label")}
                 </a>
@@ -427,7 +427,7 @@ function BusinessPage() {
                 href={`https://wa.me/${business.phone.replace(/\D/g, "")}`}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-6 w-full bg-white hover:bg-gray-100 text-[#facc15] font-bold rounded-2xl py-3 text-sm flex items-center justify-center gap-2"
+                className="mt-6 w-full bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold rounded-2xl py-3 text-sm flex items-center justify-center gap-2"
               >
                 <MessageCircle size={16} /> {t("business.whatsapp_cta")}
               </a>
@@ -438,27 +438,27 @@ function BusinessPage() {
                   setLeadError(null);
                   setLeadOpen(true);
                 }}
-                className="mt-6 w-full bg-white hover:bg-gray-100 text-[#facc15] font-bold rounded-2xl py-3 text-sm"
+                className="mt-6 w-full bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold rounded-2xl py-3 text-sm"
               >
                 {t("business.send_message")}
               </button>
             )}
             {business.responseTime && (
-              <p className="text-xs text-gray-400 text-center mt-3">{business.responseTime}</p>
+              <p className="text-xs text-neutral-500 text-center mt-3">{business.responseTime}</p>
             )}
           </div>
 
           {/* Hours — Premium+ only */}
           {can(business.plan, "businessHours") && sortedHours.length > 0 && (
-            <div className="bg-white border border-gray-200 rounded-3xl p-6">
-              <h3 className="font-extrabold text-gray-900 flex items-center gap-2">
+            <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
+              <h3 className="font-extrabold text-white flex items-center gap-2">
                 <Clock size={16} /> {t("business.hours_title")}
               </h3>
               <div className="mt-3 space-y-2 text-sm">
                 {sortedHours.map((h) => (
                   <div key={`${h.location}-${h.day_key}`} className="flex justify-between">
-                    <span className="text-gray-500">{DAY_LABELS[h.day_key] ?? h.day_key}</span>
-                    <span className="font-semibold text-gray-800">
+                    <span className="text-neutral-400">{DAY_LABELS[h.day_key] ?? h.day_key}</span>
+                    <span className="font-semibold text-neutral-100">
                       {h.is_closed || h.slots.length === 0
                         ? "—"
                         : h.slots.map((s) => `${s.open}–${s.close}`).join(", ")}
@@ -472,8 +472,8 @@ function BusinessPage() {
           {/* Service options — Premium+ only */}
           {can(business.plan, "serviceOptions") &&
             (serviceOptionBadges.length > 0 || customItems.length > 0) && (
-              <div className="bg-white border border-gray-200 rounded-3xl p-6">
-                <h3 className="font-extrabold text-gray-900">Opções de atendimento</h3>
+              <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
+                <h3 className="font-extrabold text-white">Opções de atendimento</h3>
                 {serviceOptionBadges.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {serviceOptionBadges.map((b) => (
@@ -496,9 +496,9 @@ function BusinessPage() {
                             <Icon size={16} />
                           </span>
                           <div className="flex-1">
-                            <p className="text-sm font-bold text-gray-900">{it.title}</p>
+                            <p className="text-sm font-bold text-white">{it.title}</p>
                             {it.description && (
-                              <p className="text-xs text-gray-500">{it.description}</p>
+                              <p className="text-xs text-neutral-400">{it.description}</p>
                             )}
                           </div>
                         </div>
@@ -511,15 +511,15 @@ function BusinessPage() {
 
           {/* Service cities */}
           {locations.length > 0 && (
-            <div className="bg-white border border-gray-200 rounded-3xl p-6">
-              <h3 className="font-extrabold text-gray-900 flex items-center gap-2">
+            <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
+              <h3 className="font-extrabold text-white flex items-center gap-2">
                 <MapPin size={16} /> Cidades atendidas
               </h3>
               <div className="mt-3 flex flex-wrap gap-2">
                 {locations.map((loc: string) => (
                   <span
                     key={loc}
-                    className="text-xs font-semibold bg-gray-100 text-gray-700 px-3 py-1 rounded-full"
+                    className="text-xs font-semibold bg-white/5 text-neutral-200 px-3 py-1 rounded-full"
                   >
                     {loc}
                   </span>
@@ -536,11 +536,11 @@ function BusinessPage() {
               </h3>
               <div className="mt-3 space-y-3">
                 {coupons.map((c: { id: string; code: string; title: string; expires_at: string | null }) => (
-                  <div key={c.id} className="bg-white rounded-2xl p-4 border border-amber-200">
+                  <div key={c.id} className="bg-neutral-900 rounded-2xl p-4 border border-amber-200">
                     <p className="font-extrabold text-amber-700 text-lg tracking-wider">{c.code}</p>
-                    <p className="text-sm text-gray-700">{c.title}</p>
+                    <p className="text-sm text-neutral-200">{c.title}</p>
                     {c.expires_at && (
-                      <p className="text-xs text-gray-400 mt-1">
+                      <p className="text-xs text-neutral-500 mt-1">
                         {t("business.coupon_valid_until")} {c.expires_at}
                       </p>
                     )}
@@ -558,14 +558,14 @@ function BusinessPage() {
           onClick={() => setLeadOpen(false)}
         >
           <div
-            className="bg-white rounded-3xl p-6 max-w-md w-full"
+            className="bg-neutral-900 rounded-3xl p-6 max-w-md w-full"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <h3 className="font-extrabold text-gray-900 text-lg">{t("business.send_message")}</h3>
+              <h3 className="font-extrabold text-white text-lg">{t("business.send_message")}</h3>
               <button
                 onClick={() => setLeadOpen(false)}
-                className="text-gray-400 hover:text-gray-700"
+                className="text-neutral-500 hover:text-neutral-200"
                 aria-label="Close"
               >
                 <X size={20} />
@@ -576,10 +576,10 @@ function BusinessPage() {
                 <p className="text-emerald-700 font-bold">
                   {t("business.lead_modal.success_title")}
                 </p>
-                <p className="text-sm text-gray-600">{t("business.lead_modal.success_body")}</p>
+                <p className="text-sm text-neutral-300">{t("business.lead_modal.success_body")}</p>
                 <button
                   onClick={() => setLeadOpen(false)}
-                  className="mt-2 bg-white hover:bg-gray-100 text-[#facc15] font-bold rounded-2xl py-2 px-5 text-sm"
+                  className="mt-2 bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold rounded-2xl py-2 px-5 text-sm"
                 >
                   {t("business.lead_modal.close")}
                 </button>
@@ -592,35 +592,35 @@ function BusinessPage() {
                   placeholder={t("business.lead_modal.placeholder_name")}
                   value={leadForm.name}
                   onChange={(e) => setLeadForm((f) => ({ ...f, name: e.target.value }))}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                  className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm"
                 />
                 <input
                   type="email"
                   placeholder={t("business.lead_modal.placeholder_email")}
                   value={leadForm.email}
                   onChange={(e) => setLeadForm((f) => ({ ...f, email: e.target.value }))}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                  className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm"
                 />
                 <input
                   type="tel"
                   placeholder={t("business.lead_modal.placeholder_phone")}
                   value={leadForm.phone}
                   onChange={(e) => setLeadForm((f) => ({ ...f, phone: e.target.value }))}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                  className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm"
                 />
                 <textarea
                   rows={4}
                   placeholder={t("business.lead_modal.placeholder_message")}
                   value={leadForm.message}
                   onChange={(e) => setLeadForm((f) => ({ ...f, message: e.target.value }))}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm resize-none"
+                  className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm resize-none"
                 />
-                <p className="text-xs text-gray-400">{t("business.lead_modal.disclaimer")}</p>
+                <p className="text-xs text-neutral-500">{t("business.lead_modal.disclaimer")}</p>
                 {leadError && <p className="text-xs text-red-600">{leadError}</p>}
                 <button
                   type="submit"
                   disabled={leadStatus === "submitting"}
-                  className="w-full bg-white hover:bg-gray-100 disabled:opacity-50 text-[#facc15] font-bold rounded-2xl py-3 text-sm"
+                  className="w-full bg-neutral-900 hover:bg-white/5 disabled:opacity-50 text-[#facc15] font-bold rounded-2xl py-3 text-sm"
                 >
                   {leadStatus === "submitting"
                     ? t("business.lead_modal.submitting")
@@ -640,7 +640,7 @@ function BusinessNotFound() {
   return (
     <SiteShell>
       <div className="max-w-3xl mx-auto px-6 py-24 text-center">
-        <h1 className="text-3xl font-black text-gray-900">{t("business.not_found_title")}</h1>
+        <h1 className="text-3xl font-black text-white">{t("business.not_found_title")}</h1>
         <Link
           to="/directory"
           className="inline-flex mt-6 bg-black text-[#facc15] font-bold px-5 py-2.5 rounded-xl"

@@ -25,7 +25,7 @@ export function SiteHeader() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1 text-sm font-semibold text-neutral-300 bg-white/5 rounded-full px-2 py-1.5 border border-white/10">
+        <nav className="hidden md:flex items-center gap-1 text-sm font-semibold text-neutral-300 bg-neutral-900/5 rounded-full px-2 py-1.5 border border-white/10">
           {NAV.map((n) => (
             <Link
               key={n.to}
@@ -33,7 +33,7 @@ export function SiteHeader() {
               activeProps={{
                 className: "px-4 py-1.5 rounded-full bg-[#facc15] text-black shadow-sm",
               }}
-              inactiveProps={{ className: "px-4 py-1.5 rounded-full hover:bg-white/10 hover:text-white" }}
+              inactiveProps={{ className: "px-4 py-1.5 rounded-full hover:bg-neutral-900/10 hover:text-white" }}
             >
               {n.label}
             </Link>
@@ -79,7 +79,7 @@ export function SiteHeader() {
               }}
               inactiveProps={{
                 className:
-                  "block px-4 py-2.5 rounded-xl text-neutral-300 font-semibold text-sm hover:bg-white/10 hover:text-white",
+                  "block px-4 py-2.5 rounded-xl text-neutral-300 font-semibold text-sm hover:bg-neutral-900/10 hover:text-white",
               }}
             >
               {n.label}
@@ -89,7 +89,7 @@ export function SiteHeader() {
             <Link
               to="/login"
               onClick={() => setMobileOpen(false)}
-              className="block text-center px-4 py-2.5 rounded-xl border border-white/15 text-neutral-200 font-semibold text-sm hover:bg-white/5"
+              className="block text-center px-4 py-2.5 rounded-xl border border-white/15 text-neutral-200 font-semibold text-sm hover:bg-neutral-900/5"
             >
               {t("nav.login")}
             </Link>

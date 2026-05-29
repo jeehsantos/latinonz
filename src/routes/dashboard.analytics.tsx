@@ -49,8 +49,8 @@ function AnalyticsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-black text-gray-900">{t("analytics.title")}</h1>
-        <p className="text-gray-500 mt-1">{t("analytics.subtitle")}</p>
+        <h1 className="text-3xl font-black text-white">{t("analytics.title")}</h1>
+        <p className="text-neutral-400 mt-1">{t("analytics.subtitle")}</p>
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
@@ -74,7 +74,7 @@ function AnalyticsPage() {
           icon={TrendingUp}
         />
       </div>
-      <div className="bg-white border border-gray-200 rounded-3xl p-8 h-72 flex items-center justify-center text-sm text-gray-400">
+      <div className="bg-neutral-900 border border-white/10 rounded-3xl p-8 h-72 flex items-center justify-center text-sm text-neutral-500">
         {t("analytics.chart_placeholder")}
       </div>
     </div>

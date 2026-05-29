@@ -69,9 +69,9 @@ function LoginPage() {
             <GoogleAuthButton label={t("auth.google_login")} onError={setError} />
           </div>
           <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-white/10" />
+            <div className="flex-1 h-px bg-neutral-900/10" />
             <span className="text-xs uppercase tracking-wider text-neutral-500">{t("auth.or")}</span>
-            <div className="flex-1 h-px bg-white/10" />
+            <div className="flex-1 h-px bg-neutral-900/10" />
           </div>
 
           <form className="space-y-4" onSubmit={onSubmit}>

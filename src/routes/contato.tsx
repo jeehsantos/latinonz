@@ -121,7 +121,7 @@ function ContatoPage() {
             <div className="space-y-6 pt-4">
               {contactItems.map(({ Icon, title, text }) => (
                 <div key={title} className="flex items-start gap-4 group">
-                  <div className="w-12 h-12 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-[#14532d] group-hover:bg-[#14532d] group-hover:text-white transition-all">
+                  <div className="w-12 h-12 bg-neutral-900 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-[#14532d] group-hover:bg-[#14532d] group-hover:text-white transition-all">
                     <Icon size={20} />
                   </div>
                   <div>
@@ -157,7 +157,7 @@ function ContatoPage() {
           </div>
 
           <div className="relative">
-            <div className="absolute -top-6 -right-6 z-20 bg-white p-3 rounded-2xl shadow-xl border border-slate-50 transform rotate-6 hover:rotate-0 transition-transform">
+            <div className="absolute -top-6 -right-6 z-20 bg-neutral-900 p-3 rounded-2xl shadow-xl border border-slate-50 transform rotate-6 hover:rotate-0 transition-transform">
               <div className="flex flex-col items-center gap-1">
                 <span className="text-4xl transition-all duration-700 ease-in-out transform scale-110">
                   {FLAGS[currentFlagIndex].emoji}
@@ -168,7 +168,7 @@ function ContatoPage() {
               </div>
             </div>
 
-            <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-2xl shadow-emerald-900/5 border border-slate-100 relative z-10">
+            <div className="bg-neutral-900 p-8 md:p-10 rounded-[2.5rem] shadow-2xl shadow-emerald-900/5 border border-slate-100 relative z-10">
               {submitted ? (
                 <div className="text-center py-12 space-y-6">
                   <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600 animate-bounce">
@@ -230,7 +230,7 @@ function ContatoPage() {
                           className={`py-2 text-xs font-bold rounded-xl border transition-all ${
                             formData.assunto === opt
                               ? "bg-[#14532d] text-white border-[#14532d]"
-                              : "bg-white text-slate-500 border-slate-200 hover:border-slate-300"
+                              : "bg-neutral-900 text-slate-500 border-slate-200 hover:border-slate-300"
                           }`}
                         >
                           {opt}

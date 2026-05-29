@@ -32,16 +32,16 @@ function SobrePage() {
         <p className="text-xs font-bold uppercase tracking-wider text-[#facc15]">
           {t("about.badge")}
         </p>
-        <h1 className="mt-3 text-4xl md:text-5xl font-black text-gray-900">{t("about.title")}</h1>
-        <p className="mt-6 text-lg text-gray-600 leading-relaxed">{t("about.body")}</p>
+        <h1 className="mt-3 text-4xl md:text-5xl font-black text-white">{t("about.title")}</h1>
+        <p className="mt-6 text-lg text-neutral-300 leading-relaxed">{t("about.body")}</p>
         <div className="mt-10 grid sm:grid-cols-2 gap-6">
-          <div className="bg-gray-50 border border-gray-200 rounded-3xl p-6">
-            <p className="font-extrabold text-gray-900">{t("about.mission_title")}</p>
-            <p className="mt-2 text-sm text-gray-600">{t("about.mission_body")}</p>
+          <div className="bg-neutral-950 border border-white/10 rounded-3xl p-6">
+            <p className="font-extrabold text-white">{t("about.mission_title")}</p>
+            <p className="mt-2 text-sm text-neutral-300">{t("about.mission_body")}</p>
           </div>
-          <div className="bg-gray-50 border border-gray-200 rounded-3xl p-6">
-            <p className="font-extrabold text-gray-900">{t("about.vision_title")}</p>
-            <p className="mt-2 text-sm text-gray-600">{t("about.vision_body")}</p>
+          <div className="bg-neutral-950 border border-white/10 rounded-3xl p-6">
+            <p className="font-extrabold text-white">{t("about.vision_title")}</p>
+            <p className="mt-2 text-sm text-neutral-300">{t("about.vision_body")}</p>
           </div>
         </div>
       </section>

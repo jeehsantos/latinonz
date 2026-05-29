@@ -105,8 +105,8 @@ function EventsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-gray-900">Eventos</h1>
-          <p className="text-gray-500 mt-1">Crie e gerencie eventos do seu negócio.</p>
+          <h1 className="text-3xl font-black text-white">Eventos</h1>
+          <p className="text-neutral-400 mt-1">Crie e gerencie eventos do seu negócio.</p>
         </div>
         {unlocked && (
           <button
@@ -114,19 +114,19 @@ function EventsPage() {
               resetForm();
               setFormOpen(true);
             }}
-            className="bg-white hover:bg-gray-100 text-[#facc15] font-bold rounded-xl px-4 py-2.5 text-sm flex items-center gap-2"
+            className="bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold rounded-xl px-4 py-2.5 text-sm flex items-center gap-2"
           >
             <Plus size={16} /> Novo evento
           </button>
         )}
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-3xl p-6">
-        <h2 className="text-lg font-extrabold text-gray-900 mb-4">Seus eventos</h2>
+      <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
+        <h2 className="text-lg font-extrabold text-white mb-4">Seus eventos</h2>
 
         {unlocked ? (
           events.length === 0 ? (
-            <p className="text-sm text-gray-400 py-8 text-center">Nenhum evento criado ainda.</p>
+            <p className="text-sm text-neutral-500 py-8 text-center">Nenhum evento criado ainda.</p>
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
               {events.map((e) => (
@@ -135,19 +135,19 @@ function EventsPage() {
                   className={`rounded-3xl p-6 border ${
                     e.is_active
                       ? "bg-emerald-50 border-emerald-200"
-                      : "bg-gray-50 border-gray-200 opacity-70"
+                      : "bg-neutral-950 border-white/10 opacity-70"
                   }`}
                 >
                   <div className="flex items-start justify-between">
                     <Calendar
-                      className={e.is_active ? "text-emerald-700" : "text-gray-400"}
+                      className={e.is_active ? "text-emerald-700" : "text-neutral-500"}
                       size={20}
                     />
                     <div className="flex gap-1">
                       <button
                         onClick={() => toggleMutation.mutate(e.id)}
                         disabled={toggleMutation.isPending}
-                        className="text-gray-400 hover:text-gray-700 p-1"
+                        className="text-neutral-500 hover:text-neutral-200 p-1"
                         aria-label="Toggle"
                         title={e.is_active ? "Desativar" : "Ativar"}
                       >
@@ -158,7 +158,7 @@ function EventsPage() {
                           if (confirm(`Remover evento "${e.title}"?`)) deleteMutation.mutate(e.id);
                         }}
                         disabled={deleteMutation.isPending}
-                        className="text-gray-400 hover:text-red-600 p-1"
+                        className="text-neutral-500 hover:text-red-600 p-1"
                         aria-label="Delete"
                         title="Remover"
                       >
@@ -166,15 +166,15 @@ function EventsPage() {
                       </button>
                     </div>
                   </div>
-                  <p className="font-extrabold text-lg mt-3 text-gray-900">{e.title}</p>
-                  <p className="text-xs text-gray-600 mt-1">{fmt(e.starts_at)}</p>
-                  {e.ends_at && <p className="text-xs text-gray-500">até {fmt(e.ends_at)}</p>}
+                  <p className="font-extrabold text-lg mt-3 text-white">{e.title}</p>
+                  <p className="text-xs text-neutral-300 mt-1">{fmt(e.starts_at)}</p>
+                  {e.ends_at && <p className="text-xs text-neutral-400">até {fmt(e.ends_at)}</p>}
                   {e.location && (
-                    <p className="text-xs text-gray-600 mt-2 flex items-center gap-1">
+                    <p className="text-xs text-neutral-300 mt-2 flex items-center gap-1">
                       <MapPin size={12} /> {e.location}
                     </p>
                   )}
-                  {e.description && <p className="text-sm text-gray-700 mt-2">{e.description}</p>}
+                  {e.description && <p className="text-sm text-neutral-200 mt-2">{e.description}</p>}
                 </div>
               ))}
             </div>
@@ -184,15 +184,15 @@ function EventsPage() {
             <div className="w-14 h-14 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center">
               <Calendar size={22} />
             </div>
-            <p className="mt-5 font-extrabold text-gray-900 text-base">
+            <p className="mt-5 font-extrabold text-white text-base">
               Eventos são exclusivos do plano Ultra
             </p>
-            <p className="mt-2 text-sm text-gray-600 max-w-sm">
+            <p className="mt-2 text-sm text-neutral-300 max-w-sm">
               Faça upgrade para Ultra para publicar eventos no seu perfil.
             </p>
             <Link
               to="/dashboard/upgrade"
-              className="mt-4 inline-flex items-center bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold text-sm px-5 py-2.5 rounded-xl shadow-sm transition-colors"
+              className="mt-4 inline-flex items-center bg-amber-400 hover:bg-amber-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl shadow-sm transition-colors"
             >
               Fazer upgrade
             </Link>
@@ -206,14 +206,14 @@ function EventsPage() {
           onClick={() => setFormOpen(false)}
         >
           <div
-            className="bg-white rounded-3xl p-6 max-w-md w-full"
+            className="bg-neutral-900 rounded-3xl p-6 max-w-md w-full"
             onClick={(ev) => ev.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <h3 className="font-extrabold text-gray-900 text-lg">Novo evento</h3>
+              <h3 className="font-extrabold text-white text-lg">Novo evento</h3>
               <button
                 onClick={() => setFormOpen(false)}
-                className="text-gray-400 hover:text-gray-700"
+                className="text-neutral-500 hover:text-neutral-200"
                 aria-label="Close"
               >
                 <X size={20} />
@@ -233,7 +233,7 @@ function EventsPage() {
                 placeholder="Título"
                 value={form.title}
                 onChange={(ev) => setForm((f) => ({ ...f, title: ev.target.value }))}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm"
                 maxLength={200}
               />
               <textarea
@@ -241,7 +241,7 @@ function EventsPage() {
                 placeholder="Descrição (opcional)"
                 value={form.description}
                 onChange={(ev) => setForm((f) => ({ ...f, description: ev.target.value }))}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm resize-none"
+                className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm resize-none"
                 maxLength={2000}
               />
               <input
@@ -249,27 +249,27 @@ function EventsPage() {
                 placeholder="Local (opcional)"
                 value={form.location}
                 onChange={(ev) => setForm((f) => ({ ...f, location: ev.target.value }))}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm"
                 maxLength={300}
               />
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-gray-500 block mb-1">Início</label>
+                  <label className="text-xs text-neutral-400 block mb-1">Início</label>
                   <input
                     required
                     type="datetime-local"
                     value={form.startsAt}
                     onChange={(ev) => setForm((f) => ({ ...f, startsAt: ev.target.value }))}
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                    className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500 block mb-1">Fim (opcional)</label>
+                  <label className="text-xs text-neutral-400 block mb-1">Fim (opcional)</label>
                   <input
                     type="datetime-local"
                     value={form.endsAt}
                     onChange={(ev) => setForm((f) => ({ ...f, endsAt: ev.target.value }))}
-                    className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                    className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm"
                   />
                 </div>
               </div>
@@ -278,7 +278,7 @@ function EventsPage() {
                 placeholder="URL da imagem (opcional)"
                 value={form.imageUrl}
                 onChange={(ev) => setForm((f) => ({ ...f, imageUrl: ev.target.value }))}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm"
               />
 
               {formError && (
@@ -291,14 +291,14 @@ function EventsPage() {
                 <button
                   type="button"
                   onClick={() => setFormOpen(false)}
-                  className="px-4 py-2 text-sm rounded-xl border border-gray-200 hover:bg-gray-50"
+                  className="px-4 py-2 text-sm rounded-xl border border-white/10 hover:bg-neutral-950"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={createMutation.isPending}
-                  className="px-4 py-2 text-sm rounded-xl bg-white hover:bg-gray-100 text-[#facc15] font-bold disabled:opacity-60"
+                  className="px-4 py-2 text-sm rounded-xl bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold disabled:opacity-60"
                 >
                   {createMutation.isPending ? "Criando…" : "Criar evento"}
                 </button>

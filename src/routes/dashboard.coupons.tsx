@@ -105,8 +105,8 @@ function CouponsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-gray-900">{t("coupons.title")}</h1>
-          <p className="text-gray-500 mt-1">{t("coupons.subtitle")}</p>
+          <h1 className="text-3xl font-black text-white">{t("coupons.title")}</h1>
+          <p className="text-neutral-400 mt-1">{t("coupons.subtitle")}</p>
         </div>
         {unlocked && (
           <button
@@ -114,19 +114,19 @@ function CouponsPage() {
               resetForm();
               setFormOpen(true);
             }}
-            className="bg-white hover:bg-gray-100 text-[#facc15] font-bold rounded-xl px-4 py-2.5 text-sm flex items-center gap-2"
+            className="bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold rounded-xl px-4 py-2.5 text-sm flex items-center gap-2"
           >
             <Plus size={16} /> {t("coupons.new_button")}
           </button>
         )}
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-3xl p-6">
-        <h2 className="text-lg font-extrabold text-gray-900 mb-4">{t("coupons.active_title")}</h2>
+      <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
+        <h2 className="text-lg font-extrabold text-white mb-4">{t("coupons.active_title")}</h2>
 
         {unlocked ? (
           coupons.length === 0 ? (
-            <p className="text-sm text-gray-400 py-8 text-center">Nenhum cupom criado ainda.</p>
+            <p className="text-sm text-neutral-500 py-8 text-center">Nenhum cupom criado ainda.</p>
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
               {coupons.map((c) => (
@@ -135,19 +135,19 @@ function CouponsPage() {
                   className={`rounded-3xl p-6 border ${
                     c.is_active
                       ? "bg-amber-50 border-amber-200"
-                      : "bg-gray-50 border-gray-200 opacity-70"
+                      : "bg-neutral-950 border-white/10 opacity-70"
                   }`}
                 >
                   <div className="flex items-start justify-between">
                     <Ticket
-                      className={c.is_active ? "text-amber-700" : "text-gray-400"}
+                      className={c.is_active ? "text-amber-700" : "text-neutral-500"}
                       size={20}
                     />
                     <div className="flex gap-1">
                       <button
                         onClick={() => toggleMutation.mutate(c.id)}
                         disabled={toggleMutation.isPending}
-                        className="text-gray-400 hover:text-gray-700 p-1"
+                        className="text-neutral-500 hover:text-neutral-200 p-1"
                         aria-label="Toggle"
                         title={c.is_active ? "Desativar" : "Ativar"}
                       >
@@ -158,7 +158,7 @@ function CouponsPage() {
                           if (confirm(`Remover cupom ${c.code}?`)) deleteMutation.mutate(c.id);
                         }}
                         disabled={deleteMutation.isPending}
-                        className="text-gray-400 hover:text-red-600 p-1"
+                        className="text-neutral-500 hover:text-red-600 p-1"
                         aria-label="Delete"
                         title="Remover"
                       >
@@ -168,15 +168,15 @@ function CouponsPage() {
                   </div>
                   <p
                     className={`font-extrabold tracking-wider text-2xl mt-3 ${
-                      c.is_active ? "text-amber-700" : "text-gray-500"
+                      c.is_active ? "text-amber-700" : "text-neutral-400"
                     }`}
                   >
                     {c.code}
                   </p>
-                  <p className="text-sm text-gray-700">{c.title}</p>
-                  {c.description && <p className="text-xs text-gray-500 mt-1">{c.description}</p>}
+                  <p className="text-sm text-neutral-200">{c.title}</p>
+                  {c.description && <p className="text-xs text-neutral-400 mt-1">{c.description}</p>}
                   {c.expires_at && (
-                    <p className="text-xs text-gray-400 mt-2">
+                    <p className="text-xs text-neutral-500 mt-2">
                       {t("coupons.valid_until")} {c.expires_at}
                     </p>
                   )}
@@ -189,12 +189,12 @@ function CouponsPage() {
             <div className="w-14 h-14 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center">
               <Tag size={22} />
             </div>
-            <p className="mt-5 font-extrabold text-gray-900 text-base">
+            <p className="mt-5 font-extrabold text-white text-base">
               {t("coupons.locked_title")}
             </p>
             <Link
               to="/dashboard/upgrade"
-              className="mt-4 inline-flex items-center bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold text-sm px-5 py-2.5 rounded-xl shadow-sm transition-colors"
+              className="mt-4 inline-flex items-center bg-amber-400 hover:bg-amber-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl shadow-sm transition-colors"
             >
               {t("coupons.upgrade_button")}
             </Link>
@@ -208,14 +208,14 @@ function CouponsPage() {
           onClick={() => setFormOpen(false)}
         >
           <div
-            className="bg-white rounded-3xl p-6 max-w-md w-full"
+            className="bg-neutral-900 rounded-3xl p-6 max-w-md w-full"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <h3 className="font-extrabold text-gray-900 text-lg">{t("coupons.new_button")}</h3>
+              <h3 className="font-extrabold text-white text-lg">{t("coupons.new_button")}</h3>
               <button
                 onClick={() => setFormOpen(false)}
-                className="text-gray-400 hover:text-gray-700"
+                className="text-neutral-500 hover:text-neutral-200"
                 aria-label="Close"
               >
                 <X size={20} />
@@ -235,7 +235,7 @@ function CouponsPage() {
                 placeholder="Código (ex: TACOS10)"
                 value={form.code}
                 onChange={(e) => setForm((f) => ({ ...f, code: e.target.value.toUpperCase() }))}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm uppercase tracking-wider"
+                className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm uppercase tracking-wider"
                 maxLength={30}
               />
               <input
@@ -244,7 +244,7 @@ function CouponsPage() {
                 placeholder="Título (ex: 10% off no primeiro pedido)"
                 value={form.title}
                 onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm"
                 maxLength={100}
               />
               <textarea
@@ -252,7 +252,7 @@ function CouponsPage() {
                 placeholder="Descrição (opcional)"
                 value={form.description}
                 onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm resize-none"
+                className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm resize-none"
                 maxLength={500}
               />
               <div className="grid grid-cols-2 gap-3">
@@ -264,7 +264,7 @@ function CouponsPage() {
                       discountType: e.target.value as "percent" | "fixed",
                     }))
                   }
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm bg-white"
+                  className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm bg-neutral-900"
                 >
                   <option value="percent">% Percentual</option>
                   <option value="fixed">$ Fixo</option>
@@ -276,20 +276,20 @@ function CouponsPage() {
                   placeholder="Valor"
                   value={form.discountValue}
                   onChange={(e) => setForm((f) => ({ ...f, discountValue: e.target.value }))}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                  className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm"
                 />
               </div>
               <input
                 type="date"
                 value={form.expiresAt}
                 onChange={(e) => setForm((f) => ({ ...f, expiresAt: e.target.value }))}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm"
+                className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm"
               />
               {formError && <p className="text-xs text-red-600">{formError}</p>}
               <button
                 type="submit"
                 disabled={createMutation.isPending}
-                className="w-full bg-white hover:bg-gray-100 disabled:opacity-50 text-[#facc15] font-bold rounded-2xl py-3 text-sm"
+                className="w-full bg-neutral-900 hover:bg-white/5 disabled:opacity-50 text-[#facc15] font-bold rounded-2xl py-3 text-sm"
               >
                 {createMutation.isPending ? "Criando..." : "Criar cupom"}
               </button>

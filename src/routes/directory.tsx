@@ -81,7 +81,7 @@ function DirectoryPage() {
       </section>
 
       <section className="max-w-7xl mx-auto px-5 sm:px-6 py-8 sm:py-12">
-        <h2 className="text-xs uppercase tracking-wider font-bold text-gray-500">
+        <h2 className="text-xs uppercase tracking-wider font-bold text-neutral-400">
           {t("directory.categories_label")}
         </h2>
         <div className="mt-4 flex gap-2 overflow-x-auto sm:flex-wrap pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 scrollbar-hide">
@@ -90,7 +90,7 @@ function DirectoryPage() {
             className={`shrink-0 text-sm font-semibold px-4 py-2 rounded-full border whitespace-nowrap transition ${
               !search.category
                 ? "bg-[#facc15] text-white border-[#facc15]"
-                : "bg-white border-gray-200 hover:border-[#df991b] text-gray-700"
+                : "bg-neutral-900 border-white/10 hover:border-[#df991b] text-neutral-200"
             }`}
           >
             {t("directory.all_categories")}
@@ -102,7 +102,7 @@ function DirectoryPage() {
               className={`shrink-0 text-sm font-semibold px-4 py-2 rounded-full border whitespace-nowrap transition ${
                 search.category === c.canonicalName
                   ? "bg-[#facc15] text-white border-[#facc15]"
-                  : "bg-white border-gray-200 hover:border-[#df991b] text-gray-700"
+                  : "bg-neutral-900 border-white/10 hover:border-[#df991b] text-neutral-200"
               }`}
             >
               {c.name}
@@ -113,17 +113,17 @@ function DirectoryPage() {
 
       <section className="max-w-7xl mx-auto px-5 sm:px-6 pb-16 sm:pb-20">
         <div className="flex items-center justify-between mb-5 sm:mb-6">
-          <p className="text-sm text-gray-500">
-            <span className="font-bold text-gray-900">{filtered.length}</span>{" "}
+          <p className="text-sm text-neutral-400">
+            <span className="font-bold text-white">{filtered.length}</span>{" "}
             {filtered.length === 1
               ? t("directory.results_singular")
               : t("directory.results_plural")}
           </p>
         </div>
         {filtered.length === 0 ? (
-          <div className="bg-white rounded-3xl border border-gray-200 p-8 sm:p-12 text-center">
-            <p className="font-extrabold text-gray-900">{t("directory.empty_title")}</p>
-            <p className="text-sm text-gray-500 mt-1">{t("directory.empty_subtitle")}</p>
+          <div className="bg-neutral-900 rounded-3xl border border-white/10 p-8 sm:p-12 text-center">
+            <p className="font-extrabold text-white">{t("directory.empty_title")}</p>
+            <p className="text-sm text-neutral-400 mt-1">{t("directory.empty_subtitle")}</p>
             <Link
               to="/cadastro"
               className="inline-flex mt-5 bg-[#df991b] hover:bg-[#c4861a] text-white font-bold px-5 py-2.5 rounded-xl text-sm transition"
