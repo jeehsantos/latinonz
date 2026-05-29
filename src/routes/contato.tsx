@@ -101,12 +101,12 @@ function ContatoPage() {
   return (
     <SiteShell>
       <div className="relative pt-12 pb-24 overflow-hidden">
-        <div className="absolute top-0 right-0 -z-10 w-[500px] h-[500px] bg-yellow-100/50 rounded-full blur-3xl -mr-64 -mt-32" />
-        <div className="absolute bottom-0 left-0 -z-10 w-[400px] h-[400px] bg-emerald-50/50 rounded-full blur-3xl -ml-32 -mb-32" />
+        <div className="absolute top-0 right-0 -z-10 w-[500px] h-[500px] bg-[#facc15]/10 rounded-full blur-3xl -mr-64 -mt-32" />
+        <div className="absolute bottom-0 left-0 -z-10 w-[400px] h-[400px] bg-[#facc15]/5/50 rounded-full blur-3xl -ml-32 -mb-32" />
 
         <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
           <div className="space-y-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold tracking-wider uppercase">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#facc15]/10 text-[#facc15] rounded-full text-xs font-bold tracking-wider uppercase">
               <span className="animate-pulse">●</span> {t("contact.badge")}
             </div>
 
@@ -121,7 +121,7 @@ function ContatoPage() {
             <div className="space-y-6 pt-4">
               {contactItems.map(({ Icon, title, text }) => (
                 <div key={title} className="flex items-start gap-4 group">
-                  <div className="w-12 h-12 bg-neutral-900 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center text-[#14532d] group-hover:bg-[#14532d] group-hover:text-white transition-all">
+                  <div className="w-12 h-12 bg-neutral-900 rounded-2xl shadow-sm border border-white/10 flex items-center justify-center text-[#facc15] group-hover:bg-[#facc15] group-hover:text-black transition-all">
                     <Icon size={20} />
                   </div>
                   <div>
@@ -132,7 +132,7 @@ function ContatoPage() {
               ))}
             </div>
 
-            <div className="pt-8 border-t border-slate-200">
+            <div className="pt-8 border-t border-white/10">
               <div className="flex items-center gap-4">
                 <div className="flex -space-x-3">
                   {[1, 2, 3, 4].map((i) => (
@@ -168,10 +168,10 @@ function ContatoPage() {
               </div>
             </div>
 
-            <div className="bg-neutral-900 p-8 md:p-10 rounded-[2.5rem] shadow-2xl shadow-emerald-900/5 border border-slate-100 relative z-10">
+            <div className="bg-neutral-900 p-8 md:p-10 rounded-[2.5rem] shadow-2xl shadow-black/40 border border-white/10 relative z-10">
               {submitted ? (
                 <div className="text-center py-12 space-y-6">
-                  <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600 animate-bounce">
+                  <div className="w-20 h-20 bg-[#facc15]/10 rounded-full flex items-center justify-center mx-auto text-[#facc15] animate-bounce">
                     <CheckCircle2 size={40} />
                   </div>
                   <div className="space-y-2">
@@ -182,7 +182,7 @@ function ContatoPage() {
                   </div>
                   <button
                     onClick={handleReset}
-                    className="text-[#14532d] font-bold text-sm hover:underline"
+                    className="text-[#facc15] font-bold text-sm hover:underline"
                   >
                     {t("contact.success_resend")}
                   </button>
@@ -197,7 +197,7 @@ function ContatoPage() {
                       required
                       type="text"
                       placeholder={t("contact.field_name_placeholder")}
-                      className="w-full px-5 py-4 bg-neutral-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-[#14532d] outline-none transition-all placeholder:text-slate-300"
+                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all placeholder:text-neutral-500"
                       value={formData.nome}
                       onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
                     />
@@ -211,7 +211,7 @@ function ContatoPage() {
                       required
                       type="email"
                       placeholder={t("contact.field_email_placeholder")}
-                      className="w-full px-5 py-4 bg-neutral-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-[#14532d] outline-none transition-all placeholder:text-slate-300"
+                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all placeholder:text-neutral-500"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
@@ -229,8 +229,8 @@ function ContatoPage() {
                           onClick={() => setFormData({ ...formData, assunto: opt })}
                           className={`py-2 text-xs font-bold rounded-xl border transition-all ${
                             formData.assunto === opt
-                              ? "bg-[#14532d] text-white border-[#14532d]"
-                              : "bg-neutral-900 text-slate-500 border-slate-200 hover:border-slate-300"
+                              ? "bg-[#facc15] text-black border-[#facc15]"
+                              : "bg-neutral-900 text-slate-500 border-white/10 hover:border-slate-300"
                           }`}
                         >
                           {opt}
@@ -247,7 +247,7 @@ function ContatoPage() {
                       required
                       rows={4}
                       placeholder={t("contact.field_message_placeholder")}
-                      className="w-full px-5 py-4 bg-neutral-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/10 focus:border-[#14532d] outline-none transition-all resize-none placeholder:text-slate-300"
+                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all resize-none placeholder:text-neutral-500"
                       value={formData.mensagem}
                       onChange={(e) => setFormData({ ...formData, mensagem: e.target.value })}
                     />
@@ -255,7 +255,7 @@ function ContatoPage() {
 
                   <button
                     disabled={isSubmitting}
-                    className="w-full bg-[#14532d] hover:bg-emerald-900 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-3 transition-all transform active:scale-[0.98] disabled:opacity-70 shadow-lg shadow-emerald-900/10 group"
+                    className="w-full bg-[#facc15] hover:bg-yellow-300 text-black font-bold py-5 rounded-2xl flex items-center justify-center gap-3 transition-all transform active:scale-[0.98] disabled:opacity-70 shadow-lg shadow-[#facc15]/20 group"
                   >
                     {isSubmitting ? (
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -275,24 +275,24 @@ function ContatoPage() {
 
             <div className="absolute -bottom-6 -left-6 grid grid-cols-4 gap-2 opacity-20">
               {Array.from({ length: 12 }).map((_, i) => (
-                <div key={i} className="w-2 h-2 bg-[#14532d] rounded-full" />
+                <div key={i} className="w-2 h-2 bg-[#facc15] rounded-full" />
               ))}
             </div>
           </div>
         </div>
       </div>
 
-      <section className="bg-[#14532d] text-white py-16">
+      <section className="bg-black text-white py-16 border-t border-white/10">
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-10">
           <div className="space-y-4 text-center md:text-left">
             <h2 className="text-3xl font-bold">{t("contact.cta_title")}</h2>
-            <p className="text-emerald-100 max-w-md">{t("contact.cta_body")}</p>
+            <p className="text-white/70 max-w-md">{t("contact.cta_body")}</p>
           </div>
           <div className="flex gap-4">
             {[Instagram, Facebook, Linkedin].map((Icon, i) => (
               <div
                 key={i}
-                className="w-12 h-12 rounded-full bg-emerald-800/50 flex items-center justify-center cursor-pointer hover:bg-emerald-700 transition-colors"
+                className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center cursor-pointer hover:bg-white/20 transition-colors"
               >
                 <Icon size={20} />
               </div>

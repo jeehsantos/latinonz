@@ -89,7 +89,7 @@ function DirectoryPage() {
             onClick={() => setSearch({ ...search, category: "" })}
             className={`shrink-0 text-sm font-semibold px-4 py-2 rounded-full border whitespace-nowrap transition ${
               !search.category
-                ? "bg-[#facc15] text-white border-[#facc15]"
+                ? "bg-[#facc15] text-black border-[#facc15]"
                 : "bg-neutral-900 border-white/10 hover:border-[#df991b] text-neutral-200"
             }`}
           >
@@ -101,7 +101,7 @@ function DirectoryPage() {
               onClick={() => setSearch({ ...search, category: c.canonicalName })}
               className={`shrink-0 text-sm font-semibold px-4 py-2 rounded-full border whitespace-nowrap transition ${
                 search.category === c.canonicalName
-                  ? "bg-[#facc15] text-white border-[#facc15]"
+                  ? "bg-[#facc15] text-black border-[#facc15]"
                   : "bg-neutral-900 border-white/10 hover:border-[#df991b] text-neutral-200"
               }`}
             >
