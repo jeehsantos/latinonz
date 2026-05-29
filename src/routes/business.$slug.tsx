@@ -223,10 +223,22 @@ function BusinessPage() {
     slots: { open: string; close: string }[];
     location: string;
   };
-  const sortedHours = [...(hours as HourRow[])].sort(
-    (a, b) => DAY_ORDER.indexOf(a.day_key as (typeof DAY_ORDER)[number]) -
-      DAY_ORDER.indexOf(b.day_key as (typeof DAY_ORDER)[number]),
-  );
+  // Group hours by location for clearer display
+  const hoursByLocation = new Map<string, HourRow[]>();
+  for (const h of hours as HourRow[]) {
+    const key = h.location || "—";
+    if (!hoursByLocation.has(key)) hoursByLocation.set(key, []);
+    hoursByLocation.get(key)!.push(h);
+  }
+  const hoursGroups = Array.from(hoursByLocation.entries()).map(([location, rows]) => ({
+    location,
+    rows: rows.sort(
+      (a, b) =>
+        DAY_ORDER.indexOf(a.day_key as (typeof DAY_ORDER)[number]) -
+        DAY_ORDER.indexOf(b.day_key as (typeof DAY_ORDER)[number]),
+    ),
+  }));
+  const totalHourRows = (hours as HourRow[]).length;
 
   const serviceOptionBadges: { key: string; label: string }[] = [];
   if (serviceOptions) {
