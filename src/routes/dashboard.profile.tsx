@@ -125,7 +125,7 @@ function ProfileEditor() {
     delivery: false,
     booking: false,
   });
-  const [serviceExtra, setServiceExtra] = useState("");
+  
   type CustomServiceItem = { title: string; description: string; icon_key: string };
   const [customServiceItems, setCustomServiceItems] = useState<CustomServiceItem[]>([]);
   const [saveSuccess, setSaveSuccess] = useState(false);
