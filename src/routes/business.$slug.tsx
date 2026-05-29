@@ -507,7 +507,7 @@ function BusinessPage() {
                     {serviceOptionBadges.map((b) => (
                       <span
                         key={b.key}
-                        className="text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full"
+                        className="text-xs font-semibold bg-[#facc15]/10 text-[#facc15] border border-[#facc15]/30 px-3 py-1 rounded-full"
                       >
                         {b.label}
                       </span>

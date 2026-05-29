@@ -125,7 +125,7 @@ function ProfileEditor() {
     delivery: false,
     booking: false,
   });
-  const [serviceExtra, setServiceExtra] = useState("");
+  
   type CustomServiceItem = { title: string; description: string; icon_key: string };
   const [customServiceItems, setCustomServiceItems] = useState<CustomServiceItem[]>([]);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -187,7 +187,7 @@ function ProfileEditor() {
           delivery: !!so.delivery,
           booking: !!so.booking,
         });
-        setServiceExtra(so.other ?? "");
+        
       }
 
       // Seed custom service items
@@ -694,8 +694,6 @@ function ProfileEditor() {
           plan={plan}
           flags={serviceFlags}
           onToggleFlag={(k) => setServiceFlags((p) => ({ ...p, [k]: !p[k] }))}
-          extra={serviceExtra}
-          onChangeExtra={setServiceExtra}
           items={customServiceItems}
           onChangeItems={setCustomServiceItems}
         />
@@ -762,7 +760,7 @@ function ProfileEditor() {
                     dinein: serviceFlags.dinein,
                     delivery: serviceFlags.delivery,
                     booking: serviceFlags.booking,
-                    other: serviceExtra.trim() || null,
+                    other: null,
                   },
                 });
                 await saveServiceItemsFn({
@@ -907,8 +905,6 @@ type ServiceOptionsSectionProps = {
   plan: string;
   flags: Record<ServiceOptionKey, boolean>;
   onToggleFlag: (k: ServiceOptionKey) => void;
-  extra: string;
-  onChangeExtra: (v: string) => void;
   items: { title: string; description: string; icon_key: string }[];
   onChangeItems: (
     items: { title: string; description: string; icon_key: string }[],
@@ -919,8 +915,6 @@ function ServiceOptionsSection({
   plan,
   flags,
   onToggleFlag,
-  extra,
-  onChangeExtra,
   items,
   onChangeItems,
 }: ServiceOptionsSectionProps) {
@@ -997,22 +991,27 @@ function ServiceOptionsSection({
           </div>
 
           <div className="pt-4 border-t border-white/10">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-bold text-neutral-200">
                 Opções personalizadas
               </label>
               <button
                 type="button"
                 onClick={addItem}
-                className="inline-flex items-center gap-1 text-xs font-bold text-[#facc15] hover:underline"
+                disabled={items.length > 0 && !items[items.length - 1].title.trim()}
+                className="inline-flex items-center gap-1 text-xs font-bold text-[#facc15] hover:underline disabled:opacity-40 disabled:cursor-not-allowed disabled:no-underline"
               >
                 <Plus size={14} /> Adicionar opção
               </button>
             </div>
+            <p className="text-xs text-neutral-500 mb-3">
+              Preencha o título e escolha um ícone. Salvo ao clicar em{" "}
+              <span className="text-[#facc15] font-semibold">Salvar perfil</span>.
+            </p>
 
             {items.length === 0 && (
               <p className="text-xs text-neutral-400">
-                Adicione opções extras com título, descrição e ícone (ex: Atendimento domiciliar, Consultoria online).
+                Adicione opções extras como “Atendimento domiciliar”, “Consultoria online”, “Catering”, etc.
               </p>
             )}
 
@@ -1035,7 +1034,7 @@ function ServiceOptionsSection({
                           onChange={(e) => updateItem(idx, { title: e.target.value })}
                           placeholder="Título (ex: Atendimento domiciliar)"
                           maxLength={80}
-                          className="w-full bg-neutral-900 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#facc15]"
+                          className="w-full bg-neutral-900 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-[#facc15]"
                         />
                         <input
                           type="text"
@@ -1043,13 +1042,13 @@ function ServiceOptionsSection({
                           onChange={(e) => updateItem(idx, { description: e.target.value })}
                           placeholder="Descrição (opcional)"
                           maxLength={200}
-                          className="w-full bg-neutral-900 border border-white/10 rounded-lg px-3 py-2 text-sm outline-none focus:border-[#facc15]"
+                          className="w-full bg-neutral-900 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-[#facc15]"
                         />
                       </div>
                       <button
                         type="button"
                         onClick={() => removeItem(idx)}
-                        className="text-neutral-500 hover:text-red-600 mt-2"
+                        className="text-neutral-500 hover:text-red-500 mt-2"
                         aria-label="Remover"
                       >
                         <Trash2 size={16} />
@@ -1063,7 +1062,7 @@ function ServiceOptionsSection({
                             key={key}
                             type="button"
                             onClick={() => updateItem(idx, { icon_key: key })}
-                            className={`flex items-center justify-center h-8 w-8 rounded-lg border transition-colors ${active ? "border-[#facc15] bg-emerald-50 text-[#facc15]" : "border-white/10 text-neutral-400 hover:border-gray-300"}`}
+                            className={`flex items-center justify-center h-8 w-8 rounded-lg border transition-colors ${active ? "border-[#facc15] bg-[#facc15]/10 text-[#facc15]" : "border-white/10 text-neutral-400 hover:border-white/30"}`}
                             aria-label={key}
                           >
                             <I size={14} />
@@ -1075,24 +1074,6 @@ function ServiceOptionsSection({
                 );
               })}
             </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-bold text-neutral-200 mb-1">
-              {t("profile.service_options_other_label")}{" "}
-              <span className="font-normal text-neutral-500">
-                {t("profile.service_options_other_optional")}
-              </span>
-            </label>
-            <input
-              type="text"
-              value={extra}
-              onChange={(e) => onChangeExtra(e.target.value)}
-              placeholder={t("profile.service_options_other_placeholder")}
-              maxLength={60}
-              className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
-            />
-            <p className="text-xs text-neutral-400 mt-1">{t("profile.service_options_other_hint")}</p>
           </div>
         </>
       )}
