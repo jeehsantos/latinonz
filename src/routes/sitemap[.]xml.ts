@@ -26,7 +26,11 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/sobre", changefreq: "monthly", priority: "0.6" },
           { path: "/contato", changefreq: "monthly", priority: "0.6" },
           { path: "/cadastro", changefreq: "monthly", priority: "0.7" },
+          { path: "/privacy", changefreq: "yearly", priority: "0.3" },
+          { path: "/terms", changefreq: "yearly", priority: "0.3" },
         ];
+        // Note: /login and /admin/* are intentionally excluded — they are
+        // user/auth-only surfaces and are disallowed in robots.txt.
 
         for (const n of NEWS) {
           entries.push({ path: `/blog/${n.slug}`, changefreq: "monthly", priority: "0.6" });

@@ -26,8 +26,10 @@ export function SearchBar({
       className="bg-neutral-900 rounded-2xl sm:rounded-3xl shadow-xl p-2.5 sm:p-4 grid grid-cols-1 md:grid-cols-12 gap-2 items-stretch border border-white/10"
     >
       <div className="md:col-span-5 relative">
-        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" />
+        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" aria-hidden="true" />
+        <label htmlFor="directory-search" className="sr-only">{t("directory.search_placeholder")}</label>
         <input
+          id="directory-search"
           value={value.q}
           onChange={(e) => onChange({ ...value, q: e.target.value })}
           placeholder={t("directory.search_placeholder")}
@@ -35,7 +37,9 @@ export function SearchBar({
         />
       </div>
       <div className="grid grid-cols-2 gap-2 md:contents">
+        <label htmlFor="directory-category" className="sr-only">{t("directory.all_areas")}</label>
         <select
+          id="directory-category"
           value={value.category}
           onChange={(e) => onChange({ ...value, category: e.target.value })}
           className="md:col-span-3 bg-neutral-950 border border-white/10 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-3 text-sm outline-none focus:border-[#df991b] text-white"
@@ -47,7 +51,9 @@ export function SearchBar({
             </option>
           ))}
         </select>
+        <label htmlFor="directory-city" className="sr-only">{t("directory.all_nz")}</label>
         <select
+          id="directory-city"
           value={value.city}
           onChange={(e) => onChange({ ...value, city: e.target.value })}
           className="md:col-span-2 bg-neutral-950 border border-white/10 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-3 text-sm outline-none focus:border-[#df991b] text-white"

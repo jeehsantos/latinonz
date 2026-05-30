@@ -118,14 +118,15 @@ function ContatoPage() {
               {t("contact.subtitle")}
             </p>
 
-            <div className="space-y-6 pt-4">
+            <div className="space-y-6 pt-4" aria-label="Contact methods">
+              <h2 className="sr-only">{t("contact.email_label")}</h2>
               {contactItems.map(({ Icon, title, text }) => (
                 <div key={title} className="flex items-start gap-4 group">
                   <div className="w-12 h-12 bg-neutral-900 rounded-2xl shadow-sm border border-white/10 flex items-center justify-center text-[#facc15] group-hover:bg-[#facc15] group-hover:text-black transition-all">
-                    <Icon size={20} />
+                    <Icon size={20} aria-hidden="true" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900">{title}</h4>
+                    <h3 className="font-bold text-slate-900">{title}</h3>
                     <p className="text-slate-500">{text}</p>
                   </div>
                 </div>
@@ -142,7 +143,7 @@ function ContatoPage() {
                     >
                       <img
                         src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 10}`}
-                        alt="User"
+                        alt=""
                       />
                     </div>
                   ))}
@@ -190,42 +191,46 @@ function ContatoPage() {
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
+                    <label htmlFor="contact-name" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
                       {t("contact.field_name")}
                     </label>
                     <input
+                      id="contact-name"
                       required
                       type="text"
                       placeholder={t("contact.field_name_placeholder")}
-                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all placeholder:text-neutral-500"
+                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all placeholder:text-neutral-400"
                       value={formData.nome}
                       onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
+                    <label htmlFor="contact-email" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
                       {t("contact.field_email")}
                     </label>
                     <input
+                      id="contact-email"
                       required
                       type="email"
                       placeholder={t("contact.field_email_placeholder")}
-                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all placeholder:text-neutral-500"
+                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all placeholder:text-neutral-400"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
+                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 block">
                       {t("contact.field_subject")}
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
+                    </span>
+                    <div role="radiogroup" aria-label={t("contact.field_subject")} className="grid grid-cols-3 gap-2">
                       {subjects.map((opt) => (
                         <button
                           key={opt}
                           type="button"
+                          role="radio"
+                          aria-checked={formData.assunto === opt}
                           onClick={() => setFormData({ ...formData, assunto: opt })}
                           className={`py-2 text-xs font-bold rounded-xl border transition-all ${
                             formData.assunto === opt
@@ -240,14 +245,15 @@ function ContatoPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
+                    <label htmlFor="contact-message" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
                       {t("contact.field_message")}
                     </label>
                     <textarea
+                      id="contact-message"
                       required
                       rows={4}
                       placeholder={t("contact.field_message_placeholder")}
-                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all resize-none placeholder:text-neutral-500"
+                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all resize-none placeholder:text-neutral-400"
                       value={formData.mensagem}
                       onChange={(e) => setFormData({ ...formData, mensagem: e.target.value })}
                     />

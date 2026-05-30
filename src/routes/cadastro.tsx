@@ -199,10 +199,11 @@ function CadastroPage() {
 
           <form className="space-y-4" onSubmit={onSubmit} noValidate>
             <div>
-              <label className="text-xs font-bold uppercase text-neutral-400">
+              <label htmlFor="reg-business-name" className="text-xs font-bold uppercase text-neutral-400">
                 {t("register.business_name")}
               </label>
               <input
+                id="reg-business-name"
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
                 className={inputClass("businessName")}
@@ -215,10 +216,11 @@ function CadastroPage() {
               )}
             </div>
             <div>
-              <label className="text-xs font-bold uppercase text-neutral-400">
+              <label htmlFor="reg-owner-name" className="text-xs font-bold uppercase text-neutral-400">
                 {t("register.owner_name")}
               </label>
               <input
+                id="reg-owner-name"
                 value={ownerName}
                 onChange={(e) => setOwnerName(e.target.value)}
                 className={inputClass("ownerName")}
@@ -232,10 +234,11 @@ function CadastroPage() {
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-bold uppercase text-neutral-400">
+                <label htmlFor="reg-email" className="text-xs font-bold uppercase text-neutral-400">
                   {t("register.email")}
                 </label>
                 <input
+                  id="reg-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -249,10 +252,11 @@ function CadastroPage() {
                 )}
               </div>
               <div>
-                <label className="text-xs font-bold uppercase text-neutral-400">
+                <label htmlFor="reg-whatsapp" className="text-xs font-bold uppercase text-neutral-400">
                   {t("register.whatsapp")}
                 </label>
                 <input
+                  id="reg-whatsapp"
                   value={whatsapp}
                   onChange={(e) => setWhatsapp(e.target.value)}
                   placeholder="+64 21 000 0000"
@@ -267,10 +271,11 @@ function CadastroPage() {
               </div>
             </div>
             <div>
-              <label className="text-xs font-bold uppercase text-neutral-400">
+              <label htmlFor="reg-password" className="text-xs font-bold uppercase text-neutral-400">
                 {t("register.password")}
               </label>
               <input
+                id="reg-password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
