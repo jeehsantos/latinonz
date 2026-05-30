@@ -124,7 +124,7 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
       { data: serviceOptionItems },
       { data: photos },
       { data: coupons },
-      { data: ownerProfile },
+      planRpc,
     ] = await Promise.all([
       supabaseAdmin.from("business_hours").select("*").eq("business_id", business.id),
       supabaseAdmin
@@ -147,14 +147,21 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
         .select("id, code, title, description, expires_at, discount_type, discount_value")
         .eq("business_id", business.id)
         .eq("is_active", true),
-      supabaseAdmin
-        .from("profiles")
-        .select("plan_tier")
-        .eq("id", business.owner_id)
-        .maybeSingle(),
+      business.owner_id
+        ? supabaseAdmin.rpc("get_owner_plan_tier", { p_owner: business.owner_id })
+        : Promise.resolve({ data: null, error: null }),
     ]);
 
-    const plan = (ownerProfile?.plan_tier ?? "starter") as "starter" | "premium" | "ultra";
+    if ((planRpc as { error?: unknown }).error) {
+      console.warn(
+        `[getBusinessBySlug] get_owner_plan_tier RPC failed for slug=${business.slug}:`,
+        (planRpc as { error?: unknown }).error,
+      );
+    }
+
+    const rawTier = ((planRpc as { data?: string | null }).data ?? null) as string | null;
+    const plan: "starter" | "premium" | "ultra" =
+      rawTier === "ultra" || rawTier === "premium" ? rawTier : "starter";
 
     return {
       ok: true as const,

@@ -576,6 +576,7 @@ export type Database = {
           plan_tier: string
         }[]
       }
+      get_owner_plan_tier: { Args: { p_owner: string }; Returns: string }
       is_admin_or_manager: { Args: { _user_id: string }; Returns: boolean }
       list_admin_managers: {
         Args: never
