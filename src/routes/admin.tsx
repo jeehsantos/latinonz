@@ -7,7 +7,11 @@ export const Route = createFileRoute("/admin")({
     meta: [{ title: "Admin — Latino Connect" }, { name: "robots", content: "noindex,nofollow" }],
   }),
   beforeLoad: async ({ location }) => {
-    if (typeof window === "undefined") return;
+    // Defense-in-depth: redirect on SSR too so the protected UI shell is
+    // never delivered to unauthenticated requesters.
+    if (typeof window === "undefined") {
+      throw redirect({ to: "/login", search: { redirect: location.href } as never });
+    }
     const {
       data: { session },
     } = await supabase.auth.getSession();
