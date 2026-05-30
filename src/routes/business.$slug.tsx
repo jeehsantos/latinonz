@@ -245,8 +245,7 @@ function BusinessPage() {
     if (serviceOptions.takeaway) serviceOptionBadges.push({ key: "takeaway", label: "Take away" });
     if (serviceOptions.dinein) serviceOptionBadges.push({ key: "dinein", label: "Dine in" });
     if (serviceOptions.delivery) serviceOptionBadges.push({ key: "delivery", label: "Delivery" });
-    if (serviceOptions.booking)
-      serviceOptionBadges.push({ key: "booking", label: "Book in advance" });
+    if (serviceOptions.booking) serviceOptionBadges.push({ key: "booking", label: "Book in advance" });
     if (serviceOptions.other && serviceOptions.other.trim())
       serviceOptionBadges.push({ key: "other", label: serviceOptions.other.trim() });
   }
@@ -258,7 +257,6 @@ function BusinessPage() {
   }[];
 
   void COUPONS_BY_BUSINESS;
-
 
   return (
     <SiteShell>
@@ -331,9 +329,7 @@ function BusinessPage() {
                     ({business.reviewCount} {t("business.reviews_label")})
                   </span>
                 </span>
-                {business.subcategory && (
-                  <span className="text-white/60">{business.subcategory}</span>
-                )}
+                {business.subcategory && <span className="text-white/60">{business.subcategory}</span>}
               </div>
             </div>
           </div>
@@ -349,10 +345,7 @@ function BusinessPage() {
             {business.tags && (
               <div className="mt-5 flex flex-wrap gap-2">
                 {business.tags.map((tag: string) => (
-                  <span
-                    key={tag}
-                    className="text-xs font-semibold bg-white/5 text-neutral-200 px-3 py-1 rounded-full"
-                  >
+                  <span key={tag} className="text-xs font-semibold bg-white/5 text-neutral-200 px-3 py-1 rounded-full">
                     {tag}
                   </span>
                 ))}
@@ -405,9 +398,7 @@ function BusinessPage() {
                           <Star
                             key={j}
                             size={14}
-                            className={
-                              j < r.rating ? "fill-amber-400 text-amber-400" : "text-gray-200"
-                            }
+                            className={j < r.rating ? "fill-amber-400 text-amber-400" : "text-gray-200"}
                           />
                         ))}
                       </div>
@@ -452,10 +443,7 @@ function BusinessPage() {
                 </a>
               )}
               {business.website && (
-                <a
-                  href={business.website}
-                  className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15]"
-                >
+                <a href={business.website} className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15]">
                   <Globe size={16} /> {t("business.website_label")}
                 </a>
               )}
@@ -466,7 +454,7 @@ function BusinessPage() {
               <a
                 href={`https://wa.me/${business.phone.replace(/\D/g, "")}`}
                 target="_blank"
-                rel="noreferrer"
+                rel="noreferrer noopener"
                 className="mt-6 w-full bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold rounded-2xl py-3 text-sm flex items-center justify-center gap-2"
               >
                 <MessageCircle size={16} /> {t("business.whatsapp_cta")}
@@ -507,13 +495,8 @@ function BusinessPage() {
                     )}
                     <div className="space-y-1.5 text-sm">
                       {group.rows.map((h) => (
-                        <div
-                          key={`${h.location}-${h.day_key}`}
-                          className="flex justify-between"
-                        >
-                          <span className="text-neutral-400">
-                            {DAY_LABELS[h.day_key] ?? h.day_key}
-                          </span>
+                        <div key={`${h.location}-${h.day_key}`} className="flex justify-between">
+                          <span className="text-neutral-400">{DAY_LABELS[h.day_key] ?? h.day_key}</span>
                           <span className="font-semibold text-neutral-100">
                             {h.is_closed || h.slots.length === 0
                               ? "—"
@@ -529,44 +512,41 @@ function BusinessPage() {
           )}
 
           {/* Service options — Premium+ only */}
-          {can(business.plan, "serviceOptions") &&
-            (serviceOptionBadges.length > 0 || customItems.length > 0) && (
-              <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
-                <h3 className="font-extrabold text-white">Opções de atendimento</h3>
-                {serviceOptionBadges.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {serviceOptionBadges.map((b) => (
-                      <span
-                        key={b.key}
-                        className="text-xs font-semibold bg-[#facc15]/10 text-[#facc15] border border-[#facc15]/30 px-3 py-1 rounded-full"
-                      >
-                        {b.label}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                {customItems.length > 0 && (
-                  <div className="mt-4 space-y-3">
-                    {customItems.map((it) => {
-                      const Icon = CUSTOM_ICON_MAP[it.icon_key] ?? Sparkles;
-                      return (
-                        <div key={it.id} className="flex items-start gap-3">
-                          <span className="flex items-center justify-center h-9 w-9 rounded-lg bg-black text-[#facc15] shrink-0">
-                            <Icon size={16} />
-                          </span>
-                          <div className="flex-1">
-                            <p className="text-sm font-bold text-white">{it.title}</p>
-                            {it.description && (
-                              <p className="text-xs text-neutral-400">{it.description}</p>
-                            )}
-                          </div>
+          {can(business.plan, "serviceOptions") && (serviceOptionBadges.length > 0 || customItems.length > 0) && (
+            <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
+              <h3 className="font-extrabold text-white">Opções de atendimento</h3>
+              {serviceOptionBadges.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {serviceOptionBadges.map((b) => (
+                    <span
+                      key={b.key}
+                      className="text-xs font-semibold bg-[#facc15]/10 text-[#facc15] border border-[#facc15]/30 px-3 py-1 rounded-full"
+                    >
+                      {b.label}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {customItems.length > 0 && (
+                <div className="mt-4 space-y-3">
+                  {customItems.map((it) => {
+                    const Icon = CUSTOM_ICON_MAP[it.icon_key] ?? Sparkles;
+                    return (
+                      <div key={it.id} className="flex items-start gap-3">
+                        <span className="flex items-center justify-center h-9 w-9 rounded-lg bg-black text-[#facc15] shrink-0">
+                          <Icon size={16} />
+                        </span>
+                        <div className="flex-1">
+                          <p className="text-sm font-bold text-white">{it.title}</p>
+                          {it.description && <p className="text-xs text-neutral-400">{it.description}</p>}
                         </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Service cities */}
           {locations.length > 0 && (
@@ -576,10 +556,7 @@ function BusinessPage() {
               </h3>
               <div className="mt-3 flex flex-wrap gap-2">
                 {locations.map((loc: string) => (
-                  <span
-                    key={loc}
-                    className="text-xs font-semibold bg-white/5 text-neutral-200 px-3 py-1 rounded-full"
-                  >
+                  <span key={loc} className="text-xs font-semibold bg-white/5 text-neutral-200 px-3 py-1 rounded-full">
                     {loc}
                   </span>
                 ))}
@@ -616,10 +593,7 @@ function BusinessPage() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
           onClick={() => setLeadOpen(false)}
         >
-          <div
-            className="bg-neutral-900 rounded-3xl p-6 max-w-md w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="bg-neutral-900 rounded-3xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between">
               <h3 className="font-extrabold text-white text-lg">{t("business.send_message")}</h3>
               <button
@@ -632,9 +606,7 @@ function BusinessPage() {
             </div>
             {leadStatus === "success" ? (
               <div className="mt-6 text-center space-y-3">
-                <p className="text-emerald-700 font-bold">
-                  {t("business.lead_modal.success_title")}
-                </p>
+                <p className="text-emerald-700 font-bold">{t("business.lead_modal.success_title")}</p>
                 <p className="text-sm text-neutral-300">{t("business.lead_modal.success_body")}</p>
                 <button
                   onClick={() => setLeadOpen(false)}
@@ -681,9 +653,7 @@ function BusinessPage() {
                   disabled={leadStatus === "submitting"}
                   className="w-full bg-neutral-900 hover:bg-white/5 disabled:opacity-50 text-[#facc15] font-bold rounded-2xl py-3 text-sm"
                 >
-                  {leadStatus === "submitting"
-                    ? t("business.lead_modal.submitting")
-                    : t("business.lead_modal.submit")}
+                  {leadStatus === "submitting" ? t("business.lead_modal.submitting") : t("business.lead_modal.submit")}
                 </button>
               </form>
             )}
@@ -700,10 +670,7 @@ function BusinessNotFound() {
     <SiteShell>
       <div className="max-w-3xl mx-auto px-6 py-24 text-center">
         <h1 className="text-3xl font-black text-white">{t("business.not_found_title")}</h1>
-        <Link
-          to="/directory"
-          className="inline-flex mt-6 bg-black text-[#facc15] font-bold px-5 py-2.5 rounded-xl"
-        >
+        <Link to="/directory" className="inline-flex mt-6 bg-black text-[#facc15] font-bold px-5 py-2.5 rounded-xl">
           {t("business.back_to_directory_btn")}
         </Link>
       </div>
