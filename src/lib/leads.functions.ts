@@ -74,7 +74,7 @@ async function sendOwnerEmail(params: {
       "X-Connection-Api-Key": RESEND_API_KEY,
     },
     body: JSON.stringify({
-      from: "Latino Connect <onboarding@resend.dev>",
+      from: "Latino Connect Hub <no-reply@latinoconnecthub.co.nz>",
       to: [to],
       subject: `Novo lead — ${businessName}`,
       html,
