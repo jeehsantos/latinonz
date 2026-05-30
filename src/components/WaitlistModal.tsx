@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useId, cloneElement, isValidElement, type ReactElement } from "react";
 import { CheckCircle2, X, Loader2, AlertCircle } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { Link } from "@tanstack/react-router";
@@ -306,10 +306,14 @@ function Field({
   invalid?: boolean;
   message?: string;
 }) {
+  const id = useId();
+  const child = isValidElement(children)
+    ? cloneElement(children as ReactElement<{ id?: string }>, { id })
+    : children;
   return (
     <div>
-      <label className="block text-xs font-bold text-neutral-200 mb-1">{label}</label>
-      {children}
+      <label htmlFor={id} className="block text-xs font-bold text-neutral-200 mb-1">{label}</label>
+      {child}
       {invalid && message && (
         <p className="mt-1 flex items-center gap-1 text-[11px] font-semibold text-red-600 animate-in fade-in slide-in-from-top-1 duration-200">
           <AlertCircle size={12} />
