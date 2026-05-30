@@ -147,14 +147,24 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
         .select("id, code, title, description, expires_at, discount_type, discount_value")
         .eq("business_id", business.id)
         .eq("is_active", true),
-      supabaseAdmin
-        .from("profiles")
-        .select("plan_tier")
-        .eq("id", business.owner_id)
-        .maybeSingle(),
+      business.owner_id
+        ? supabaseAdmin
+            .from("profiles")
+            .select("plan_tier")
+            .eq("id", business.owner_id)
+            .maybeSingle()
+        : Promise.resolve({ data: null, error: null }),
     ]);
 
-    const plan = (ownerProfile?.plan_tier ?? "starter") as "starter" | "premium" | "ultra";
+    if (!ownerProfile) {
+      console.warn(
+        `[getBusinessBySlug] No profile found for owner_id=${business.owner_id} (business slug=${business.slug}). Falling back to starter plan.`,
+      );
+    }
+
+    const rawTier = (ownerProfile as { plan_tier?: string } | null)?.plan_tier;
+    const plan: "starter" | "premium" | "ultra" =
+      rawTier === "ultra" || rawTier === "premium" ? rawTier : "starter";
 
     return {
       ok: true as const,
