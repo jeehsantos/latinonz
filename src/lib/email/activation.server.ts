@@ -26,7 +26,7 @@ export async function sendActivationEmail({ to, ownerName, activationUrl }: Send
       "X-Connection-Api-Key": resendKey,
     },
     body: JSON.stringify({
-      from: "Latino Connect Hub <onboarding@resend.dev>",
+      from: "Latino Connect Hub <no-reply@latinoconnecthub.co.nz>",
       to: [to],
       subject,
       html,
