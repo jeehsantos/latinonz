@@ -191,42 +191,46 @@ function ContatoPage() {
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
+                    <label htmlFor="contact-name" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
                       {t("contact.field_name")}
                     </label>
                     <input
+                      id="contact-name"
                       required
                       type="text"
                       placeholder={t("contact.field_name_placeholder")}
-                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all placeholder:text-neutral-500"
+                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all placeholder:text-neutral-400"
                       value={formData.nome}
                       onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
+                    <label htmlFor="contact-email" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
                       {t("contact.field_email")}
                     </label>
                     <input
+                      id="contact-email"
                       required
                       type="email"
                       placeholder={t("contact.field_email_placeholder")}
-                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all placeholder:text-neutral-500"
+                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all placeholder:text-neutral-400"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
+                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 block">
                       {t("contact.field_subject")}
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
+                    </span>
+                    <div role="radiogroup" aria-label={t("contact.field_subject")} className="grid grid-cols-3 gap-2">
                       {subjects.map((opt) => (
                         <button
                           key={opt}
                           type="button"
+                          role="radio"
+                          aria-checked={formData.assunto === opt}
                           onClick={() => setFormData({ ...formData, assunto: opt })}
                           className={`py-2 text-xs font-bold rounded-xl border transition-all ${
                             formData.assunto === opt
@@ -241,14 +245,15 @@ function ContatoPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
+                    <label htmlFor="contact-message" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
                       {t("contact.field_message")}
                     </label>
                     <textarea
+                      id="contact-message"
                       required
                       rows={4}
                       placeholder={t("contact.field_message_placeholder")}
-                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all resize-none placeholder:text-neutral-500"
+                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all resize-none placeholder:text-neutral-400"
                       value={formData.mensagem}
                       onChange={(e) => setFormData({ ...formData, mensagem: e.target.value })}
                     />
