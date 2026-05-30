@@ -118,14 +118,15 @@ function ContatoPage() {
               {t("contact.subtitle")}
             </p>
 
-            <div className="space-y-6 pt-4">
+            <div className="space-y-6 pt-4" aria-label="Contact methods">
+              <h2 className="sr-only">{t("contact.email_label")}</h2>
               {contactItems.map(({ Icon, title, text }) => (
                 <div key={title} className="flex items-start gap-4 group">
                   <div className="w-12 h-12 bg-neutral-900 rounded-2xl shadow-sm border border-white/10 flex items-center justify-center text-[#facc15] group-hover:bg-[#facc15] group-hover:text-black transition-all">
-                    <Icon size={20} />
+                    <Icon size={20} aria-hidden="true" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900">{title}</h4>
+                    <h3 className="font-bold text-slate-900">{title}</h3>
                     <p className="text-slate-500">{text}</p>
                   </div>
                 </div>
@@ -142,7 +143,7 @@ function ContatoPage() {
                     >
                       <img
                         src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 10}`}
-                        alt="User"
+                        alt=""
                       />
                     </div>
                   ))}

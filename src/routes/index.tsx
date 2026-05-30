@@ -143,7 +143,7 @@ function Landing() {
             <div className="w-10 h-10 rounded-xl bg-[#df991b]/15 text-[#df991b] flex items-center justify-center font-black mb-4">
               ★
             </div>
-            <h3 className="font-extrabold text-white mb-1">{f.title}</h3>
+            <h2 className="font-extrabold text-white mb-1 text-base">{f.title}</h2>
             <p className="text-sm text-neutral-300">{f.body}</p>
           </div>
         ))}
