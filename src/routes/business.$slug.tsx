@@ -449,28 +449,26 @@ function BusinessPage() {
               )}
             </div>
 
-            {/* Contact CTA — varies by plan */}
-            {can(business.plan, "leadWhatsapp") && business.phone ? (
-              <a
-                href={`https://wa.me/${business.phone.replace(/\D/g, "")}`}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="mt-6 w-full bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold rounded-2xl py-3 text-sm flex items-center justify-center gap-2"
-              >
-                <MessageCircle size={16} /> {t("business.whatsapp_cta")}
-              </a>
-            ) : (
-              <button
-                onClick={() => {
-                  setLeadStatus("idle");
-                  setLeadError(null);
-                  setLeadOpen(true);
-                }}
-                className="mt-6 w-full bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold rounded-2xl py-3 text-sm"
-              >
-                {t("business.send_message")}
-              </button>
-            )}
+            {/* Contact CTA — opens the lead form for all plans.
+                The form submission registers the lead, triggers plan-appropriate
+                notifications (email / WhatsApp / both), and for Premium+Ultra
+                redirects the visitor to WhatsApp with a prefilled message. */}
+            <button
+              onClick={() => {
+                setLeadStatus("idle");
+                setLeadError(null);
+                setLeadOpen(true);
+              }}
+              className="mt-6 w-full bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold rounded-2xl py-3 text-sm flex items-center justify-center gap-2"
+            >
+              {wantsWhatsappFlow ? (
+                <>
+                  <MessageCircle size={16} /> {t("business.whatsapp_cta")}
+                </>
+              ) : (
+                t("business.send_message")
+              )}
+            </button>
             {business.responseTime && (
               <p className="text-xs text-neutral-500 text-center mt-3">{business.responseTime}</p>
             )}
