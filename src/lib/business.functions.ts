@@ -73,6 +73,19 @@ const updateServiceOptionItemsSchema = z.object({
         description: z.string().trim().max(200).nullable().optional(),
         icon_key: z.string().trim().min(1).max(40),
       }),
+  )
+    .max(20),
+});
+
+const updateBranchesSchema = z.object({
+  branches: z
+    .array(
+      z.object({
+        location: z.string().trim().min(1).max(100),
+        address_street: z.string().trim().max(200).nullable().optional(),
+        address_suburb: z.string().trim().max(100).nullable().optional(),
+        phone: z.string().trim().max(32).nullable().optional(),
+      }),
     )
     .max(20),
 });
@@ -126,6 +139,7 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
       { data: serviceOptionItems },
       { data: photos },
       { data: coupons },
+      { data: branches },
       planRpc,
     ] = await Promise.all([
       supabaseAdmin.from("business_hours").select("*").eq("business_id", business.id),
@@ -149,6 +163,11 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
         .select("id, code, title, description, expires_at, discount_type, discount_value")
         .eq("business_id", business.id)
         .eq("is_active", true),
+      supabaseAdmin
+        .from("business_branches")
+        .select("location, address_street, address_suburb, phone, position")
+        .eq("business_id", business.id)
+        .order("position", { ascending: true }),
       business.owner_id
         ? supabaseAdmin.rpc("get_owner_plan_tier", { p_owner: business.owner_id })
         : Promise.resolve({ data: null, error: null }),
@@ -174,6 +193,7 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
       serviceOptionItems: serviceOptionItems ?? [],
       photos: photos ?? [],
       coupons: coupons ?? [],
+      branches: branches ?? [],
     };
   });
 
@@ -200,6 +220,7 @@ export const getMyBusiness = createServerFn({ method: "GET" })
         hours: [],
         serviceOptions: null,
         serviceOptionItems: [],
+        branches: [],
       };
     }
 
@@ -207,12 +228,18 @@ export const getMyBusiness = createServerFn({ method: "GET" })
       { data: hours },
       { data: serviceOptions },
       { data: serviceOptionItems },
+      { data: branches },
     ] = await Promise.all([
       supabase.from("business_hours").select("*").eq("business_id", business.id),
       supabase.from("service_options").select("*").eq("business_id", business.id).maybeSingle(),
       supabase
         .from("service_option_items")
         .select("id, title, description, icon_key, position")
+        .eq("business_id", business.id)
+        .order("position", { ascending: true }),
+      supabase
+        .from("business_branches")
+        .select("location, address_street, address_suburb, phone, position")
         .eq("business_id", business.id)
         .order("position", { ascending: true }),
     ]);
@@ -223,6 +250,7 @@ export const getMyBusiness = createServerFn({ method: "GET" })
       hours: hours ?? [],
       serviceOptions: serviceOptions ?? null,
       serviceOptionItems: serviceOptionItems ?? [],
+      branches: branches ?? [],
     };
   });
 
@@ -453,3 +481,55 @@ export const updateServiceOptionItems = createServerFn({ method: "POST" })
     }
     return { ok: true as const, items: inserted ?? [] };
   });
+
+// Authenticated — replace branches (per-location address/phone) for the owner's business
+export const updateBusinessBranches = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => updateBranchesSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+
+    const { data: business, error: bizError } = await supabase
+      .from("businesses")
+      .select("id")
+      .eq("owner_id", userId)
+      .maybeSingle();
+
+    if (bizError || !business) {
+      return { ok: false as const, error: "Negócio não encontrado." };
+    }
+
+    const { error: delError } = await supabase
+      .from("business_branches")
+      .delete()
+      .eq("business_id", business.id);
+    if (delError) {
+      console.error("updateBusinessBranches delete error", delError);
+      return { ok: false as const, error: delError.message };
+    }
+
+    if (data.branches.length === 0) {
+      return { ok: true as const, branches: [] };
+    }
+
+    const rows = data.branches.map((b, idx) => ({
+      business_id: business.id,
+      location: b.location,
+      address_street: b.address_street ?? null,
+      address_suburb: b.address_suburb ?? null,
+      phone: b.phone ?? null,
+      position: idx,
+    }));
+
+    const { data: inserted, error: insError } = await supabase
+      .from("business_branches")
+      .insert(rows)
+      .select();
+
+    if (insError) {
+      console.error("updateBusinessBranches insert error", insError);
+      return { ok: false as const, error: insError.message };
+    }
+    return { ok: true as const, branches: inserted ?? [] };
+  });
+

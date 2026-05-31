@@ -38,6 +38,7 @@ import {
   updateBusinessHours,
   updateServiceOptions,
   updateServiceOptionItems,
+  updateBusinessBranches,
 } from "@/lib/business.functions";
 import { uploadLogo } from "@/lib/storage.functions";
 import { connectGooglePlace, syncGoogleReviews } from "@/lib/reviews.functions";
@@ -78,6 +79,7 @@ function ProfileEditor() {
   const saveHoursFn = useServerFn(updateBusinessHours);
   const saveServiceOptionsFn = useServerFn(updateServiceOptions);
   const saveServiceItemsFn = useServerFn(updateServiceOptionItems);
+  const saveBranchesFn = useServerFn(updateBusinessBranches);
   const callUploadLogo = useServerFn(uploadLogo);
   const { data: loaded, refetch } = useQuery({
     queryKey: ["my-business"],
@@ -106,6 +108,11 @@ function ProfileEditor() {
   const [citiesOpen, setCitiesOpen] = useState(false);
   const [schedules, setSchedules] = useState<Record<string, BranchSchedule>>({
     Auckland: DEFAULT_SCHEDULE,
+  });
+  type BranchDetail = { address_street: string; address_suburb: string; phone: string };
+  const EMPTY_BRANCH_DETAIL: BranchDetail = { address_street: "", address_suburb: "", phone: "" };
+  const [branchDetails, setBranchDetails] = useState<Record<string, BranchDetail>>({
+    Auckland: { ...EMPTY_BRANCH_DETAIL },
   });
   const [activeBranch, setActiveBranch] = useState<string>("Auckland");
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
@@ -177,6 +184,27 @@ function ProfileEditor() {
         }
         return next;
       });
+
+      // Seed per-branch details from saved business_branches
+      const loadedBranches = (loaded.branches ?? []) as unknown as {
+        location: string;
+        address_street: string | null;
+        address_suburb: string | null;
+        phone: string | null;
+      }[];
+      setBranchDetails(() => {
+        const next: Record<string, BranchDetail> = {};
+        for (const loc of locs) {
+          const row = loadedBranches.find((r) => r.location === loc);
+          next[loc] = {
+            address_street: row?.address_street ?? "",
+            address_suburb: row?.address_suburb ?? "",
+            phone: row?.phone ?? "",
+          };
+        }
+        return next;
+      });
+
 
       if (b.logo_url) setLogo(b.logo_url);
 
@@ -267,10 +295,26 @@ function ProfileEditor() {
         }
         return copy;
       });
+      setBranchDetails((det) => {
+        const copy = { ...det };
+        if (exists) {
+          delete copy[city];
+        } else if (!copy[city]) {
+          copy[city] = { ...EMPTY_BRANCH_DETAIL };
+        }
+        return copy;
+      });
       if (exists && activeBranch === city) setActiveBranch(next[0] ?? "");
       if (!exists && next.length === 1) setActiveBranch(city);
       return next;
     });
+  };
+
+  const updateBranchDetail = (city: string, patch: Partial<BranchDetail>) => {
+    setBranchDetails((prev) => ({
+      ...prev,
+      [city]: { ...(prev[city] ?? EMPTY_BRANCH_DETAIL), ...patch },
+    }));
   };
 
   const copyScheduleToAll = () => {
@@ -631,6 +675,53 @@ function ProfileEditor() {
               </div>
             )}
 
+            {multiBranch && (
+              <div className="mb-4 rounded-xl border border-white/10 bg-neutral-950/50 p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <MapPin size={14} className="text-[#facc15]" />
+                  <p className="text-xs font-bold uppercase tracking-wider text-neutral-300">
+                    {activeBranch} — contato da filial
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <input
+                    type="text"
+                    placeholder="Endereço (rua e número)"
+                    value={branchDetails[activeBranch]?.address_street ?? ""}
+                    onChange={(e) =>
+                      updateBranchDetail(activeBranch, { address_street: e.target.value })
+                    }
+                    maxLength={200}
+                    className="w-full bg-neutral-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-[#facc15]"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Bairro / Suburb"
+                    value={branchDetails[activeBranch]?.address_suburb ?? ""}
+                    onChange={(e) =>
+                      updateBranchDetail(activeBranch, { address_suburb: e.target.value })
+                    }
+                    maxLength={100}
+                    className="w-full bg-neutral-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-[#facc15]"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Telefone / WhatsApp da filial"
+                    value={branchDetails[activeBranch]?.phone ?? ""}
+                    onChange={(e) =>
+                      updateBranchDetail(activeBranch, { phone: e.target.value })
+                    }
+                    maxLength={32}
+                    className="w-full md:col-span-2 bg-neutral-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-[#facc15]"
+                  />
+                </div>
+                <p className="text-[11px] text-neutral-500">
+                  Sobrescreve o endereço e telefone padrão para esta filial no perfil público.
+                </p>
+              </div>
+            )}
+
+
             <div className="rounded-xl border border-white/10 overflow-hidden divide-y divide-gray-100">
               {days.map(({ key, label, short }) => {
                 const day = branchSchedule[key];
@@ -811,6 +902,21 @@ function ProfileEditor() {
                   },
                 });
               }
+
+              // Save per-branch details (address/phone) — applies to all plans
+              await saveBranchesFn({
+                data: {
+                  branches: cities.map((city) => {
+                    const d = branchDetails[city] ?? EMPTY_BRANCH_DETAIL;
+                    return {
+                      location: city,
+                      address_street: d.address_street.trim() || null,
+                      address_suburb: d.address_suburb.trim() || null,
+                      phone: d.phone.trim() || null,
+                    };
+                  }),
+                },
+              });
 
               setSaveSuccess(true);
               await refetch();
