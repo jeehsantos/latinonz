@@ -481,3 +481,55 @@ export const updateServiceOptionItems = createServerFn({ method: "POST" })
     }
     return { ok: true as const, items: inserted ?? [] };
   });
+
+// Authenticated — replace branches (per-location address/phone) for the owner's business
+export const updateBusinessBranches = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => updateBranchesSchema.parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+
+    const { data: business, error: bizError } = await supabase
+      .from("businesses")
+      .select("id")
+      .eq("owner_id", userId)
+      .maybeSingle();
+
+    if (bizError || !business) {
+      return { ok: false as const, error: "Negócio não encontrado." };
+    }
+
+    const { error: delError } = await supabase
+      .from("business_branches")
+      .delete()
+      .eq("business_id", business.id);
+    if (delError) {
+      console.error("updateBusinessBranches delete error", delError);
+      return { ok: false as const, error: delError.message };
+    }
+
+    if (data.branches.length === 0) {
+      return { ok: true as const, branches: [] };
+    }
+
+    const rows = data.branches.map((b, idx) => ({
+      business_id: business.id,
+      location: b.location,
+      address_street: b.address_street ?? null,
+      address_suburb: b.address_suburb ?? null,
+      phone: b.phone ?? null,
+      position: idx,
+    }));
+
+    const { data: inserted, error: insError } = await supabase
+      .from("business_branches")
+      .insert(rows)
+      .select();
+
+    if (insError) {
+      console.error("updateBusinessBranches insert error", insError);
+      return { ok: false as const, error: insError.message };
+    }
+    return { ok: true as const, branches: inserted ?? [] };
+  });
+
