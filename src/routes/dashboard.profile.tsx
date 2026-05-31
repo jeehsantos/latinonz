@@ -38,6 +38,7 @@ import {
   updateBusinessHours,
   updateServiceOptions,
   updateServiceOptionItems,
+  updateBusinessBranches,
 } from "@/lib/business.functions";
 import { uploadLogo } from "@/lib/storage.functions";
 import { connectGooglePlace, syncGoogleReviews } from "@/lib/reviews.functions";
