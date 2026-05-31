@@ -100,6 +100,8 @@ function ProfileEditor() {
   const [category, setCategory] = useState<string>("");
   const [phone, setPhone] = useState("");
   const [keywords, setKeywords] = useState("");
+  const [addressStreet, setAddressStreet] = useState("");
+  const [addressSuburb, setAddressSuburb] = useState("");
   const [cities, setCities] = useState<string[]>(["Auckland"]);
   const [citiesOpen, setCitiesOpen] = useState(false);
   const [schedules, setSchedules] = useState<Record<string, BranchSchedule>>({
