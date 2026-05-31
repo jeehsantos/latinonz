@@ -769,7 +769,7 @@ function BusinessPage() {
                   </span>
                 </div>
 
-                {hourCities.length > 1 && (
+                {hourCities.length > 1 && tabCities.length <= 1 && (
                   <div className="flex bg-white/5 p-1 rounded-xl mb-3">
                     {hourCities.map((c) => (
                       <button
