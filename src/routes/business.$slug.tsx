@@ -482,7 +482,7 @@ function BusinessPage() {
                     )}
                     {rest.length > 0 && (
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        {rest.map((p, i) => {
+                        {rest.map((p: { id: string; url: string }, i: number) => {
                           const idx = i + 1;
                           const isLastTile = i === rest.length - 1 && hasMore;
                           return (
