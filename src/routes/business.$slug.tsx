@@ -413,21 +413,8 @@ function BusinessPage() {
               </div>
             </div>
 
-            {/* Top-right Message CTA */}
-            <div className="md:self-end">
-              <button
-                onClick={() => {
-                  setLeadStatus("idle");
-                  setLeadError(null);
-                  setLeadOpen(true);
-                }}
-                className="inline-flex items-center gap-2 bg-[#facc15] hover:bg-[#facc15]/90 text-black font-bold rounded-full px-6 py-3 text-sm shadow-lg shadow-[#facc15]/20 transition"
-              >
-                <MessageCircle size={16} />
-                {t("business.send_message")}
-              </button>
-            </div>
           </div>
+
         </div>
       </section>
 
