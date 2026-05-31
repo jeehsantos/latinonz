@@ -35,6 +35,8 @@ const updateBusinessSchema = z.object({
   keywords: z.array(z.string().trim().min(1).max(50)).max(30).optional(),
   google_place_id: z.string().trim().max(200).nullable().optional(),
   response_time: z.string().trim().max(50).nullable().optional(),
+  address_street: z.string().trim().max(200).nullable().optional(),
+  address_suburb: z.string().trim().max(100).nullable().optional(),
 });
 
 const slotSchema = z.object({
