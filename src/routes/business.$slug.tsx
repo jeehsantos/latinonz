@@ -26,7 +26,10 @@ import {
   Package,
   ExternalLink,
   Check,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
+
 
 const CUSTOM_ICON_MAP: Record<string, typeof Sparkles> = {
   sparkles: Sparkles,
@@ -153,6 +156,8 @@ function BusinessPage() {
   const [leadForm, setLeadForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [leadStatus, setLeadStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [leadError, setLeadError] = useState<string | null>(null);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
 
   const waNumber = business.phone ? business.phone.replace(/\D/g, "") : "";
   const wantsWhatsappFlow = can(business.plan, "leadWhatsapp") && Boolean(waNumber);
@@ -408,21 +413,8 @@ function BusinessPage() {
               </div>
             </div>
 
-            {/* Top-right Message CTA */}
-            <div className="md:self-end">
-              <button
-                onClick={() => {
-                  setLeadStatus("idle");
-                  setLeadError(null);
-                  setLeadOpen(true);
-                }}
-                className="inline-flex items-center gap-2 bg-[#facc15] hover:bg-[#facc15]/90 text-black font-bold rounded-full px-6 py-3 text-sm shadow-lg shadow-[#facc15]/20 transition"
-              >
-                <MessageCircle size={16} />
-                {t("business.send_message")}
-              </button>
-            </div>
           </div>
+
         </div>
       </section>
 
@@ -467,26 +459,64 @@ function BusinessPage() {
                     : `${visiblePhotos.length} ${t("business.photos_limit")}`}
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                {visiblePhotos.slice(0, 6).map((p: { id: string; url: string }, idx: number) => (
-                  <div
-                    key={p.id}
-                    className={`relative overflow-hidden rounded-2xl bg-white/5 group cursor-pointer ${
-                      idx === 0 && visiblePhotos.length > 1
-                        ? "col-span-2 aspect-[16/9]"
-                        : "aspect-square"
-                    }`}
-                  >
-                    <img
-                      src={p.url}
-                      alt={`${business.name} — ${idx + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              {(() => {
+                const first = visiblePhotos[0];
+                const rest = visiblePhotos.slice(1, 5);
+                const hasMore = visiblePhotos.length > 3;
+                return (
+                  <div className="space-y-3">
+                    {first && (
+                      <button
+                        type="button"
+                        onClick={() => setLightboxIndex(0)}
+                        className="relative block w-full overflow-hidden rounded-2xl bg-white/5 group aspect-[16/9]"
+                      >
+                        <img
+                          src={first.url}
+                          alt={`${business.name} — 1`}
+                          className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </button>
+                    )}
+                    {rest.length > 0 && (
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        {rest.map((p: { id: string; url: string }, i: number) => {
+                          const idx = i + 1;
+                          const isLastTile = i === rest.length - 1 && hasMore;
+                          return (
+                            <button
+                              type="button"
+                              key={p.id}
+                              onClick={() => setLightboxIndex(idx)}
+                              className="relative block overflow-hidden rounded-xl bg-white/5 group aspect-square"
+                            >
+                              <img
+                                src={p.url}
+                                alt={`${business.name} — ${idx + 1}`}
+                                className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+                                loading="lazy"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                              {isLastTile && (
+                                <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-1 text-white">
+                                  <ImageIcon size={20} className="text-[#facc15]" />
+                                  <span className="text-xs font-bold">View all photos</span>
+                                  <span className="text-[10px] text-white/70">
+                                    {visiblePhotos.length} photos
+                                  </span>
+                                </div>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
-                ))}
-              </div>
+                );
+              })()}
+
             </div>
           )}
 
@@ -785,7 +815,7 @@ function BusinessPage() {
 
       {leadOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md p-4"
           onClick={() => setLeadOpen(false)}
         >
           <div className="bg-neutral-900 rounded-3xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
@@ -855,7 +885,66 @@ function BusinessPage() {
           </div>
         </div>
       )}
+
+      {/* Photo lightbox / carousel */}
+      {lightboxIndex !== null && visiblePhotos.length > 0 && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4"
+          onClick={() => setLightboxIndex(null)}
+        >
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setLightboxIndex(null);
+            }}
+            className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
+            aria-label="Close"
+          >
+            <X size={20} />
+          </button>
+          {visiblePhotos.length > 1 && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIndex(
+                  (lightboxIndex - 1 + visiblePhotos.length) % visiblePhotos.length,
+                );
+              }}
+              className="absolute left-4 md:left-8 h-12 w-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
+              aria-label="Previous"
+            >
+              <ChevronLeft size={24} />
+            </button>
+          )}
+          <div className="relative max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={visiblePhotos[lightboxIndex].url}
+              alt={`${business.name} — ${lightboxIndex + 1}`}
+              className="w-full max-h-[85vh] object-contain rounded-2xl"
+            />
+            <p className="mt-3 text-center text-xs text-white/70">
+              {lightboxIndex + 1} / {visiblePhotos.length}
+            </p>
+          </div>
+          {visiblePhotos.length > 1 && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIndex((lightboxIndex + 1) % visiblePhotos.length);
+              }}
+              className="absolute right-4 md:right-8 h-12 w-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
+              aria-label="Next"
+            >
+              <ChevronRight size={24} />
+            </button>
+          )}
+        </div>
+      )}
     </SiteShell>
+
   );
 }
 
