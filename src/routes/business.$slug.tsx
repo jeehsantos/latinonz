@@ -459,26 +459,64 @@ function BusinessPage() {
                     : `${visiblePhotos.length} ${t("business.photos_limit")}`}
                 </span>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                {visiblePhotos.slice(0, 6).map((p: { id: string; url: string }, idx: number) => (
-                  <div
-                    key={p.id}
-                    className={`relative overflow-hidden rounded-2xl bg-white/5 group cursor-pointer ${
-                      idx === 0 && visiblePhotos.length > 1
-                        ? "col-span-2 aspect-[16/9]"
-                        : "aspect-square"
-                    }`}
-                  >
-                    <img
-                      src={p.url}
-                      alt={`${business.name} — ${idx + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              {(() => {
+                const first = visiblePhotos[0];
+                const rest = visiblePhotos.slice(1, 5);
+                const hasMore = visiblePhotos.length > 3;
+                return (
+                  <div className="space-y-3">
+                    {first && (
+                      <button
+                        type="button"
+                        onClick={() => setLightboxIndex(0)}
+                        className="relative block w-full overflow-hidden rounded-2xl bg-white/5 group aspect-[16/9]"
+                      >
+                        <img
+                          src={first.url}
+                          alt={`${business.name} — 1`}
+                          className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </button>
+                    )}
+                    {rest.length > 0 && (
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        {rest.map((p, i) => {
+                          const idx = i + 1;
+                          const isLastTile = i === rest.length - 1 && hasMore;
+                          return (
+                            <button
+                              type="button"
+                              key={p.id}
+                              onClick={() => setLightboxIndex(idx)}
+                              className="relative block overflow-hidden rounded-xl bg-white/5 group aspect-square"
+                            >
+                              <img
+                                src={p.url}
+                                alt={`${business.name} — ${idx + 1}`}
+                                className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+                                loading="lazy"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                              {isLastTile && (
+                                <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-1 text-white">
+                                  <ImageIcon size={20} className="text-[#facc15]" />
+                                  <span className="text-xs font-bold">View all photos</span>
+                                  <span className="text-[10px] text-white/70">
+                                    {visiblePhotos.length} photos
+                                  </span>
+                                </div>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
-                ))}
-              </div>
+                );
+              })()}
+
             </div>
           )}
 
