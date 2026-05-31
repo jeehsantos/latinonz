@@ -193,6 +193,7 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
       serviceOptionItems: serviceOptionItems ?? [],
       photos: photos ?? [],
       coupons: coupons ?? [],
+      branches: branches ?? [],
     };
   });
 
