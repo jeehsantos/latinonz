@@ -20,6 +20,8 @@ type DbBusinessRow = {
   response_time?: string | null;
   rating: number | null;
   review_count: number | null;
+  address_street?: string | null;
+  address_suburb?: string | null;
 };
 
 /**
