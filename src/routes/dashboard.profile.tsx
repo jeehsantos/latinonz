@@ -506,7 +506,12 @@ function ProfileEditor() {
 
         <div>
           <label className="block text-sm font-bold text-neutral-200 mb-1">
-            {t("profile.phone_label")}
+            {t("profile.phone_label")}{" "}
+            {multiBranch && (
+              <span className="ml-1 text-[10px] uppercase tracking-wider text-neutral-500 font-semibold">
+                (default / fallback)
+              </span>
+            )}
           </label>
           <input
             type="text"
@@ -515,36 +520,43 @@ function ProfileEditor() {
             onChange={(e) => setPhone(e.target.value)}
             className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
           />
+          {multiBranch && (
+            <p className="mt-1 text-[11px] text-neutral-500">
+              Used when a branch below does not have its own phone.
+            </p>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-bold text-neutral-200 mb-1">
-              Endereço (rua e número)
-            </label>
-            <input
-              type="text"
-              placeholder="Ex: 123 Queen St"
-              value={addressStreet}
-              onChange={(e) => setAddressStreet(e.target.value)}
-              maxLength={200}
-              className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
-            />
+        {!multiBranch && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-bold text-neutral-200 mb-1">
+                Endereço (rua e número)
+              </label>
+              <input
+                type="text"
+                placeholder="Ex: 123 Queen St"
+                value={addressStreet}
+                onChange={(e) => setAddressStreet(e.target.value)}
+                maxLength={200}
+                className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-neutral-200 mb-1">
+                Bairro / Suburb
+              </label>
+              <input
+                type="text"
+                placeholder="Ex: Auckland CBD"
+                value={addressSuburb}
+                onChange={(e) => setAddressSuburb(e.target.value)}
+                maxLength={100}
+                className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-bold text-neutral-200 mb-1">
-              Bairro / Suburb
-            </label>
-            <input
-              type="text"
-              placeholder="Ex: Auckland CBD"
-              value={addressSuburb}
-              onChange={(e) => setAddressSuburb(e.target.value)}
-              maxLength={100}
-              className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
-            />
-          </div>
-        </div>
+        )}
 
 
         <div>
@@ -608,6 +620,78 @@ function ProfileEditor() {
             </div>
           )}
         </div>
+
+        {multiBranch && (
+          <div className="rounded-2xl border border-[#facc15]/30 bg-gradient-to-br from-neutral-950 to-neutral-900 p-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <MapPin size={18} className="text-[#facc15]" />
+              <h4 className="text-base font-bold text-white">Branch Contacts</h4>
+              <span className="text-[10px] uppercase tracking-wider bg-[#facc15]/10 text-[#facc15] px-2 py-0.5 rounded-full font-bold">
+                {cities.length} branches
+              </span>
+            </div>
+            <p className="text-xs text-neutral-400">
+              Each branch can have its own address and phone. They appear on your public profile when visitors switch branches.
+            </p>
+            <div className="flex flex-wrap gap-1.5 p-1 bg-white/5 rounded-xl">
+              {cities.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setActiveBranch(c)}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${activeBranch === c ? "bg-black text-[#facc15] shadow-sm" : "text-neutral-400 hover:text-neutral-200"}`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="md:col-span-2">
+                <label className="block text-xs font-bold text-neutral-300 mb-1">
+                  {activeBranch} — Street address
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ex: 123 Queen St"
+                  value={branchDetails[activeBranch]?.address_street ?? ""}
+                  onChange={(e) =>
+                    updateBranchDetail(activeBranch, { address_street: e.target.value })
+                  }
+                  maxLength={200}
+                  className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#facc15]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-neutral-300 mb-1">Suburb</label>
+                <input
+                  type="text"
+                  placeholder="Ex: CBD"
+                  value={branchDetails[activeBranch]?.address_suburb ?? ""}
+                  onChange={(e) =>
+                    updateBranchDetail(activeBranch, { address_suburb: e.target.value })
+                  }
+                  maxLength={100}
+                  className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#facc15]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-neutral-300 mb-1">
+                  Phone / WhatsApp
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ex: 021 000 0000"
+                  value={branchDetails[activeBranch]?.phone ?? ""}
+                  onChange={(e) =>
+                    updateBranchDetail(activeBranch, { phone: e.target.value })
+                  }
+                  maxLength={32}
+                  className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#facc15]"
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-bold text-neutral-200 mb-1">
@@ -675,51 +759,6 @@ function ProfileEditor() {
               </div>
             )}
 
-            {multiBranch && (
-              <div className="mb-4 rounded-xl border border-white/10 bg-neutral-950/50 p-4 space-y-3">
-                <div className="flex items-center gap-2">
-                  <MapPin size={14} className="text-[#facc15]" />
-                  <p className="text-xs font-bold uppercase tracking-wider text-neutral-300">
-                    {activeBranch} — contato da filial
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <input
-                    type="text"
-                    placeholder="Endereço (rua e número)"
-                    value={branchDetails[activeBranch]?.address_street ?? ""}
-                    onChange={(e) =>
-                      updateBranchDetail(activeBranch, { address_street: e.target.value })
-                    }
-                    maxLength={200}
-                    className="w-full bg-neutral-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-[#facc15]"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Bairro / Suburb"
-                    value={branchDetails[activeBranch]?.address_suburb ?? ""}
-                    onChange={(e) =>
-                      updateBranchDetail(activeBranch, { address_suburb: e.target.value })
-                    }
-                    maxLength={100}
-                    className="w-full bg-neutral-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-[#facc15]"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Telefone / WhatsApp da filial"
-                    value={branchDetails[activeBranch]?.phone ?? ""}
-                    onChange={(e) =>
-                      updateBranchDetail(activeBranch, { phone: e.target.value })
-                    }
-                    maxLength={32}
-                    className="w-full md:col-span-2 bg-neutral-900 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:border-[#facc15]"
-                  />
-                </div>
-                <p className="text-[11px] text-neutral-500">
-                  Sobrescreve o endereço e telefone padrão para esta filial no perfil público.
-                </p>
-              </div>
-            )}
 
 
             <div className="rounded-xl border border-white/10 overflow-hidden divide-y divide-gray-100">
