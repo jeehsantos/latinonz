@@ -279,7 +279,7 @@ function BusinessPage() {
 
   // Per-branch address/phone (overrides business defaults when set)
   const activeBranch =
-    branches.find((b) => b.location === activeHourCity) ?? branches[0] ?? null;
+    branches.find((b: { location: string }) => b.location === activeHourCity) ?? branches[0] ?? null;
   const displayPhone = activeBranch?.phone || business.phone || "";
   const displayStreet = activeBranch?.address_street || business.addressStreet || "";
   const displaySuburb = activeBranch?.address_suburb || business.addressSuburb || "";
