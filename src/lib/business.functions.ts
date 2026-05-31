@@ -73,6 +73,19 @@ const updateServiceOptionItemsSchema = z.object({
         description: z.string().trim().max(200).nullable().optional(),
         icon_key: z.string().trim().min(1).max(40),
       }),
+  )
+    .max(20),
+});
+
+const updateBranchesSchema = z.object({
+  branches: z
+    .array(
+      z.object({
+        location: z.string().trim().min(1).max(100),
+        address_street: z.string().trim().max(200).nullable().optional(),
+        address_suburb: z.string().trim().max(100).nullable().optional(),
+        phone: z.string().trim().max(32).nullable().optional(),
+      }),
     )
     .max(20),
 });
