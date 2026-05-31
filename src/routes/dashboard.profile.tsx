@@ -295,10 +295,26 @@ function ProfileEditor() {
         }
         return copy;
       });
+      setBranchDetails((det) => {
+        const copy = { ...det };
+        if (exists) {
+          delete copy[city];
+        } else if (!copy[city]) {
+          copy[city] = { ...EMPTY_BRANCH_DETAIL };
+        }
+        return copy;
+      });
       if (exists && activeBranch === city) setActiveBranch(next[0] ?? "");
       if (!exists && next.length === 1) setActiveBranch(city);
       return next;
     });
+  };
+
+  const updateBranchDetail = (city: string, patch: Partial<BranchDetail>) => {
+    setBranchDetails((prev) => ({
+      ...prev,
+      [city]: { ...(prev[city] ?? EMPTY_BRANCH_DETAIL), ...patch },
+    }));
   };
 
   const copyScheduleToAll = () => {
