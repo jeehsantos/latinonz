@@ -274,9 +274,20 @@ function BusinessPage() {
 
   void COUPONS_BY_BUSINESS;
 
-  // City tab state for Opening Hours (Premium+)
+  // City tab state — union of branches/hours/locations so all branches surface
   const hourCities = hoursGroups.map((g) => g.location);
-  const [activeHourCity, setActiveHourCity] = useState<string>(hourCities[0] ?? locations[0] ?? "");
+  const tabCities = Array.from(
+    new Set(
+      [
+        ...branches.map((b: { location: string }) => b.location),
+        ...hourCities,
+        ...locations,
+      ].filter((c): c is string => Boolean(c && c.trim())),
+    ),
+  );
+  const [activeHourCity, setActiveHourCity] = useState<string>(
+    tabCities[0] ?? hourCities[0] ?? locations[0] ?? "",
+  );
   const currentHourGroup =
     hoursGroups.find((g) => g.location === activeHourCity) ?? hoursGroups[0];
 
