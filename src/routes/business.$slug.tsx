@@ -129,7 +129,7 @@ export const Route = createFileRoute("/business/$slug")({
 
 function BusinessPage() {
   const { t } = useI18n();
-  const { business, hours, serviceOptions, serviceOptionItems, photos, coupons, locations } = Route.useLoaderData();
+  const { business, hours, serviceOptions, serviceOptionItems, photos, coupons, locations, branches } = Route.useLoaderData();
   usePageMetadata(
     undefined,
     undefined,
