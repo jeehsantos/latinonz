@@ -885,7 +885,66 @@ function BusinessPage() {
           </div>
         </div>
       )}
+
+      {/* Photo lightbox / carousel */}
+      {lightboxIndex !== null && visiblePhotos.length > 0 && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4"
+          onClick={() => setLightboxIndex(null)}
+        >
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setLightboxIndex(null);
+            }}
+            className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
+            aria-label="Close"
+          >
+            <X size={20} />
+          </button>
+          {visiblePhotos.length > 1 && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIndex(
+                  (lightboxIndex - 1 + visiblePhotos.length) % visiblePhotos.length,
+                );
+              }}
+              className="absolute left-4 md:left-8 h-12 w-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
+              aria-label="Previous"
+            >
+              <ChevronLeft size={24} />
+            </button>
+          )}
+          <div className="relative max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={visiblePhotos[lightboxIndex].url}
+              alt={`${business.name} — ${lightboxIndex + 1}`}
+              className="w-full max-h-[85vh] object-contain rounded-2xl"
+            />
+            <p className="mt-3 text-center text-xs text-white/70">
+              {lightboxIndex + 1} / {visiblePhotos.length}
+            </p>
+          </div>
+          {visiblePhotos.length > 1 && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIndex((lightboxIndex + 1) % visiblePhotos.length);
+              }}
+              className="absolute right-4 md:right-8 h-12 w-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
+              aria-label="Next"
+            >
+              <ChevronRight size={24} />
+            </button>
+          )}
+        </div>
+      )}
     </SiteShell>
+
   );
 }
 
