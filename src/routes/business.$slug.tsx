@@ -284,15 +284,24 @@ function BusinessPage() {
 
   // City tab state for Opening Hours (Premium+)
   const hourCities = hoursGroups.map((g) => g.location);
-  const [activeHourCity, setActiveHourCity] = useState<string>(hourCities[0] ?? "");
+  const [activeHourCity, setActiveHourCity] = useState<string>(hourCities[0] ?? locations[0] ?? "");
   const currentHourGroup =
     hoursGroups.find((g) => g.location === activeHourCity) ?? hoursGroups[0];
 
-  // Compute "Open now" + today key (in user's timezone — Pacific/Auckland)
-  const now = new Date();
-  const nzNow = new Date(now.toLocaleString("en-US", { timeZone: "Pacific/Auckland" }));
-  const todayKey = DAY_ORDER[(nzNow.getDay() + 6) % 7]; // JS Sun=0 → make Mon=0
-  const nowMinutes = nzNow.getHours() * 60 + nzNow.getMinutes();
+  // Per-branch address/phone (overrides business defaults when set)
+  const activeBranch = branches.find((b) => b.location === activeHourCity) ?? null;
+  const displayPhone = activeBranch?.phone || business.phone || "";
+  const displayStreet = activeBranch?.address_street || business.addressStreet || "";
+  const displaySuburb = activeBranch?.address_suburb || business.addressSuburb || "";
+  const addressLine = [displayStreet, displaySuburb]
+    .filter((p): p is string => Boolean(p && p.trim()))
+    .join(", ");
+  const cityForMaps = activeHourCity || locations[0] || business.location || "New Zealand";
+  const mapsQuery = [addressLine, cityForMaps, "New Zealand"].filter(Boolean).join(", ");
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`;
+
+  // Banner image — use first photo as backdrop
+  const bannerUrl = visiblePhotos[0]?.url ?? null;
   const isOpenNow = currentHourGroup
     ? (() => {
         const today = currentHourGroup.rows.find((r) => r.day_key === todayKey);
