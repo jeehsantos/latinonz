@@ -26,7 +26,10 @@ import {
   Package,
   ExternalLink,
   Check,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
+
 
 const CUSTOM_ICON_MAP: Record<string, typeof Sparkles> = {
   sparkles: Sparkles,
