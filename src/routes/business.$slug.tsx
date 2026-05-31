@@ -24,6 +24,8 @@ import {
   Gift,
   Coffee,
   Package,
+  ExternalLink,
+  Check,
 } from "lucide-react";
 
 const CUSTOM_ICON_MAP: Record<string, typeof Sparkles> = {
