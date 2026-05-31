@@ -621,6 +621,78 @@ function ProfileEditor() {
           )}
         </div>
 
+        {multiBranch && (
+          <div className="rounded-2xl border border-[#facc15]/30 bg-gradient-to-br from-neutral-950 to-neutral-900 p-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <MapPin size={18} className="text-[#facc15]" />
+              <h4 className="text-base font-bold text-white">Branch Contacts</h4>
+              <span className="text-[10px] uppercase tracking-wider bg-[#facc15]/10 text-[#facc15] px-2 py-0.5 rounded-full font-bold">
+                {cities.length} branches
+              </span>
+            </div>
+            <p className="text-xs text-neutral-400">
+              Each branch can have its own address and phone. They appear on your public profile when visitors switch branches.
+            </p>
+            <div className="flex flex-wrap gap-1.5 p-1 bg-white/5 rounded-xl">
+              {cities.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setActiveBranch(c)}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${activeBranch === c ? "bg-black text-[#facc15] shadow-sm" : "text-neutral-400 hover:text-neutral-200"}`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="md:col-span-2">
+                <label className="block text-xs font-bold text-neutral-300 mb-1">
+                  {activeBranch} — Street address
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ex: 123 Queen St"
+                  value={branchDetails[activeBranch]?.address_street ?? ""}
+                  onChange={(e) =>
+                    updateBranchDetail(activeBranch, { address_street: e.target.value })
+                  }
+                  maxLength={200}
+                  className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#facc15]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-neutral-300 mb-1">Suburb</label>
+                <input
+                  type="text"
+                  placeholder="Ex: CBD"
+                  value={branchDetails[activeBranch]?.address_suburb ?? ""}
+                  onChange={(e) =>
+                    updateBranchDetail(activeBranch, { address_suburb: e.target.value })
+                  }
+                  maxLength={100}
+                  className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#facc15]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-neutral-300 mb-1">
+                  Phone / WhatsApp
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ex: 021 000 0000"
+                  value={branchDetails[activeBranch]?.phone ?? ""}
+                  onChange={(e) =>
+                    updateBranchDetail(activeBranch, { phone: e.target.value })
+                  }
+                  maxLength={32}
+                  className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#facc15]"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         <div>
           <label className="block text-sm font-bold text-neutral-200 mb-1">
             {t("profile.keywords_label")}
