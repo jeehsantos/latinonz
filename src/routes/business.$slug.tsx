@@ -633,21 +633,46 @@ function BusinessPage() {
               {wantsWhatsappFlow ? t("business.whatsapp_cta") : t("business.send_message")}
             </button>
 
+            {/* Branch switcher — when multiple locations */}
+            {tabCities.length > 1 && (
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-2">
+                  Branch
+                </p>
+                <div className="flex flex-wrap bg-white/5 p-1 rounded-xl gap-1">
+                  {tabCities.map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setActiveHourCity(c)}
+                      className={`flex-1 min-w-[80px] py-1.5 px-2 text-xs font-bold rounded-lg transition ${
+                        activeHourCity === c
+                          ? "bg-black text-[#facc15] shadow-sm"
+                          : "text-neutral-400 hover:text-neutral-200"
+                      }`}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Contact */}
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-3">
                 {t("business.contact_title")}
               </p>
               <div className="space-y-3 text-sm">
-                {business.phone && (
+                {displayPhone && (
                   <a
-                    href={`tel:${business.phone}`}
+                    href={`tel:${displayPhone}`}
                     className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15] transition"
                   >
                     <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0">
                       <Phone size={14} />
                     </span>
-                    <span>{business.phone}</span>
+                    <span>{displayPhone}</span>
                   </a>
                 )}
                 {addressLine && (
