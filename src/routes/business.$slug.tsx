@@ -156,6 +156,8 @@ function BusinessPage() {
   const [leadForm, setLeadForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [leadStatus, setLeadStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [leadError, setLeadError] = useState<string | null>(null);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
 
   const waNumber = business.phone ? business.phone.replace(/\D/g, "") : "";
   const wantsWhatsappFlow = can(business.plan, "leadWhatsapp") && Boolean(waNumber);
