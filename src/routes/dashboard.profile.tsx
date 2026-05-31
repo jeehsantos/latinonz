@@ -506,7 +506,12 @@ function ProfileEditor() {
 
         <div>
           <label className="block text-sm font-bold text-neutral-200 mb-1">
-            {t("profile.phone_label")}
+            {t("profile.phone_label")}{" "}
+            {multiBranch && (
+              <span className="ml-1 text-[10px] uppercase tracking-wider text-neutral-500 font-semibold">
+                (default / fallback)
+              </span>
+            )}
           </label>
           <input
             type="text"
@@ -515,36 +520,43 @@ function ProfileEditor() {
             onChange={(e) => setPhone(e.target.value)}
             className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
           />
+          {multiBranch && (
+            <p className="mt-1 text-[11px] text-neutral-500">
+              Used when a branch below does not have its own phone.
+            </p>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-bold text-neutral-200 mb-1">
-              Endereço (rua e número)
-            </label>
-            <input
-              type="text"
-              placeholder="Ex: 123 Queen St"
-              value={addressStreet}
-              onChange={(e) => setAddressStreet(e.target.value)}
-              maxLength={200}
-              className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
-            />
+        {!multiBranch && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-bold text-neutral-200 mb-1">
+                Endereço (rua e número)
+              </label>
+              <input
+                type="text"
+                placeholder="Ex: 123 Queen St"
+                value={addressStreet}
+                onChange={(e) => setAddressStreet(e.target.value)}
+                maxLength={200}
+                className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-neutral-200 mb-1">
+                Bairro / Suburb
+              </label>
+              <input
+                type="text"
+                placeholder="Ex: Auckland CBD"
+                value={addressSuburb}
+                onChange={(e) => setAddressSuburb(e.target.value)}
+                maxLength={100}
+                className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-bold text-neutral-200 mb-1">
-              Bairro / Suburb
-            </label>
-            <input
-              type="text"
-              placeholder="Ex: Auckland CBD"
-              value={addressSuburb}
-              onChange={(e) => setAddressSuburb(e.target.value)}
-              maxLength={100}
-              className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
-            />
-          </div>
-        </div>
+        )}
 
 
         <div>
