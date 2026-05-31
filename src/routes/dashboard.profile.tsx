@@ -748,6 +748,8 @@ function ProfileEditor() {
                   macro_category: category,
                   phone: phone.trim() || null,
                   locations: cities,
+                  address_street: addressStreet.trim() || null,
+                  address_suburb: addressSuburb.trim() || null,
                   keywords: keywords
                     .split(",")
                     .map((k) => k.trim())
