@@ -187,17 +187,21 @@ function BusinessPage() {
       }
 
       if (wantsWhatsappFlow) {
-        const lines = [
-          `Olá ${business.name},`,
-          ``,
-          `Nome: ${leadForm.name.trim()}`,
-          leadForm.email.trim() ? `Email: ${leadForm.email.trim()}` : "",
-          leadForm.phone.trim() ? `Telefone: ${leadForm.phone.trim()}` : "",
-          ``,
-          leadForm.message.trim() || "Gostaria de mais informações.",
-        ].filter(Boolean);
-        const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
-        window.open(waUrl, "_blank", "noopener,noreferrer");
+        const targetPhone = displayPhone || business.phone || "";
+        const waNumber = targetPhone.replace(/\D/g, "");
+        if (waNumber) {
+          const lines = [
+            `Olá ${business.name},`,
+            ``,
+            `Nome: ${leadForm.name.trim()}`,
+            leadForm.email.trim() ? `Email: ${leadForm.email.trim()}` : "",
+            leadForm.phone.trim() ? `Telefone: ${leadForm.phone.trim()}` : "",
+            ``,
+            leadForm.message.trim() || "Gostaria de mais informações.",
+          ].filter(Boolean);
+          const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
+          window.open(waUrl, "_blank", "noopener,noreferrer");
+        }
       }
 
       setLeadStatus("success");
