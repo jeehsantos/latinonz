@@ -165,8 +165,7 @@ function BusinessPage() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
 
-  const waNumber = business.phone ? business.phone.replace(/\D/g, "") : "";
-  const wantsWhatsappFlow = can(business.plan, "leadWhatsapp") && Boolean(waNumber);
+  const wantsWhatsappFlow = can(business.plan, "leadWhatsapp");
 
   async function handleLeadSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -188,17 +187,21 @@ function BusinessPage() {
       }
 
       if (wantsWhatsappFlow) {
-        const lines = [
-          `Olá ${business.name},`,
-          ``,
-          `Nome: ${leadForm.name.trim()}`,
-          leadForm.email.trim() ? `Email: ${leadForm.email.trim()}` : "",
-          leadForm.phone.trim() ? `Telefone: ${leadForm.phone.trim()}` : "",
-          ``,
-          leadForm.message.trim() || "Gostaria de mais informações.",
-        ].filter(Boolean);
-        const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
-        window.open(waUrl, "_blank", "noopener,noreferrer");
+        const targetPhone = displayPhone || business.phone || "";
+        const waNumber = targetPhone.replace(/\D/g, "");
+        if (waNumber) {
+          const lines = [
+            `Olá ${business.name},`,
+            ``,
+            `Nome: ${leadForm.name.trim()}`,
+            leadForm.email.trim() ? `Email: ${leadForm.email.trim()}` : "",
+            leadForm.phone.trim() ? `Telefone: ${leadForm.phone.trim()}` : "",
+            ``,
+            leadForm.message.trim() || "Gostaria de mais informações.",
+          ].filter(Boolean);
+          const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
+          window.open(waUrl, "_blank", "noopener,noreferrer");
+        }
       }
 
       setLeadStatus("success");
@@ -271,9 +274,20 @@ function BusinessPage() {
 
   void COUPONS_BY_BUSINESS;
 
-  // City tab state for Opening Hours (Premium+)
+  // City tab state — union of branches/hours/locations so all branches surface
   const hourCities = hoursGroups.map((g) => g.location);
-  const [activeHourCity, setActiveHourCity] = useState<string>(hourCities[0] ?? locations[0] ?? "");
+  const tabCities = Array.from(
+    new Set(
+      [
+        ...branches.map((b: { location: string }) => b.location),
+        ...hourCities,
+        ...locations,
+      ].filter((c): c is string => Boolean(c && c.trim())),
+    ),
+  );
+  const [activeHourCity, setActiveHourCity] = useState<string>(
+    tabCities[0] ?? hourCities[0] ?? locations[0] ?? "",
+  );
   const currentHourGroup =
     hoursGroups.find((g) => g.location === activeHourCity) ?? hoursGroups[0];
 
@@ -619,21 +633,46 @@ function BusinessPage() {
               {wantsWhatsappFlow ? t("business.whatsapp_cta") : t("business.send_message")}
             </button>
 
+            {/* Branch switcher — when multiple locations */}
+            {tabCities.length > 1 && (
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-2">
+                  Branch
+                </p>
+                <div className="flex flex-wrap bg-white/5 p-1 rounded-xl gap-1">
+                  {tabCities.map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setActiveHourCity(c)}
+                      className={`flex-1 min-w-[80px] py-1.5 px-2 text-xs font-bold rounded-lg transition ${
+                        activeHourCity === c
+                          ? "bg-black text-[#facc15] shadow-sm"
+                          : "text-neutral-400 hover:text-neutral-200"
+                      }`}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Contact */}
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-3">
                 {t("business.contact_title")}
               </p>
               <div className="space-y-3 text-sm">
-                {business.phone && (
+                {displayPhone && (
                   <a
-                    href={`tel:${business.phone}`}
+                    href={`tel:${displayPhone}`}
                     className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15] transition"
                   >
                     <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0">
                       <Phone size={14} />
                     </span>
-                    <span>{business.phone}</span>
+                    <span>{displayPhone}</span>
                   </a>
                 )}
                 {addressLine && (
@@ -730,7 +769,7 @@ function BusinessPage() {
                   </span>
                 </div>
 
-                {hourCities.length > 1 && (
+                {hourCities.length > 1 && tabCities.length <= 1 && (
                   <div className="flex bg-white/5 p-1 rounded-xl mb-3">
                     {hourCities.map((c) => (
                       <button
