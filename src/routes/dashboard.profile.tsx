@@ -109,6 +109,11 @@ function ProfileEditor() {
   const [schedules, setSchedules] = useState<Record<string, BranchSchedule>>({
     Auckland: DEFAULT_SCHEDULE,
   });
+  type BranchDetail = { address_street: string; address_suburb: string; phone: string };
+  const EMPTY_BRANCH_DETAIL: BranchDetail = { address_street: "", address_suburb: "", phone: "" };
+  const [branchDetails, setBranchDetails] = useState<Record<string, BranchDetail>>({
+    Auckland: { ...EMPTY_BRANCH_DETAIL },
+  });
   const [activeBranch, setActiveBranch] = useState<string>("Auckland");
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [qrError, setQrError] = useState<string | null>(null);
