@@ -165,8 +165,7 @@ function BusinessPage() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
 
-  const waNumber = business.phone ? business.phone.replace(/\D/g, "") : "";
-  const wantsWhatsappFlow = can(business.plan, "leadWhatsapp") && Boolean(waNumber);
+  const wantsWhatsappFlow = can(business.plan, "leadWhatsapp");
 
   async function handleLeadSubmit(e: React.FormEvent) {
     e.preventDefault();
