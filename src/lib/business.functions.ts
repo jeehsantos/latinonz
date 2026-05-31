@@ -84,7 +84,7 @@ export const getBusinesses = createServerFn({ method: "GET" })
     let query = supabaseAdmin
       .from("businesses")
       .select(
-        "id, slug, name, description, type, macro_category, subcategory, tags, locations, logo_url, is_verified, fast_responder, response_time, rating, review_count",
+        "id, slug, name, description, type, macro_category, subcategory, tags, locations, logo_url, is_verified, fast_responder, response_time, rating, review_count, address_street, address_suburb",
       )
       .eq("is_active", true)
       .order("rating", { ascending: false });
