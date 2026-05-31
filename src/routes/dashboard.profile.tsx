@@ -145,6 +145,8 @@ function ProfileEditor() {
       if (b.macro_category) setCategory(b.macro_category);
       setPhone(b.phone ?? "");
       setKeywords((b.keywords ?? []).join(", "));
+      setAddressStreet((b as { address_street?: string | null }).address_street ?? "");
+      setAddressSuburb((b as { address_suburb?: string | null }).address_suburb ?? "");
       const locs: string[] =
         b.locations && b.locations.length > 0 ? (b.locations as string[]) : ["Auckland"];
       setCities(locs);
