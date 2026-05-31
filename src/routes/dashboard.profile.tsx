@@ -903,6 +903,21 @@ function ProfileEditor() {
                 });
               }
 
+              // Save per-branch details (address/phone) — applies to all plans
+              await saveBranchesFn({
+                data: {
+                  branches: cities.map((city) => {
+                    const d = branchDetails[city] ?? EMPTY_BRANCH_DETAIL;
+                    return {
+                      location: city,
+                      address_street: d.address_street.trim() || null,
+                      address_suburb: d.address_suburb.trim() || null,
+                      phone: d.phone.trim() || null,
+                    };
+                  }),
+                },
+              });
+
               setSaveSuccess(true);
               await refetch();
             } catch (err) {
