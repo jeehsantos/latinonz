@@ -220,6 +220,7 @@ export const getMyBusiness = createServerFn({ method: "GET" })
         hours: [],
         serviceOptions: null,
         serviceOptionItems: [],
+        branches: [],
       };
     }
 
@@ -227,12 +228,18 @@ export const getMyBusiness = createServerFn({ method: "GET" })
       { data: hours },
       { data: serviceOptions },
       { data: serviceOptionItems },
+      { data: branches },
     ] = await Promise.all([
       supabase.from("business_hours").select("*").eq("business_id", business.id),
       supabase.from("service_options").select("*").eq("business_id", business.id).maybeSingle(),
       supabase
         .from("service_option_items")
         .select("id, title, description, icon_key, position")
+        .eq("business_id", business.id)
+        .order("position", { ascending: true }),
+      supabase
+        .from("business_branches")
+        .select("location, address_street, address_suburb, phone, position")
         .eq("business_id", business.id)
         .order("position", { ascending: true }),
     ]);
@@ -243,6 +250,7 @@ export const getMyBusiness = createServerFn({ method: "GET" })
       hours: hours ?? [],
       serviceOptions: serviceOptions ?? null,
       serviceOptionItems: serviceOptionItems ?? [],
+      branches: branches ?? [],
     };
   });
 
