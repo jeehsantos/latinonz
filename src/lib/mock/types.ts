@@ -34,6 +34,8 @@ export type Business = {
   website?: string;
   responseTime?: string;
   fastResponder?: boolean;
+  addressStreet?: string;
+  addressSuburb?: string;
 };
 
 export type Lead = {

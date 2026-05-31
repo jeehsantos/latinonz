@@ -20,6 +20,8 @@ type DbBusinessRow = {
   response_time?: string | null;
   rating: number | null;
   review_count: number | null;
+  address_street?: string | null;
+  address_suburb?: string | null;
 };
 
 /**
@@ -51,5 +53,7 @@ export function adaptBusiness(row: DbBusinessRow, plan: PlanTier = "starter"): B
     website: row.website ?? undefined,
     responseTime: row.response_time ?? undefined,
     fastResponder: row.fast_responder ?? undefined,
+    addressStreet: row.address_street ?? undefined,
+    addressSuburb: row.address_suburb ?? undefined,
   };
 }

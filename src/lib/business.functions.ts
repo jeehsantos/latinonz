@@ -35,6 +35,8 @@ const updateBusinessSchema = z.object({
   keywords: z.array(z.string().trim().min(1).max(50)).max(30).optional(),
   google_place_id: z.string().trim().max(200).nullable().optional(),
   response_time: z.string().trim().max(50).nullable().optional(),
+  address_street: z.string().trim().max(200).nullable().optional(),
+  address_suburb: z.string().trim().max(100).nullable().optional(),
 });
 
 const slotSchema = z.object({
@@ -82,7 +84,7 @@ export const getBusinesses = createServerFn({ method: "GET" })
     let query = supabaseAdmin
       .from("businesses")
       .select(
-        "id, slug, name, description, type, macro_category, subcategory, tags, locations, logo_url, is_verified, fast_responder, response_time, rating, review_count",
+        "id, slug, name, description, type, macro_category, subcategory, tags, locations, logo_url, is_verified, fast_responder, response_time, rating, review_count, address_street, address_suburb",
       )
       .eq("is_active", true)
       .order("rating", { ascending: false });
@@ -278,6 +280,8 @@ export const updateMyBusiness = createServerFn({ method: "POST" })
           keywords: data.keywords ?? [],
           google_place_id: data.google_place_id ?? null,
           response_time: data.response_time ?? null,
+          address_street: data.address_street ?? null,
+          address_suburb: data.address_suburb ?? null,
         })
         .select()
         .maybeSingle();

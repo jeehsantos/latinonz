@@ -100,6 +100,8 @@ function ProfileEditor() {
   const [category, setCategory] = useState<string>("");
   const [phone, setPhone] = useState("");
   const [keywords, setKeywords] = useState("");
+  const [addressStreet, setAddressStreet] = useState("");
+  const [addressSuburb, setAddressSuburb] = useState("");
   const [cities, setCities] = useState<string[]>(["Auckland"]);
   const [citiesOpen, setCitiesOpen] = useState(false);
   const [schedules, setSchedules] = useState<Record<string, BranchSchedule>>({
@@ -143,6 +145,8 @@ function ProfileEditor() {
       if (b.macro_category) setCategory(b.macro_category);
       setPhone(b.phone ?? "");
       setKeywords((b.keywords ?? []).join(", "));
+      setAddressStreet((b as { address_street?: string | null }).address_street ?? "");
+      setAddressSuburb((b as { address_suburb?: string | null }).address_suburb ?? "");
       const locs: string[] =
         b.locations && b.locations.length > 0 ? (b.locations as string[]) : ["Auckland"];
       setCities(locs);
@@ -469,6 +473,36 @@ function ProfileEditor() {
           />
         </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-bold text-neutral-200 mb-1">
+              Endereço (rua e número)
+            </label>
+            <input
+              type="text"
+              placeholder="Ex: 123 Queen St"
+              value={addressStreet}
+              onChange={(e) => setAddressStreet(e.target.value)}
+              maxLength={200}
+              className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-neutral-200 mb-1">
+              Bairro / Suburb
+            </label>
+            <input
+              type="text"
+              placeholder="Ex: Auckland CBD"
+              value={addressSuburb}
+              onChange={(e) => setAddressSuburb(e.target.value)}
+              maxLength={100}
+              className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
+            />
+          </div>
+        </div>
+
+
         <div>
           <label className="block text-sm font-bold text-neutral-200 mb-1">
             {t("profile.cities_label")}{" "}
@@ -714,6 +748,8 @@ function ProfileEditor() {
                   macro_category: category,
                   phone: phone.trim() || null,
                   locations: cities,
+                  address_street: addressStreet.trim() || null,
+                  address_suburb: addressSuburb.trim() || null,
                   keywords: keywords
                     .split(",")
                     .map((k) => k.trim())

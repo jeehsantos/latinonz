@@ -24,6 +24,8 @@ import {
   Gift,
   Coffee,
   Package,
+  ExternalLink,
+  Check,
 } from "lucide-react";
 
 const CUSTOM_ICON_MAP: Record<string, typeof Sparkles> = {
@@ -258,28 +260,89 @@ function BusinessPage() {
 
   void COUPONS_BY_BUSINESS;
 
+  // Build address line: "street, suburb"
+  const addressLine = [business.addressStreet, business.addressSuburb]
+    .filter((p): p is string => Boolean(p && p.trim()))
+    .join(", ");
+  const cityForMaps = locations[0] || business.location || "New Zealand";
+  const mapsQuery = [addressLine, cityForMaps, "New Zealand"].filter(Boolean).join(", ");
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`;
+
+  // Banner image — use first photo as backdrop
+  const bannerUrl = visiblePhotos[0]?.url ?? null;
+
+  // City tab state for Opening Hours (Premium+)
+  const hourCities = hoursGroups.map((g) => g.location);
+  const [activeHourCity, setActiveHourCity] = useState<string>(hourCities[0] ?? "");
+  const currentHourGroup =
+    hoursGroups.find((g) => g.location === activeHourCity) ?? hoursGroups[0];
+
+  // Compute "Open now" + today key (in user's timezone — Pacific/Auckland)
+  const now = new Date();
+  const nzNow = new Date(now.toLocaleString("en-US", { timeZone: "Pacific/Auckland" }));
+  const todayKey = DAY_ORDER[(nzNow.getDay() + 6) % 7]; // JS Sun=0 → make Mon=0
+  const nowMinutes = nzNow.getHours() * 60 + nzNow.getMinutes();
+  const isOpenNow = currentHourGroup
+    ? (() => {
+        const today = currentHourGroup.rows.find((r) => r.day_key === todayKey);
+        if (!today || today.is_closed) return false;
+        return today.slots.some((s) => {
+          const [oh, om] = s.open.split(":").map(Number);
+          const [ch, cm] = s.close.split(":").map(Number);
+          return nowMinutes >= oh * 60 + om && nowMinutes <= ch * 60 + cm;
+        });
+      })()
+    : false;
+
+  const todayLabelMap: Record<string, string> = {
+    mon: "Monday",
+    tue: "Tuesday",
+    wed: "Wednesday",
+    thu: "Thursday",
+    fri: "Friday",
+    sat: "Saturday",
+    sun: "Sunday",
+  };
+
   return (
     <SiteShell>
-      <section
-        className="relative overflow-hidden border-b border-white/10"
-        style={{
-          background:
-            "radial-gradient(ellipse at top left, rgba(250,204,21,0.18) 0%, transparent 55%), radial-gradient(circle at 85% 110%, rgba(250,204,21,0.12), transparent 50%), #050505",
-        }}
-      >
-        <div
-          className="absolute inset-0 opacity-[0.04] pointer-events-none [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:48px_48px]"
-          aria-hidden
-        />
-        <div className="relative max-w-7xl mx-auto px-6 py-10 md:py-14">
+      {/* HERO */}
+      <section className="relative overflow-hidden border-b border-white/10 bg-[#050505]">
+        {/* backdrop */}
+        <div className="absolute inset-0">
+          {bannerUrl ? (
+            <img
+              src={bannerUrl}
+              alt=""
+              aria-hidden
+              className="w-full h-full object-cover opacity-30"
+            />
+          ) : (
+            <div
+              className="w-full h-full"
+              style={{
+                background:
+                  "radial-gradient(ellipse at top left, rgba(250,204,21,0.18) 0%, transparent 55%), radial-gradient(circle at 85% 110%, rgba(250,204,21,0.12), transparent 50%)",
+              }}
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-[#050505]" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-6 pt-8 pb-10 md:pt-10 md:pb-12">
           <Link
             to="/directory"
             className="inline-flex items-center text-sm text-white/60 hover:text-[#facc15] transition"
           >
             {t("business.back_to_directory")}
           </Link>
-          <div className="mt-8 flex flex-col md:flex-row md:items-end gap-6 md:gap-8">
-            <div className="relative shrink-0">
+
+          {/* Spacer to push content below the banner area */}
+          <div className="h-40 md:h-56" />
+
+          <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-8">
+            {/* Logo */}
+            <div className="relative shrink-0 -mt-20 md:-mt-24">
               <div
                 className="absolute -inset-1 rounded-3xl bg-gradient-to-br from-[#facc15]/40 to-transparent blur-md"
                 aria-hidden
@@ -288,20 +351,31 @@ function BusinessPage() {
                 <img
                   src={business.logoUrl}
                   alt={business.name}
-                  className="relative w-28 h-28 md:w-36 md:h-36 rounded-3xl object-cover bg-neutral-900 border border-white/15 shadow-xl"
+                  className="relative w-32 h-32 md:w-40 md:h-40 rounded-3xl object-cover bg-neutral-900 border-2 border-white/15 shadow-2xl"
                 />
               ) : (
-                <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-3xl bg-neutral-900 border border-white/15 flex items-center justify-center text-4xl font-black text-[#facc15] shadow-xl">
+                <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-neutral-900 border-2 border-white/15 flex items-center justify-center text-5xl font-black text-[#facc15] shadow-2xl">
                   {(business.name || "?").trim().charAt(0).toUpperCase()}
                 </div>
               )}
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
+                <PlanBadge plan={business.plan} />
+              </div>
             </div>
+
+            {/* Title + meta */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-[10px] font-bold uppercase tracking-wider bg-white/10 text-white border border-white/15 px-2.5 py-1 rounded-full backdrop-blur">
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="text-xs font-bold uppercase tracking-wider bg-white/10 text-white border border-white/15 px-3 py-1 rounded-full backdrop-blur">
                   {displayType}
                 </span>
-                <PlanBadge plan={business.plan} />
+                <span className="inline-flex items-center gap-1.5 text-sm font-bold text-white">
+                  <Star size={14} className="fill-[#facc15] text-[#facc15]" />
+                  {business.rating.toFixed(1)}
+                  <span className="text-white/50 font-normal">
+                    ({business.reviewCount} {t("business.reviews_label")})
+                  </span>
+                </span>
                 {business.fastResponder && (
                   <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-[#facc15] text-black px-2.5 py-1 rounded-full">
                     <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
@@ -309,43 +383,70 @@ function BusinessPage() {
                   </span>
                 )}
               </div>
-              <h1 className="mt-4 text-4xl md:text-6xl font-black tracking-tight text-white leading-[1.05]">
+              <h1 className="mt-3 text-4xl md:text-6xl font-black tracking-tight text-white leading-[1.05]">
                 {business.name}
               </h1>
-              {business.description && (
-                <p className="mt-3 text-white/70 max-w-2xl text-base md:text-lg leading-relaxed line-clamp-2">
-                  {business.description}
-                </p>
-              )}
-              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+              <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
                 <span className="inline-flex items-center gap-1.5 text-white/80">
                   <MapPin size={14} className="text-[#facc15]" />
                   {locations.length > 0 ? locations.join(", ") : business.location}
                 </span>
-                <span className="inline-flex items-center gap-1.5 font-semibold text-white">
-                  <Star size={14} className="fill-[#facc15] text-[#facc15]" />
-                  {business.rating.toFixed(1)}
-                  <span className="text-white/50 font-normal">
-                    ({business.reviewCount} {t("business.reviews_label")})
-                  </span>
-                </span>
-                {business.subcategory && <span className="text-white/60">{business.subcategory}</span>}
+                {business.website && (
+                  <a
+                    href={business.website}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 text-white/80 hover:text-[#facc15] transition"
+                  >
+                    <Globe size={14} />
+                    {business.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                  </a>
+                )}
+                {business.subcategory && (
+                  <span className="text-white/60">{business.subcategory}</span>
+                )}
               </div>
+            </div>
+
+            {/* Top-right Message CTA */}
+            <div className="md:self-end">
+              <button
+                onClick={() => {
+                  setLeadStatus("idle");
+                  setLeadError(null);
+                  setLeadOpen(true);
+                }}
+                className="inline-flex items-center gap-2 bg-[#facc15] hover:bg-[#facc15]/90 text-black font-bold rounded-full px-6 py-3 text-sm shadow-lg shadow-[#facc15]/20 transition"
+              >
+                <MessageCircle size={16} />
+                {t("business.send_message")}
+              </button>
             </div>
           </div>
         </div>
       </section>
 
+      {/* MAIN */}
       <section className="max-w-7xl mx-auto px-6 py-12 grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
           {/* About */}
-          <div className="bg-neutral-900 border border-white/10 rounded-3xl p-8">
-            <h2 className="font-extrabold text-white">{t("business.about_title")}</h2>
-            <p className="mt-3 text-neutral-300">{business.description}</p>
-            {business.tags && (
+          <div>
+            <div className="flex items-center gap-4 mb-5">
+              <h2 className="text-2xl font-extrabold text-white whitespace-nowrap">
+                {t("business.about_title")}
+              </h2>
+              <div className="h-px flex-1 bg-white/10" />
+            </div>
+            <p className="text-neutral-300 leading-relaxed whitespace-pre-line">
+              {business.description}
+            </p>
+            {business.tags && business.tags.length > 0 && (
               <div className="mt-5 flex flex-wrap gap-2">
                 {business.tags.map((tag: string) => (
-                  <span key={tag} className="text-xs font-semibold bg-white/5 text-neutral-200 px-3 py-1 rounded-full">
+                  <span
+                    key={tag}
+                    className="text-xs font-semibold bg-white/5 text-neutral-200 px-3 py-1 rounded-full"
+                  >
                     {tag}
                   </span>
                 ))}
@@ -354,237 +455,333 @@ function BusinessPage() {
           </div>
 
           {/* Gallery */}
-          <div className="bg-neutral-900 border border-white/10 rounded-3xl p-8">
-            <div className="flex items-center justify-between">
-              <h2 className="font-extrabold text-white flex items-center gap-2">
-                <ImageIcon size={18} /> {t("business.gallery_title")}
-              </h2>
-              <p className="text-xs text-neutral-500">
-                {Number.isFinite(photoLimit)
-                  ? `Até ${photoLimit} ${t("business.photos_limit")} (${planName})`
-                  : t("business.gallery_full")}
-              </p>
-            </div>
-            {visiblePhotos.length === 0 ? (
-              <p className="mt-4 text-sm text-neutral-400">{t("business.no_reviews")}</p>
-            ) : (
-              <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
-                {visiblePhotos.map((p: { id: string; url: string }) => (
-                  <img
-                    key={p.id}
-                    src={p.url}
-                    alt={business.name}
-                    className="aspect-square rounded-2xl object-cover bg-white/5"
-                    loading="lazy"
-                  />
-                ))}
+          {visiblePhotos.length > 0 && (
+            <div>
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-2xl font-extrabold text-white">
+                  {t("business.gallery_title")}
+                </h2>
+                <span className="text-xs text-neutral-500">
+                  {Number.isFinite(photoLimit)
+                    ? `${visiblePhotos.length} / ${photoLimit}`
+                    : `${visiblePhotos.length} ${t("business.photos_limit")}`}
+                </span>
               </div>
-            )}
-          </div>
-
-          {/* Reviews */}
-          <div className="bg-neutral-900 border border-white/10 rounded-3xl p-8">
-            <h2 className="font-extrabold text-white">{t("business.reviews_title")}</h2>
-            {reviews.length === 0 ? (
-              <p className="mt-3 text-sm text-neutral-400">{t("business.no_reviews")}</p>
-            ) : (
-              <div className="mt-4 space-y-4">
-                {reviews.map((r, i) => (
-                  <div key={i} className="border-b border-white/10 pb-4 last:border-0">
-                    <div className="flex items-center justify-between">
-                      <p className="font-bold text-white">{r.name}</p>
-                      <div className="flex">
-                        {Array.from({ length: 5 }).map((_, j) => (
-                          <Star
-                            key={j}
-                            size={14}
-                            className={j < r.rating ? "fill-amber-400 text-amber-400" : "text-gray-200"}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-sm text-neutral-300 mt-2">{r.text}</p>
+              <div className="grid grid-cols-2 gap-4">
+                {visiblePhotos.slice(0, 6).map((p: { id: string; url: string }, idx: number) => (
+                  <div
+                    key={p.id}
+                    className={`relative overflow-hidden rounded-2xl bg-white/5 group cursor-pointer ${
+                      idx === 0 && visiblePhotos.length > 1
+                        ? "col-span-2 aspect-[16/9]"
+                        : "aspect-square"
+                    }`}
+                  >
+                    <img
+                      src={p.url}
+                      alt={`${business.name} — ${idx + 1}`}
+                      className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Reviews */}
+          <div>
+            <div className="flex items-center gap-4 mb-5">
+              <h2 className="text-2xl font-extrabold text-white whitespace-nowrap">
+                {t("business.reviews_title")}
+              </h2>
+              <div className="h-px flex-1 bg-white/10" />
+            </div>
+            {reviews.length === 0 ? (
+              <p className="text-sm text-neutral-400">{t("business.no_reviews")}</p>
+            ) : (
+              <>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {reviews.slice(0, 4).map((r, i) => {
+                    const initials = r.name
+                      .split(" ")
+                      .map((n) => n.charAt(0))
+                      .slice(0, 2)
+                      .join("")
+                      .toUpperCase();
+                    return (
+                      <div
+                        key={i}
+                        className="bg-neutral-900 border border-white/10 rounded-2xl p-5 hover:border-[#facc15]/40 transition"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <span className="flex items-center justify-center h-10 w-10 rounded-full bg-[#facc15] text-black text-sm font-extrabold shrink-0">
+                              {initials || "?"}
+                            </span>
+                            <div className="min-w-0">
+                              <p className="font-bold text-white truncate">{r.name}</p>
+                              <div className="flex mt-0.5">
+                                {Array.from({ length: 5 }).map((_, j) => (
+                                  <Star
+                                    key={j}
+                                    size={12}
+                                    className={
+                                      j < r.rating
+                                        ? "fill-[#facc15] text-[#facc15]"
+                                        : "text-white/15"
+                                    }
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-sm text-neutral-300 mt-3 leading-relaxed line-clamp-5">
+                          {r.text}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+                {reviews.length > 4 && (
+                  <div className="mt-6 flex justify-center">
+                    <button className="inline-flex items-center gap-2 border border-[#facc15]/40 text-[#facc15] font-bold rounded-full px-5 py-2.5 text-sm hover:bg-[#facc15]/10 transition">
+                      Read all {business.reviewCount} reviews
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
 
+        {/* SIDEBAR */}
         <aside className="space-y-6">
-          {/* Contact card */}
-          <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6 sticky top-24">
-            <h3 className="font-extrabold text-white">{t("business.contact_title")}</h3>
-            <div className="mt-4 space-y-3 text-sm">
-              {business.phone && (
-                <a
-                  href={`tel:${business.phone}`}
-                  className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15]"
-                >
-                  <Phone size={16} /> {business.phone}
-                </a>
-              )}
-              {can(business.plan, "leadWhatsapp") && business.phone && (
-                <a
-                  href={`https://wa.me/${business.phone.replace(/\D/g, "")}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15]"
-                >
-                  <MessageCircle size={16} /> {t("business.whatsapp_label")}
-                </a>
-              )}
-              {business.email && (
-                <a
-                  href={`mailto:${business.email}`}
-                  className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15]"
-                >
-                  <Mail size={16} /> {business.email}
-                </a>
-              )}
-              {business.website && (
-                <a href={business.website} className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15]">
-                  <Globe size={16} /> {t("business.website_label")}
-                </a>
-              )}
-            </div>
-
-            {/* Contact CTA — opens the lead form for all plans.
-                The form submission registers the lead, triggers plan-appropriate
-                notifications (email / WhatsApp / both), and for Premium+Ultra
-                redirects the visitor to WhatsApp with a prefilled message. */}
+          <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6 sticky top-24 space-y-6">
+            {/* Primary CTA */}
             <button
               onClick={() => {
                 setLeadStatus("idle");
                 setLeadError(null);
                 setLeadOpen(true);
               }}
-              className="mt-6 w-full bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold rounded-2xl py-3 text-sm flex items-center justify-center gap-2"
+              className={`w-full inline-flex items-center justify-center gap-2 font-bold rounded-2xl py-3.5 text-sm transition shadow-lg ${
+                wantsWhatsappFlow
+                  ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/20"
+                  : "bg-[#facc15] hover:bg-[#facc15]/90 text-black shadow-[#facc15]/20"
+              }`}
             >
-              {wantsWhatsappFlow ? (
-                <>
-                  <MessageCircle size={16} /> {t("business.whatsapp_cta")}
-                </>
-              ) : (
-                t("business.send_message")
-              )}
+              <MessageCircle size={16} />
+              {wantsWhatsappFlow ? t("business.whatsapp_cta") : t("business.send_message")}
             </button>
-            {business.responseTime && (
-              <p className="text-xs text-neutral-500 text-center mt-3">{business.responseTime}</p>
-            )}
-          </div>
 
-          {/* Hours — Premium+ only */}
-          {can(business.plan, "businessHours") && totalHourRows > 0 && (
-            <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
-              <h3 className="font-extrabold text-white flex items-center gap-2">
-                <Clock size={16} /> {t("business.hours_title")}
-              </h3>
-              <div className="mt-4 space-y-5">
-                {hoursGroups.map((group) => (
-                  <div key={group.location}>
-                    {hoursGroups.length > 1 && (
-                      <div className="flex items-center gap-2 mb-2">
-                        <MapPin size={12} className="text-[#facc15]" />
-                        <span className="text-xs font-bold uppercase tracking-wider text-[#facc15]">
-                          {group.location}
+            {/* Contact */}
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-3">
+                {t("business.contact_title")}
+              </p>
+              <div className="space-y-3 text-sm">
+                {business.phone && (
+                  <a
+                    href={`tel:${business.phone}`}
+                    className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15] transition"
+                  >
+                    <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0">
+                      <Phone size={14} />
+                    </span>
+                    <span>{business.phone}</span>
+                  </a>
+                )}
+                {addressLine && (
+                  <a
+                    href={mapsUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-start gap-3 text-neutral-200 hover:text-[#facc15] transition group"
+                  >
+                    <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0 mt-0.5">
+                      <MapPin size={14} />
+                    </span>
+                    <span className="flex-1">
+                      {addressLine}
+                      {cityForMaps && <>, {cityForMaps}</>}
+                    </span>
+                    <ExternalLink
+                      size={12}
+                      className="text-neutral-500 group-hover:text-[#facc15] mt-1 shrink-0"
+                    />
+                  </a>
+                )}
+                {business.email && (
+                  <a
+                    href={`mailto:${business.email}`}
+                    className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15] transition"
+                  >
+                    <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0">
+                      <Mail size={14} />
+                    </span>
+                    <span className="truncate">{business.email}</span>
+                  </a>
+                )}
+              </div>
+              {business.responseTime && (
+                <p className="text-xs text-neutral-500 mt-3">{business.responseTime}</p>
+              )}
+            </div>
+
+            {/* Service options — Premium+ */}
+            {can(business.plan, "serviceOptions") &&
+              (serviceOptionBadges.length > 0 || customItems.length > 0) && (
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-3">
+                    Service options
+                  </p>
+                  {serviceOptionBadges.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {serviceOptionBadges.map((b) => (
+                        <span
+                          key={b.key}
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold bg-white/5 text-neutral-200 border border-white/10 px-3 py-1.5 rounded-full"
+                        >
+                          <Check size={12} className="text-[#facc15]" />
+                          {b.label}
                         </span>
-                      </div>
-                    )}
-                    <div className="space-y-1.5 text-sm">
-                      {group.rows.map((h) => (
-                        <div key={`${h.location}-${h.day_key}`} className="flex justify-between">
-                          <span className="text-neutral-400">{DAY_LABELS[h.day_key] ?? h.day_key}</span>
-                          <span className="font-semibold text-neutral-100">
-                            {h.is_closed || h.slots.length === 0
-                              ? "—"
-                              : h.slots.map((s) => `${s.open}–${s.close}`).join(", ")}
-                          </span>
-                        </div>
                       ))}
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Service options — Premium+ only */}
-          {can(business.plan, "serviceOptions") && (serviceOptionBadges.length > 0 || customItems.length > 0) && (
-            <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
-              <h3 className="font-extrabold text-white">Opções de atendimento</h3>
-              {serviceOptionBadges.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {serviceOptionBadges.map((b) => (
-                    <span
-                      key={b.key}
-                      className="text-xs font-semibold bg-[#facc15]/10 text-[#facc15] border border-[#facc15]/30 px-3 py-1 rounded-full"
-                    >
-                      {b.label}
-                    </span>
-                  ))}
+                  )}
+                  {customItems.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {customItems.map((it) => {
+                        const Icon = CUSTOM_ICON_MAP[it.icon_key] ?? Sparkles;
+                        return (
+                          <span
+                            key={it.id}
+                            className="inline-flex items-center gap-1.5 text-xs font-semibold bg-white/5 text-neutral-200 border border-white/10 px-3 py-1.5 rounded-full"
+                          >
+                            <Icon size={12} className="text-[#facc15]" />
+                            {it.title}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               )}
-              {customItems.length > 0 && (
-                <div className="mt-4 space-y-3">
-                  {customItems.map((it) => {
-                    const Icon = CUSTOM_ICON_MAP[it.icon_key] ?? Sparkles;
+
+            {/* Opening hours — Premium+ */}
+            {can(business.plan, "businessHours") && totalHourRows > 0 && currentHourGroup && (
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+                    {t("business.hours_title")}
+                  </p>
+                  <span
+                    className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                      isOpenNow
+                        ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
+                        : "bg-red-500/10 text-red-400 border border-red-500/30"
+                    }`}
+                  >
+                    {isOpenNow ? "Open now" : "Closed"}
+                  </span>
+                </div>
+
+                {hourCities.length > 1 && (
+                  <div className="flex bg-white/5 p-1 rounded-xl mb-3">
+                    {hourCities.map((c) => (
+                      <button
+                        key={c}
+                        type="button"
+                        onClick={() => setActiveHourCity(c)}
+                        className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition ${
+                          activeHourCity === c
+                            ? "bg-black text-[#facc15] shadow-sm"
+                            : "text-neutral-400 hover:text-neutral-200"
+                        }`}
+                      >
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <div className="space-y-2 text-sm">
+                  {currentHourGroup.rows.map((h) => {
+                    const isToday = h.day_key === todayKey;
+                    const closed = h.is_closed || h.slots.length === 0;
                     return (
-                      <div key={it.id} className="flex items-start gap-3">
-                        <span className="flex items-center justify-center h-9 w-9 rounded-lg bg-black text-[#facc15] shrink-0">
-                          <Icon size={16} />
+                      <div
+                        key={`${h.location}-${h.day_key}`}
+                        className={`flex justify-between items-center ${
+                          isToday ? "text-[#facc15] font-bold" : "text-neutral-300"
+                        }`}
+                      >
+                        <span>
+                          {todayLabelMap[h.day_key] ?? h.day_key}
+                          {isToday && (
+                            <span className="ml-1 text-[10px] uppercase tracking-wider opacity-70">
+                              (Today)
+                            </span>
+                          )}
                         </span>
-                        <div className="flex-1">
-                          <p className="text-sm font-bold text-white">{it.title}</p>
-                          {it.description && <p className="text-xs text-neutral-400">{it.description}</p>}
-                        </div>
+                        <span className={closed ? "text-neutral-500 italic" : ""}>
+                          {closed
+                            ? "Closed"
+                            : h.slots.map((s) => `${s.open} – ${s.close}`).join(", ")}
+                        </span>
                       </div>
                     );
                   })}
                 </div>
-              )}
-            </div>
-          )}
 
-          {/* Service cities */}
-          {locations.length > 0 && (
-            <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
-              <h3 className="font-extrabold text-white flex items-center gap-2">
-                <MapPin size={16} /> Cidades atendidas
-              </h3>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {locations.map((loc: string) => (
-                  <span key={loc} className="text-xs font-semibold bg-white/5 text-neutral-200 px-3 py-1 rounded-full">
-                    {loc}
-                  </span>
-                ))}
+                <button
+                  type="button"
+                  className="mt-4 w-full text-xs text-neutral-500 underline-offset-4 hover:underline hover:text-neutral-300 transition"
+                >
+                  Report incorrect information
+                </button>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Coupons — Premium+ only */}
-          {can(business.plan, "coupons") && coupons.length > 0 && (
-            <div className="bg-amber-50 border border-amber-200 rounded-3xl p-6">
-              <h3 className="font-extrabold text-amber-900 flex items-center gap-2">
-                <Ticket size={16} /> {t("business.coupons_title")}
-              </h3>
-              <div className="mt-3 space-y-3">
-                {coupons.map((c: { id: string; code: string; title: string; expires_at: string | null }) => (
-                  <div key={c.id} className="bg-neutral-900 rounded-2xl p-4 border border-amber-200">
-                    <p className="font-extrabold text-amber-700 text-lg tracking-wider">{c.code}</p>
-                    <p className="text-sm text-neutral-200">{c.title}</p>
-                    {c.expires_at && (
-                      <p className="text-xs text-neutral-500 mt-1">
-                        {t("business.coupon_valid_until")} {c.expires_at}
-                      </p>
-                    )}
-                  </div>
-                ))}
+            {/* Coupons — Premium+ */}
+            {can(business.plan, "coupons") && coupons.length > 0 && (
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-3 flex items-center gap-1.5">
+                  <Ticket size={12} /> {t("business.coupons_title")}
+                </p>
+                <div className="space-y-2">
+                  {coupons.map(
+                    (c: {
+                      id: string;
+                      code: string;
+                      title: string;
+                      expires_at: string | null;
+                    }) => (
+                      <div
+                        key={c.id}
+                        className="bg-[#facc15]/10 border border-[#facc15]/30 rounded-xl p-3"
+                      >
+                        <p className="font-extrabold text-[#facc15] tracking-wider text-sm">
+                          {c.code}
+                        </p>
+                        <p className="text-xs text-neutral-200 mt-0.5">{c.title}</p>
+                        {c.expires_at && (
+                          <p className="text-[10px] text-neutral-500 mt-1">
+                            {t("business.coupon_valid_until")} {c.expires_at}
+                          </p>
+                        )}
+                      </div>
+                    ),
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </aside>
       </section>
+
 
       {leadOpen && (
         <div
