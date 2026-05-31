@@ -185,6 +185,27 @@ function ProfileEditor() {
         return next;
       });
 
+      // Seed per-branch details from saved business_branches
+      const loadedBranches = (loaded.branches ?? []) as unknown as {
+        location: string;
+        address_street: string | null;
+        address_suburb: string | null;
+        phone: string | null;
+      }[];
+      setBranchDetails(() => {
+        const next: Record<string, BranchDetail> = {};
+        for (const loc of locs) {
+          const row = loadedBranches.find((r) => r.location === loc);
+          next[loc] = {
+            address_street: row?.address_street ?? "",
+            address_suburb: row?.address_suburb ?? "",
+            phone: row?.phone ?? "",
+          };
+        }
+        return next;
+      });
+
+
       if (b.logo_url) setLogo(b.logo_url);
 
       // Seed service options
