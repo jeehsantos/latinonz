@@ -280,6 +280,8 @@ export const updateMyBusiness = createServerFn({ method: "POST" })
           keywords: data.keywords ?? [],
           google_place_id: data.google_place_id ?? null,
           response_time: data.response_time ?? null,
+          address_street: data.address_street ?? null,
+          address_suburb: data.address_suburb ?? null,
         })
         .select()
         .maybeSingle();
