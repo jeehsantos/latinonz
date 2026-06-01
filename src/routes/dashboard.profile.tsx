@@ -38,7 +38,6 @@ import {
   updateBusinessHours,
   updateServiceOptions,
   updateServiceOptionItems,
-  updateBusinessBranches,
 } from "@/lib/business.functions";
 import { uploadLogo } from "@/lib/storage.functions";
 import { connectGooglePlace, syncGoogleReviews } from "@/lib/reviews.functions";
@@ -79,7 +78,6 @@ function ProfileEditor() {
   const saveHoursFn = useServerFn(updateBusinessHours);
   const saveServiceOptionsFn = useServerFn(updateServiceOptions);
   const saveServiceItemsFn = useServerFn(updateServiceOptionItems);
-  const saveBranchesFn = useServerFn(updateBusinessBranches);
   const callUploadLogo = useServerFn(uploadLogo);
   const { data: loaded, refetch } = useQuery({
     queryKey: ["my-business"],
@@ -108,11 +106,6 @@ function ProfileEditor() {
   const [citiesOpen, setCitiesOpen] = useState(false);
   const [schedules, setSchedules] = useState<Record<string, BranchSchedule>>({
     Auckland: DEFAULT_SCHEDULE,
-  });
-  type BranchDetail = { address_street: string; address_suburb: string; phone: string };
-  const EMPTY_BRANCH_DETAIL: BranchDetail = { address_street: "", address_suburb: "", phone: "" };
-  const [branchDetails, setBranchDetails] = useState<Record<string, BranchDetail>>({
-    Auckland: { ...EMPTY_BRANCH_DETAIL },
   });
   const [activeBranch, setActiveBranch] = useState<string>("Auckland");
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
@@ -184,27 +177,6 @@ function ProfileEditor() {
         }
         return next;
       });
-
-      // Seed per-branch details from saved business_branches
-      const loadedBranches = (loaded.branches ?? []) as unknown as {
-        location: string;
-        address_street: string | null;
-        address_suburb: string | null;
-        phone: string | null;
-      }[];
-      setBranchDetails(() => {
-        const next: Record<string, BranchDetail> = {};
-        for (const loc of locs) {
-          const row = loadedBranches.find((r) => r.location === loc);
-          next[loc] = {
-            address_street: row?.address_street ?? "",
-            address_suburb: row?.address_suburb ?? "",
-            phone: row?.phone ?? "",
-          };
-        }
-        return next;
-      });
-
 
       if (b.logo_url) setLogo(b.logo_url);
 
@@ -295,26 +267,10 @@ function ProfileEditor() {
         }
         return copy;
       });
-      setBranchDetails((det) => {
-        const copy = { ...det };
-        if (exists) {
-          delete copy[city];
-        } else if (!copy[city]) {
-          copy[city] = { ...EMPTY_BRANCH_DETAIL };
-        }
-        return copy;
-      });
       if (exists && activeBranch === city) setActiveBranch(next[0] ?? "");
       if (!exists && next.length === 1) setActiveBranch(city);
       return next;
     });
-  };
-
-  const updateBranchDetail = (city: string, patch: Partial<BranchDetail>) => {
-    setBranchDetails((prev) => ({
-      ...prev,
-      [city]: { ...(prev[city] ?? EMPTY_BRANCH_DETAIL), ...patch },
-    }));
   };
 
   const copyScheduleToAll = () => {
@@ -506,12 +462,7 @@ function ProfileEditor() {
 
         <div>
           <label className="block text-sm font-bold text-neutral-200 mb-1">
-            {t("profile.phone_label")}{" "}
-            {multiBranch && (
-              <span className="ml-1 text-[10px] uppercase tracking-wider text-neutral-500 font-semibold">
-                (default / fallback)
-              </span>
-            )}
+            {t("profile.phone_label")}
           </label>
           <input
             type="text"
@@ -520,43 +471,36 @@ function ProfileEditor() {
             onChange={(e) => setPhone(e.target.value)}
             className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
           />
-          {multiBranch && (
-            <p className="mt-1 text-[11px] text-neutral-500">
-              Used when a branch below does not have its own phone.
-            </p>
-          )}
         </div>
 
-        {!multiBranch && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-bold text-neutral-200 mb-1">
-                Endereço (rua e número)
-              </label>
-              <input
-                type="text"
-                placeholder="Ex: 123 Queen St"
-                value={addressStreet}
-                onChange={(e) => setAddressStreet(e.target.value)}
-                maxLength={200}
-                className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-bold text-neutral-200 mb-1">
-                Bairro / Suburb
-              </label>
-              <input
-                type="text"
-                placeholder="Ex: Auckland CBD"
-                value={addressSuburb}
-                onChange={(e) => setAddressSuburb(e.target.value)}
-                maxLength={100}
-                className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
-              />
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-bold text-neutral-200 mb-1">
+              Endereço (rua e número)
+            </label>
+            <input
+              type="text"
+              placeholder="Ex: 123 Queen St"
+              value={addressStreet}
+              onChange={(e) => setAddressStreet(e.target.value)}
+              maxLength={200}
+              className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
+            />
           </div>
-        )}
+          <div>
+            <label className="block text-sm font-bold text-neutral-200 mb-1">
+              Bairro / Suburb
+            </label>
+            <input
+              type="text"
+              placeholder="Ex: Auckland CBD"
+              value={addressSuburb}
+              onChange={(e) => setAddressSuburb(e.target.value)}
+              maxLength={100}
+              className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
+            />
+          </div>
+        </div>
 
 
         <div>
@@ -620,78 +564,6 @@ function ProfileEditor() {
             </div>
           )}
         </div>
-
-        {multiBranch && (
-          <div className="rounded-2xl border border-[#facc15]/30 bg-gradient-to-br from-neutral-950 to-neutral-900 p-5 space-y-4">
-            <div className="flex items-center gap-2">
-              <MapPin size={18} className="text-[#facc15]" />
-              <h4 className="text-base font-bold text-white">Branch Contacts</h4>
-              <span className="text-[10px] uppercase tracking-wider bg-[#facc15]/10 text-[#facc15] px-2 py-0.5 rounded-full font-bold">
-                {cities.length} branches
-              </span>
-            </div>
-            <p className="text-xs text-neutral-400">
-              Each branch can have its own address and phone. They appear on your public profile when visitors switch branches.
-            </p>
-            <div className="flex flex-wrap gap-1.5 p-1 bg-white/5 rounded-xl">
-              {cities.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => setActiveBranch(c)}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${activeBranch === c ? "bg-black text-[#facc15] shadow-sm" : "text-neutral-400 hover:text-neutral-200"}`}
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="md:col-span-2">
-                <label className="block text-xs font-bold text-neutral-300 mb-1">
-                  {activeBranch} — Street address
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ex: 123 Queen St"
-                  value={branchDetails[activeBranch]?.address_street ?? ""}
-                  onChange={(e) =>
-                    updateBranchDetail(activeBranch, { address_street: e.target.value })
-                  }
-                  maxLength={200}
-                  className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#facc15]"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-neutral-300 mb-1">Suburb</label>
-                <input
-                  type="text"
-                  placeholder="Ex: CBD"
-                  value={branchDetails[activeBranch]?.address_suburb ?? ""}
-                  onChange={(e) =>
-                    updateBranchDetail(activeBranch, { address_suburb: e.target.value })
-                  }
-                  maxLength={100}
-                  className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#facc15]"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-neutral-300 mb-1">
-                  Phone / WhatsApp
-                </label>
-                <input
-                  type="text"
-                  placeholder="Ex: 021 000 0000"
-                  value={branchDetails[activeBranch]?.phone ?? ""}
-                  onChange={(e) =>
-                    updateBranchDetail(activeBranch, { phone: e.target.value })
-                  }
-                  maxLength={32}
-                  className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-[#facc15]"
-                />
-              </div>
-            </div>
-          </div>
-        )}
 
         <div>
           <label className="block text-sm font-bold text-neutral-200 mb-1">
@@ -758,8 +630,6 @@ function ProfileEditor() {
                 </div>
               </div>
             )}
-
-
 
             <div className="rounded-xl border border-white/10 overflow-hidden divide-y divide-gray-100">
               {days.map(({ key, label, short }) => {
@@ -941,21 +811,6 @@ function ProfileEditor() {
                   },
                 });
               }
-
-              // Save per-branch details (address/phone) — applies to all plans
-              await saveBranchesFn({
-                data: {
-                  branches: cities.map((city) => {
-                    const d = branchDetails[city] ?? EMPTY_BRANCH_DETAIL;
-                    return {
-                      location: city,
-                      address_street: d.address_street.trim() || null,
-                      address_suburb: d.address_suburb.trim() || null,
-                      phone: d.phone.trim() || null,
-                    };
-                  }),
-                },
-              });
 
               setSaveSuccess(true);
               await refetch();

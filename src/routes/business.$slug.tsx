@@ -69,12 +69,6 @@ export const Route = createFileRoute("/business/$slug")({
       photos: res.photos,
       coupons: res.coupons,
       locations: (res.business.locations ?? []) as string[],
-      branches: (res.branches ?? []) as {
-        location: string;
-        address_street: string | null;
-        address_suburb: string | null;
-        phone: string | null;
-      }[],
     };
   },
   head: ({ params, loaderData }) => ({
@@ -129,7 +123,7 @@ export const Route = createFileRoute("/business/$slug")({
 
 function BusinessPage() {
   const { t } = useI18n();
-  const { business, hours, serviceOptions, serviceOptionItems, photos, coupons, locations, branches } = Route.useLoaderData();
+  const { business, hours, serviceOptions, serviceOptionItems, photos, coupons, locations } = Route.useLoaderData();
   usePageMetadata(
     undefined,
     undefined,
@@ -165,7 +159,8 @@ function BusinessPage() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
 
-  const wantsWhatsappFlow = can(business.plan, "leadWhatsapp");
+  const waNumber = business.phone ? business.phone.replace(/\D/g, "") : "";
+  const wantsWhatsappFlow = can(business.plan, "leadWhatsapp") && Boolean(waNumber);
 
   async function handleLeadSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -187,21 +182,17 @@ function BusinessPage() {
       }
 
       if (wantsWhatsappFlow) {
-        const targetPhone = displayPhone || business.phone || "";
-        const waNumber = targetPhone.replace(/\D/g, "");
-        if (waNumber) {
-          const lines = [
-            `Olá ${business.name},`,
-            ``,
-            `Nome: ${leadForm.name.trim()}`,
-            leadForm.email.trim() ? `Email: ${leadForm.email.trim()}` : "",
-            leadForm.phone.trim() ? `Telefone: ${leadForm.phone.trim()}` : "",
-            ``,
-            leadForm.message.trim() || "Gostaria de mais informações.",
-          ].filter(Boolean);
-          const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
-          window.open(waUrl, "_blank", "noopener,noreferrer");
-        }
+        const lines = [
+          `Olá ${business.name},`,
+          ``,
+          `Nome: ${leadForm.name.trim()}`,
+          leadForm.email.trim() ? `Email: ${leadForm.email.trim()}` : "",
+          leadForm.phone.trim() ? `Telefone: ${leadForm.phone.trim()}` : "",
+          ``,
+          leadForm.message.trim() || "Gostaria de mais informações.",
+        ].filter(Boolean);
+        const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
+        window.open(waUrl, "_blank", "noopener,noreferrer");
       }
 
       setLeadStatus("success");
@@ -274,43 +265,27 @@ function BusinessPage() {
 
   void COUPONS_BY_BUSINESS;
 
-  // City tab state — union of branches/hours/locations so all branches surface
-  const hourCities = hoursGroups.map((g) => g.location);
-  const tabCities = Array.from(
-    new Set(
-      [
-        ...branches.map((b: { location: string }) => b.location),
-        ...hourCities,
-        ...locations,
-      ].filter((c): c is string => Boolean(c && c.trim())),
-    ),
-  );
-  const [activeHourCity, setActiveHourCity] = useState<string>(
-    tabCities[0] ?? hourCities[0] ?? locations[0] ?? "",
-  );
-  const currentHourGroup =
-    hoursGroups.find((g) => g.location === activeHourCity) ?? hoursGroups[0];
-
-  // Per-branch address/phone (overrides business defaults when set)
-  const activeBranch =
-    branches.find((b: { location: string }) => b.location === activeHourCity) ?? branches[0] ?? null;
-  const displayPhone = activeBranch?.phone || business.phone || "";
-  const displayStreet = activeBranch?.address_street || business.addressStreet || "";
-  const displaySuburb = activeBranch?.address_suburb || business.addressSuburb || "";
-  const addressLine = [displayStreet, displaySuburb]
+  // Build address line: "street, suburb"
+  const addressLine = [business.addressStreet, business.addressSuburb]
     .filter((p): p is string => Boolean(p && p.trim()))
     .join(", ");
-  const cityForMaps = activeHourCity || locations[0] || business.location || "New Zealand";
+  const cityForMaps = locations[0] || business.location || "New Zealand";
   const mapsQuery = [addressLine, cityForMaps, "New Zealand"].filter(Boolean).join(", ");
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`;
 
   // Banner image — use first photo as backdrop
   const bannerUrl = visiblePhotos[0]?.url ?? null;
 
+  // City tab state for Opening Hours (Premium+)
+  const hourCities = hoursGroups.map((g) => g.location);
+  const [activeHourCity, setActiveHourCity] = useState<string>(hourCities[0] ?? "");
+  const currentHourGroup =
+    hoursGroups.find((g) => g.location === activeHourCity) ?? hoursGroups[0];
+
   // Compute "Open now" + today key (in user's timezone — Pacific/Auckland)
   const now = new Date();
   const nzNow = new Date(now.toLocaleString("en-US", { timeZone: "Pacific/Auckland" }));
-  const todayKey = DAY_ORDER[(nzNow.getDay() + 6) % 7];
+  const todayKey = DAY_ORDER[(nzNow.getDay() + 6) % 7]; // JS Sun=0 → make Mon=0
   const nowMinutes = nzNow.getHours() * 60 + nzNow.getMinutes();
   const isOpenNow = currentHourGroup
     ? (() => {
@@ -323,7 +298,6 @@ function BusinessPage() {
         });
       })()
     : false;
-
 
   const todayLabelMap: Record<string, string> = {
     mon: "Monday",
@@ -633,46 +607,21 @@ function BusinessPage() {
               {wantsWhatsappFlow ? t("business.whatsapp_cta") : t("business.send_message")}
             </button>
 
-            {/* Branch switcher — when multiple locations */}
-            {tabCities.length > 1 && (
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-2">
-                  Branch
-                </p>
-                <div className="flex flex-wrap bg-white/5 p-1 rounded-xl gap-1">
-                  {tabCities.map((c) => (
-                    <button
-                      key={c}
-                      type="button"
-                      onClick={() => setActiveHourCity(c)}
-                      className={`flex-1 min-w-[80px] py-1.5 px-2 text-xs font-bold rounded-lg transition ${
-                        activeHourCity === c
-                          ? "bg-black text-[#facc15] shadow-sm"
-                          : "text-neutral-400 hover:text-neutral-200"
-                      }`}
-                    >
-                      {c}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* Contact */}
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-3">
                 {t("business.contact_title")}
               </p>
               <div className="space-y-3 text-sm">
-                {displayPhone && (
+                {business.phone && (
                   <a
-                    href={`tel:${displayPhone}`}
+                    href={`tel:${business.phone}`}
                     className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15] transition"
                   >
                     <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0">
                       <Phone size={14} />
                     </span>
-                    <span>{displayPhone}</span>
+                    <span>{business.phone}</span>
                   </a>
                 )}
                 {addressLine && (
@@ -769,7 +718,7 @@ function BusinessPage() {
                   </span>
                 </div>
 
-                {hourCities.length > 1 && tabCities.length <= 1 && (
+                {hourCities.length > 1 && (
                   <div className="flex bg-white/5 p-1 rounded-xl mb-3">
                     {hourCities.map((c) => (
                       <button
