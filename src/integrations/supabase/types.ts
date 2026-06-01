@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      business_branches: {
+        Row: {
+          address_street: string | null
+          address_suburb: string | null
+          business_id: string
+          created_at: string
+          id: string
+          location: string
+          phone: string | null
+          position: number
+          updated_at: string
+        }
+        Insert: {
+          address_street?: string | null
+          address_suburb?: string | null
+          business_id: string
+          created_at?: string
+          id?: string
+          location: string
+          phone?: string | null
+          position?: number
+          updated_at?: string
+        }
+        Update: {
+          address_street?: string | null
+          address_suburb?: string | null
+          business_id?: string
+          created_at?: string
+          id?: string
+          location?: string
+          phone?: string | null
+          position?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       business_hours: {
         Row: {
           business_id: string
