@@ -651,7 +651,7 @@ type GeneralTabProps = {
   keywords: string;
   setKeywords: (v: string) => void;
   logo: string | null;
-  logoRef: React.RefObject<HTMLInputElement>;
+  logoRef: React.RefObject<HTMLInputElement | null>;
   logoUploading: boolean;
   logoError: string | null;
   onUploadLogo: (e: React.ChangeEvent<HTMLInputElement>) => void;
