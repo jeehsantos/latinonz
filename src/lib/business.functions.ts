@@ -213,6 +213,7 @@ export const getMyBusiness = createServerFn({ method: "GET" })
         hours: [],
         serviceOptions: null,
         serviceOptionItems: [],
+        branches: [],
       };
     }
 
