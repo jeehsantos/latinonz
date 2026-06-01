@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -9,17 +9,13 @@ import {
   Plus,
   Trash2,
   Upload,
-  X,
   Check,
-  Copy,
-  MapPin,
-  Clock,
+  Lock,
+  Sparkles,
   ShoppingBag,
   UtensilsCrossed,
   Bike,
   CalendarClock,
-  Sparkles,
-  Lock,
   Truck,
   Wrench,
   Heart,
@@ -27,21 +23,28 @@ import {
   Star as StarIcon,
   Coffee,
   Package,
+  Info,
+  Globe,
+  MapPin,
+  Clock,
+  Store,
+  Phone,
+  RefreshCw,
+  Star,
+  UploadCloud,
 } from "lucide-react";
-import { Link } from "@tanstack/react-router";
-import { NZ_CITIES } from "@/lib/mock/categories";
 import { useCategories } from "@/hooks/useCategories";
 import { useI18n } from "@/lib/i18n";
 import {
   getMyBusiness,
   updateMyBusiness,
   updateBusinessHours,
+  updateBusinessBranches,
   updateServiceOptions,
   updateServiceOptionItems,
 } from "@/lib/business.functions";
 import { uploadLogo } from "@/lib/storage.functions";
 import { connectGooglePlace, syncGoogleReviews } from "@/lib/reviews.functions";
-import { Star, RefreshCw } from "lucide-react";
 import QRCode from "qrcode";
 import { useCurrentPlan } from "@/lib/dev-plan";
 import { can } from "@/lib/plans";
@@ -53,8 +56,18 @@ export const Route = createFileRoute("/dashboard/profile")({
 
 type BusinessType = "Serviço" | "Produto";
 type DayKey = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
+type TabId = "general" | "locations" | "features";
 
 const DAY_KEYS: DayKey[] = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+const DAY_LABELS: Record<DayKey, string> = {
+  mon: "Monday",
+  tue: "Tuesday",
+  wed: "Wednesday",
+  thu: "Thursday",
+  fri: "Friday",
+  sat: "Saturday",
+  sun: "Sunday",
+};
 
 type DaySchedule = { closed: boolean; slots: { open: string; close: string }[] };
 type BranchSchedule = Record<DayKey, DaySchedule>;
@@ -71,14 +84,34 @@ const DEFAULT_SCHEDULE: BranchSchedule = {
 
 const cloneSchedule = (s: BranchSchedule): BranchSchedule => JSON.parse(JSON.stringify(s));
 
+type Branch = {
+  id: string; // local UI id
+  name: string; // location label (city or custom)
+  addressStreet: string;
+  addressSuburb: string;
+  phone: string;
+  schedule: BranchSchedule;
+};
+
+const newBranch = (overrides: Partial<Branch> = {}): Branch => ({
+  id: crypto.randomUUID(),
+  name: overrides.name ?? "Auckland",
+  addressStreet: overrides.addressStreet ?? "",
+  addressSuburb: overrides.addressSuburb ?? "",
+  phone: overrides.phone ?? "",
+  schedule: overrides.schedule ?? cloneSchedule(DEFAULT_SCHEDULE),
+});
+
 function ProfileEditor() {
   const { t } = useI18n();
   const fetchMyBusiness = useServerFn(getMyBusiness);
   const saveMyBusiness = useServerFn(updateMyBusiness);
   const saveHoursFn = useServerFn(updateBusinessHours);
+  const saveBranchesFn = useServerFn(updateBusinessBranches);
   const saveServiceOptionsFn = useServerFn(updateServiceOptions);
   const saveServiceItemsFn = useServerFn(updateServiceOptionItems);
   const callUploadLogo = useServerFn(uploadLogo);
+
   const { data: loaded, refetch } = useQuery({
     queryKey: ["my-business"],
     queryFn: async () => {
@@ -91,35 +124,27 @@ function ProfileEditor() {
     retry: false,
     throwOnError: false,
   });
-  const [logoUploading, setLogoUploading] = useState(false);
-  const [logoError, setLogoError] = useState<string | null>(null);
 
+  const [activeTab, setActiveTab] = useState<TabId>("general");
+
+  // ---- General tab state ----
   const [businessType, setBusinessType] = useState<BusinessType>("Serviço");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<string>("");
   const [phone, setPhone] = useState("");
+  const [website, setWebsite] = useState("");
   const [keywords, setKeywords] = useState("");
-  const [addressStreet, setAddressStreet] = useState("");
-  const [addressSuburb, setAddressSuburb] = useState("");
-  const [cities, setCities] = useState<string[]>(["Auckland"]);
-  const [citiesOpen, setCitiesOpen] = useState(false);
-  const [schedules, setSchedules] = useState<Record<string, BranchSchedule>>({
-    Auckland: DEFAULT_SCHEDULE,
-  });
-  const [activeBranch, setActiveBranch] = useState<string>("Auckland");
-  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
-  const [qrError, setQrError] = useState<string | null>(null);
-  const [generating, setGenerating] = useState(false);
-  const [plan] = useCurrentPlan();
-  const canUseQr = can(plan, "qrCode");
-  const slug = loaded?.business?.slug ?? "";
-  const qrUrl = slug ? `https://latinoconnecthub.co.nz/business/${slug}` : "";
   const [logo, setLogo] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [logoError, setLogoError] = useState<string | null>(null);
+  const logoRef = useRef<HTMLInputElement>(null);
 
-  // Service options (controlled by parent)
+  // ---- Branches tab state ----
+  const [branches, setBranches] = useState<Branch[]>([newBranch()]);
+  const [expandedBranchId, setExpandedBranchId] = useState<string | null>(null);
+
+  // ---- Features tab state ----
   type ServiceFlagKey = "takeaway" | "dinein" | "delivery" | "booking";
   const [serviceFlags, setServiceFlags] = useState<Record<ServiceFlagKey, boolean>>({
     takeaway: false,
@@ -127,16 +152,27 @@ function ProfileEditor() {
     delivery: false,
     booking: false,
   });
-  
   type CustomServiceItem = { title: string; description: string; icon_key: string };
   const [customServiceItems, setCustomServiceItems] = useState<CustomServiceItem[]>([]);
-  const [saveSuccess, setSaveSuccess] = useState(false);
-  const logoRef = useRef<HTMLInputElement>(null);
 
-  // Seed form once business loads
+  // ---- Save state ----
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  // ---- QR ----
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [qrError, setQrError] = useState<string | null>(null);
+  const [generating, setGenerating] = useState(false);
+  const [plan] = useCurrentPlan();
+  const canUseQr = can(plan, "qrCode");
+  const slug = loaded?.business?.slug ?? "";
+  const qrUrl = slug ? `https://latinoconnecthub.co.nz/business/${slug}` : "";
+
+  // ---- Seed form once loaded ----
   useEffect(() => {
     if (!loaded?.ok) return;
-    
+
     if (loaded.business) {
       const b = loaded.business;
       if (b.type === "Serviço" || b.type === "Produto") setBusinessType(b.type as BusinessType);
@@ -144,45 +180,60 @@ function ProfileEditor() {
       setDescription(b.description ?? "");
       if (b.macro_category) setCategory(b.macro_category);
       setPhone(b.phone ?? "");
+      setWebsite(b.website ?? "");
       setKeywords((b.keywords ?? []).join(", "));
-      setAddressStreet((b as { address_street?: string | null }).address_street ?? "");
-      setAddressSuburb((b as { address_suburb?: string | null }).address_suburb ?? "");
+      if (b.logo_url) setLogo(b.logo_url);
+
+      // Build branches from locations + business_hours + business_branches
       const locs: string[] =
         b.locations && b.locations.length > 0 ? (b.locations as string[]) : ["Auckland"];
-      setCities(locs);
-      setActiveBranch(locs[0]);
 
-      // Seed schedules from saved business_hours (per location), fallback to default
       const loadedHours = (loaded.hours ?? []) as unknown as {
         day_key: DayKey;
         is_closed: boolean;
         slots: { open: string; close: string }[];
         location: string;
       }[];
-      setSchedules(() => {
-        const next: Record<string, BranchSchedule> = {};
-        for (const loc of locs) {
-          const base = cloneSchedule(DEFAULT_SCHEDULE);
-          const rowsForLoc = loadedHours.filter((h) => h.location === loc);
-          if (rowsForLoc.length > 0) {
-            for (const k of DAY_KEYS) base[k] = { closed: true, slots: [] };
-            for (const r of rowsForLoc) {
-              base[r.day_key] = {
-                closed: !!r.is_closed,
-                slots: Array.isArray(r.slots) ? r.slots : [],
-              };
-            }
+      const loadedBranches = (loaded.branches ?? []) as unknown as {
+        location: string;
+        address_street: string | null;
+        address_suburb: string | null;
+        phone: string | null;
+      }[];
+
+      const fallbackStreet =
+        (b as { address_street?: string | null }).address_street ?? "";
+      const fallbackSuburb =
+        (b as { address_suburb?: string | null }).address_suburb ?? "";
+
+      const built: Branch[] = locs.map((loc, idx) => {
+        const sched = cloneSchedule(DEFAULT_SCHEDULE);
+        const rowsForLoc = loadedHours.filter((h) => h.location === loc);
+        if (rowsForLoc.length > 0) {
+          for (const k of DAY_KEYS) sched[k] = { closed: true, slots: [] };
+          for (const r of rowsForLoc) {
+            sched[r.day_key] = {
+              closed: !!r.is_closed,
+              slots: Array.isArray(r.slots) ? r.slots : [],
+            };
           }
-          next[loc] = base;
         }
-        return next;
+        const br = loadedBranches.find((x) => x.location === loc);
+        return {
+          id: crypto.randomUUID(),
+          name: loc,
+          addressStreet: br?.address_street ?? (idx === 0 ? fallbackStreet : ""),
+          addressSuburb: br?.address_suburb ?? (idx === 0 ? fallbackSuburb : ""),
+          phone: br?.phone ?? "",
+          schedule: sched,
+        };
       });
+      setBranches(built);
+      setExpandedBranchId(built[0]?.id ?? null);
 
-      if (b.logo_url) setLogo(b.logo_url);
-
-      // Seed service options
+      // Service options
       const so = loaded.serviceOptions as
-        | { takeaway: boolean; dinein: boolean; delivery: boolean; booking: boolean; other: string | null }
+        | { takeaway: boolean; dinein: boolean; delivery: boolean; booking: boolean }
         | null;
       if (so) {
         setServiceFlags({
@@ -191,10 +242,8 @@ function ProfileEditor() {
           delivery: !!so.delivery,
           booking: !!so.booking,
         });
-        
       }
 
-      // Seed custom service items
       const items = (loaded.serviceOptionItems ?? []) as {
         title: string;
         description: string | null;
@@ -208,7 +257,6 @@ function ProfileEditor() {
         })),
       );
     } else {
-      // Fallback: If no business row exists yet, use user_metadata from signup
       supabase.auth.getUser().then(({ data }) => {
         const meta = data.user?.user_metadata;
         if (meta) {
@@ -225,7 +273,6 @@ function ProfileEditor() {
     () => dbCategories.filter((c) => c.kind === wantedKind).map((c) => c.canonicalName),
     [dbCategories, wantedKind],
   );
-  // Reset category if it no longer belongs to the current tab
   useEffect(() => {
     if (!category && activeCategories.length > 0) {
       setCategory(activeCategories[0]);
@@ -235,74 +282,38 @@ function ProfileEditor() {
       setCategory(activeCategories[0]);
     }
   }, [activeCategories, category]);
-  const branchSchedule = schedules[activeBranch] ?? DEFAULT_SCHEDULE;
 
-  const days: { key: DayKey; label: string; short: string }[] = [
-    { key: "mon", label: "Segunda-feira", short: "SEG" },
-    { key: "tue", label: "Terça-feira", short: "TER" },
-    { key: "wed", label: "Quarta-feira", short: "QUA" },
-    { key: "thu", label: "Quinta-feira", short: "QUI" },
-    { key: "fri", label: "Sexta-feira", short: "SEX" },
-    { key: "sat", label: "Sábado", short: "SÁB" },
-    { key: "sun", label: "Domingo", short: "DOM" },
-  ];
+  // ---- Branch mutators ----
+  const updateBranch = (id: string, patch: Partial<Branch>) =>
+    setBranches((prev) => prev.map((b) => (b.id === id ? { ...b, ...patch } : b)));
 
-  const setBranchSchedule = (mutator: (s: BranchSchedule) => BranchSchedule) => {
-    setSchedules((prev) => ({
-      ...prev,
-      [activeBranch]: mutator(prev[activeBranch] ?? cloneSchedule(DEFAULT_SCHEDULE)),
-    }));
+  const updateBranchSchedule = (id: string, mutator: (s: BranchSchedule) => BranchSchedule) =>
+    setBranches((prev) =>
+      prev.map((b) => (b.id === id ? { ...b, schedule: mutator(b.schedule) } : b)),
+    );
+
+  const addBranch = () => {
+    const b = newBranch({ name: "" });
+    setBranches((prev) => [...prev, b]);
+    setExpandedBranchId(b.id);
   };
 
-  const toggleCity = (city: string) => {
-    setCities((prev) => {
-      const exists = prev.includes(city);
-      const next = exists ? prev.filter((c) => c !== city) : [...prev, city];
-      setSchedules((sch) => {
-        const copy = { ...sch };
-        if (exists) {
-          delete copy[city];
-        } else if (!copy[city]) {
-          copy[city] = cloneSchedule(DEFAULT_SCHEDULE);
-        }
-        return copy;
-      });
-      if (exists && activeBranch === city) setActiveBranch(next[0] ?? "");
-      if (!exists && next.length === 1) setActiveBranch(city);
-      return next;
+  const removeBranch = (id: string) => {
+    setBranches((prev) => {
+      const next = prev.filter((b) => b.id !== id);
+      return next.length ? next : [newBranch()];
     });
+    setExpandedBranchId((cur) => (cur === id ? null : cur));
   };
 
-  const copyScheduleToAll = () => {
-    const source = cloneSchedule(branchSchedule);
-    const next: Record<string, BranchSchedule> = {};
-    for (const c of cities) next[c] = cloneSchedule(source);
-    setSchedules(next);
+  const copyHoursFrom = (targetId: string, sourceId: string) => {
+    const source = branches.find((b) => b.id === sourceId);
+    if (!source) return;
+    updateBranch(targetId, { schedule: cloneSchedule(source.schedule) });
   };
 
-  const updateSlot = (day: DayKey, idx: number, field: "open" | "close", v: string) =>
-    setBranchSchedule((s) => ({
-      ...s,
-      [day]: {
-        ...s[day],
-        slots: s[day].slots.map((sl, i) => (i === idx ? { ...sl, [field]: v } : sl)),
-      },
-    }));
-
-  const addSlot = (day: DayKey) =>
-    setBranchSchedule((s) => ({
-      ...s,
-      [day]: { closed: false, slots: [...s[day].slots, { open: "14:00", close: "18:00" }] },
-    }));
-
-  const removeSlot = (day: DayKey, idx: number) =>
-    setBranchSchedule((s) => ({
-      ...s,
-      [day]: { ...s[day], slots: s[day].slots.filter((_, i) => i !== idx) },
-    }));
-
-  const toggleClosed = (day: DayKey) =>
-    setBranchSchedule((s) => {
+  const toggleDayClosed = (branchId: string, day: DayKey) =>
+    updateBranchSchedule(branchId, (s) => {
       const isClosed = !s[day].closed;
       return {
         ...s,
@@ -317,6 +328,23 @@ function ProfileEditor() {
       };
     });
 
+  const updateSlot = (
+    branchId: string,
+    day: DayKey,
+    field: "open" | "close",
+    v: string,
+  ) =>
+    updateBranchSchedule(branchId, (s) => ({
+      ...s,
+      [day]: {
+        ...s[day],
+        slots: s[day].slots.length
+          ? s[day].slots.map((sl, i) => (i === 0 ? { ...sl, [field]: v } : sl))
+          : [{ open: field === "open" ? v : "09:00", close: field === "close" ? v : "18:00" }],
+      },
+    }));
+
+  // ---- QR ----
   const handleGenerateQr = async () => {
     if (!canUseQr || !qrUrl) return;
     setQrError(null);
@@ -371,552 +399,744 @@ function ProfileEditor() {
     }
   };
 
-  const multiBranch = cities.length > 1;
-  const citiesLabel = useMemo(() => {
-    if (!cities.length) return t("profile.cities_placeholder");
-    if (cities.length <= 2) return cities.join(", ");
-    return `${cities.slice(0, 2).join(", ")} +${cities.length - 2}`;
-  }, [cities, t]);
+  // ---- Save ----
+  const handleSave = async () => {
+    setSaveError(null);
+    setSaveSuccess(false);
+    setSaving(true);
+    try {
+      const cleanBranches = branches.filter((b) => b.name.trim().length > 0);
+      const locations = cleanBranches.map((b) => b.name.trim());
+      const primary = cleanBranches[0];
+
+      const res = await saveMyBusiness({
+        data: {
+          name: name.trim() || undefined,
+          description: description.trim(),
+          type: businessType,
+          macro_category: category,
+          phone: phone.trim() || null,
+          website: website.trim() || null,
+          locations,
+          address_street: primary?.addressStreet.trim() || null,
+          address_suburb: primary?.addressSuburb.trim() || null,
+          keywords: keywords
+            .split(",")
+            .map((k) => k.trim())
+            .filter(Boolean),
+        },
+      });
+      if (!res.ok) {
+        const errorKey = (res as { errorKey?: string }).errorKey;
+        if (errorKey === "save_name_required") {
+          setSaveError(t("profile.save_error_name_required"));
+        } else if (errorKey === "save_not_found") {
+          setSaveError(t("profile.save_error_not_found"));
+        } else {
+          setSaveError(res.error || t("profile.save_error_generic"));
+        }
+        return;
+      }
+
+      // Persist branches (address + phone per location)
+      await saveBranchesFn({
+        data: {
+          branches: cleanBranches.map((b) => ({
+            location: b.name.trim(),
+            address_street: b.addressStreet.trim() || null,
+            address_suburb: b.addressSuburb.trim() || null,
+            phone: b.phone.trim() || null,
+          })),
+        },
+      });
+
+      if (plan !== "starter") {
+        const hoursPayload: {
+          location: string;
+          day_key: DayKey;
+          is_closed: boolean;
+          slots: { open: string; close: string }[];
+        }[] = [];
+        for (const br of cleanBranches) {
+          for (const k of DAY_KEYS) {
+            hoursPayload.push({
+              location: br.name.trim(),
+              day_key: k,
+              is_closed: br.schedule[k].closed,
+              slots: br.schedule[k].closed ? [] : br.schedule[k].slots,
+            });
+          }
+        }
+        await saveHoursFn({ data: { hours: hoursPayload } });
+        await saveServiceOptionsFn({
+          data: {
+            takeaway: serviceFlags.takeaway,
+            dinein: serviceFlags.dinein,
+            delivery: serviceFlags.delivery,
+            booking: serviceFlags.booking,
+            other: null,
+          },
+        });
+        await saveServiceItemsFn({
+          data: {
+            items: customServiceItems
+              .filter((it) => it.title.trim().length > 0)
+              .map((it) => ({
+                title: it.title.trim(),
+                description: it.description.trim() || null,
+                icon_key: it.icon_key,
+              })),
+          },
+        });
+      }
+
+      setSaveSuccess(true);
+      await refetch();
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : t("profile.save_error_unexpected"));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const tabs: { id: TabId; label: string }[] = [
+    { id: "general", label: "General Details" },
+    { id: "locations", label: "Locations & Hours" },
+    { id: "features", label: "Features & Options" },
+  ];
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8">
-      <div className="flex-1 bg-neutral-900 rounded-2xl border border-white/10 shadow-sm p-6 space-y-6">
-        <h3 className="text-xl font-bold text-white border-b border-white/10 pb-4">
-          {t("profile.title")}
-        </h3>
-
-        <div>
-          <div className="flex justify-between mb-1">
-            <label className="block text-sm font-bold text-neutral-200">
-              {t("profile.description_label")}
-            </label>
-            <span className="text-xs text-neutral-500">240/500</span>
+    <div className="-m-6 lg:-m-10 min-h-screen bg-black text-zinc-300">
+      {/* Sticky Header with Save */}
+      <header className="sticky top-0 z-20 bg-black/80 backdrop-blur-xl border-b border-white/10 px-6 lg:px-10 py-5">
+        <div className="flex items-center justify-between gap-4 max-w-6xl mx-auto">
+          <div className="min-w-0">
+            <h1 className="text-2xl font-bold text-white tracking-tight truncate">
+              Edit Profile
+            </h1>
+            <p className="text-sm text-zinc-400 mt-0.5">
+              Manage how your business appears on the network.
+            </p>
           </div>
-          <textarea
-            rows={4}
-            maxLength={500}
-            className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15] resize-none"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          <p className="text-xs text-neutral-400 mt-1">{t("profile.description_hint")}</p>
-        </div>
-
-        <div>
-          <label className="block text-sm font-bold text-neutral-200 mb-2">
-            {t("profile.type_label")}
-          </label>
-          <div className="flex bg-white/5 p-1 rounded-xl">
-            <button
-              onClick={() => setBusinessType("Serviço")}
-              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${businessType === "Serviço" ? "bg-black text-[#facc15] shadow-sm" : "text-neutral-400 hover:text-neutral-200"}`}
-            >
-              {t("profile.type_service")}
-            </button>
-            <button
-              onClick={() => setBusinessType("Produto")}
-              className={`flex-1 py-2 text-sm font-bold rounded-lg transition-colors ${businessType === "Produto" ? "bg-black text-[#facc15] shadow-sm" : "text-neutral-400 hover:text-neutral-200"}`}
-            >
-              {t("profile.type_product")}
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-bold text-neutral-200 mb-1">
-            {t("profile.business_name_label")}
-          </label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15] focus:ring-1 focus:ring-[#facc15]"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-bold text-neutral-200 mb-1">
-            {t("profile.category_label")}
-          </label>
-          <div className="relative">
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15] appearance-none"
-            >
-              {activeCategories.length === 0 && (
-                <option value="">Nenhuma categoria disponível</option>
-              )}
-              {activeCategories.map((c: string, i: number) => (
-                <option key={i} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-            <ChevronDown
-              size={16}
-              className="absolute right-4 top-4 text-neutral-500 pointer-events-none"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-bold text-neutral-200 mb-1">
-            {t("profile.phone_label")}
-          </label>
-          <input
-            type="text"
-            placeholder="Ex: 021 000 0000"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-bold text-neutral-200 mb-1">
-              Endereço (rua e número)
-            </label>
-            <input
-              type="text"
-              placeholder="Ex: 123 Queen St"
-              value={addressStreet}
-              onChange={(e) => setAddressStreet(e.target.value)}
-              maxLength={200}
-              className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-bold text-neutral-200 mb-1">
-              Bairro / Suburb
-            </label>
-            <input
-              type="text"
-              placeholder="Ex: Auckland CBD"
-              value={addressSuburb}
-              onChange={(e) => setAddressSuburb(e.target.value)}
-              maxLength={100}
-              className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
-            />
-          </div>
-        </div>
-
-
-        <div>
-          <label className="block text-sm font-bold text-neutral-200 mb-1">
-            {t("profile.cities_label")}{" "}
-            <span className="font-normal text-neutral-500">{t("profile.cities_multiple")}</span>
-          </label>
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setCitiesOpen((o) => !o)}
-              className="w-full flex items-center justify-between bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-left text-white outline-none focus:border-[#facc15]"
-            >
-              <span className="truncate">{citiesLabel}</span>
-              <ChevronDown
-                size={16}
-                className={`text-neutral-500 transition-transform ${citiesOpen ? "rotate-180" : ""}`}
-              />
-            </button>
-            {citiesOpen && (
-              <div className="absolute z-20 mt-2 w-full bg-neutral-900 border border-white/10 rounded-xl shadow-lg p-2 max-h-72 overflow-y-auto">
-                {NZ_CITIES.map((c) => {
-                  const checked = cities.includes(c);
-                  return (
-                    <button
-                      type="button"
-                      key={c}
-                      onClick={() => toggleCity(c)}
-                      className="w-full flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-neutral-950 text-left"
-                    >
-                      <span
-                        className={`h-4 w-4 rounded border flex items-center justify-center ${checked ? "bg-[#facc15] border-[#facc15]" : "border-gray-300"}`}
-                      >
-                        {checked && <Check size={12} className="text-white" />}
-                      </span>
-                      <span className="text-sm text-neutral-200">{c}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-          {cities.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-2">
-              {cities.map((c) => (
-                <span
-                  key={c}
-                  className="inline-flex items-center gap-1 bg-emerald-50 text-[#facc15] text-xs font-semibold px-2.5 py-1 rounded-full"
-                >
-                  <MapPin size={11} /> {c}
-                  <button
-                    type="button"
-                    onClick={() => toggleCity(c)}
-                    className="hover:text-red-600"
-                    aria-label={`Remover ${c}`}
-                  >
-                    <X size={12} />
-                  </button>
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-bold text-neutral-200 mb-1">
-            {t("profile.keywords_label")}
-          </label>
-          <input
-            type="text"
-            value={keywords}
-            onChange={(e) => setKeywords(e.target.value)}
-            placeholder={t("profile.keywords_placeholder")}
-            className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
-          />
-          <p className="text-xs text-neutral-400 mt-1">{t("profile.keywords_hint")}</p>
-        </div>
-
-        {/* Hours — Premium+ only */}
-        {plan === "starter" ? (
-          <div className="pt-4 border-t border-white/10">
-            <div className="flex items-center gap-2 mb-2">
-              <Clock size={18} className="text-neutral-500" />
-              <label className="block text-sm font-bold text-neutral-200">
-                {t("profile.hours_title")}
-              </label>
-              <span className="text-[10px] bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded font-bold">
-                PREMIUM+
+          <div className="flex items-center gap-3 shrink-0">
+            {saveSuccess && (
+              <span className="hidden sm:inline-flex items-center gap-1 text-xs text-emerald-400">
+                <Check className="w-3.5 h-3.5" /> Saved
               </span>
-            </div>
-            <p className="text-xs text-neutral-400">{t("profile.hours_upgrade_hint")}</p>
-          </div>
-        ) : (
-          <div className="pt-4 border-t border-white/10">
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-              <div className="flex items-center gap-2">
-                <Clock size={18} className="text-[#facc15]" />
-                <label className="block text-sm font-bold text-neutral-200">
-                  {t("profile.hours_title")}
-                </label>
-              </div>
-            </div>
-
-            {multiBranch && (
-              <div className="mb-4">
-                <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
-                  <p className="text-xs text-neutral-400">{t("profile.hours_configure_branches")}</p>
-                  <button
-                    type="button"
-                    onClick={copyScheduleToAll}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#facc15] hover:underline"
-                  >
-                    <Copy size={12} /> {t("profile.hours_apply_all")}
-                  </button>
-                </div>
-                <div className="flex flex-wrap gap-1.5 p-1 bg-white/5 rounded-xl">
-                  {cities.map((c) => (
-                    <button
-                      key={c}
-                      type="button"
-                      onClick={() => setActiveBranch(c)}
-                      className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${activeBranch === c ? "bg-black text-[#facc15] shadow-sm" : "text-neutral-400 hover:text-neutral-200"}`}
-                    >
-                      {c}
-                    </button>
-                  ))}
-                </div>
-              </div>
             )}
-
-            <div className="rounded-xl border border-white/10 overflow-hidden divide-y divide-gray-100">
-              {days.map(({ key, label, short }) => {
-                const day = branchSchedule[key];
-                return (
-                  <div
-                    key={key}
-                    className={`flex flex-col md:flex-row md:items-center gap-3 md:gap-4 px-4 py-3 transition-colors ${day.closed ? "bg-neutral-950" : "bg-neutral-900 hover:bg-neutral-950/60"}`}
-                  >
-                    <div className="flex items-center gap-3 md:w-44">
-                      <span
-                        className={`flex items-center justify-center h-9 w-9 rounded-lg text-[11px] font-bold ${day.closed ? "bg-white/10 text-neutral-400" : "bg-emerald-50 text-[#facc15]"}`}
-                      >
-                        {short}
-                      </span>
-                      <span className="text-sm font-semibold text-neutral-200">{label}</span>
-                    </div>
-                    <div className="flex-1 flex flex-wrap items-center gap-2">
-                      {day.closed ? (
-                        <span className="inline-flex items-center text-xs font-bold text-red-700 bg-red-50 border border-red-100 rounded-md px-2.5 py-1.5">
-                          {t("profile.hours_closed")}
-                        </span>
-                      ) : (
-                        <>
-                          {day.slots.map((slot, idx) => (
-                            <div
-                              key={idx}
-                              className="inline-flex items-center gap-1.5 bg-neutral-900 border border-white/10 rounded-lg px-2 py-1"
-                            >
-                              <input
-                                type="time"
-                                value={slot.open}
-                                onChange={(e) => updateSlot(key, idx, "open", e.target.value)}
-                                className="bg-transparent text-sm text-white outline-none w-[88px]"
-                              />
-                              <span className="text-neutral-500 text-xs">{t("profile.hours_at")}</span>
-                              <input
-                                type="time"
-                                value={slot.close}
-                                onChange={(e) => updateSlot(key, idx, "close", e.target.value)}
-                                className="bg-transparent text-sm text-white outline-none w-[88px]"
-                              />
-                              {day.slots.length > 1 && (
-                                <button
-                                  type="button"
-                                  onClick={() => removeSlot(key, idx)}
-                                  className="text-neutral-500 hover:text-red-600 ml-1"
-                                  aria-label="Remover horário"
-                                >
-                                  <Trash2 size={13} />
-                                </button>
-                              )}
-                            </div>
-                          ))}
-                          <button
-                            type="button"
-                            onClick={() => addSlot(key)}
-                            className="inline-flex items-center gap-1 text-[#facc15] hover:bg-emerald-50 text-xs font-bold px-2 py-1.5 rounded-md transition-colors"
-                          >
-                            <Plus size={12} /> {t("profile.hours_add_slot")}
-                          </button>
-                        </>
-                      )}
-                    </div>
-                    <label className="inline-flex items-center gap-2 cursor-pointer select-none">
-                      <span className="text-xs font-semibold text-neutral-400">
-                        {day.closed ? t("profile.hours_closed_label") : t("profile.hours_open")}
-                      </span>
-                      <span className="relative">
-                        <input
-                          type="checkbox"
-                          checked={!day.closed}
-                          onChange={() => toggleClosed(key)}
-                          className="sr-only peer"
-                        />
-                        <span className="block h-5 w-9 bg-gray-300 peer-checked:bg-[#facc15] rounded-full transition-colors" />
-                        <span className="absolute top-0.5 left-0.5 h-4 w-4 bg-neutral-900 rounded-full shadow transition-transform peer-checked:translate-x-4" />
-                      </span>
-                    </label>
-                  </div>
-                );
-              })}
-            </div>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="bg-yellow-500 hover:bg-yellow-400 disabled:opacity-60 text-black px-5 sm:px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-[0_0_20px_rgba(234,179,8,0.15)] hover:shadow-[0_0_30px_rgba(234,179,8,0.3)] flex items-center gap-2"
+            >
+              <Check className="w-4 h-4" /> {saving ? "Saving…" : "Save Changes"}
+            </button>
           </div>
+        </div>
+        {saveError && (
+          <p className="text-sm text-red-400 mt-2 max-w-6xl mx-auto">{saveError}</p>
         )}
+      </header>
 
-        {plan !== "starter" && (
-          <GoogleReviewsSection
-            businessId={loaded?.ok ? (loaded.business?.id ?? null) : null}
-            initialPlaceId={loaded?.ok ? (loaded.business?.google_place_id ?? "") : ""}
-            onConnected={() => refetch()}
-          />
-        )}
-
-        <ServiceOptionsSection
-          plan={plan}
-          flags={serviceFlags}
-          onToggleFlag={(k) => setServiceFlags((p) => ({ ...p, [k]: !p[k] }))}
-          items={customServiceItems}
-          onChangeItems={setCustomServiceItems}
-        />
-
-        {saveError && <p className="text-sm text-red-600">{saveError}</p>}
-        {saveSuccess && <p className="text-sm text-emerald-700">{t("profile.save_button")} ✓</p>}
-        <button
-          onClick={async () => {
-            setSaveError(null);
-            setSaveSuccess(false);
-            setSaving(true);
-            try {
-              const res = await saveMyBusiness({
-                data: {
-                  name: name.trim() || undefined,
-                  description: description.trim(),
-                  type: businessType,
-                  macro_category: category,
-                  phone: phone.trim() || null,
-                  locations: cities,
-                  address_street: addressStreet.trim() || null,
-                  address_suburb: addressSuburb.trim() || null,
-                  keywords: keywords
-                    .split(",")
-                    .map((k) => k.trim())
-                    .filter(Boolean),
-                },
-              });
-              if (!res.ok) {
-                const errorKey = (res as { errorKey?: string }).errorKey;
-                if (errorKey === "save_name_required") {
-                  setSaveError(t("profile.save_error_name_required"));
-                } else if (errorKey === "save_not_found") {
-                  setSaveError(t("profile.save_error_not_found"));
-                } else if (errorKey === "save_generic") {
-                  setSaveError(t("profile.save_error_generic"));
-                } else {
-                  setSaveError(res.error);
-                }
-                return;
-              }
-
-              // Save hours, service options, and custom service items for Premium+
-              if (plan !== "starter") {
-                const hoursPayload: {
-                  location: string;
-                  day_key: DayKey;
-                  is_closed: boolean;
-                  slots: { open: string; close: string }[];
-                }[] = [];
-                for (const city of cities) {
-                  const sched = schedules[city] ?? DEFAULT_SCHEDULE;
-                  for (const k of DAY_KEYS) {
-                    hoursPayload.push({
-                      location: city,
-                      day_key: k,
-                      is_closed: sched[k].closed,
-                      slots: sched[k].closed ? [] : sched[k].slots,
-                    });
-                  }
-                }
-                await saveHoursFn({ data: { hours: hoursPayload } });
-                await saveServiceOptionsFn({
-                  data: {
-                    takeaway: serviceFlags.takeaway,
-                    dinein: serviceFlags.dinein,
-                    delivery: serviceFlags.delivery,
-                    booking: serviceFlags.booking,
-                    other: null,
-                  },
-                });
-                await saveServiceItemsFn({
-                  data: {
-                    items: customServiceItems
-                      .filter((it) => it.title.trim().length > 0)
-                      .map((it) => ({
-                        title: it.title.trim(),
-                        description: it.description.trim() || null,
-                        icon_key: it.icon_key,
-                      })),
-                  },
-                });
-              }
-
-              setSaveSuccess(true);
-              await refetch();
-            } catch (err) {
-              setSaveError(err instanceof Error ? err.message : t("profile.save_error_unexpected"));
-            } finally {
-              setSaving(false);
-            }
-          }}
-          disabled={saving}
-          className="bg-neutral-900 hover:bg-white/5 disabled:opacity-60 text-[#facc15] font-bold rounded-xl px-6 py-2.5 text-sm"
-        >
-          {saving ? "..." : t("profile.save_button")}
-        </button>
-      </div>
-
-      {/* Sidebar */}
-      <div className="w-full lg:w-80 space-y-6">
-        <div className="bg-neutral-900 rounded-2xl border border-white/10 shadow-sm p-6">
-          <h3 className="font-bold text-white mb-1">{t("profile.logo_title")}</h3>
-          <p className="text-xs text-neutral-400 mb-4">{t("profile.logo_subtitle")}</p>
-          <div className="flex flex-col items-center">
-            <div className="w-32 h-32 rounded-2xl border-2 border-dashed border-white/10 bg-neutral-950 overflow-hidden flex items-center justify-center mb-3">
-              {logo ? (
-                <img src={logo} alt="Logo" className="w-full h-full object-cover" />
-              ) : (
-                <Upload size={28} className="text-gray-300" />
+      <div className="px-6 lg:px-10 py-8 max-w-6xl mx-auto">
+        {/* Tabs */}
+        <div className="flex items-center gap-1 border-b border-white/10 mb-8 overflow-x-auto">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-5 py-3 text-sm font-medium transition-all relative whitespace-nowrap ${
+                activeTab === tab.id
+                  ? "text-yellow-500"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              {tab.label}
+              {activeTab === tab.id && (
+                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-yellow-500 shadow-[0_-2px_10px_rgba(234,179,8,0.5)]" />
               )}
-            </div>
-            <input
-              ref={logoRef}
-              type="file"
-              accept="image/*"
-              onChange={handleLogoUpload}
-              className="hidden"
-            />
-            <div className="flex gap-2 w-full">
-              <button
-                onClick={() => logoRef.current?.click()}
-                disabled={logoUploading}
-                className="flex-1 inline-flex items-center justify-center gap-2 bg-neutral-900 hover:bg-white/5 disabled:opacity-60 text-[#facc15] font-bold py-2 rounded-xl text-sm transition-colors"
-              >
-                <Upload size={14} />{" "}
-                {logoUploading ? "..." : logo ? t("profile.logo_change") : t("profile.logo_upload")}
-              </button>
-              {logo && (
-                <button
-                  onClick={() => setLogo(null)}
-                  disabled={logoUploading}
-                  className="inline-flex items-center justify-center bg-white/5 hover:bg-white/10 disabled:opacity-60 text-neutral-200 font-bold px-3 rounded-xl text-sm transition-colors"
-                  aria-label={t("profile.logo_remove")}
-                >
-                  <Trash2 size={14} />
-                </button>
-              )}
-            </div>
-            {logoError && <p className="text-[11px] text-red-600 mt-2 text-center">{logoError}</p>}
-            <p className="text-[11px] text-neutral-500 mt-2 text-center">{t("profile.logo_hint")}</p>
-          </div>
+            </button>
+          ))}
         </div>
 
-        <div className="bg-neutral-900 rounded-2xl border border-white/10 shadow-sm p-6 flex flex-col items-center text-center">
-          <h3 className="font-bold text-white mb-4 w-full text-left">{t("profile.qr_title")}</h3>
-          <div className="w-32 h-32 bg-neutral-950 border border-white/10 rounded-xl p-2 mb-4 flex items-center justify-center">
-            {qrDataUrl ? (
-              <img src={qrDataUrl} alt="QR code" className="w-full h-full object-contain" />
-            ) : !canUseQr ? (
-              <span className="text-xs text-neutral-500 px-2 inline-flex items-center gap-1">
-                <Lock size={12} /> Premium / Ultra
-              </span>
-            ) : (
-              <span className="text-xs text-neutral-500 px-2">
-                {generating ? t("profile.qr_generating") : t("profile.qr_not_generated")}
-              </span>
-            )}
-          </div>
-          {!canUseQr ? (
-            <Link
-              to="/dashboard/upgrade"
-              className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-sm transition-colors"
-            >
-              <Sparkles size={16} /> Fazer upgrade
-            </Link>
-          ) : !qrDataUrl ? (
-            <button
-              onClick={handleGenerateQr}
-              disabled={generating || !qrUrl}
-              className="w-full flex items-center justify-center gap-2 bg-neutral-900 hover:bg-white/5 disabled:opacity-60 text-[#facc15] font-bold py-2.5 rounded-xl text-sm transition-colors"
-            >
-              {generating ? t("profile.qr_generating") : t("profile.qr_generate")}
-            </button>
-          ) : (
-            <button
-              onClick={handleDownloadQr}
-              className="w-full flex items-center justify-center gap-2 bg-[#0B2C1A] text-white font-bold py-2.5 rounded-xl text-sm hover:bg-neutral-900 hover:text-[#facc15] transition-colors"
-            >
-              <Download size={16} /> {t("profile.qr_download")}
-            </button>
+        <div className="animate-in fade-in duration-300">
+          {activeTab === "general" && (
+            <GeneralTab
+              name={name}
+              setName={setName}
+              businessType={businessType}
+              setBusinessType={setBusinessType}
+              description={description}
+              setDescription={setDescription}
+              category={category}
+              setCategory={setCategory}
+              activeCategories={activeCategories}
+              phone={phone}
+              setPhone={setPhone}
+              website={website}
+              setWebsite={setWebsite}
+              keywords={keywords}
+              setKeywords={setKeywords}
+              logo={logo}
+              logoRef={logoRef}
+              logoUploading={logoUploading}
+              logoError={logoError}
+              onUploadLogo={handleLogoUpload}
+              onRemoveLogo={() => setLogo(null)}
+            />
           )}
-          {qrError && <p className="text-[11px] text-red-600 mt-2">{qrError}</p>}
-          {qrUrl && canUseQr && <p className="text-[10px] text-neutral-500 mt-2 break-all">{qrUrl}</p>}
+
+          {activeTab === "locations" && (
+            <LocationsTab
+              branches={branches}
+              expandedId={expandedBranchId}
+              onExpand={(id) =>
+                setExpandedBranchId((cur) => (cur === id ? null : id))
+              }
+              onAdd={addBranch}
+              onRemove={removeBranch}
+              onUpdate={updateBranch}
+              onToggleDay={toggleDayClosed}
+              onUpdateSlot={updateSlot}
+              onCopyHours={copyHoursFrom}
+              plan={plan}
+            />
+          )}
+
+          {activeTab === "features" && (
+            <FeaturesTab
+              plan={plan}
+              flags={serviceFlags}
+              onToggleFlag={(k) =>
+                setServiceFlags((p) => ({ ...p, [k]: !p[k] }))
+              }
+              items={customServiceItems}
+              onChangeItems={setCustomServiceItems}
+              businessId={loaded?.ok ? (loaded.business?.id ?? null) : null}
+              initialPlaceId={loaded?.ok ? (loaded.business?.google_place_id ?? "") : ""}
+              onPlaceConnected={() => refetch()}
+              qrDataUrl={qrDataUrl}
+              qrError={qrError}
+              generating={generating}
+              canUseQr={canUseQr}
+              qrUrl={qrUrl}
+              onGenerateQr={handleGenerateQr}
+              onDownloadQr={handleDownloadQr}
+            />
+          )}
         </div>
       </div>
     </div>
   );
 }
+
+/* ------------------------------------------------------------------ */
+/* General Tab                                                         */
+/* ------------------------------------------------------------------ */
+
+type GeneralTabProps = {
+  name: string;
+  setName: (v: string) => void;
+  businessType: BusinessType;
+  setBusinessType: (v: BusinessType) => void;
+  description: string;
+  setDescription: (v: string) => void;
+  category: string;
+  setCategory: (v: string) => void;
+  activeCategories: string[];
+  phone: string;
+  setPhone: (v: string) => void;
+  website: string;
+  setWebsite: (v: string) => void;
+  keywords: string;
+  setKeywords: (v: string) => void;
+  logo: string | null;
+  logoRef: React.RefObject<HTMLInputElement>;
+  logoUploading: boolean;
+  logoError: string | null;
+  onUploadLogo: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onRemoveLogo: () => void;
+};
+
+function GeneralTab(p: GeneralTabProps) {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="lg:col-span-2 space-y-6">
+        <Card>
+          <CardHeader icon={<Info className="w-5 h-5 text-yellow-500" />} title="Basic Information" />
+          <div className="space-y-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <Field label="Business Name *">
+                <input
+                  type="text"
+                  value={p.name}
+                  onChange={(e) => p.setName(e.target.value)}
+                  className={inputCls}
+                />
+              </Field>
+              <Field label="Main Category *">
+                <div className="relative">
+                  <select
+                    value={p.category}
+                    onChange={(e) => p.setCategory(e.target.value)}
+                    className={`${inputCls} appearance-none pr-10`}
+                  >
+                    {p.activeCategories.length === 0 && (
+                      <option value="">No categories</option>
+                    )}
+                    {p.activeCategories.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    size={16}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none"
+                  />
+                </div>
+              </Field>
+            </div>
+
+            <Field label="Business Type">
+              <div className="flex bg-white/5 p-1 rounded-xl">
+                {(["Serviço", "Produto"] as BusinessType[]).map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => p.setBusinessType(t)}
+                    className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      p.businessType === t
+                        ? "bg-black text-yellow-500"
+                        : "text-zinc-400 hover:text-white"
+                    }`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </Field>
+
+            <Field
+              label="Full Description *"
+              right={<span className="text-xs text-zinc-600">{p.description.length}/500</span>}
+            >
+              <textarea
+                rows={5}
+                maxLength={500}
+                value={p.description}
+                onChange={(e) => p.setDescription(e.target.value)}
+                className={`${inputCls} resize-none`}
+              />
+            </Field>
+
+            <Field label="Keywords (Hashtags)" hint="Helps people find your profile faster in searches.">
+              <input
+                type="text"
+                value={p.keywords}
+                onChange={(e) => p.setKeywords(e.target.value)}
+                placeholder="e.g. #tacos #mechanic #auckland"
+                className={inputCls}
+              />
+            </Field>
+          </div>
+        </Card>
+
+        <Card>
+          <CardHeader icon={<Globe className="w-5 h-5 text-yellow-500" />} title="Contact & Links" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <Field label="Default phone / WhatsApp">
+              <input
+                type="text"
+                placeholder="+64 21 000 0000"
+                value={p.phone}
+                onChange={(e) => p.setPhone(e.target.value)}
+                className={inputCls}
+              />
+            </Field>
+            <Field label="Website">
+              <input
+                type="url"
+                placeholder="https://yoursite.co.nz"
+                value={p.website}
+                onChange={(e) => p.setWebsite(e.target.value)}
+                className={inputCls}
+              />
+            </Field>
+          </div>
+        </Card>
+      </div>
+
+      <div className="space-y-6">
+        <Card>
+          <h3 className="text-sm font-medium text-white mb-4">Profile Logo</h3>
+          <div
+            onClick={() => p.logoRef.current?.click()}
+            className="border-2 border-dashed border-white/10 rounded-xl p-6 flex flex-col items-center justify-center text-center hover:border-yellow-500/50 hover:bg-yellow-500/5 transition-all cursor-pointer"
+          >
+            <div className="w-24 h-24 rounded-full bg-zinc-800 border-4 border-[#111] overflow-hidden mb-4 shadow-lg relative group">
+              {p.logo ? (
+                <img src={p.logo} alt="Logo" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-zinc-500">
+                  <Upload size={24} />
+                </div>
+              )}
+              <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <UploadCloud className="w-6 h-6 text-white" />
+              </div>
+            </div>
+            <p className="text-sm text-white font-medium mb-1">
+              {p.logoUploading ? "Uploading…" : "Click or drag to replace"}
+            </p>
+            <p className="text-xs text-zinc-500">PNG or JPG, square (min 400x400)</p>
+            <input
+              ref={p.logoRef}
+              type="file"
+              accept="image/*"
+              onChange={p.onUploadLogo}
+              className="hidden"
+            />
+          </div>
+          {p.logoError && <p className="text-xs text-red-400 mt-2 text-center">{p.logoError}</p>}
+          {p.logo && (
+            <button
+              onClick={p.onRemoveLogo}
+              className="mt-3 w-full text-xs text-zinc-400 hover:text-red-400 transition-colors flex items-center justify-center gap-1.5"
+            >
+              <Trash2 size={12} /> Remove logo
+            </button>
+          )}
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Locations Tab                                                       */
+/* ------------------------------------------------------------------ */
+
+type LocationsTabProps = {
+  branches: Branch[];
+  expandedId: string | null;
+  onExpand: (id: string) => void;
+  onAdd: () => void;
+  onRemove: (id: string) => void;
+  onUpdate: (id: string, patch: Partial<Branch>) => void;
+  onToggleDay: (id: string, day: DayKey) => void;
+  onUpdateSlot: (id: string, day: DayKey, field: "open" | "close", v: string) => void;
+  onCopyHours: (targetId: string, sourceId: string) => void;
+  plan: string;
+};
+
+function LocationsTab(p: LocationsTabProps) {
+  const hoursLocked = p.plan === "starter";
+  return (
+    <div className="space-y-6 max-w-4xl">
+      <div className="flex items-center justify-between mb-2 gap-4">
+        <div>
+          <h2 className="text-lg font-medium text-white">Manage Branches</h2>
+          <p className="text-sm text-zinc-400">
+            Configure separate addresses and hours for each of your locations.
+          </p>
+        </div>
+        <button
+          onClick={p.onAdd}
+          className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors border border-white/5 shrink-0"
+        >
+          <Plus className="w-4 h-4" /> Add Branch
+        </button>
+      </div>
+
+      {hoursLocked && (
+        <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/5 p-4 flex items-start gap-3">
+          <Lock className="w-4 h-4 text-yellow-500 mt-0.5" />
+          <div className="text-sm">
+            <p className="text-white font-medium">Opening hours are a Premium feature</p>
+            <p className="text-zinc-400 text-xs mt-1">
+              Branch names, addresses, and phones are available on every plan. Upgrade to publish
+              opening hours.{" "}
+              <Link to="/dashboard/upgrade" className="text-yellow-500 hover:underline font-medium">
+                Upgrade
+              </Link>
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-4">
+        {p.branches.map((branch, index) => {
+          const expanded = p.expandedId === branch.id;
+          return (
+            <div
+              key={branch.id}
+              className="bg-[#0A0A0A] border border-white/10 rounded-2xl overflow-hidden transition-all duration-300 shadow-xl"
+            >
+              <button
+                type="button"
+                onClick={() => p.onExpand(branch.id)}
+                className="w-full p-5 flex items-center justify-between cursor-pointer hover:bg-white/[0.02] transition-colors text-left"
+              >
+                <div className="flex items-center gap-4 min-w-0">
+                  <div
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors shrink-0 ${
+                      expanded ? "bg-yellow-500 text-black" : "bg-white/5 text-zinc-400"
+                    }`}
+                  >
+                    <Store className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-white font-medium text-lg truncate">
+                      {branch.name || "Untitled branch"}
+                    </h3>
+                    <p className="text-sm text-zinc-500 truncate max-w-md">
+                      {[branch.addressStreet, branch.addressSuburb].filter(Boolean).join(", ") ||
+                        "No address set"}
+                    </p>
+                  </div>
+                </div>
+                <ChevronDown
+                  className={`w-5 h-5 text-zinc-500 transition-transform duration-300 shrink-0 ml-3 ${
+                    expanded ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              {expanded && (
+                <div className="border-t border-white/10 p-6 bg-[#0c0c0c]">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-5">
+                      <SectionLabel
+                        icon={<MapPin className="w-4 h-4" />}
+                        text="Location Details"
+                      />
+
+                      <Field label="Branch Name (City)">
+                        <input
+                          type="text"
+                          value={branch.name}
+                          onChange={(e) => p.onUpdate(branch.id, { name: e.target.value })}
+                          placeholder="e.g. Auckland CBD"
+                          className={inputCls}
+                        />
+                      </Field>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <Field label="Street & number">
+                          <input
+                            type="text"
+                            value={branch.addressStreet}
+                            onChange={(e) =>
+                              p.onUpdate(branch.id, { addressStreet: e.target.value })
+                            }
+                            placeholder="123 Queen St"
+                            className={inputCls}
+                          />
+                        </Field>
+                        <Field label="Suburb">
+                          <input
+                            type="text"
+                            value={branch.addressSuburb}
+                            onChange={(e) =>
+                              p.onUpdate(branch.id, { addressSuburb: e.target.value })
+                            }
+                            placeholder="Auckland Central"
+                            className={inputCls}
+                          />
+                        </Field>
+                      </div>
+
+                      <Field label="Branch Phone / WhatsApp">
+                        <div className="relative">
+                          <Phone className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
+                          <input
+                            type="text"
+                            value={branch.phone}
+                            onChange={(e) => p.onUpdate(branch.id, { phone: e.target.value })}
+                            placeholder="+64 22 000 0000"
+                            className={`${inputCls} pl-11`}
+                          />
+                        </div>
+                      </Field>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <SectionLabel
+                          icon={<Clock className="w-4 h-4" />}
+                          text="Operating Hours"
+                        />
+                        {index > 0 && p.branches[0] && (
+                          <button
+                            type="button"
+                            onClick={() => p.onCopyHours(branch.id, p.branches[0].id)}
+                            className="text-[11px] text-zinc-400 hover:text-yellow-500 underline decoration-zinc-700 underline-offset-2 transition-colors"
+                          >
+                            Copy from {p.branches[0].name || "first branch"}
+                          </button>
+                        )}
+                      </div>
+
+                      {hoursLocked ? (
+                        <div className="rounded-xl border border-white/10 bg-black/40 p-5 text-center">
+                          <Lock className="w-5 h-5 text-zinc-500 mx-auto mb-2" />
+                          <p className="text-sm text-zinc-300 font-medium">
+                            Hours available on Premium
+                          </p>
+                          <Link
+                            to="/dashboard/upgrade"
+                            className="inline-block mt-3 text-xs text-yellow-500 hover:underline font-medium"
+                          >
+                            Upgrade plan →
+                          </Link>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          {DAY_KEYS.map((key) => {
+                            const day = branch.schedule[key];
+                            const slot = day.slots[0] ?? { open: "09:00", close: "18:00" };
+                            return (
+                              <div
+                                key={key}
+                                className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 transition-colors"
+                              >
+                                <div className="w-28 flex items-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => p.onToggleDay(branch.id, key)}
+                                    className={`w-8 h-4 rounded-full relative transition-colors shrink-0 ${
+                                      !day.closed ? "bg-yellow-500" : "bg-zinc-700"
+                                    }`}
+                                  >
+                                    <div
+                                      className={`w-3 h-3 bg-white rounded-full absolute top-0.5 transition-transform ${
+                                        !day.closed ? "translate-x-4" : "translate-x-0.5"
+                                      }`}
+                                    />
+                                  </button>
+                                  <span
+                                    className={`text-sm ${
+                                      !day.closed ? "text-zinc-200" : "text-zinc-500"
+                                    }`}
+                                  >
+                                    {DAY_LABELS[key]}
+                                  </span>
+                                </div>
+
+                                {!day.closed ? (
+                                  <div className="flex flex-1 items-center gap-2">
+                                    <input
+                                      type="time"
+                                      value={slot.open}
+                                      onChange={(e) =>
+                                        p.onUpdateSlot(branch.id, key, "open", e.target.value)
+                                      }
+                                      className="bg-[#111] border border-white/10 rounded text-sm text-white px-2 py-1 focus:border-yellow-500 focus:outline-none w-24"
+                                    />
+                                    <span className="text-zinc-600">to</span>
+                                    <input
+                                      type="time"
+                                      value={slot.close}
+                                      onChange={(e) =>
+                                        p.onUpdateSlot(branch.id, key, "close", e.target.value)
+                                      }
+                                      className="bg-[#111] border border-white/10 rounded text-sm text-white px-2 py-1 focus:border-yellow-500 focus:outline-none w-24"
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className="flex-1">
+                                    <span className="text-xs font-medium px-2 py-1 rounded bg-red-500/10 text-red-400">
+                                      Closed
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-6 border-t border-white/5 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => p.onRemove(branch.id)}
+                      className="text-red-500 hover:bg-red-500/10 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                    >
+                      <Trash2 className="w-4 h-4" /> Remove Branch
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Features Tab                                                        */
+/* ------------------------------------------------------------------ */
+
+type ServiceFlagKey = "takeaway" | "dinein" | "delivery" | "booking";
+
+type FeaturesTabProps = {
+  plan: string;
+  flags: Record<ServiceFlagKey, boolean>;
+  onToggleFlag: (k: ServiceFlagKey) => void;
+  items: { title: string; description: string; icon_key: string }[];
+  onChangeItems: (items: { title: string; description: string; icon_key: string }[]) => void;
+  businessId: string | null;
+  initialPlaceId: string;
+  onPlaceConnected: () => void;
+  qrDataUrl: string | null;
+  qrError: string | null;
+  generating: boolean;
+  canUseQr: boolean;
+  qrUrl: string;
+  onGenerateQr: () => void;
+  onDownloadQr: () => void;
+};
+
+function FeaturesTab(p: FeaturesTabProps) {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="space-y-6">
+        <ServiceOptionsCard
+          plan={p.plan}
+          flags={p.flags}
+          onToggleFlag={p.onToggleFlag}
+          items={p.items}
+          onChangeItems={p.onChangeItems}
+        />
+        {p.plan !== "starter" && (
+          <GoogleReviewsCard
+            businessId={p.businessId}
+            initialPlaceId={p.initialPlaceId}
+            onConnected={p.onPlaceConnected}
+          />
+        )}
+      </div>
+
+      <div className="space-y-6">
+        <QrCard
+          qrDataUrl={p.qrDataUrl}
+          qrError={p.qrError}
+          generating={p.generating}
+          canUseQr={p.canUseQr}
+          qrUrl={p.qrUrl}
+          onGenerate={p.onGenerateQr}
+          onDownload={p.onDownloadQr}
+        />
+      </div>
+    </div>
+  );
+}
+
+/* ------- Service options ------- */
 
 const CUSTOM_ICONS: { key: string; icon: typeof ShoppingBag }[] = [
   { key: "sparkles", icon: Sparkles },
@@ -937,24 +1157,30 @@ export function getServiceIcon(key: string): typeof ShoppingBag {
   return CUSTOM_ICONS.find((i) => i.key === key)?.icon ?? Sparkles;
 }
 
-type ServiceOptionsSectionProps = {
-  plan: string;
-  flags: Record<ServiceOptionKey, boolean>;
-  onToggleFlag: (k: ServiceOptionKey) => void;
-  items: { title: string; description: string; icon_key: string }[];
-  onChangeItems: (
-    items: { title: string; description: string; icon_key: string }[],
-  ) => void;
-};
+const SERVICE_OPTIONS: {
+  key: ServiceFlagKey;
+  label: string;
+  hint: string;
+}[] = [
+  { key: "takeaway", label: "Take Away", hint: "Pick up in store" },
+  { key: "dinein", label: "Dine In", hint: "Consume on site" },
+  { key: "delivery", label: "Delivery", hint: "Sent to customer" },
+  { key: "booking", label: "Book in advance", hint: "Reservations required" },
+];
 
-function ServiceOptionsSection({
+function ServiceOptionsCard({
   plan,
   flags,
   onToggleFlag,
   items,
   onChangeItems,
-}: ServiceOptionsSectionProps) {
-  const { t } = useI18n();
+}: {
+  plan: string;
+  flags: Record<ServiceFlagKey, boolean>;
+  onToggleFlag: (k: ServiceFlagKey) => void;
+  items: { title: string; description: string; icon_key: string }[];
+  onChangeItems: (items: { title: string; description: string; icon_key: string }[]) => void;
+}) {
   const isPaid = plan === "premium" || plan === "ultra";
 
   const addItem = () =>
@@ -966,101 +1192,81 @@ function ServiceOptionsSection({
   const removeItem = (idx: number) => onChangeItems(items.filter((_, i) => i !== idx));
 
   return (
-    <div className="bg-neutral-900 rounded-2xl border border-white/10 shadow-sm p-6 space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
-        <div className="flex items-center gap-2">
-          <Sparkles size={18} className="text-[#facc15]" />
-          <div>
-            <h3 className="text-base font-bold text-white">
-              {t("profile.service_options_title")}
-            </h3>
-            <p className="text-xs text-neutral-400">{t("profile.service_options_subtitle")}</p>
-          </div>
-        </div>
-        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-full bg-amber-100 text-amber-800 uppercase tracking-wide">
-          <Sparkles size={11} /> Premium
+    <Card>
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-lg font-medium text-white flex items-center gap-2">
+          <Star className="w-5 h-5 text-yellow-500" /> Service Options
+        </h3>
+        <span className="text-[10px] font-bold tracking-widest uppercase bg-gradient-to-r from-yellow-600 to-yellow-400 text-black px-2 py-0.5 rounded">
+          Premium
         </span>
       </div>
 
       {!isPaid ? (
-        <div className="rounded-xl border-2 border-dashed border-white/10 bg-neutral-950/60 p-6 text-center">
-          <div className="w-11 h-11 mx-auto rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center">
+        <div className="rounded-xl border-2 border-dashed border-white/10 bg-black/40 p-6 text-center">
+          <div className="w-11 h-11 mx-auto rounded-2xl bg-yellow-500/10 text-yellow-500 flex items-center justify-center">
             <Lock size={18} />
           </div>
-          <p className="mt-3 text-sm font-bold text-white">
-            {t("profile.service_options_locked_title")}
-          </p>
-          <p className="text-xs text-neutral-400 mt-1 max-w-sm mx-auto">
-            {t("profile.service_options_locked_body")}
-          </p>
+          <p className="mt-3 text-sm font-medium text-white">Service options are Premium</p>
           <Link
             to="/dashboard/upgrade"
-            className="inline-flex mt-4 bg-neutral-900 hover:bg-white/5 text-[#facc15] text-xs font-bold px-4 py-2 rounded-xl"
+            className="inline-block mt-3 text-xs text-yellow-500 hover:underline font-medium"
           >
-            {t("profile.service_options_upgrade")}
+            Upgrade plan →
           </Link>
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {SERVICE_OPTIONS.map(({ key, label, hint, icon: Icon }) => {
-              const on = flags[key];
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            {SERVICE_OPTIONS.map((opt) => {
+              const active = flags[opt.key];
               return (
                 <button
-                  key={key}
+                  key={opt.key}
                   type="button"
-                  onClick={() => onToggleFlag(key)}
-                  className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-colors ${on ? "border-[#facc15] bg-emerald-50/60" : "border-white/10 bg-neutral-900 hover:border-gray-300"}`}
+                  onClick={() => onToggleFlag(opt.key)}
+                  className={`flex flex-col text-left p-4 rounded-xl border transition-all ${
+                    active
+                      ? "bg-yellow-500/10 border-yellow-500/50"
+                      : "bg-[#111] border-white/5 hover:border-white/20"
+                  }`}
                 >
-                  <span
-                    className={`flex items-center justify-center h-10 w-10 rounded-lg ${on ? "bg-[#facc15] text-white" : "bg-white/5 text-neutral-400"}`}
-                  >
-                    <Icon size={18} />
-                  </span>
-                  <span className="flex-1">
-                    <span className="block text-sm font-bold text-white">{label}</span>
-                    <span className="block text-xs text-neutral-400">{hint}</span>
-                  </span>
+                  <div className="flex items-center justify-between w-full mb-1">
+                    <span
+                      className={`font-medium ${
+                        active ? "text-yellow-500" : "text-zinc-300"
+                      }`}
+                    >
+                      {opt.label}
+                    </span>
+                    {active && <Check className="w-4 h-4 text-yellow-500" />}
+                  </div>
+                  <span className="text-xs text-zinc-500">{opt.hint}</span>
                 </button>
               );
             })}
           </div>
 
-          <div className="pt-4 border-t border-white/10">
-            <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-bold text-neutral-200">
-                Opções personalizadas
-              </label>
+          <div className="pt-4 border-t border-white/5">
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-sm font-medium text-zinc-300">Custom Options</label>
               <button
                 type="button"
                 onClick={addItem}
                 disabled={items.length > 0 && !items[items.length - 1].title.trim()}
-                className="inline-flex items-center gap-1 text-xs font-bold text-[#facc15] hover:underline disabled:opacity-40 disabled:cursor-not-allowed disabled:no-underline"
+                className="text-sm text-yellow-500 hover:text-yellow-400 font-medium flex items-center gap-1 transition-colors disabled:opacity-40"
               >
-                <Plus size={14} /> Adicionar opção
+                <Plus className="w-4 h-4" /> Add Custom Option
               </button>
             </div>
-            <p className="text-xs text-neutral-500 mb-3">
-              Preencha o título e escolha um ícone. Salvo ao clicar em{" "}
-              <span className="text-[#facc15] font-semibold">Salvar perfil</span>.
-            </p>
-
-            {items.length === 0 && (
-              <p className="text-xs text-neutral-400">
-                Adicione opções extras como “Atendimento domiciliar”, “Consultoria online”, “Catering”, etc.
-              </p>
-            )}
 
             <div className="space-y-3">
               {items.map((it, idx) => {
                 const Icon = getServiceIcon(it.icon_key);
                 return (
-                  <div
-                    key={idx}
-                    className="rounded-xl border border-white/10 p-3 bg-neutral-950/40 space-y-2"
-                  >
+                  <div key={idx} className="rounded-xl border border-white/10 p-3 bg-black/40 space-y-2">
                     <div className="flex items-start gap-3">
-                      <span className="flex items-center justify-center h-10 w-10 rounded-lg bg-black text-[#facc15] shrink-0">
+                      <span className="flex items-center justify-center h-10 w-10 rounded-lg bg-yellow-500/10 text-yellow-500 shrink-0">
                         <Icon size={18} />
                       </span>
                       <div className="flex-1 space-y-2">
@@ -1068,38 +1274,40 @@ function ServiceOptionsSection({
                           type="text"
                           value={it.title}
                           onChange={(e) => updateItem(idx, { title: e.target.value })}
-                          placeholder="Título (ex: Atendimento domiciliar)"
+                          placeholder="Title"
                           maxLength={80}
-                          className="w-full bg-neutral-900 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-[#facc15]"
+                          className={`${inputCls} py-2 text-sm`}
                         />
                         <input
                           type="text"
                           value={it.description}
                           onChange={(e) => updateItem(idx, { description: e.target.value })}
-                          placeholder="Descrição (opcional)"
+                          placeholder="Description (optional)"
                           maxLength={200}
-                          className="w-full bg-neutral-900 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-[#facc15]"
+                          className={`${inputCls} py-2 text-sm`}
                         />
                       </div>
                       <button
                         type="button"
                         onClick={() => removeItem(idx)}
-                        className="text-neutral-500 hover:text-red-500 mt-2"
-                        aria-label="Remover"
+                        className="text-zinc-500 hover:text-red-500 mt-2"
                       >
                         <Trash2 size={16} />
                       </button>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {CUSTOM_ICONS.map(({ key, icon: I }) => {
-                        const active = it.icon_key === key;
+                        const a = it.icon_key === key;
                         return (
                           <button
                             key={key}
                             type="button"
                             onClick={() => updateItem(idx, { icon_key: key })}
-                            className={`flex items-center justify-center h-8 w-8 rounded-lg border transition-colors ${active ? "border-[#facc15] bg-[#facc15]/10 text-[#facc15]" : "border-white/10 text-neutral-400 hover:border-white/30"}`}
-                            aria-label={key}
+                            className={`flex items-center justify-center h-8 w-8 rounded-lg border transition-colors ${
+                              a
+                                ? "border-yellow-500 bg-yellow-500/10 text-yellow-500"
+                                : "border-white/10 text-zinc-500 hover:border-white/30"
+                            }`}
                           >
                             <I size={14} />
                           </button>
@@ -1113,25 +1321,13 @@ function ServiceOptionsSection({
           </div>
         </>
       )}
-    </div>
+    </Card>
   );
 }
 
-type ServiceOptionKey = "takeaway" | "dinein" | "delivery" | "booking";
+/* ------- Google reviews ------- */
 
-const SERVICE_OPTIONS: {
-  key: ServiceOptionKey;
-  label: string;
-  hint: string;
-  icon: typeof ShoppingBag;
-}[] = [
-  { key: "takeaway", label: "Take Away", hint: "Cliente retira no local", icon: ShoppingBag },
-  { key: "dinein", label: "Dine In", hint: "Consumo no local", icon: UtensilsCrossed },
-  { key: "delivery", label: "Delivery", hint: "Entrega ao cliente", icon: Bike },
-  { key: "booking", label: "Reserva antecipada", hint: "Book in advance", icon: CalendarClock },
-];
-
-function GoogleReviewsSection({
+function GoogleReviewsCard({
   businessId,
   initialPlaceId,
   onConnected,
@@ -1158,13 +1354,13 @@ function GoogleReviewsSection({
     try {
       const res = await connect({ data: { placeId: placeId.trim() } });
       if (res.ok) {
-        setMsg({ kind: "ok", text: `Conectado. ${res.synced} avaliações sincronizadas.` });
+        setMsg({ kind: "ok", text: `Connected. ${res.synced} reviews synced.` });
         onConnected();
       } else {
         setMsg({ kind: "err", text: res.error });
       }
     } catch (err) {
-      setMsg({ kind: "err", text: err instanceof Error ? err.message : "Falha ao conectar." });
+      setMsg({ kind: "err", text: err instanceof Error ? err.message : "Failed to connect." });
     } finally {
       setBusy(false);
     }
@@ -1176,79 +1372,194 @@ function GoogleReviewsSection({
     setBusy(true);
     try {
       const res = await sync({ data: { businessId } });
-      setMsg({ kind: "ok", text: `${res.synced} avaliações sincronizadas.` });
+      setMsg({ kind: "ok", text: `${res.synced} reviews synced.` });
       onConnected();
     } catch (err) {
-      setMsg({ kind: "err", text: err instanceof Error ? err.message : "Falha ao sincronizar." });
+      setMsg({ kind: "err", text: err instanceof Error ? err.message : "Failed to sync." });
     } finally {
       setBusy(false);
     }
   };
 
   return (
-    <div className="bg-neutral-900 rounded-2xl border border-white/10 shadow-sm p-6 space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
-        <div className="flex items-center gap-2">
-          <Star size={18} className="text-[#facc15]" />
-          <div>
-            <h3 className="text-base font-bold text-white">Google Reviews</h3>
-            <p className="text-xs text-neutral-400">
-              Conecte seu Google Place ID para exibir avaliações reais no seu perfil.
-            </p>
-          </div>
-        </div>
-      </div>
+    <Card>
+      <h3 className="text-lg font-medium text-white mb-2 flex items-center gap-2">
+        <Globe className="w-5 h-5 text-yellow-500" /> Google Reviews
+      </h3>
+      <p className="text-sm text-zinc-400 mb-4">
+        Connect your Google Place ID to display real reviews on your profile.
+      </p>
 
-      <div>
-        <label className="block text-sm font-bold text-neutral-200 mb-1">Google Place ID</label>
+      <div className="flex gap-3">
         <input
           type="text"
           value={placeId}
           onChange={(e) => setPlaceId(e.target.value)}
-          placeholder="Ex: ChIJN1t_tDeuEmsRUsoyG83frY4"
+          placeholder="ChIJN1t..."
           maxLength={200}
-          className="w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#facc15]"
+          className={`${inputCls} flex-1`}
         />
-        <p className="text-xs text-neutral-400 mt-1">
-          Encontre seu Place ID em{" "}
-          <a
-            href="https://developers.google.com/maps/documentation/places/web-service/place-id"
-            target="_blank"
-            rel="noreferrer"
-            className="text-[#facc15] font-semibold hover:underline"
-          >
-            developers.google.com
-          </a>
-          .
-        </p>
-      </div>
-
-      {msg && (
-        <p className={`text-sm ${msg.kind === "ok" ? "text-emerald-700" : "text-red-600"}`}>
-          {msg.text}
-        </p>
-      )}
-
-      <div className="flex flex-wrap gap-2">
         <button
-          type="button"
           onClick={handleConnect}
           disabled={busy || !isValid}
-          className="inline-flex items-center gap-2 bg-neutral-900 hover:bg-white/5 disabled:opacity-60 text-[#facc15] font-bold rounded-xl px-4 py-2 text-sm"
+          className="bg-zinc-800 hover:bg-zinc-700 disabled:opacity-60 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors border border-white/5"
         >
-          {busy ? "..." : initialPlaceId ? "Atualizar e sincronizar" : "Conectar"}
+          {busy ? "…" : initialPlaceId ? "Update" : "Verify"}
         </button>
         {initialPlaceId && businessId && (
           <button
-            type="button"
             onClick={handleSync}
             disabled={busy}
-            className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 disabled:opacity-60 text-neutral-100 font-bold rounded-xl px-4 py-2 text-sm"
+            className="bg-white/5 hover:bg-white/10 text-zinc-200 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors border border-white/5"
+            title="Sync now"
           >
-            <RefreshCw size={14} /> Sincronizar agora
+            <RefreshCw size={14} />
           </button>
         )}
       </div>
+      {msg && (
+        <p className={`text-xs mt-3 ${msg.kind === "ok" ? "text-emerald-400" : "text-red-400"}`}>
+          {msg.text}
+        </p>
+      )}
+      <p className="text-xs text-zinc-500 mt-3">
+        Find your Place ID on{" "}
+        <a
+          href="https://developers.google.com/maps/documentation/places/web-service/place-id"
+          target="_blank"
+          rel="noreferrer"
+          className="text-yellow-500 hover:underline"
+        >
+          developers.google.com
+        </a>
+        .
+      </p>
+    </Card>
+  );
+}
+
+/* ------- QR card ------- */
+
+function QrCard({
+  qrDataUrl,
+  qrError,
+  generating,
+  canUseQr,
+  qrUrl,
+  onGenerate,
+  onDownload,
+}: {
+  qrDataUrl: string | null;
+  qrError: string | null;
+  generating: boolean;
+  canUseQr: boolean;
+  qrUrl: string;
+  onGenerate: () => void;
+  onDownload: () => void;
+}) {
+  return (
+    <Card className="flex flex-col items-center text-center">
+      <h3 className="text-lg font-medium text-white w-full text-left mb-6 flex items-center gap-2">
+        <QrCode className="w-5 h-5 text-yellow-500" /> Your QR Code
+      </h3>
+
+      <div className="w-48 h-48 bg-white rounded-2xl p-2 mb-6 shadow-[0_0_30px_rgba(255,255,255,0.05)] flex items-center justify-center">
+        {qrDataUrl ? (
+          <img src={qrDataUrl} alt="QR Code" className="w-full h-full rounded-xl" />
+        ) : !canUseQr ? (
+          <span className="text-xs text-zinc-500 inline-flex items-center gap-1">
+            <Lock size={12} /> Premium / Ultra
+          </span>
+        ) : (
+          <span className="text-xs text-zinc-500">
+            {generating ? "Generating…" : "Click Generate"}
+          </span>
+        )}
+      </div>
+
+      {!canUseQr ? (
+        <Link
+          to="/dashboard/upgrade"
+          className="bg-yellow-500 hover:bg-yellow-400 text-black px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-[0_0_20px_rgba(234,179,8,0.15)] mb-3 inline-flex items-center gap-2"
+        >
+          <Sparkles size={14} /> Upgrade
+        </Link>
+      ) : !qrDataUrl ? (
+        <button
+          onClick={onGenerate}
+          disabled={generating || !qrUrl}
+          className="bg-yellow-500 hover:bg-yellow-400 disabled:opacity-60 text-black px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-[0_0_20px_rgba(234,179,8,0.15)] mb-3"
+        >
+          {generating ? "Generating…" : "Generate QR Code"}
+        </button>
+      ) : (
+        <button
+          onClick={onDownload}
+          className="bg-yellow-500 hover:bg-yellow-400 text-black px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-[0_0_20px_rgba(234,179,8,0.15)] mb-3 inline-flex items-center gap-2"
+        >
+          <Download size={14} /> Download QR Code
+        </button>
+      )}
+      {qrError && <p className="text-xs text-red-400 mb-2">{qrError}</p>}
+      {qrUrl && (
+        <p className="text-xs text-zinc-500 break-all max-w-[250px]">{qrUrl}</p>
+      )}
+    </Card>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Shared UI primitives                                                */
+/* ------------------------------------------------------------------ */
+
+const inputCls =
+  "w-full bg-[#111] border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500 transition-all placeholder:text-zinc-600";
+
+function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div
+      className={`bg-[#0A0A0A] border border-white/10 rounded-2xl p-6 shadow-xl ${className}`}
+    >
+      {children}
     </div>
+  );
+}
+
+function CardHeader({ icon, title }: { icon: React.ReactNode; title: string }) {
+  return (
+    <h3 className="text-lg font-medium text-white mb-6 flex items-center gap-2">
+      {icon} {title}
+    </h3>
+  );
+}
+
+function Field({
+  label,
+  hint,
+  right,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  right?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <div className="flex justify-between mb-1.5">
+        <label className="text-sm font-medium text-zinc-400">{label}</label>
+        {right}
+      </div>
+      {children}
+      {hint && <p className="text-xs text-zinc-500 mt-2">{hint}</p>}
+    </div>
+  );
+}
+
+function SectionLabel({ icon, text }: { icon: React.ReactNode; text: string }) {
+  return (
+    <h4 className="text-sm font-bold text-yellow-500 uppercase tracking-wider mb-2 flex items-center gap-2">
+      {icon} {text}
+    </h4>
   );
 }
