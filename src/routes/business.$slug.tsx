@@ -69,6 +69,7 @@ export const Route = createFileRoute("/business/$slug")({
       photos: res.photos,
       coupons: res.coupons,
       locations: (res.business.locations ?? []) as string[],
+      branches: res.branches ?? [],
     };
   },
   head: ({ params, loaderData }) => ({
