@@ -286,22 +286,26 @@ function BusinessPage() {
 
   void COUPONS_BY_BUSINESS;
 
-  // Build address line: "street, suburb"
-  const addressLine = [business.addressStreet, business.addressSuburb]
+  // Build address line for the active branch (falls back to business defaults)
+  const addressLine = [effectiveStreet, effectiveSuburb]
     .filter((p): p is string => Boolean(p && p.trim()))
     .join(", ");
-  const cityForMaps = locations[0] || business.location || "New Zealand";
+  const cityForMaps = activeCity || locations[0] || business.location || "New Zealand";
   const mapsQuery = [addressLine, cityForMaps, "New Zealand"].filter(Boolean).join(", ");
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`;
 
   // Banner image — use first photo as backdrop
   const bannerUrl = visiblePhotos[0]?.url ?? null;
 
-  // City tab state for Opening Hours (Premium+)
-  const hourCities = hoursGroups.map((g) => g.location);
-  const [activeHourCity, setActiveHourCity] = useState<string>(hourCities[0] ?? "");
+  // Cities available for the hours tab switcher — union of branches + hour groups
+  const hourCities = Array.from(
+    new Set([
+      ...branchList.map((b) => b.location),
+      ...hoursGroups.map((g) => g.location),
+    ]),
+  );
   const currentHourGroup =
-    hoursGroups.find((g) => g.location === activeHourCity) ?? hoursGroups[0];
+    hoursGroups.find((g) => g.location === activeCity) ?? hoursGroups[0];
 
   // Compute "Open now" + today key (in user's timezone — Pacific/Auckland)
   const now = new Date();
