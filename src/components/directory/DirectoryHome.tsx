@@ -2,7 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState, type MouseEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Sparkles, ShieldCheck, Users, MapPin, Star, BadgeCheck, ArrowUpRight, Tag } from "lucide-react";
+import { ArrowRight, Sparkles, ShieldCheck, Users, MapPin, Star, BadgeCheck, Tag } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
 import { getBusinesses } from "@/lib/business.functions";
