@@ -206,3 +206,76 @@ export function DirectoryHome() {
     </SiteShell>
   );
 }
+
+function FeaturedCard({ business }: { business: Business }) {
+  const planLabel = PLAN_LABELS[business.plan] ?? business.plan;
+  return (
+    <Link
+      to="/business/$slug"
+      params={{ slug: business.slug }}
+      onMouseMove={handleSpotlight}
+      className="spotlight-card group rounded-3xl overflow-hidden flex flex-col cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.015]"
+    >
+      {/* Image */}
+      <div className="relative aspect-[4/3] bg-gradient-to-br from-neutral-900 via-[#FFC700]/5 to-neutral-950 flex items-center justify-center overflow-hidden">
+        {business.logoUrl ? (
+          <img
+            src={business.logoUrl}
+            alt={business.name}
+            className="max-h-[70%] max-w-[75%] object-contain transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+        ) : (
+          <div className="text-5xl font-black text-white/10">
+            {business.name.charAt(0)}
+          </div>
+        )}
+
+        {/* Plan tag top-left */}
+        <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-white">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#FFC700]" />
+          {planLabel}
+        </span>
+
+        {/* Rating top-right */}
+        <span className="absolute top-3 right-3 inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-white">
+          <Star size={11} className="fill-[#FFC700] text-[#FFC700]" />
+          {business.rating.toFixed(1)}
+          <span className="text-neutral-400 font-normal">({business.reviewCount})</span>
+        </span>
+
+        {/* View profile hover indicator */}
+        <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-full bg-[#FFC700] text-black opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-[0_8px_24px_-6px_rgba(255,199,0,0.6)]">
+          View profile <ArrowUpRight size={12} />
+        </span>
+      </div>
+
+      {/* Footer content */}
+      <div className="p-4 sm:p-5 flex flex-col gap-2">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <h3 className="font-extrabold text-white text-base leading-tight truncate group-hover:text-[#FFC700] transition-colors">
+            {business.name}
+          </h3>
+          <BadgeCheck size={16} className="text-emerald-400 shrink-0 drop-shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
+        </div>
+        <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed">
+          {business.description}
+        </p>
+        <div className="flex items-center gap-3 mt-1 text-[11px] text-neutral-500">
+          <span className="inline-flex items-center gap-1 min-w-0">
+            <MapPin size={11} className="shrink-0 text-[#FFC700]/70" />
+            <span className="truncate">
+              {business.locations && business.locations.length > 0
+                ? business.locations.join(", ")
+                : business.location}
+            </span>
+          </span>
+          <span className="inline-flex items-center gap-1 min-w-0">
+            <Tag size={11} className="shrink-0 text-[#FFC700]/70" />
+            <span className="truncate">{business.subcategory}</span>
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}
