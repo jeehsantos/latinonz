@@ -257,51 +257,59 @@ function FeaturedCard({ business }: { business: Business }) {
           </div>
         )}
 
-        {/* Plan tag top-left */}
-        <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-white">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#FFC700]" />
-          {planLabel}
-        </span>
+        {/* Plan badges top-left: BUSINESS + plan tier */}
+        <div className="absolute top-3 left-3 flex items-center gap-1.5">
+          <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-md bg-[#FFC700] text-black shadow-[0_4px_14px_-4px_rgba(255,199,0,0.6)]">
+            {business.type === "Empresa" ? "Business" : "Pro"}
+          </span>
+          <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/15 text-white">
+            {planLabel}
+          </span>
+        </div>
 
         {/* Rating top-right */}
-        <span className="absolute top-3 right-3 inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-white">
+        <span className="absolute top-3 right-3 inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/15 text-white">
           <Star size={11} className="fill-[#FFC700] text-[#FFC700]" />
           {business.rating.toFixed(1)}
           <span className="text-neutral-400 font-normal">({business.reviewCount})</span>
         </span>
 
-        {/* View profile hover indicator */}
-        <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-full bg-[#FFC700] text-black opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-[0_8px_24px_-6px_rgba(255,199,0,0.6)]">
-          View profile <ArrowUpRight size={12} />
-        </span>
+        {/* Bottom gradient fade for readability */}
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/80 to-transparent pointer-events-none" />
       </div>
 
       {/* Footer content */}
       <div className="p-4 sm:p-5 flex flex-col gap-2">
         <div className="flex items-center gap-1.5 min-w-0">
-          <h3 className="font-extrabold text-white text-base leading-tight truncate group-hover:text-[#FFC700] transition-colors">
+          <h3 className="font-extrabold text-white text-lg leading-tight truncate group-hover:text-[#FFC700] transition-colors">
             {business.name}
           </h3>
-          <BadgeCheck size={16} className="text-emerald-400 shrink-0 drop-shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
+          <BadgeCheck size={16} className="text-sky-400 shrink-0 fill-sky-400/20" />
         </div>
-        <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed">
+        <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed min-h-[2.4rem]">
           {business.description}
         </p>
-        <div className="flex items-center gap-3 mt-1 text-[11px] text-neutral-500">
-          <span className="inline-flex items-center gap-1 min-w-0">
-            <MapPin size={11} className="shrink-0 text-[#FFC700]/70" />
+        <div className="mt-2 pt-3 border-t border-white/5 flex flex-col gap-1.5">
+          <span className="inline-flex items-center gap-1.5 text-[11px] text-neutral-400 min-w-0">
+            <MapPin size={12} className="shrink-0 text-[#FFC700]" />
             <span className="truncate">
               {business.locations && business.locations.length > 0
                 ? business.locations.join(", ")
                 : business.location}
             </span>
           </span>
-          <span className="inline-flex items-center gap-1 min-w-0">
-            <Tag size={11} className="shrink-0 text-[#FFC700]/70" />
-            <span className="truncate">{business.subcategory}</span>
-          </span>
+          <div className="flex items-center justify-between gap-2">
+            <span className="inline-flex items-center gap-1.5 text-[11px] text-neutral-400 min-w-0">
+              <Tag size={12} className="shrink-0 text-[#FFC700]" />
+              <span className="truncate">{business.subcategory}</span>
+            </span>
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#FFC700] shrink-0">
+              Active
+            </span>
+          </div>
         </div>
       </div>
+
     </Link>
   );
 }
