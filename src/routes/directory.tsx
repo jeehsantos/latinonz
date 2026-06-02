@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
+import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { z } from "zod";
 import { SiteShell } from "@/components/site/SiteShell";
 import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
 import { BusinessCard } from "@/components/directory/BusinessCard";
@@ -10,7 +12,14 @@ import { adaptBusiness } from "@/lib/business.adapter";
 import { useCategories } from "@/hooks/useCategories";
 import { useI18n, usePageMetadata } from "@/lib/i18n";
 
+const directorySearchSchema = z.object({
+  q: fallback(z.string(), "").default(""),
+  category: fallback(z.string(), "").default(""),
+  city: fallback(z.string(), "").default(""),
+});
+
 export const Route = createFileRoute("/directory")({
+  validateSearch: zodValidator(directorySearchSchema),
   head: () => ({
     meta: [
       { title: "Nossa Rede — Latino Connect" },
@@ -33,7 +42,12 @@ export const Route = createFileRoute("/directory")({
 function DirectoryPage() {
   const { t } = useI18n();
   usePageMetadata("metadata.directory.title", "metadata.directory.description");
-  const [search, setSearch] = useState<SearchValue>({ q: "", category: "", city: "" });
+  const initial = Route.useSearch();
+  const [search, setSearch] = useState<SearchValue>({
+    q: initial.q,
+    category: initial.category,
+    city: initial.city,
+  });
   const { categories } = useCategories();
 
   const fetchBusinesses = useServerFn(getBusinesses);
