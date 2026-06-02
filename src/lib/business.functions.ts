@@ -139,6 +139,7 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
       { data: serviceOptionItems },
       { data: photos },
       { data: coupons },
+      { data: branches },
       planRpc,
     ] = await Promise.all([
       supabaseAdmin.from("business_hours").select("*").eq("business_id", business.id),
@@ -162,6 +163,11 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
         .select("id, code, title, description, expires_at, discount_type, discount_value")
         .eq("business_id", business.id)
         .eq("is_active", true),
+      supabaseAdmin
+        .from("business_branches")
+        .select("id, location, address_street, address_suburb, phone, position")
+        .eq("business_id", business.id)
+        .order("position", { ascending: true }),
       business.owner_id
         ? supabaseAdmin.rpc("get_owner_plan_tier", { p_owner: business.owner_id })
         : Promise.resolve({ data: null, error: null }),
@@ -187,6 +193,7 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
       serviceOptionItems: serviceOptionItems ?? [],
       photos: photos ?? [],
       coupons: coupons ?? [],
+      branches: branches ?? [],
     };
   });
 

@@ -69,6 +69,7 @@ export const Route = createFileRoute("/business/$slug")({
       photos: res.photos,
       coupons: res.coupons,
       locations: (res.business.locations ?? []) as string[],
+      branches: res.branches ?? [],
     };
   },
   head: ({ params, loaderData }) => ({
@@ -123,7 +124,7 @@ export const Route = createFileRoute("/business/$slug")({
 
 function BusinessPage() {
   const { t } = useI18n();
-  const { business, hours, serviceOptions, serviceOptionItems, photos, coupons, locations } = Route.useLoaderData();
+  const { business, hours, serviceOptions, serviceOptionItems, photos, coupons, locations, branches } = Route.useLoaderData();
   usePageMetadata(
     undefined,
     undefined,
@@ -158,8 +159,28 @@ function BusinessPage() {
   const [leadError, setLeadError] = useState<string | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
+  // Active branch selection — drives contact, address, hours
+  type Branch = {
+    id: string;
+    location: string;
+    address_street: string | null;
+    address_suburb: string | null;
+    phone: string | null;
+  };
+  const branchList = (branches ?? []) as Branch[];
+  const initialCity =
+    branchList[0]?.location ?? locations[0] ?? business.location ?? "";
+  const [activeCity, setActiveCity] = useState<string>(initialCity);
+  const currentBranch =
+    branchList.find((b) => b.location === activeCity) ?? branchList[0] ?? null;
 
-  const waNumber = business.phone ? business.phone.replace(/\D/g, "") : "";
+  const effectivePhone = (currentBranch?.phone && currentBranch.phone.trim())
+    ? currentBranch.phone
+    : business.phone ?? "";
+  const effectiveStreet = currentBranch?.address_street ?? business.addressStreet ?? null;
+  const effectiveSuburb = currentBranch?.address_suburb ?? business.addressSuburb ?? null;
+
+  const waNumber = effectivePhone ? effectivePhone.replace(/\D/g, "") : "";
   const wantsWhatsappFlow = can(business.plan, "leadWhatsapp") && Boolean(waNumber);
 
   async function handleLeadSubmit(e: React.FormEvent) {
@@ -265,22 +286,26 @@ function BusinessPage() {
 
   void COUPONS_BY_BUSINESS;
 
-  // Build address line: "street, suburb"
-  const addressLine = [business.addressStreet, business.addressSuburb]
+  // Build address line for the active branch (falls back to business defaults)
+  const addressLine = [effectiveStreet, effectiveSuburb]
     .filter((p): p is string => Boolean(p && p.trim()))
     .join(", ");
-  const cityForMaps = locations[0] || business.location || "New Zealand";
+  const cityForMaps = activeCity || locations[0] || business.location || "New Zealand";
   const mapsQuery = [addressLine, cityForMaps, "New Zealand"].filter(Boolean).join(", ");
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`;
 
   // Banner image — use first photo as backdrop
   const bannerUrl = visiblePhotos[0]?.url ?? null;
 
-  // City tab state for Opening Hours (Premium+)
-  const hourCities = hoursGroups.map((g) => g.location);
-  const [activeHourCity, setActiveHourCity] = useState<string>(hourCities[0] ?? "");
+  // Cities available for the hours tab switcher — union of branches + hour groups
+  const hourCities = Array.from(
+    new Set([
+      ...branchList.map((b) => b.location),
+      ...hoursGroups.map((g) => g.location),
+    ]),
+  );
   const currentHourGroup =
-    hoursGroups.find((g) => g.location === activeHourCity) ?? hoursGroups[0];
+    hoursGroups.find((g) => g.location === activeCity) ?? hoursGroups[0];
 
   // Compute "Open now" + today key (in user's timezone — Pacific/Auckland)
   const now = new Date();
@@ -724,9 +749,9 @@ function BusinessPage() {
                       <button
                         key={c}
                         type="button"
-                        onClick={() => setActiveHourCity(c)}
+                        onClick={() => setActiveCity(c)}
                         className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition ${
-                          activeHourCity === c
+                          activeCity === c
                             ? "bg-black text-[#facc15] shadow-sm"
                             : "text-neutral-400 hover:text-neutral-200"
                         }`}
