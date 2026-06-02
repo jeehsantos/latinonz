@@ -248,11 +248,11 @@ function FeaturedCard({ business }: { business: Business }) {
           <img
             src={business.logoUrl}
             alt={business.name}
-            className="max-h-[70%] max-w-[75%] object-contain transition-transform duration-500 group-hover:scale-105"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />
         ) : (
-          <div className="text-5xl font-black text-white/10">
+          <div className="text-6xl font-black text-white/10">
             {business.name.charAt(0)}
           </div>
         )}
