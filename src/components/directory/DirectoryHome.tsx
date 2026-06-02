@@ -1,16 +1,24 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type MouseEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Sparkles, ShieldCheck, Users } from "lucide-react";
+import { ArrowRight, Sparkles, ShieldCheck, Users, MapPin, Star, BadgeCheck, ArrowUpRight, Tag } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
-import { BusinessCard } from "@/components/directory/BusinessCard";
 import { getBusinesses } from "@/lib/business.functions";
 import { adaptBusiness } from "@/lib/business.adapter";
 import { useCategories } from "@/hooks/useCategories";
-import { getIcon, getColor } from "@/lib/category-icons";
+import { getIcon } from "@/lib/category-icons";
 import { useI18n } from "@/lib/i18n";
+import type { Business } from "@/lib/mock/types";
+import { PLAN_LABELS } from "@/lib/plans";
+
+function handleSpotlight(e: MouseEvent<HTMLElement>) {
+  const target = e.currentTarget;
+  const rect = target.getBoundingClientRect();
+  target.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+  target.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+}
 
 export function DirectoryHome() {
   const { t } = useI18n();
