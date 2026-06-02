@@ -72,7 +72,7 @@ export function DirectoryHome() {
             {t("directory.home_subheadline")}
           </p>
           <div className="mt-6 sm:mt-10 max-w-4xl mx-auto">
-            <SearchBar value={search} onChange={setSearch} />
+            <SearchBar value={search} onChange={setSearch} onSubmit={handleSearchSubmit} />
           </div>
         </div>
       </section>
