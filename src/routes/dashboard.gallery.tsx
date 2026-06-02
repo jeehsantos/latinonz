@@ -167,15 +167,12 @@ function GalleryPage() {
           <Plus className="mx-auto text-[#facc15]" size={24} />
           <p className="mt-2 text-sm font-bold text-white">
             {isDragging
-              ? t("gallery.drop_here") || "Drop images to upload"
-              : t("gallery.drag_or_click") || "Drag & drop images here, or click to select"}
+              ? "Drop images to upload"
+              : "Drag & drop images here, or click to select"}
           </p>
           <p className="mt-1 text-xs text-neutral-500">
             {Number.isFinite(remaining)
-              ? (t("gallery.remaining_slots") || "{n} slot(s) remaining").replace(
-                  "{n}",
-                  String(remaining),
-                )
+              ? `${remaining} slot(s) remaining`
               : t("gallery.subtitle_unlimited")}
           </p>
         </div>
