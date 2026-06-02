@@ -749,9 +749,9 @@ function BusinessPage() {
                       <button
                         key={c}
                         type="button"
-                        onClick={() => setActiveHourCity(c)}
+                        onClick={() => setActiveCity(c)}
                         className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition ${
-                          activeHourCity === c
+                          activeCity === c
                             ? "bg-black text-[#facc15] shadow-sm"
                             : "text-neutral-400 hover:text-neutral-200"
                         }`}
