@@ -48,7 +48,7 @@ function GalleryPage() {
 
     const images = files.filter((f) => f.type.startsWith("image/"));
     if (!images.length) {
-      setError(t("gallery.error_no_images") || "No image files selected.");
+      setError("No image files selected.");
       return;
     }
 
@@ -56,11 +56,7 @@ function GalleryPage() {
     if (Number.isFinite(remaining) && images.length > remaining) {
       toUpload = images.slice(0, remaining);
       setError(
-        (t("gallery.error_limit_partial") ||
-          "Only {n} photo(s) uploaded — plan limit reached.").replace(
-          "{n}",
-          String(remaining),
-        ),
+        `Only ${remaining} photo(s) uploaded — plan limit reached.`,
       );
     }
 
