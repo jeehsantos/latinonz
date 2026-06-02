@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
@@ -14,7 +14,18 @@ import { useI18n } from "@/lib/i18n";
 
 export function DirectoryHome() {
   const { t } = useI18n();
+  const navigate = useNavigate();
   const [search, setSearch] = useState<SearchValue>({ q: "", category: "", city: "" });
+  const handleSearchSubmit = () => {
+    navigate({
+      to: "/directory",
+      search: {
+        q: search.q || undefined,
+        category: search.category || undefined,
+        city: search.city || undefined,
+      },
+    });
+  };
   const fetchBusinesses = useServerFn(getBusinesses);
   const { data } = useQuery({
     queryKey: ["businesses", "all"],
@@ -61,7 +72,7 @@ export function DirectoryHome() {
             {t("directory.home_subheadline")}
           </p>
           <div className="mt-6 sm:mt-10 max-w-4xl mx-auto">
-            <SearchBar value={search} onChange={setSearch} />
+            <SearchBar value={search} onChange={setSearch} onSubmit={handleSearchSubmit} />
           </div>
         </div>
       </section>
