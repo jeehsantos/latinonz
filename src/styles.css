@@ -158,3 +158,41 @@
 }
 .animate-inflate { animation: inflate-pulse 2s ease-in-out infinite; }
 .animate-inflate:hover { animation-play-state: paused; }
+
+/* Spotlight glow card */
+.spotlight-card {
+  position: relative;
+  isolation: isolate;
+  background-color: rgba(17, 17, 19, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: border-color 300ms ease, transform 300ms ease, box-shadow 300ms ease;
+}
+.spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms ease;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 199, 0, 0.10),
+    transparent 40%
+  );
+  z-index: 0;
+}
+.spotlight-card:hover::before { opacity: 1; }
+.spotlight-card:hover {
+  border-color: rgba(255, 199, 0, 0.35);
+  box-shadow: 0 20px 50px -20px rgba(255, 199, 0, 0.15);
+}
+.spotlight-card > * { position: relative; z-index: 1; }
+
+/* Premium grid overlay */
+.premium-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
