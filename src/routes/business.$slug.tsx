@@ -159,8 +159,28 @@ function BusinessPage() {
   const [leadError, setLeadError] = useState<string | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
+  // Active branch selection — drives contact, address, hours
+  type Branch = {
+    id: string;
+    location: string;
+    address_street: string | null;
+    address_suburb: string | null;
+    phone: string | null;
+  };
+  const branchList = (branches ?? []) as Branch[];
+  const initialCity =
+    branchList[0]?.location ?? locations[0] ?? business.location ?? "";
+  const [activeCity, setActiveCity] = useState<string>(initialCity);
+  const currentBranch =
+    branchList.find((b) => b.location === activeCity) ?? branchList[0] ?? null;
 
-  const waNumber = business.phone ? business.phone.replace(/\D/g, "") : "";
+  const effectivePhone = (currentBranch?.phone && currentBranch.phone.trim())
+    ? currentBranch.phone
+    : business.phone ?? "";
+  const effectiveStreet = currentBranch?.address_street ?? business.addressStreet ?? null;
+  const effectiveSuburb = currentBranch?.address_suburb ?? business.addressSuburb ?? null;
+
+  const waNumber = effectivePhone ? effectivePhone.replace(/\D/g, "") : "";
   const wantsWhatsappFlow = can(business.plan, "leadWhatsapp") && Boolean(waNumber);
 
   async function handleLeadSubmit(e: React.FormEvent) {
