@@ -2,12 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
+import { CreditCard, Palette, User, Shield, Download, Trash2, ExternalLink } from "lucide-react";
 import { useCurrentPlan } from "@/lib/dev-plan";
 import { PLAN_LABELS } from "@/lib/plans";
 import { useSidebarColor, DEFAULT_SIDEBAR_COLOR } from "@/lib/sidebar-color";
 import { useI18n } from "@/lib/i18n";
 import { createBillingPortalSession } from "@/lib/stripe.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 
 const PRESET_COLORS = [
   { name: "Verde Latino", value: "#facc15" },
@@ -22,6 +24,8 @@ export const Route = createFileRoute("/dashboard/settings")({
   component: SettingsPage,
 });
 
+type Section = "plan" | "appearance" | "account" | "privacy";
+
 function SettingsPage() {
   const { t } = useI18n();
   const [plan] = useCurrentPlan();
@@ -29,13 +33,12 @@ function SettingsPage() {
   const billingPortal = useServerFn(createBillingPortalSession);
   const [portalLoading, setPortalLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const [active, setActive] = useState<Section>("plan");
   const navigate = Route.useNavigate();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user?.email) {
-        setEmail(data.user.email);
-      }
+      if (data.user?.email) setEmail(data.user.email);
     });
   }, []);
 
@@ -47,11 +50,8 @@ function SettingsPage() {
     try {
       setPortalLoading(true);
       const res = await billingPortal();
-      if (res.ok && res.url) {
-        window.location.href = res.url;
-      } else {
-        toast.error(res.ok ? "Portal indisponível." : res.error);
-      }
+      if (res.ok && res.url) window.location.href = res.url;
+      else toast.error(res.ok ? "Portal indisponível." : res.error);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro ao abrir portal");
     } finally {
@@ -59,104 +59,219 @@ function SettingsPage() {
     }
   };
 
+  const items: { id: Section; label: string; icon: typeof CreditCard }[] = [
+    { id: "plan", label: t("settings.current_plan_title"), icon: CreditCard },
+    { id: "appearance", label: t("settings.appearance_title"), icon: Palette },
+    { id: "account", label: t("settings.account_title"), icon: User },
+    { id: "privacy", label: "Privacy & Data", icon: Shield },
+  ];
+
   return (
-    <div className="max-w-3xl space-y-6">
-      <div>
+    <div>
+      <div className="mb-6">
         <h1 className="text-3xl font-black text-white">{t("settings.title")}</h1>
         <p className="text-neutral-400 mt-1">{t("settings.subtitle")}</p>
       </div>
 
-      <div className="bg-neutral-900 border border-white/10 rounded-3xl p-8">
-        <h2 className="font-extrabold text-white">{t("settings.current_plan_title")}</h2>
-        <p className="text-sm text-neutral-400 mt-1">
-          {t("settings.current_plan_on")}{" "}
-          <span className="font-bold text-white">{PLAN_LABELS[plan]}</span>.
-        </p>
-        <button
-          type="button"
-          onClick={handleChangePlan}
-          disabled={portalLoading}
-          className="inline-flex mt-4 bg-neutral-900 hover:bg-white/5 disabled:opacity-60 text-[#facc15] font-bold rounded-xl px-5 py-2.5 text-sm"
-        >
-          {portalLoading ? "Abrindo..." : t("settings.change_plan")}
-        </button>
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6">
+        {/* Inner sidebar */}
+        <aside className="lg:sticky lg:top-24 self-start">
+          <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible">
+            {items.map((it) => {
+              const Icon = it.icon;
+              const isActive = active === it.id;
+              return (
+                <button
+                  key={it.id}
+                  type="button"
+                  onClick={() => setActive(it.id)}
+                  className={cn(
+                    "flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-medium transition whitespace-nowrap text-left",
+                    isActive
+                      ? "bg-[#facc15]/10 text-[#facc15] border border-[#facc15]/20"
+                      : "text-neutral-400 hover:text-white hover:bg-white/5 border border-transparent",
+                  )}
+                >
+                  <Icon size={16} />
+                  <span>{it.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </aside>
 
-      <div className="bg-neutral-900 border border-white/10 rounded-3xl p-8 space-y-5">
-        <div>
-          <h2 className="font-extrabold text-white">{t("settings.appearance_title")}</h2>
-          <p className="text-sm text-neutral-400 mt-1">{t("settings.appearance_subtitle")}</p>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          {PRESET_COLORS.map((c) => {
-            const active = sidebarColor.toLowerCase() === c.value.toLowerCase();
-            return (
+        {/* Content card */}
+        <section className="bg-neutral-900 border border-white/10 rounded-3xl p-8 min-h-[400px]">
+          {active === "plan" && (
+            <div className="space-y-5">
+              <div>
+                <h2 className="text-xl font-extrabold text-white">
+                  {t("settings.current_plan_title")}
+                </h2>
+                <p className="text-sm text-neutral-400 mt-1">
+                  {t("settings.current_plan_on")}{" "}
+                  <span className="font-bold text-white">{PLAN_LABELS[plan]}</span>.
+                </p>
+              </div>
               <button
-                key={c.value}
                 type="button"
-                onClick={() => setSidebarColor(c.value)}
-                title={c.name}
-                style={{ backgroundColor: c.value }}
-                className={`h-10 w-10 rounded-full border-2 transition ${
-                  active
-                    ? "border-gray-900 ring-2 ring-offset-2 ring-gray-900"
-                    : "border-white shadow"
-                }`}
-                aria-label={c.name}
-              />
-            );
-          })}
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <label className="text-xs font-bold uppercase text-neutral-400">
-            {t("settings.custom_color")}
-          </label>
-          <input
-            type="color"
-            value={sidebarColor}
-            onChange={(e) => setSidebarColor(e.target.value)}
-            className="h-10 w-14 rounded-lg border border-white/10 cursor-pointer bg-transparent"
-          />
-          <input
-            type="text"
-            value={sidebarColor}
-            onChange={(e) => setSidebarColor(e.target.value)}
-            className="bg-neutral-950 border border-white/10 rounded-xl px-3 py-2 text-sm font-mono text-white w-32"
-          />
-          <button
-            type="button"
-            onClick={() => setSidebarColor(DEFAULT_SIDEBAR_COLOR)}
-            className="text-sm font-bold text-neutral-300 hover:text-white"
-          >
-            {t("settings.restore_default")}
-          </button>
-        </div>
-      </div>
+                onClick={handleChangePlan}
+                disabled={portalLoading}
+                className="inline-flex bg-[#facc15] hover:bg-[#facc15]/90 disabled:opacity-60 text-neutral-950 font-bold rounded-xl px-5 py-2.5 text-sm"
+              >
+                {portalLoading ? "Abrindo..." : t("settings.change_plan")}
+              </button>
+            </div>
+          )}
 
-      <div className="bg-neutral-900 border border-white/10 rounded-3xl p-8 space-y-4">
-        <h2 className="font-extrabold text-white">{t("settings.account_title")}</h2>
-        <div>
-          <label className="text-xs font-bold uppercase text-neutral-400">
-            {t("settings.email_label")}
-          </label>
-          <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm"
-          />
-        </div>
-        <div>
-          <label className="text-xs font-bold uppercase text-neutral-400">
-            {t("settings.new_password_label")}
-          </label>
-          <input
-            type="password"
-            className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm"
-          />
-        </div>
-        <button className="bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold rounded-xl px-5 py-2.5 text-sm">
-          {t("settings.save_button")}
-        </button>
+          {active === "appearance" && (
+            <div className="space-y-5">
+              <div>
+                <h2 className="text-xl font-extrabold text-white">
+                  {t("settings.appearance_title")}
+                </h2>
+                <p className="text-sm text-neutral-400 mt-1">
+                  {t("settings.appearance_subtitle")}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {PRESET_COLORS.map((c) => {
+                  const isActive = sidebarColor.toLowerCase() === c.value.toLowerCase();
+                  return (
+                    <button
+                      key={c.value}
+                      type="button"
+                      onClick={() => setSidebarColor(c.value)}
+                      title={c.name}
+                      style={{ backgroundColor: c.value }}
+                      className={`h-10 w-10 rounded-full border-2 transition ${
+                        isActive
+                          ? "border-white ring-2 ring-offset-2 ring-offset-neutral-900 ring-white"
+                          : "border-white/20"
+                      }`}
+                      aria-label={c.name}
+                    />
+                  );
+                })}
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <label className="text-xs font-bold uppercase text-neutral-400">
+                  {t("settings.custom_color")}
+                </label>
+                <input
+                  type="color"
+                  value={sidebarColor}
+                  onChange={(e) => setSidebarColor(e.target.value)}
+                  className="h-10 w-14 rounded-lg border border-white/10 cursor-pointer bg-transparent"
+                />
+                <input
+                  type="text"
+                  value={sidebarColor}
+                  onChange={(e) => setSidebarColor(e.target.value)}
+                  className="bg-neutral-950 border border-white/10 rounded-xl px-3 py-2 text-sm font-mono text-white w-32"
+                />
+                <button
+                  type="button"
+                  onClick={() => setSidebarColor(DEFAULT_SIDEBAR_COLOR)}
+                  className="text-sm font-bold text-neutral-300 hover:text-white"
+                >
+                  {t("settings.restore_default")}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {active === "account" && (
+            <div className="space-y-5">
+              <div>
+                <h2 className="text-xl font-extrabold text-white">
+                  {t("settings.account_title")}
+                </h2>
+                <p className="text-sm text-neutral-400 mt-1">
+                  Update your account credentials.
+                </p>
+              </div>
+              <div>
+                <label className="text-xs font-bold uppercase text-neutral-400">
+                  {t("settings.email_label")}
+                </label>
+                <input
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold uppercase text-neutral-400">
+                  {t("settings.new_password_label")}
+                </label>
+                <input
+                  type="password"
+                  className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white"
+                />
+              </div>
+              <button className="bg-[#facc15] hover:bg-[#facc15]/90 text-neutral-950 font-bold rounded-xl px-5 py-2.5 text-sm">
+                {t("settings.save_button")}
+              </button>
+            </div>
+          )}
+
+          {active === "privacy" && (
+            <div className="space-y-5">
+              <div>
+                <h2 className="text-xl font-extrabold text-white">Privacy & Data</h2>
+                <p className="text-sm text-neutral-400 mt-1">
+                  Manage your personal data and exercise your rights under the New Zealand
+                  Privacy Act 2020.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-2xl border border-white/10 p-4 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Download className="h-4 w-4 text-[#facc15]" />
+                    <h3 className="font-bold text-sm text-white">Request My Data</h3>
+                  </div>
+                  <p className="text-sm text-neutral-400">
+                    Request a copy of all personal information we hold about you. We will
+                    respond within 20 working days.
+                  </p>
+                  <a
+                    href={`mailto:hello@latinoconnecthub.co.nz?subject=Data%20Access%20Request&body=Account%20email%3A%20${encodeURIComponent(email)}`}
+                    className="inline-flex mt-1 border border-white/10 hover:bg-white/5 text-white text-sm font-bold rounded-xl px-4 py-2"
+                  >
+                    Request Data Export
+                  </a>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 p-4 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Trash2 className="h-4 w-4 text-red-400" />
+                    <h3 className="font-bold text-sm text-white">Delete My Account</h3>
+                  </div>
+                  <p className="text-sm text-neutral-400">
+                    Request permanent deletion of your account and all associated personal
+                    data. This action cannot be undone.
+                  </p>
+                  <a
+                    href={`mailto:hello@latinoconnecthub.co.nz?subject=Account%20Deletion%20Request&body=Account%20email%3A%20${encodeURIComponent(email)}`}
+                    className="inline-flex mt-1 border border-red-500/30 hover:bg-red-500/10 text-red-400 text-sm font-bold rounded-xl px-4 py-2"
+                  >
+                    Request Account Deletion
+                  </a>
+                </div>
+
+                <a
+                  href="/privacy"
+                  className="inline-flex items-center gap-1.5 text-sm text-[#facc15] hover:underline"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  Read our full Privacy Policy
+                </a>
+              </div>
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );
