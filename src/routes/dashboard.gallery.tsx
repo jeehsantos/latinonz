@@ -48,7 +48,7 @@ function GalleryPage() {
 
     const images = files.filter((f) => f.type.startsWith("image/"));
     if (!images.length) {
-      setError("No image files selected.");
+      setError(t("gallery.no_image_files"));
       return;
     }
 
@@ -56,7 +56,7 @@ function GalleryPage() {
     if (Number.isFinite(remaining) && images.length > remaining) {
       toUpload = images.slice(0, remaining);
       setError(
-        `Only ${remaining} photo(s) uploaded — plan limit reached.`,
+        t("gallery.limit_reached_msg").replace("{remaining}", String(remaining)),
       );
     }
 
@@ -137,7 +137,9 @@ function GalleryPage() {
         {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
         {uploading && progress && (
           <p className="text-sm text-[#facc15] mt-2">
-            Uploading {progress.done} / {progress.total}…
+            {t("gallery.uploading_progress")
+              .replace("{done}", String(progress.done))
+              .replace("{total}", String(progress.total))}
           </p>
         )}
       </div>
@@ -167,12 +169,12 @@ function GalleryPage() {
           <Plus className="mx-auto text-[#facc15]" size={24} />
           <p className="mt-2 text-sm font-bold text-white">
             {isDragging
-              ? "Drop images to upload"
-              : "Drag & drop images here, or click to select"}
+              ? t("gallery.drop_to_upload")
+              : t("gallery.drag_or_click")}
           </p>
           <p className="mt-1 text-xs text-neutral-500">
             {Number.isFinite(remaining)
-              ? `${remaining} slot(s) remaining`
+              ? t("gallery.slots_remaining").replace("{n}", String(remaining))
               : t("gallery.subtitle_unlimited")}
           </p>
         </div>

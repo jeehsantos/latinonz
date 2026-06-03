@@ -74,25 +74,25 @@ function DashboardOverview() {
         <StatCard
           label={t("dashboard.stat_views")}
           value={analytics?.views?.toLocaleString() ?? "0"}
-          hint="Últimos 30 dias"
+          hint={t("dashboard.stat_hint_30days")}
           icon={Eye}
         />
         <StatCard
           label={t("dashboard.stat_leads")}
           value={analytics?.leads?.toString() ?? "0"}
-          hint="Últimos 30 dias"
+          hint={t("dashboard.stat_hint_30days")}
           icon={Inbox}
         />
         <StatCard
           label={t("dashboard.stat_clicks")}
           value={analytics?.contactClicks?.toString() ?? "0"}
-          hint="Últimos 30 dias"
+          hint={t("dashboard.stat_hint_30days")}
           icon={MousePointerClick}
         />
         <StatCard
           label={t("dashboard.stat_rating")}
           value={business?.rating ? business.rating.toFixed(1) : "0.0"}
-          hint={`${business?.review_count ?? 0} avaliações`}
+          hint={`${business?.review_count ?? 0} ${t("dashboard.stat_hint_reviews")}`}
           icon={Star}
         />
       </div>
@@ -106,14 +106,14 @@ function DashboardOverview() {
         </div>
         <div className="mt-4 divide-y divide-gray-100">
           {leads.length === 0 ? (
-            <p className="py-4 text-neutral-400 text-sm">Nenhum lead recebido ainda.</p>
+            <p className="py-4 text-neutral-400 text-sm">{t("dashboard.no_leads_yet")}</p>
           ) : (
             leads.slice(0, 3).map((l: { id: string; name: string; message: string | null; created_at: string }) => (
               <div key={l.id} className="py-3 flex items-center justify-between">
                 <div>
                   <p className="font-bold text-white">{l.name}</p>
                   <p className="text-sm text-neutral-400 line-clamp-1">
-                    {l.message ?? "Sem mensagem"}
+                    {l.message ?? t("dashboard.no_message")}
                   </p>
                 </div>
                 <span className="text-xs font-bold text-neutral-400">

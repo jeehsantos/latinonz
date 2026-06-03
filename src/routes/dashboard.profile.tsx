@@ -59,15 +59,6 @@ type DayKey = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 type TabId = "general" | "locations" | "features";
 
 const DAY_KEYS: DayKey[] = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
-const DAY_LABELS: Record<DayKey, string> = {
-  mon: "Monday",
-  tue: "Tuesday",
-  wed: "Wednesday",
-  thu: "Thursday",
-  fri: "Friday",
-  sat: "Saturday",
-  sun: "Sunday",
-};
 
 type DaySchedule = { closed: boolean; slots: { open: string; close: string }[] };
 type BranchSchedule = Record<DayKey, DaySchedule>;
@@ -104,6 +95,15 @@ const newBranch = (overrides: Partial<Branch> = {}): Branch => ({
 
 function ProfileEditor() {
   const { t } = useI18n();
+  const DAY_LABELS: Record<DayKey, string> = {
+    mon: t("profile.day_mon"),
+    tue: t("profile.day_tue"),
+    wed: t("profile.day_wed"),
+    thu: t("profile.day_thu"),
+    fri: t("profile.day_fri"),
+    sat: t("profile.day_sat"),
+    sun: t("profile.day_sun"),
+  };
   const fetchMyBusiness = useServerFn(getMyBusiness);
   const saveMyBusiness = useServerFn(updateMyBusiness);
   const saveHoursFn = useServerFn(updateBusinessHours);
@@ -500,9 +500,9 @@ function ProfileEditor() {
   };
 
   const tabs: { id: TabId; label: string }[] = [
-    { id: "general", label: "General Details" },
-    { id: "locations", label: "Locations & Hours" },
-    { id: "features", label: "Features & Options" },
+    { id: "general", label: t("profile.tab_general") },
+    { id: "locations", label: t("profile.tab_locations") },
+    { id: "features", label: t("profile.tab_features") },
   ];
 
   return (
@@ -512,16 +512,16 @@ function ProfileEditor() {
         <div className="flex items-center justify-between gap-4 max-w-6xl mx-auto">
           <div className="min-w-0">
             <h1 className="text-2xl font-bold text-white tracking-tight truncate">
-              Edit Profile
+              {t("profile.edit_title")}
             </h1>
             <p className="text-sm text-zinc-400 mt-0.5">
-              Manage how your business appears on the network.
+              {t("profile.edit_subtitle")}
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             {saveSuccess && (
               <span className="hidden sm:inline-flex items-center gap-1 text-xs text-emerald-400">
-                <Check className="w-3.5 h-3.5" /> Saved
+                <Check className="w-3.5 h-3.5" /> {t("profile.saved_label")}
               </span>
             )}
             <button
@@ -529,7 +529,7 @@ function ProfileEditor() {
               disabled={saving}
               className="bg-yellow-500 hover:bg-yellow-400 disabled:opacity-60 text-black px-5 sm:px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-[0_0_20px_rgba(234,179,8,0.15)] hover:shadow-[0_0_30px_rgba(234,179,8,0.3)] flex items-center gap-2"
             >
-              <Check className="w-4 h-4" /> {saving ? "Saving…" : "Save Changes"}
+              <Check className="w-4 h-4" /> {saving ? t("profile.saving_label") : t("profile.save_changes")}
             </button>
           </div>
         </div>
@@ -600,6 +600,7 @@ function ProfileEditor() {
               onUpdateSlot={updateSlot}
               onCopyHours={copyHoursFrom}
               plan={plan}
+              dayLabels={DAY_LABELS}
             />
           )}
 
@@ -659,14 +660,15 @@ type GeneralTabProps = {
 };
 
 function GeneralTab(p: GeneralTabProps) {
+  const { t } = useI18n();
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-6">
         <Card>
-          <CardHeader icon={<Info className="w-5 h-5 text-yellow-500" />} title="Basic Information" />
+          <CardHeader icon={<Info className="w-5 h-5 text-yellow-500" />} title={t("profile.title")} />
           <div className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <Field label="Business Name *">
+              <Field label={t("profile.business_name_asterisk")}>
                 <input
                   type="text"
                   value={p.name}
@@ -674,7 +676,7 @@ function GeneralTab(p: GeneralTabProps) {
                   className={inputCls}
                 />
               </Field>
-              <Field label="Main Category *">
+              <Field label={t("profile.category_asterisk")}>
                 <div className="relative">
                   <select
                     value={p.category}
@@ -682,7 +684,7 @@ function GeneralTab(p: GeneralTabProps) {
                     className={`${inputCls} appearance-none pr-10`}
                   >
                     {p.activeCategories.length === 0 && (
-                      <option value="">No categories</option>
+                      <option value="">{t("directory.empty_title")}</option>
                     )}
                     {p.activeCategories.map((c) => (
                       <option key={c} value={c}>
@@ -698,26 +700,26 @@ function GeneralTab(p: GeneralTabProps) {
               </Field>
             </div>
 
-            <Field label="Business Type">
+            <Field label={t("profile.business_type_label")}>
               <div className="flex bg-white/5 p-1 rounded-xl">
-                {(["Serviço", "Produto"] as BusinessType[]).map((t) => (
+                {(["Serviço", "Produto"] as BusinessType[]).map((bt) => (
                   <button
-                    key={t}
-                    onClick={() => p.setBusinessType(t)}
+                    key={bt}
+                    onClick={() => p.setBusinessType(bt)}
                     className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-                      p.businessType === t
+                      p.businessType === bt
                         ? "bg-black text-yellow-500"
                         : "text-zinc-400 hover:text-white"
                     }`}
                   >
-                    {t}
+                    {bt === "Serviço" ? t("profile.type_service") : t("profile.type_product")}
                   </button>
                 ))}
               </div>
             </Field>
 
             <Field
-              label="Full Description *"
+              label={t("profile.description_asterisk")}
               right={<span className="text-xs text-zinc-600">{p.description.length}/500</span>}
             >
               <textarea
@@ -729,12 +731,12 @@ function GeneralTab(p: GeneralTabProps) {
               />
             </Field>
 
-            <Field label="Keywords (Hashtags)" hint="Helps people find your profile faster in searches.">
+            <Field label={t("profile.keywords_label")} hint={t("profile.keywords_hint")}>
               <input
                 type="text"
                 value={p.keywords}
                 onChange={(e) => p.setKeywords(e.target.value)}
-                placeholder="e.g. #tacos #mechanic #auckland"
+                placeholder={t("profile.keywords_placeholder")}
                 className={inputCls}
               />
             </Field>
@@ -742,9 +744,9 @@ function GeneralTab(p: GeneralTabProps) {
         </Card>
 
         <Card>
-          <CardHeader icon={<Globe className="w-5 h-5 text-yellow-500" />} title="Contact & Links" />
+          <CardHeader icon={<Globe className="w-5 h-5 text-yellow-500" />} title={t("profile.contact_links_title")} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <Field label="Default phone / WhatsApp">
+            <Field label={t("profile.default_phone_label")}>
               <input
                 type="text"
                 placeholder="+64 21 000 0000"
@@ -753,7 +755,7 @@ function GeneralTab(p: GeneralTabProps) {
                 className={inputCls}
               />
             </Field>
-            <Field label="Website">
+            <Field label={t("profile.website_label")}>
               <input
                 type="url"
                 placeholder="https://yoursite.co.nz"
@@ -768,7 +770,7 @@ function GeneralTab(p: GeneralTabProps) {
 
       <div className="space-y-6">
         <Card>
-          <h3 className="text-sm font-medium text-white mb-4">Profile Logo</h3>
+          <h3 className="text-sm font-medium text-white mb-4">{t("profile.logo_card_title")}</h3>
           <div
             onClick={() => p.logoRef.current?.click()}
             className="border-2 border-dashed border-white/10 rounded-xl p-6 flex flex-col items-center justify-center text-center hover:border-yellow-500/50 hover:bg-yellow-500/5 transition-all cursor-pointer"
@@ -786,9 +788,9 @@ function GeneralTab(p: GeneralTabProps) {
               </div>
             </div>
             <p className="text-sm text-white font-medium mb-1">
-              {p.logoUploading ? "Uploading…" : "Click or drag to replace"}
+              {p.logoUploading ? t("profile.logo_uploading") : t("profile.logo_click_drag")}
             </p>
-            <p className="text-xs text-zinc-500">PNG or JPG, square (min 400x400)</p>
+            <p className="text-xs text-zinc-500">{t("profile.logo_hint_size")}</p>
             <input
               ref={p.logoRef}
               type="file"
@@ -803,7 +805,7 @@ function GeneralTab(p: GeneralTabProps) {
               onClick={p.onRemoveLogo}
               className="mt-3 w-full text-xs text-zinc-400 hover:text-red-400 transition-colors flex items-center justify-center gap-1.5"
             >
-              <Trash2 size={12} /> Remove logo
+              <Trash2 size={12} /> {t("profile.logo_remove_btn")}
             </button>
           )}
         </Card>
@@ -827,24 +829,26 @@ type LocationsTabProps = {
   onUpdateSlot: (id: string, day: DayKey, field: "open" | "close", v: string) => void;
   onCopyHours: (targetId: string, sourceId: string) => void;
   plan: string;
+  dayLabels: Record<DayKey, string>;
 };
 
 function LocationsTab(p: LocationsTabProps) {
+  const { t } = useI18n();
   const hoursLocked = p.plan === "starter";
   return (
     <div className="space-y-6 max-w-4xl">
       <div className="flex items-center justify-between mb-2 gap-4">
         <div>
-          <h2 className="text-lg font-medium text-white">Manage Branches</h2>
+          <h2 className="text-lg font-medium text-white">{t("profile.manage_branches_title")}</h2>
           <p className="text-sm text-zinc-400">
-            Configure separate addresses and hours for each of your locations.
+            {t("profile.manage_branches_subtitle")}
           </p>
         </div>
         <button
           onClick={p.onAdd}
           className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors border border-white/5 shrink-0"
         >
-          <Plus className="w-4 h-4" /> Add Branch
+          <Plus className="w-4 h-4" /> {t("profile.add_branch_btn")}
         </button>
       </div>
 
@@ -852,12 +856,11 @@ function LocationsTab(p: LocationsTabProps) {
         <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/5 p-4 flex items-start gap-3">
           <Lock className="w-4 h-4 text-yellow-500 mt-0.5" />
           <div className="text-sm">
-            <p className="text-white font-medium">Opening hours are a Premium feature</p>
+            <p className="text-white font-medium">{t("profile.hours_premium_title")}</p>
             <p className="text-zinc-400 text-xs mt-1">
-              Branch names, addresses, and phones are available on every plan. Upgrade to publish
-              opening hours.{" "}
+              {t("profile.hours_premium_body")}{" "}
               <Link to="/dashboard/upgrade" className="text-yellow-500 hover:underline font-medium">
-                Upgrade
+                {t("profile.hours_premium_link")}
               </Link>
             </p>
           </div>
@@ -887,11 +890,11 @@ function LocationsTab(p: LocationsTabProps) {
                   </div>
                   <div className="min-w-0">
                     <h3 className="text-white font-medium text-lg truncate">
-                      {branch.name || "Untitled branch"}
+                      {branch.name || t("profile.untitled_branch")}
                     </h3>
                     <p className="text-sm text-zinc-500 truncate max-w-md">
                       {[branch.addressStreet, branch.addressSuburb].filter(Boolean).join(", ") ||
-                        "No address set"}
+                        t("profile.no_address_set")}
                     </p>
                   </div>
                 </div>
@@ -908,10 +911,10 @@ function LocationsTab(p: LocationsTabProps) {
                     <div className="space-y-5">
                       <SectionLabel
                         icon={<MapPin className="w-4 h-4" />}
-                        text="Location Details"
+                        text={t("profile.location_details_label")}
                       />
 
-                      <Field label="Branch Name (City)">
+                      <Field label={t("profile.branch_name_label")}>
                         <input
                           type="text"
                           value={branch.name}
@@ -922,7 +925,7 @@ function LocationsTab(p: LocationsTabProps) {
                       </Field>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Field label="Street & number">
+                        <Field label={t("profile.street_label")}>
                           <input
                             type="text"
                             value={branch.addressStreet}
@@ -933,7 +936,7 @@ function LocationsTab(p: LocationsTabProps) {
                             className={inputCls}
                           />
                         </Field>
-                        <Field label="Suburb">
+                        <Field label={t("profile.suburb_label")}>
                           <input
                             type="text"
                             value={branch.addressSuburb}
@@ -946,7 +949,7 @@ function LocationsTab(p: LocationsTabProps) {
                         </Field>
                       </div>
 
-                      <Field label="Branch Phone / WhatsApp">
+                      <Field label={t("profile.branch_phone_label")}>
                         <div className="relative">
                           <Phone className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
                           <input
@@ -964,7 +967,7 @@ function LocationsTab(p: LocationsTabProps) {
                       <div className="flex items-center justify-between mb-4">
                         <SectionLabel
                           icon={<Clock className="w-4 h-4" />}
-                          text="Operating Hours"
+                          text={t("profile.operating_hours_label")}
                         />
                         {index > 0 && p.branches[0] && (
                           <button
@@ -972,7 +975,7 @@ function LocationsTab(p: LocationsTabProps) {
                             onClick={() => p.onCopyHours(branch.id, p.branches[0].id)}
                             className="text-[11px] text-zinc-400 hover:text-yellow-500 underline decoration-zinc-700 underline-offset-2 transition-colors"
                           >
-                            Copy from {p.branches[0].name || "first branch"}
+                            {t("profile.copy_from_branch")} {p.branches[0].name || t("profile.untitled_branch")}
                           </button>
                         )}
                       </div>
@@ -981,13 +984,13 @@ function LocationsTab(p: LocationsTabProps) {
                         <div className="rounded-xl border border-white/10 bg-black/40 p-5 text-center">
                           <Lock className="w-5 h-5 text-zinc-500 mx-auto mb-2" />
                           <p className="text-sm text-zinc-300 font-medium">
-                            Hours available on Premium
+                            {t("profile.hours_locked_title")}
                           </p>
                           <Link
                             to="/dashboard/upgrade"
                             className="inline-block mt-3 text-xs text-yellow-500 hover:underline font-medium"
                           >
-                            Upgrade plan →
+                            {t("profile.hours_locked_link")}
                           </Link>
                         </div>
                       ) : (
@@ -1019,7 +1022,7 @@ function LocationsTab(p: LocationsTabProps) {
                                       !day.closed ? "text-zinc-200" : "text-zinc-500"
                                     }`}
                                   >
-                                    {DAY_LABELS[key]}
+                                    {p.dayLabels[key]}
                                   </span>
                                 </div>
 
@@ -1033,7 +1036,7 @@ function LocationsTab(p: LocationsTabProps) {
                                       }
                                       className="bg-[#111] border border-white/10 rounded text-sm text-white px-2 py-1 focus:border-yellow-500 focus:outline-none w-24"
                                     />
-                                    <span className="text-zinc-600">to</span>
+                                    <span className="text-zinc-600">{t("profile.time_separator")}</span>
                                     <input
                                       type="time"
                                       value={slot.close}
@@ -1046,7 +1049,7 @@ function LocationsTab(p: LocationsTabProps) {
                                 ) : (
                                   <div className="flex-1">
                                     <span className="text-xs font-medium px-2 py-1 rounded bg-red-500/10 text-red-400">
-                                      Closed
+                                      {t("profile.day_closed_label")}
                                     </span>
                                   </div>
                                 )}
@@ -1064,7 +1067,7 @@ function LocationsTab(p: LocationsTabProps) {
                       onClick={() => p.onRemove(branch.id)}
                       className="text-red-500 hover:bg-red-500/10 px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
                     >
-                      <Trash2 className="w-4 h-4" /> Remove Branch
+                      <Trash2 className="w-4 h-4" /> {t("profile.remove_branch_btn")}
                     </button>
                   </div>
                 </div>
@@ -1181,6 +1184,7 @@ function ServiceOptionsCard({
   items: { title: string; description: string; icon_key: string }[];
   onChangeItems: (items: { title: string; description: string; icon_key: string }[]) => void;
 }) {
+  const { t } = useI18n();
   const isPaid = plan === "premium" || plan === "ultra";
 
   const addItem = () =>
@@ -1195,7 +1199,7 @@ function ServiceOptionsCard({
     <Card>
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-medium text-white flex items-center gap-2">
-          <Star className="w-5 h-5 text-yellow-500" /> Service Options
+          <Star className="w-5 h-5 text-yellow-500" /> {t("profile.service_options_card_title")}
         </h3>
         <span className="text-[10px] font-bold tracking-widest uppercase bg-gradient-to-r from-yellow-600 to-yellow-400 text-black px-2 py-0.5 rounded">
           Premium
@@ -1207,12 +1211,12 @@ function ServiceOptionsCard({
           <div className="w-11 h-11 mx-auto rounded-2xl bg-yellow-500/10 text-yellow-500 flex items-center justify-center">
             <Lock size={18} />
           </div>
-          <p className="mt-3 text-sm font-medium text-white">Service options are Premium</p>
+          <p className="mt-3 text-sm font-medium text-white">{t("profile.service_options_premium_notice")}</p>
           <Link
             to="/dashboard/upgrade"
             className="inline-block mt-3 text-xs text-yellow-500 hover:underline font-medium"
           >
-            Upgrade plan →
+            {t("profile.service_options_upgrade_link")}
           </Link>
         </div>
       ) : (
@@ -1249,14 +1253,14 @@ function ServiceOptionsCard({
 
           <div className="pt-4 border-t border-white/5">
             <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium text-zinc-300">Custom Options</label>
+              <label className="text-sm font-medium text-zinc-300">{t("profile.custom_options_label")}</label>
               <button
                 type="button"
                 onClick={addItem}
                 disabled={items.length > 0 && !items[items.length - 1].title.trim()}
                 className="text-sm text-yellow-500 hover:text-yellow-400 font-medium flex items-center gap-1 transition-colors disabled:opacity-40"
               >
-                <Plus className="w-4 h-4" /> Add Custom Option
+                <Plus className="w-4 h-4" /> {t("profile.add_custom_option_btn")}
               </button>
             </div>
 
@@ -1274,7 +1278,7 @@ function ServiceOptionsCard({
                           type="text"
                           value={it.title}
                           onChange={(e) => updateItem(idx, { title: e.target.value })}
-                          placeholder="Title"
+                          placeholder={t("profile.custom_title_placeholder")}
                           maxLength={80}
                           className={`${inputCls} py-2 text-sm`}
                         />
@@ -1282,7 +1286,7 @@ function ServiceOptionsCard({
                           type="text"
                           value={it.description}
                           onChange={(e) => updateItem(idx, { description: e.target.value })}
-                          placeholder="Description (optional)"
+                          placeholder={t("profile.custom_description_placeholder")}
                           maxLength={200}
                           className={`${inputCls} py-2 text-sm`}
                         />
@@ -1336,6 +1340,7 @@ function GoogleReviewsCard({
   initialPlaceId: string;
   onConnected: () => void;
 }) {
+  const { t } = useI18n();
   const connect = useServerFn(connectGooglePlace);
   const sync = useServerFn(syncGoogleReviews);
   const [placeId, setPlaceId] = useState(initialPlaceId);
@@ -1354,13 +1359,13 @@ function GoogleReviewsCard({
     try {
       const res = await connect({ data: { placeId: placeId.trim() } });
       if (res.ok) {
-        setMsg({ kind: "ok", text: `Connected. ${res.synced} reviews synced.` });
+        setMsg({ kind: "ok", text: t("profile.google_connected_msg").replace("{n}", String(res.synced)) });
         onConnected();
       } else {
         setMsg({ kind: "err", text: res.error });
       }
     } catch (err) {
-      setMsg({ kind: "err", text: err instanceof Error ? err.message : "Failed to connect." });
+      setMsg({ kind: "err", text: err instanceof Error ? err.message : t("profile.google_failed_msg") });
     } finally {
       setBusy(false);
     }
@@ -1372,10 +1377,10 @@ function GoogleReviewsCard({
     setBusy(true);
     try {
       const res = await sync({ data: { businessId } });
-      setMsg({ kind: "ok", text: `${res.synced} reviews synced.` });
+      setMsg({ kind: "ok", text: t("profile.google_synced_msg").replace("{n}", String(res.synced)) });
       onConnected();
     } catch (err) {
-      setMsg({ kind: "err", text: err instanceof Error ? err.message : "Failed to sync." });
+      setMsg({ kind: "err", text: err instanceof Error ? err.message : t("profile.google_sync_failed_msg") });
     } finally {
       setBusy(false);
     }
@@ -1384,10 +1389,10 @@ function GoogleReviewsCard({
   return (
     <Card>
       <h3 className="text-lg font-medium text-white mb-2 flex items-center gap-2">
-        <Globe className="w-5 h-5 text-yellow-500" /> Google Reviews
+        <Globe className="w-5 h-5 text-yellow-500" /> {t("profile.google_reviews_title")}
       </h3>
       <p className="text-sm text-zinc-400 mb-4">
-        Connect your Google Place ID to display real reviews on your profile.
+        {t("profile.google_reviews_subtitle")}
       </p>
 
       <div className="flex gap-3">
@@ -1404,7 +1409,7 @@ function GoogleReviewsCard({
           disabled={busy || !isValid}
           className="bg-zinc-800 hover:bg-zinc-700 disabled:opacity-60 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors border border-white/5"
         >
-          {busy ? "…" : initialPlaceId ? "Update" : "Verify"}
+          {busy ? "…" : initialPlaceId ? t("profile.google_reviews_update_btn") : t("profile.google_reviews_verify_btn")}
         </button>
         {initialPlaceId && businessId && (
           <button
@@ -1423,7 +1428,7 @@ function GoogleReviewsCard({
         </p>
       )}
       <p className="text-xs text-zinc-500 mt-3">
-        Find your Place ID on{" "}
+        {t("profile.google_reviews_place_id_hint")}{" "}
         <a
           href="https://developers.google.com/maps/documentation/places/web-service/place-id"
           target="_blank"
@@ -1457,10 +1462,11 @@ function QrCard({
   onGenerate: () => void;
   onDownload: () => void;
 }) {
+  const { t } = useI18n();
   return (
     <Card className="flex flex-col items-center text-center">
       <h3 className="text-lg font-medium text-white w-full text-left mb-6 flex items-center gap-2">
-        <QrCode className="w-5 h-5 text-yellow-500" /> Your QR Code
+        <QrCode className="w-5 h-5 text-yellow-500" /> {t("profile.qr_card_title")}
       </h3>
 
       <div className="w-48 h-48 bg-white rounded-2xl p-2 mb-6 shadow-[0_0_30px_rgba(255,255,255,0.05)] flex items-center justify-center">
@@ -1468,11 +1474,11 @@ function QrCard({
           <img src={qrDataUrl} alt="QR Code" className="w-full h-full rounded-xl" />
         ) : !canUseQr ? (
           <span className="text-xs text-zinc-500 inline-flex items-center gap-1">
-            <Lock size={12} /> Premium / Ultra
+            <Lock size={12} /> {t("profile.qr_premium_label")}
           </span>
         ) : (
           <span className="text-xs text-zinc-500">
-            {generating ? "Generating…" : "Click Generate"}
+            {generating ? t("profile.qr_generating_label") : t("profile.qr_click_generate")}
           </span>
         )}
       </div>
@@ -1482,7 +1488,7 @@ function QrCard({
           to="/dashboard/upgrade"
           className="bg-yellow-500 hover:bg-yellow-400 text-black px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-[0_0_20px_rgba(234,179,8,0.15)] mb-3 inline-flex items-center gap-2"
         >
-          <Sparkles size={14} /> Upgrade
+          <Sparkles size={14} /> {t("profile.qr_upgrade_btn")}
         </Link>
       ) : !qrDataUrl ? (
         <button
@@ -1490,14 +1496,14 @@ function QrCard({
           disabled={generating || !qrUrl}
           className="bg-yellow-500 hover:bg-yellow-400 disabled:opacity-60 text-black px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-[0_0_20px_rgba(234,179,8,0.15)] mb-3"
         >
-          {generating ? "Generating…" : "Generate QR Code"}
+          {generating ? t("profile.qr_generating_label") : t("profile.qr_generate_btn")}
         </button>
       ) : (
         <button
           onClick={onDownload}
           className="bg-yellow-500 hover:bg-yellow-400 text-black px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-[0_0_20px_rgba(234,179,8,0.15)] mb-3 inline-flex items-center gap-2"
         >
-          <Download size={14} /> Download QR Code
+          <Download size={14} /> {t("profile.qr_download_btn")}
         </button>
       )}
       {qrError && <p className="text-xs text-red-400 mb-2">{qrError}</p>}

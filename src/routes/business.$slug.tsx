@@ -325,13 +325,13 @@ function BusinessPage() {
     : false;
 
   const todayLabelMap: Record<string, string> = {
-    mon: "Monday",
-    tue: "Tuesday",
-    wed: "Wednesday",
-    thu: "Thursday",
-    fri: "Friday",
-    sat: "Saturday",
-    sun: "Sunday",
+    mon: t("profile.day_mon"),
+    tue: t("profile.day_tue"),
+    wed: t("profile.day_wed"),
+    thu: t("profile.day_thu"),
+    fri: t("profile.day_fri"),
+    sat: t("profile.day_sat"),
+    sun: t("profile.day_sun"),
   };
 
   return (
@@ -527,9 +527,9 @@ function BusinessPage() {
                               {isLastTile && (
                                 <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-1 text-white">
                                   <ImageIcon size={20} className="text-[#facc15]" />
-                                  <span className="text-xs font-bold">View all photos</span>
+                                  <span className="text-xs font-bold">{t("business.view_all_photos")}</span>
                                   <span className="text-[10px] text-white/70">
-                                    {visiblePhotos.length} photos
+                                    {visiblePhotos.length} {t("business.photos_limit")}
                                   </span>
                                 </div>
                               )}
@@ -603,7 +603,7 @@ function BusinessPage() {
                 {reviews.length > 4 && (
                   <div className="mt-6 flex justify-center">
                     <button className="inline-flex items-center gap-2 border border-[#facc15]/40 text-[#facc15] font-bold rounded-full px-5 py-2.5 text-sm hover:bg-[#facc15]/10 transition">
-                      Read all {business.reviewCount} reviews
+                      {t("business.read_all_reviews").replace("{n}", String(business.reviewCount))}
                     </button>
                   </div>
                 )}
@@ -691,7 +691,7 @@ function BusinessPage() {
               (serviceOptionBadges.length > 0 || customItems.length > 0) && (
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-3">
-                    Service options
+                    {t("business.service_options_title")}
                   </p>
                   {serviceOptionBadges.length > 0 && (
                     <div className="flex flex-wrap gap-2">
@@ -739,7 +739,7 @@ function BusinessPage() {
                         : "bg-red-500/10 text-red-400 border border-red-500/30"
                     }`}
                   >
-                    {isOpenNow ? "Open now" : "Closed"}
+                    {isOpenNow ? t("business.open_now") : t("business.closed_now")}
                   </span>
                 </div>
 
@@ -777,13 +777,13 @@ function BusinessPage() {
                           {todayLabelMap[h.day_key] ?? h.day_key}
                           {isToday && (
                             <span className="ml-1 text-[10px] uppercase tracking-wider opacity-70">
-                              (Today)
+                              ({t("business.today_label")})
                             </span>
                           )}
                         </span>
                         <span className={closed ? "text-neutral-500 italic" : ""}>
                           {closed
-                            ? "Closed"
+                            ? t("business.closed_now")
                             : h.slots.map((s) => `${s.open} – ${s.close}`).join(", ")}
                         </span>
                       </div>
@@ -791,11 +791,11 @@ function BusinessPage() {
                   })}
                 </div>
 
-                <button
+                  <button
                   type="button"
                   className="mt-4 w-full text-xs text-neutral-500 underline-offset-4 hover:underline hover:text-neutral-300 transition"
                 >
-                  Report incorrect information
+                  {t("business.report_incorrect")}
                 </button>
               </div>
             )}

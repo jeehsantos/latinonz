@@ -47,38 +47,32 @@ function UpgradePage() {
       <div className="grid md:grid-cols-3 gap-6">
         <PlanCard
           plan="starter"
-          features={["Perfil básico na rede", "3 fotos", "Leads por e-mail"]}
-          ctaLabel={plan === "starter" ? "Plano atual" : "Selecionar"}
+          features={t("upgrade.starter_features") as unknown as string[]}
+          ctaLabel={plan === "starter" ? t("upgrade.current_plan_label") : t("plans.cta_default")}
           onSelect={() => select("starter")}
         />
         <PlanCard
           plan="premium"
           highlight
-          features={[
-            "Perfil completo",
-            "Galeria ilimitada",
-            "Leads via WhatsApp",
-            "Cupons",
-            "Analytics",
-          ]}
+          features={t("upgrade.premium_features") as unknown as string[]}
           ctaLabel={
             plan === "premium"
-              ? "Plano atual"
+              ? t("upgrade.current_plan_label")
               : loading === "premium"
-                ? "Redirecionando..."
-                : "Assinar Premium"
+                ? t("upgrade.redirecting")
+                : t("upgrade.subscribe_premium")
           }
           onSelect={() => select("premium")}
         />
         <PlanCard
           plan="ultra"
-          features={["Tudo do Premium", "Destaque no topo", "Eventos", "Posts em redes sociais"]}
+          features={t("upgrade.ultra_features") as unknown as string[]}
           ctaLabel={
             plan === "ultra"
-              ? "Plano atual"
+              ? t("upgrade.current_plan_label")
               : loading === "ultra"
-                ? "Redirecionando..."
-                : "Assinar Ultra"
+                ? t("upgrade.redirecting")
+                : t("upgrade.subscribe_ultra")
           }
           onSelect={() => select("ultra")}
         />

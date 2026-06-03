@@ -97,7 +97,7 @@ export function DashboardLayout() {
     },
     { to: "/dashboard/coupons", label: t("dashboard.nav_coupons"), icon: Tag },
     ...(can(plan, "events")
-      ? [{ to: "/dashboard/events", label: "Eventos", icon: Calendar } as NavItem]
+      ? [{ to: "/dashboard/events", label: t("dashboard.nav_events"), icon: Calendar } as NavItem]
       : []),
     { to: "/dashboard/analytics", label: t("dashboard.nav_analytics"), icon: BarChart2 },
     { to: "/dashboard/settings", label: t("dashboard.nav_settings"), icon: Settings },

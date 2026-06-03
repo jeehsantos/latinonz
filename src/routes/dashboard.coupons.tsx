@@ -81,14 +81,14 @@ function CouponsPage() {
       }),
     onSuccess: (res) => {
       if (!(res as { ok?: boolean }).ok) {
-        setFormError((res as { error?: string }).error ?? "Erro ao criar cupom");
+        setFormError((res as { error?: string }).error ?? t("modal.error_generic"));
         return;
       }
       queryClient.invalidateQueries({ queryKey: ["my-coupons"] });
       setFormOpen(false);
       resetForm();
     },
-    onError: (err) => setFormError(err instanceof Error ? err.message : "Erro ao criar cupom"),
+    onError: (err) => setFormError(err instanceof Error ? err.message : t("modal.error_generic")),
   });
 
   const toggleMutation = useMutation({
@@ -126,7 +126,7 @@ function CouponsPage() {
 
         {unlocked ? (
           coupons.length === 0 ? (
-            <p className="text-sm text-neutral-500 py-8 text-center">Nenhum cupom criado ainda.</p>
+            <p className="text-sm text-neutral-500 py-8 text-center">{t("coupons.none_yet")}</p>
           ) : (
             <div className="grid sm:grid-cols-2 gap-4">
               {coupons.map((c) => (
@@ -149,7 +149,7 @@ function CouponsPage() {
                         disabled={toggleMutation.isPending}
                         className="text-neutral-500 hover:text-neutral-200 p-1"
                         aria-label="Toggle"
-                        title={c.is_active ? "Desativar" : "Ativar"}
+                        title={c.is_active ? t("coupons.deactivate_label") : t("coupons.activate_label")}
                       >
                         <Power size={14} />
                       </button>
@@ -160,7 +160,7 @@ function CouponsPage() {
                         disabled={deleteMutation.isPending}
                         className="text-neutral-500 hover:text-red-600 p-1"
                         aria-label="Delete"
-                        title="Remover"
+                        title={t("coupons.remove_label")}
                       >
                         <Trash2 size={14} />
                       </button>
@@ -232,7 +232,7 @@ function CouponsPage() {
               <input
                 required
                 type="text"
-                placeholder="Código (ex: TACOS10)"
+                placeholder={t("coupons.code_placeholder")}
                 value={form.code}
                 onChange={(e) => setForm((f) => ({ ...f, code: e.target.value.toUpperCase() }))}
                 className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm uppercase tracking-wider"
@@ -241,7 +241,7 @@ function CouponsPage() {
               <input
                 required
                 type="text"
-                placeholder="Título (ex: 10% off no primeiro pedido)"
+                placeholder={t("coupons.title_placeholder")}
                 value={form.title}
                 onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
                 className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm"
@@ -249,7 +249,7 @@ function CouponsPage() {
               />
               <textarea
                 rows={2}
-                placeholder="Descrição (opcional)"
+                placeholder={t("coupons.description_placeholder")}
                 value={form.description}
                 onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                 className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm resize-none"
@@ -266,14 +266,14 @@ function CouponsPage() {
                   }
                   className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm bg-neutral-900"
                 >
-                  <option value="percent">% Percentual</option>
-                  <option value="fixed">$ Fixo</option>
+                  <option value="percent">{t("coupons.type_percent")}</option>
+                  <option value="fixed">{t("coupons.type_fixed")}</option>
                 </select>
                 <input
                   type="number"
                   min={0}
                   step="0.01"
-                  placeholder="Valor"
+                  placeholder={t("coupons.value_placeholder")}
                   value={form.discountValue}
                   onChange={(e) => setForm((f) => ({ ...f, discountValue: e.target.value }))}
                   className="w-full border border-white/10 rounded-xl px-3 py-2 text-sm"
@@ -291,7 +291,7 @@ function CouponsPage() {
                 disabled={createMutation.isPending}
                 className="w-full bg-neutral-900 hover:bg-white/5 disabled:opacity-50 text-[#facc15] font-bold rounded-2xl py-3 text-sm"
               >
-                {createMutation.isPending ? "Criando..." : "Criar cupom"}
+                {createMutation.isPending ? t("coupons.creating_label") : t("coupons.create_btn")}
               </button>
             </form>
           </div>
