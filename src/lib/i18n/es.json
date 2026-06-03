@@ -240,6 +240,9 @@
   },
   "dashboard": {
     "nav_events": "Eventos",
+    "nav_analytics": "Análisis",
+    "coming_soon_title": "Próximamente",
+    "coming_soon_desc": "Estamos trabajando para traerte esta funcionalidad. ¡Mantente atento a las actualizaciones!",
     "stat_hint_30days": "Últimos 30 días",
     "stat_hint_reviews": "reseñas",
     "no_leads_yet": "Aún no se han recibido leads.",
@@ -258,7 +261,6 @@
     "nav_gallery": "Galería",
     "nav_leads": "Leads",
     "nav_coupons": "Cupones",
-    "nav_analytics": "Análisis",
     "nav_settings": "Configuración",
     "sign_out": "Cerrar sesión"
   },
