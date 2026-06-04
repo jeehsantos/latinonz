@@ -655,6 +655,8 @@ type GeneralTabProps = {
   setName: (v: string) => void;
   description: string;
   setDescription: (v: string) => void;
+  categoryGroup: string;
+  setCategoryGroup: (v: string) => void;
   category: string;
   setCategory: (v: string) => void;
   phone: string;
