@@ -691,26 +691,18 @@ function GeneralTab(p: GeneralTabProps) {
                   className={inputCls}
                 />
               </Field>
-              <Field label={t("profile.category_asterisk")}>
+              <Field label={t("profile.group_asterisk")}>
                 <div className="relative">
                   <select
-                    value={p.category}
-                    onChange={(e) => p.setCategory(e.target.value)}
+                    value={p.categoryGroup}
+                    onChange={(e) => p.setCategoryGroup(e.target.value)}
                     className={`${inputCls} appearance-none pr-10`}
                   >
-                    {groups.map((group) => {
-                      const groupCats = categories.filter((c) => c.group === group.id);
-                      if (groupCats.length === 0) return null;
-                      return (
-                        <optgroup key={group.id} label={group.label}>
-                          {groupCats.map((c) => (
-                            <option key={c.key} value={c.key}>
-                              {c.label}
-                            </option>
-                          ))}
-                        </optgroup>
-                      );
-                    })}
+                    {groups.map((group) => (
+                      <option key={group.id} value={group.id}>
+                        {group.label}
+                      </option>
+                    ))}
                   </select>
                   <ChevronDown
                     size={16}
@@ -719,6 +711,28 @@ function GeneralTab(p: GeneralTabProps) {
                 </div>
               </Field>
             </div>
+            <Field label={t("profile.category_asterisk")}>
+              <div className="relative">
+                <select
+                  value={p.category}
+                  onChange={(e) => p.setCategory(e.target.value)}
+                  className={`${inputCls} appearance-none pr-10`}
+                >
+                  {categories
+                    .filter((c) => !p.categoryGroup || c.group === p.categoryGroup)
+                    .map((c) => (
+                      <option key={c.key} value={c.key}>
+                        {c.label}
+                      </option>
+                    ))}
+                </select>
+                <ChevronDown
+                  size={16}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none"
+                />
+              </div>
+            </Field>
+
 
             <Field
               label={t("profile.description_asterisk")}
