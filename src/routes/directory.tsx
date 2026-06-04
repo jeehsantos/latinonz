@@ -48,7 +48,7 @@ function DirectoryPage() {
     category: initial.category,
     city: initial.city,
   });
-  const { groups, categories } = useCategories();
+  const { groups } = useCategories();
 
   const fetchBusinesses = useServerFn(getBusinesses);
   const { data } = useQuery({
@@ -59,6 +59,7 @@ function DirectoryPage() {
     () => (data?.ok ? data.rows.map((r) => adaptBusiness(r)) : []),
     [data],
   );
+  const groupIds = useMemo(() => new Set(groups.map((g) => g.id)), [groups]);
 
   const filtered = useMemo(() => {
     return businesses.filter((b) => {
@@ -66,14 +67,10 @@ function DirectoryPage() {
       if (q && !b.name.toLowerCase().includes(q) && !b.description.toLowerCase().includes(q))
         return false;
       if (search.category) {
-        // Support filtering by group id (matches any category in that group)
-        // or by specific category key
-        const isGroup = groups.some((g) => g.id === search.category);
-        if (isGroup) {
-          const groupKeys = categories.filter((c) => c.group === search.category).map((c) => c.key);
-          if (!groupKeys.includes(b.macro ?? "")) return false;
-        } else {
-          if (b.macro !== search.category) return false;
+        if (groupIds.has(search.category)) {
+          if (b.categoryGroup !== search.category) return false;
+        } else if (b.macro !== search.category) {
+          return false;
         }
       }
       if (search.city) {
@@ -82,7 +79,7 @@ function DirectoryPage() {
       }
       return true;
     });
-  }, [businesses, search, groups, categories]);
+  }, [businesses, search, groupIds]);
 
   return (
     <SiteShell>
