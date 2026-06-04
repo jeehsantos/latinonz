@@ -2,10 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Tag, Ticket, X, Power, Trash2 } from "lucide-react";
+import { Plus, Ticket, X, Power, Trash2 } from "lucide-react";
 import { useCurrentPlan } from "@/lib/dev-plan";
 import { can } from "@/lib/plans";
 import { useI18n } from "@/lib/i18n";
+import { LockedFeatureCard } from "@/components/dashboard/LockedFeatureCard";
 import { getMyCoupons, createCoupon, toggleCoupon, deleteCoupon } from "@/lib/coupons.functions";
 
 export const Route = createFileRoute("/dashboard/coupons")({
@@ -185,20 +186,11 @@ function CouponsPage() {
             </div>
           )
         ) : (
-          <div className="rounded-2xl border-2 border-dashed border-amber-200 bg-amber-50/60 px-6 py-12 flex flex-col items-center justify-center text-center">
-            <div className="w-14 h-14 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center">
-              <Tag size={22} />
-            </div>
-            <p className="mt-5 font-extrabold text-white text-base">
-              {t("coupons.locked_title")}
-            </p>
-            <Link
-              to="/dashboard/upgrade"
-              className="mt-4 inline-flex items-center bg-amber-400 hover:bg-amber-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl shadow-sm transition-colors"
-            >
-              {t("coupons.upgrade_button")}
-            </Link>
-          </div>
+          <LockedFeatureCard
+            title={t("coupons.locked_title")}
+            description={t("coupons.locked_description")}
+            requiredPlan="premium"
+          />
         )}
       </div>
 

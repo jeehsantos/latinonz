@@ -429,6 +429,7 @@
     "active_title": "Cupons Ativos",
     "locked_title": "Cupons são um recurso Premium",
     "upgrade_button": "Mudar de Plano",
+    "locked_description": "Crie cupons de desconto e promoções para atrair novos clientes.",
     "valid_until": "Válido até"
   },
   "gallery": {
@@ -445,6 +446,16 @@
     "subtitle_unlimited": "fotos ilimitadas",
     "add_button": "Adicionar"
   },
+  "service_options": {
+    "takeaway_label": "Take Away",
+    "takeaway_hint": "Retirada na loja",
+    "dinein_label": "Dine In",
+    "dinein_hint": "Consumo no local",
+    "delivery_label": "Delivery",
+    "delivery_hint": "Entrega ao cliente",
+    "booking_label": "Reserva antecipada",
+    "booking_hint": "Reservas necessárias"
+  },
   "settings": {
     "title": "Configurações",
     "subtitle": "Conta, plano e preferências.",
@@ -458,7 +469,17 @@
     "account_title": "Conta",
     "email_label": "E-mail",
     "new_password_label": "Nova senha",
-    "save_button": "Salvar"
+    "save_button": "Salvar",
+    "privacy_title": "Privacidade & Dados",
+    "privacy_subtitle": "Gerencie seus dados pessoais e exerça seus direitos conforme o Privacy Act 2020 da Nova Zelândia.",
+    "data_request_title": "Solicitar meus dados",
+    "data_request_body": "Solicite uma cópia de todas as informações pessoais que temos sobre você. Responderemos em até 20 dias úteis.",
+    "data_request_btn": "Solicitar exportação de dados",
+    "account_delete_title": "Excluir minha conta",
+    "account_delete_body": "Solicite a exclusão permanente da sua conta e de todos os dados pessoais associados. Esta ação não pode ser desfeita.",
+    "account_delete_btn": "Solicitar exclusão de conta",
+    "privacy_policy_link": "Leia nossa Política de Privacidade completa",
+    "account_update_subtitle": "Atualize suas credenciais de acesso."
   },
   "upgrade": {
     "title": "Escolha o seu plano",
@@ -466,16 +487,7 @@
     "current_plan_label": "Plano atual",
     "redirecting": "Redirecionando...",
     "subscribe_premium": "Assinar Premium",
-    "subscribe_ultra": "Assinar Ultra",
-    "starter_features": ["Perfil básico na rede", "3 fotos", "Leads por e-mail"],
-    "premium_features": [
-      "Perfil completo",
-      "Galeria ilimitada",
-      "Leads via WhatsApp",
-      "Cupons",
-      "Analytics"
-    ],
-    "ultra_features": ["Tudo do Premium", "Destaque no topo", "Eventos", "Posts em redes sociais"]
+    "subscribe_ultra": "Assinar Ultra"
   },
   "locked_feature": {
     "available_from": "Disponível a partir do plano",

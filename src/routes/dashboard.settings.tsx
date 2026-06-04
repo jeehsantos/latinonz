@@ -63,7 +63,7 @@ function SettingsPage() {
     { id: "plan", label: t("settings.current_plan_title"), icon: CreditCard },
     { id: "appearance", label: t("settings.appearance_title"), icon: Palette },
     { id: "account", label: t("settings.account_title"), icon: User },
-    { id: "privacy", label: "Privacy & Data", icon: Shield },
+    { id: "privacy", label: t("settings.privacy_title"), icon: Shield },
   ];
 
   return (
@@ -188,7 +188,7 @@ function SettingsPage() {
                   {t("settings.account_title")}
                 </h2>
                 <p className="text-sm text-neutral-400 mt-1">
-                  Update your account credentials.
+                  {t("settings.account_update_subtitle")}
                 </p>
               </div>
               <div>
@@ -219,10 +219,9 @@ function SettingsPage() {
           {active === "privacy" && (
             <div className="space-y-5">
               <div>
-                <h2 className="text-xl font-extrabold text-white">Privacy & Data</h2>
+                <h2 className="text-xl font-extrabold text-white">{t("settings.privacy_title")}</h2>
                 <p className="text-sm text-neutral-400 mt-1">
-                  Manage your personal data and exercise your rights under the New Zealand
-                  Privacy Act 2020.
+                  {t("settings.privacy_subtitle")}
                 </p>
               </div>
 
@@ -230,34 +229,32 @@ function SettingsPage() {
                 <div className="rounded-2xl border border-white/10 p-4 space-y-2">
                   <div className="flex items-center gap-2">
                     <Download className="h-4 w-4 text-[#facc15]" />
-                    <h3 className="font-bold text-sm text-white">Request My Data</h3>
+                    <h3 className="font-bold text-sm text-white">{t("settings.data_request_title")}</h3>
                   </div>
                   <p className="text-sm text-neutral-400">
-                    Request a copy of all personal information we hold about you. We will
-                    respond within 20 working days.
+                    {t("settings.data_request_body")}
                   </p>
                   <a
                     href={`mailto:hello@latinoconnecthub.co.nz?subject=Data%20Access%20Request&body=Account%20email%3A%20${encodeURIComponent(email)}`}
                     className="inline-flex mt-1 border border-white/10 hover:bg-white/5 text-white text-sm font-bold rounded-xl px-4 py-2"
                   >
-                    Request Data Export
+                    {t("settings.data_request_btn")}
                   </a>
                 </div>
 
                 <div className="rounded-2xl border border-white/10 p-4 space-y-2">
                   <div className="flex items-center gap-2">
                     <Trash2 className="h-4 w-4 text-red-400" />
-                    <h3 className="font-bold text-sm text-white">Delete My Account</h3>
+                    <h3 className="font-bold text-sm text-white">{t("settings.account_delete_title")}</h3>
                   </div>
                   <p className="text-sm text-neutral-400">
-                    Request permanent deletion of your account and all associated personal
-                    data. This action cannot be undone.
+                    {t("settings.account_delete_body")}
                   </p>
                   <a
                     href={`mailto:hello@latinoconnecthub.co.nz?subject=Account%20Deletion%20Request&body=Account%20email%3A%20${encodeURIComponent(email)}`}
                     className="inline-flex mt-1 border border-red-500/30 hover:bg-red-500/10 text-red-400 text-sm font-bold rounded-xl px-4 py-2"
                   >
-                    Request Account Deletion
+                    {t("settings.account_delete_btn")}
                   </a>
                 </div>
 
@@ -266,7 +263,7 @@ function SettingsPage() {
                   className="inline-flex items-center gap-1.5 text-sm text-[#facc15] hover:underline"
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
-                  Read our full Privacy Policy
+                  {t("settings.privacy_policy_link")}
                 </a>
               </div>
             </div>

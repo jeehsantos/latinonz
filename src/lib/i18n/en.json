@@ -430,6 +430,7 @@
     "active_title": "Active Coupons",
     "locked_title": "Coupons are a Premium feature",
     "upgrade_button": "Change Package",
+    "locked_description": "Create discount coupons and promotions to attract new customers.",
     "valid_until": "Valid until"
   },
   "gallery": {
@@ -446,6 +447,16 @@
     "subtitle_unlimited": "unlimited photos",
     "add_button": "Add"
   },
+  "service_options": {
+    "takeaway_label": "Take Away",
+    "takeaway_hint": "Pick up in store",
+    "dinein_label": "Dine In",
+    "dinein_hint": "Consume on site",
+    "delivery_label": "Delivery",
+    "delivery_hint": "Sent to customer",
+    "booking_label": "Book in advance",
+    "booking_hint": "Reservations required"
+  },
   "settings": {
     "title": "Settings",
     "subtitle": "Account, package and preferences.",
@@ -459,7 +470,17 @@
     "account_title": "Account",
     "email_label": "Email",
     "new_password_label": "New password",
-    "save_button": "Save"
+    "save_button": "Save",
+    "privacy_title": "Privacy & Data",
+    "privacy_subtitle": "Manage your personal data and exercise your rights under the New Zealand Privacy Act 2020.",
+    "data_request_title": "Request My Data",
+    "data_request_body": "Request a copy of all personal information we hold about you. We will respond within 20 working days.",
+    "data_request_btn": "Request Data Export",
+    "account_delete_title": "Delete My Account",
+    "account_delete_body": "Request permanent deletion of your account and all associated personal data. This action cannot be undone.",
+    "account_delete_btn": "Request Account Deletion",
+    "privacy_policy_link": "Read our full Privacy Policy",
+    "account_update_subtitle": "Update your account credentials."
   },
   "upgrade": {
     "title": "Choose your package",
@@ -467,16 +488,7 @@
     "current_plan_label": "Current package",
     "redirecting": "Redirecting...",
     "subscribe_premium": "Subscribe Premium",
-    "subscribe_ultra": "Subscribe Ultra",
-    "starter_features": ["Basic profile in the network", "3 photos", "Email leads"],
-    "premium_features": [
-      "Full profile",
-      "Unlimited gallery",
-      "WhatsApp leads",
-      "Coupons",
-      "Analytics"
-    ],
-    "ultra_features": ["Everything in Premium", "Top placement", "Events", "Social media posts"]
+    "subscribe_ultra": "Subscribe Ultra"
   },
   "locked_feature": {
     "available_from": "Available from the",

@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import { useCategories } from "@/hooks/useCategories";
 import { useI18n } from "@/lib/i18n";
+import type { TranslationKey } from "@/lib/i18n";
 import {
   getMyBusiness,
   updateMyBusiness,
@@ -1162,13 +1163,13 @@ export function getServiceIcon(key: string): typeof ShoppingBag {
 
 const SERVICE_OPTIONS: {
   key: ServiceFlagKey;
-  label: string;
-  hint: string;
+  labelKey: TranslationKey;
+  hintKey: TranslationKey;
 }[] = [
-  { key: "takeaway", label: "Take Away", hint: "Pick up in store" },
-  { key: "dinein", label: "Dine In", hint: "Consume on site" },
-  { key: "delivery", label: "Delivery", hint: "Sent to customer" },
-  { key: "booking", label: "Book in advance", hint: "Reservations required" },
+  { key: "takeaway", labelKey: "service_options.takeaway_label", hintKey: "service_options.takeaway_hint" },
+  { key: "dinein", labelKey: "service_options.dinein_label", hintKey: "service_options.dinein_hint" },
+  { key: "delivery", labelKey: "service_options.delivery_label", hintKey: "service_options.delivery_hint" },
+  { key: "booking", labelKey: "service_options.booking_label", hintKey: "service_options.booking_hint" },
 ];
 
 function ServiceOptionsCard({
@@ -1241,11 +1242,11 @@ function ServiceOptionsCard({
                         active ? "text-yellow-500" : "text-zinc-300"
                       }`}
                     >
-                      {opt.label}
+                      {t(opt.labelKey)}
                     </span>
                     {active && <Check className="w-4 h-4 text-yellow-500" />}
                   </div>
-                  <span className="text-xs text-zinc-500">{opt.hint}</span>
+                  <span className="text-xs text-zinc-500">{t(opt.hintKey)}</span>
                 </button>
               );
             })}

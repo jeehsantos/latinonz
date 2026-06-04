@@ -429,6 +429,7 @@
     "active_title": "Cupones Activos",
     "locked_title": "Los cupones son una función Premium",
     "upgrade_button": "Cambiar de Plan",
+    "locked_description": "Crea cupones de descuento y promociones para atraer nuevos clientes.",
     "valid_until": "Válido hasta"
   },
   "gallery": {
@@ -445,6 +446,16 @@
     "subtitle_unlimited": "fotos ilimitadas",
     "add_button": "Agregar"
   },
+  "service_options": {
+    "takeaway_label": "Take Away",
+    "takeaway_hint": "Recogida en tienda",
+    "dinein_label": "Dine In",
+    "dinein_hint": "Consumo en el local",
+    "delivery_label": "Delivery",
+    "delivery_hint": "Envío al cliente",
+    "booking_label": "Reserva anticipada",
+    "booking_hint": "Se requiere reserva"
+  },
   "settings": {
     "title": "Configuración",
     "subtitle": "Cuenta, plan y preferencias.",
@@ -458,7 +469,17 @@
     "account_title": "Cuenta",
     "email_label": "Correo electrónico",
     "new_password_label": "Nueva contraseña",
-    "save_button": "Guardar"
+    "save_button": "Guardar",
+    "privacy_title": "Privacidad y Datos",
+    "privacy_subtitle": "Administra tus datos personales y ejerce tus derechos conforme al Privacy Act 2020 de Nueva Zelanda.",
+    "data_request_title": "Solicitar mis datos",
+    "data_request_body": "Solicita una copia de toda la información personal que tenemos sobre ti. Responderemos en un plazo de 20 días hábiles.",
+    "data_request_btn": "Solicitar exportación de datos",
+    "account_delete_title": "Eliminar mi cuenta",
+    "account_delete_body": "Solicita la eliminación permanente de tu cuenta y todos los datos personales asociados. Esta acción no se puede deshacer.",
+    "account_delete_btn": "Solicitar eliminación de cuenta",
+    "privacy_policy_link": "Lee nuestra Política de Privacidad completa",
+    "account_update_subtitle": "Actualiza tus credenciales de acceso."
   },
   "upgrade": {
     "title": "Elige tu plan",
@@ -466,16 +487,7 @@
     "current_plan_label": "Plan actual",
     "redirecting": "Redireccionando...",
     "subscribe_premium": "Suscribirse a Premium",
-    "subscribe_ultra": "Suscribirse a Ultra",
-    "starter_features": ["Perfil básico en la red", "3 fotos", "Leads por correo"],
-    "premium_features": [
-      "Perfil completo",
-      "Galería ilimitada",
-      "Leads por WhatsApp",
-      "Cupones",
-      "Analytics"
-    ],
-    "ultra_features": ["Todo lo del Premium", "Destaque en lo alto", "Eventos", "Posts en redes sociales"]
+    "subscribe_ultra": "Suscribirse a Ultra"
   },
   "locked_feature": {
     "available_from": "Disponible desde el plan",
