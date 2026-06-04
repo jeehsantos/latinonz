@@ -20,7 +20,6 @@ type NavItem = { to: string; label: string; icon: typeof BarChart3; exact?: bool
 const NAV: NavItem[] = [
   { to: "/admin", label: "Métricas", icon: BarChart3, exact: true },
   { to: "/admin/businesses", label: "Negócios", icon: Briefcase },
-  { to: "/admin/categories", label: "Categorias", icon: FolderTree },
   { to: "/admin/managers", label: "Gerentes", icon: UserCog },
   { to: "/admin/waitlist", label: "Lista de espera", icon: Inbox },
   { to: "/admin/account", label: "Minha conta", icon: UserCircle },
