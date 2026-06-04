@@ -582,6 +582,8 @@ function ProfileEditor() {
               setName={setName}
               description={description}
               setDescription={setDescription}
+              categoryGroup={categoryGroup}
+              setCategoryGroup={setCategoryGroup}
               category={category}
               setCategory={setCategory}
               phone={phone}
