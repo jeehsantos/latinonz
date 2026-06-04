@@ -178,6 +178,8 @@ function ProfileEditor() {
       setName(b.name ?? "");
       setDescription(b.description ?? "");
       if (b.macro_category) setCategory(b.macro_category);
+      const loadedGroup = (b as { category_group?: string | null }).category_group;
+      if (loadedGroup) setCategoryGroup(loadedGroup);
       setPhone(b.phone ?? "");
       setWebsite(b.website ?? "");
       setKeywords((b.keywords ?? []).join(", "));
