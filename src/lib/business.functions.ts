@@ -100,12 +100,18 @@ export const getBusinesses = createServerFn({ method: "GET" })
     let query = supabaseAdmin
       .from("businesses")
       .select(
-        "id, slug, name, description, type, macro_category, subcategory, tags, locations, logo_url, is_verified, fast_responder, response_time, rating, review_count, address_street, address_suburb",
+        "id, slug, name, description, category_group, macro_category, subcategory, tags, locations, logo_url, is_verified, fast_responder, response_time, rating, review_count, address_street, address_suburb",
       )
       .eq("is_active", true)
       .order("rating", { ascending: false });
 
-    if (data.category) query = query.eq("macro_category", data.category);
+    if (data.category) {
+      if (GROUP_IDS.has(data.category)) {
+        query = query.eq("category_group", data.category);
+      } else {
+        query = query.eq("macro_category", data.category);
+      }
+    }
     if (data.city) query = query.contains("locations", [data.city]);
     if (data.q) query = query.ilike("name", `%${data.q}%`);
 
