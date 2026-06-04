@@ -55,6 +55,7 @@ import { logProfileView } from "@/lib/analytics.functions";
 import { COUPONS_BY_BUSINESS } from "@/lib/mock/businesses";
 import { can, getLimit } from "@/lib/plans";
 import { useI18n, usePageMetadata } from "@/lib/i18n";
+import { useCategories } from "@/hooks/useCategories";
 
 export const Route = createFileRoute("/business/$slug")({
   loader: async ({ params }) => {
@@ -124,7 +125,10 @@ export const Route = createFileRoute("/business/$slug")({
 
 function BusinessPage() {
   const { t } = useI18n();
+  const { getCategoryByKey } = useCategories();
   const { business, hours, serviceOptions, serviceOptionItems, photos, coupons, locations, branches } = Route.useLoaderData();
+  const categoryLabel =
+    getCategoryByKey(business.macro_category)?.label ?? business.subcategory ?? "";
   usePageMetadata(
     undefined,
     undefined,
@@ -432,8 +436,8 @@ function BusinessPage() {
                     {business.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
                   </a>
                 )}
-                {business.subcategory && (
-                  <span className="text-white/60">{business.subcategory}</span>
+                {categoryLabel && (
+                  <span className="text-white/60">{categoryLabel}</span>
                 )}
               </div>
             </div>

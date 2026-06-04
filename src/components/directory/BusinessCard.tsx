@@ -2,11 +2,14 @@ import { Link } from "@tanstack/react-router";
 import { MapPin, Star } from "lucide-react";
 import type { Business } from "@/lib/mock/types";
 import { PlanBadge } from "@/components/PlanBadge";
+import { useCategories } from "@/hooks/useCategories";
 
 import { useI18n } from "@/lib/i18n";
 
 export function BusinessCard({ business }: { business: Business }) {
   const { t } = useI18n();
+  const { getCategoryByKey } = useCategories();
+  const categoryLabel = getCategoryByKey(business.macro)?.label ?? business.subcategory;
   const displayType =
     business.type === "Empresa"
       ? t("business.type_business")
@@ -46,7 +49,7 @@ export function BusinessCard({ business }: { business: Business }) {
         <h3 className="font-extrabold text-white group-hover:text-[#facc15] line-clamp-1">
           {business.name}
         </h3>
-        <p className="text-xs text-neutral-400 mt-0.5 line-clamp-1">{business.subcategory}</p>
+        <p className="text-xs text-neutral-400 mt-0.5 line-clamp-1">{categoryLabel}</p>
         <p className="text-sm text-neutral-300 mt-2 sm:mt-3 line-clamp-2">{business.description}</p>
         <div className="flex items-center justify-between mt-3 sm:mt-4 text-xs text-neutral-400 gap-2">
           <span className="inline-flex items-center gap-1 min-w-0">

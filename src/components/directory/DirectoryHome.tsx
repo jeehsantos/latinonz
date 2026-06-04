@@ -209,6 +209,8 @@ export function DirectoryHome() {
 
 function FeaturedCard({ business }: { business: Business }) {
   const planLabel = PLAN_LABELS[business.plan] ?? business.plan;
+  const { getCategoryByKey } = useCategories();
+  const categoryLabel = getCategoryByKey(business.macro)?.label ?? business.subcategory;
   return (
     <Link
       to="/business/$slug"
@@ -275,7 +277,7 @@ function FeaturedCard({ business }: { business: Business }) {
           <div className="flex items-center justify-between gap-2">
             <span className="inline-flex items-center gap-1.5 text-[11px] text-neutral-400 min-w-0">
               <Tag size={12} className="shrink-0 text-[#FFC700]" />
-              <span className="truncate">{business.subcategory}</span>
+              <span className="truncate">{categoryLabel}</span>
             </span>
             <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#FFC700] shrink-0">
               Active
