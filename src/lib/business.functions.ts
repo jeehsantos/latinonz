@@ -357,7 +357,7 @@ export const updateMyBusiness = createServerFn({ method: "POST" })
           slug,
           name: data.name,
           description: data.description ?? null,
-          type: data.type ?? "Serviço",
+          category_group: data.category_group ?? null,
           macro_category: data.macro_category ?? "Outros",
           subcategory: data.subcategory ?? null,
           tags: data.tags ?? [],
