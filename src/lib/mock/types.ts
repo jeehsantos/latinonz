@@ -19,6 +19,7 @@ export type Business = {
   name: string;
   description: string;
   macro: string;
+  categoryGroup?: string | null;
   subcategory: string;
   location: string;
   locations?: string[];
