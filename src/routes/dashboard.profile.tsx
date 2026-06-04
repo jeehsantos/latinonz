@@ -430,6 +430,7 @@ function ProfileEditor() {
           name: name.trim() || undefined,
           description: description.trim(),
           macro_category: category,
+          category_group: categoryGroup || null,
           phone: phone.trim() || null,
           website: website.trim() || null,
           locations,
