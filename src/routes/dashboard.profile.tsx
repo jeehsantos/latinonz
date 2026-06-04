@@ -268,14 +268,36 @@ function ProfileEditor() {
     }
   }, [loaded]);
 
-  const { groups, categories: allCategories } = useCategories();
-  
-  // Set default category if none selected
+  const { groups, categories: allCategories, getCategoryByKey } = useCategories();
+
+  // Initialize group + category to sensible defaults.
   useEffect(() => {
-    if (!category && allCategories.length > 0) {
-      setCategory(allCategories[0].key);
+    if (groups.length === 0) return;
+    // If category set but group missing, derive group from category.
+    if (category && !categoryGroup) {
+      const found = getCategoryByKey(category);
+      if (found) setCategoryGroup(found.group);
+      return;
     }
-  }, [allCategories, category]);
+    // If nothing set yet, default to first group + first category in it.
+    if (!categoryGroup) {
+      const firstGroup = groups[0].id;
+      setCategoryGroup(firstGroup);
+      const firstCat = allCategories.find((c) => c.group === firstGroup);
+      if (firstCat && !category) setCategory(firstCat.key);
+    }
+  }, [groups, allCategories, category, categoryGroup, getCategoryByKey]);
+
+  // When the user changes group, snap category to the first one in that group
+  // if the current category does not belong to it.
+  useEffect(() => {
+    if (!categoryGroup) return;
+    const current = getCategoryByKey(category);
+    if (current && current.group === categoryGroup) return;
+    const firstInGroup = allCategories.find((c) => c.group === categoryGroup);
+    if (firstInGroup) setCategory(firstInGroup.key);
+  }, [categoryGroup, allCategories, category, getCategoryByKey]);
+
 
   // ---- Branch mutators ----
   const updateBranch = (id: string, patch: Partial<Branch>) =>
