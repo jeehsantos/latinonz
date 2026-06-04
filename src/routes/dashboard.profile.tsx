@@ -130,6 +130,7 @@ function ProfileEditor() {
   // ---- General tab state ----
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [categoryGroup, setCategoryGroup] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [phone, setPhone] = useState("");
   const [website, setWebsite] = useState("");
