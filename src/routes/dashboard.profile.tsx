@@ -130,6 +130,7 @@ function ProfileEditor() {
   // ---- General tab state ----
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [categoryGroup, setCategoryGroup] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [phone, setPhone] = useState("");
   const [website, setWebsite] = useState("");
@@ -177,6 +178,8 @@ function ProfileEditor() {
       setName(b.name ?? "");
       setDescription(b.description ?? "");
       if (b.macro_category) setCategory(b.macro_category);
+      const loadedGroup = (b as { category_group?: string | null }).category_group;
+      if (loadedGroup) setCategoryGroup(loadedGroup);
       setPhone(b.phone ?? "");
       setWebsite(b.website ?? "");
       setKeywords((b.keywords ?? []).join(", "));
@@ -265,14 +268,36 @@ function ProfileEditor() {
     }
   }, [loaded]);
 
-  const { groups, categories: allCategories } = useCategories();
-  
-  // Set default category if none selected
+  const { groups, categories: allCategories, getCategoryByKey } = useCategories();
+
+  // Initialize group + category to sensible defaults.
   useEffect(() => {
-    if (!category && allCategories.length > 0) {
-      setCategory(allCategories[0].key);
+    if (groups.length === 0) return;
+    // If category set but group missing, derive group from category.
+    if (category && !categoryGroup) {
+      const found = getCategoryByKey(category);
+      if (found) setCategoryGroup(found.group);
+      return;
     }
-  }, [allCategories, category]);
+    // If nothing set yet, default to first group + first category in it.
+    if (!categoryGroup) {
+      const firstGroup = groups[0].id;
+      setCategoryGroup(firstGroup);
+      const firstCat = allCategories.find((c) => c.group === firstGroup);
+      if (firstCat && !category) setCategory(firstCat.key);
+    }
+  }, [groups, allCategories, category, categoryGroup, getCategoryByKey]);
+
+  // When the user changes group, snap category to the first one in that group
+  // if the current category does not belong to it.
+  useEffect(() => {
+    if (!categoryGroup) return;
+    const current = getCategoryByKey(category);
+    if (current && current.group === categoryGroup) return;
+    const firstInGroup = allCategories.find((c) => c.group === categoryGroup);
+    if (firstInGroup) setCategory(firstInGroup.key);
+  }, [categoryGroup, allCategories, category, getCategoryByKey]);
+
 
   // ---- Branch mutators ----
   const updateBranch = (id: string, patch: Partial<Branch>) =>
@@ -405,6 +430,7 @@ function ProfileEditor() {
           name: name.trim() || undefined,
           description: description.trim(),
           macro_category: category,
+          category_group: categoryGroup || null,
           phone: phone.trim() || null,
           website: website.trim() || null,
           locations,
@@ -556,6 +582,8 @@ function ProfileEditor() {
               setName={setName}
               description={description}
               setDescription={setDescription}
+              categoryGroup={categoryGroup}
+              setCategoryGroup={setCategoryGroup}
               category={category}
               setCategory={setCategory}
               phone={phone}
@@ -627,6 +655,8 @@ type GeneralTabProps = {
   setName: (v: string) => void;
   description: string;
   setDescription: (v: string) => void;
+  categoryGroup: string;
+  setCategoryGroup: (v: string) => void;
   category: string;
   setCategory: (v: string) => void;
   phone: string;
@@ -661,26 +691,18 @@ function GeneralTab(p: GeneralTabProps) {
                   className={inputCls}
                 />
               </Field>
-              <Field label={t("profile.category_asterisk")}>
+              <Field label={t("profile.group_asterisk")}>
                 <div className="relative">
                   <select
-                    value={p.category}
-                    onChange={(e) => p.setCategory(e.target.value)}
+                    value={p.categoryGroup}
+                    onChange={(e) => p.setCategoryGroup(e.target.value)}
                     className={`${inputCls} appearance-none pr-10`}
                   >
-                    {groups.map((group) => {
-                      const groupCats = categories.filter((c) => c.group === group.id);
-                      if (groupCats.length === 0) return null;
-                      return (
-                        <optgroup key={group.id} label={group.label}>
-                          {groupCats.map((c) => (
-                            <option key={c.key} value={c.key}>
-                              {c.label}
-                            </option>
-                          ))}
-                        </optgroup>
-                      );
-                    })}
+                    {groups.map((group) => (
+                      <option key={group.id} value={group.id}>
+                        {group.label}
+                      </option>
+                    ))}
                   </select>
                   <ChevronDown
                     size={16}
@@ -689,6 +711,28 @@ function GeneralTab(p: GeneralTabProps) {
                 </div>
               </Field>
             </div>
+            <Field label={t("profile.category_asterisk")}>
+              <div className="relative">
+                <select
+                  value={p.category}
+                  onChange={(e) => p.setCategory(e.target.value)}
+                  className={`${inputCls} appearance-none pr-10`}
+                >
+                  {categories
+                    .filter((c) => !p.categoryGroup || c.group === p.categoryGroup)
+                    .map((c) => (
+                      <option key={c.key} value={c.key}>
+                        {c.label}
+                      </option>
+                    ))}
+                </select>
+                <ChevronDown
+                  size={16}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none"
+                />
+              </div>
+            </Field>
+
 
             <Field
               label={t("profile.description_asterisk")}

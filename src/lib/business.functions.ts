@@ -2,8 +2,11 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import categoriesData from "@/lib/categories.json";
 
-const BUSINESS_TYPES = ["Serviço", "Produto", "ONG", "Grupo"] as const;
+const GROUP_IDS = new Set<string>(categoriesData.groups.map((g) => g.id));
+
+
 const DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
 
 const listFilterSchema = z.object({
@@ -24,7 +27,7 @@ const slugSchema = z.object({
 const updateBusinessSchema = z.object({
   name: z.string().trim().min(1).max(200).optional(),
   description: z.string().trim().max(500).optional(),
-  type: z.enum(BUSINESS_TYPES).optional(),
+  category_group: z.string().trim().min(1).max(50).nullable().optional(),
   macro_category: z.string().trim().min(1).max(100).optional(),
   subcategory: z.string().trim().max(100).nullable().optional(),
   tags: z.array(z.string().trim().min(1).max(50)).max(20).optional(),
@@ -97,12 +100,18 @@ export const getBusinesses = createServerFn({ method: "GET" })
     let query = supabaseAdmin
       .from("businesses")
       .select(
-        "id, slug, name, description, type, macro_category, subcategory, tags, locations, logo_url, is_verified, fast_responder, response_time, rating, review_count, address_street, address_suburb",
+        "id, slug, name, description, category_group, macro_category, subcategory, tags, locations, logo_url, is_verified, fast_responder, response_time, rating, review_count, address_street, address_suburb",
       )
       .eq("is_active", true)
       .order("rating", { ascending: false });
 
-    if (data.category) query = query.eq("macro_category", data.category);
+    if (data.category) {
+      if (GROUP_IDS.has(data.category)) {
+        query = query.eq("category_group", data.category);
+      } else {
+        query = query.eq("macro_category", data.category);
+      }
+    }
     if (data.city) query = query.contains("locations", [data.city]);
     if (data.q) query = query.ilike("name", `%${data.q}%`);
 
@@ -348,7 +357,7 @@ export const updateMyBusiness = createServerFn({ method: "POST" })
           slug,
           name: data.name,
           description: data.description ?? null,
-          type: data.type ?? "Serviço",
+          category_group: data.category_group ?? null,
           macro_category: data.macro_category ?? "Outros",
           subcategory: data.subcategory ?? null,
           tags: data.tags ?? [],

@@ -6,7 +6,7 @@ type DbBusinessRow = {
   slug: string;
   name: string;
   description: string | null;
-  type: string;
+  category_group?: string | null;
   macro_category: string;
   subcategory: string | null;
   tags: string[] | null;
@@ -29,16 +29,14 @@ type DbBusinessRow = {
  * directory and business profile components.
  */
 export function adaptBusiness(row: DbBusinessRow, plan: PlanTier = "starter"): Business {
-  const typeUi: Business["type"] =
-    row.type === "Produto" || row.type === "Serviço" ? "Empresa" : "Empresa";
-
   return {
     id: row.id,
     slug: row.slug,
-    type: typeUi,
+    type: "Empresa",
     name: row.name,
     description: row.description ?? "",
     macro: row.macro_category,
+    categoryGroup: row.category_group ?? null,
     subcategory: row.subcategory ?? "",
     location: (row.locations && row.locations[0]) || "",
     locations: row.locations ?? [],
