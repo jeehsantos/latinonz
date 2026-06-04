@@ -24,7 +24,7 @@ const slugSchema = z.object({
 const updateBusinessSchema = z.object({
   name: z.string().trim().min(1).max(200).optional(),
   description: z.string().trim().max(500).optional(),
-  type: z.enum(BUSINESS_TYPES).optional(),
+  category_group: z.string().trim().min(1).max(50).nullable().optional(),
   macro_category: z.string().trim().min(1).max(100).optional(),
   subcategory: z.string().trim().max(100).nullable().optional(),
   tags: z.array(z.string().trim().min(1).max(50)).max(20).optional(),
