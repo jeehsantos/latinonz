@@ -19,11 +19,16 @@ import {
   Baby,
   PawPrint,
   Dumbbell,
+  UtensilsCrossed,
+  PartyPopper,
+  Shirt,
+  Building,
   type LucideIcon,
 } from "lucide-react";
 
 export const ICON_KEYS = [
   "utensils",
+  "utensils-crossed",
   "briefcase",
   "hammer",
   "car",
@@ -43,11 +48,15 @@ export const ICON_KEYS = [
   "baby",
   "paw-print",
   "dumbbell",
+  "party-popper",
+  "shirt",
+  "building",
 ] as const;
 export type IconKey = (typeof ICON_KEYS)[number];
 
 export const ICON_MAP: Record<IconKey, LucideIcon> = {
   utensils: Utensils,
+  "utensils-crossed": UtensilsCrossed,
   briefcase: Briefcase,
   hammer: Hammer,
   car: Car,
@@ -67,6 +76,9 @@ export const ICON_MAP: Record<IconKey, LucideIcon> = {
   baby: Baby,
   "paw-print": PawPrint,
   dumbbell: Dumbbell,
+  "party-popper": PartyPopper,
+  shirt: Shirt,
+  building: Building,
 };
 
 export const COLOR_KEYS = [
@@ -81,6 +93,13 @@ export const COLOR_KEYS = [
   "indigo",
   "rose",
   "emerald",
+  "green",
+  "cyan",
+  "sky",
+  "violet",
+  "amber",
+  "lime",
+  "fuchsia",
 ] as const;
 export type ColorKey = (typeof COLOR_KEYS)[number];
 
@@ -96,6 +115,13 @@ export const COLOR_MAP: Record<ColorKey, { text: string; bg: string }> = {
   indigo: { text: "text-indigo-600", bg: "bg-indigo-50" },
   rose: { text: "text-rose-600", bg: "bg-rose-50" },
   emerald: { text: "text-emerald-600", bg: "bg-emerald-50" },
+  green: { text: "text-green-600", bg: "bg-green-50" },
+  cyan: { text: "text-cyan-600", bg: "bg-cyan-50" },
+  sky: { text: "text-sky-600", bg: "bg-sky-50" },
+  violet: { text: "text-violet-600", bg: "bg-violet-50" },
+  amber: { text: "text-amber-600", bg: "bg-amber-50" },
+  lime: { text: "text-lime-600", bg: "bg-lime-50" },
+  fuchsia: { text: "text-fuchsia-600", bg: "bg-fuchsia-50" },
 };
 
 export function getIcon(key: string): LucideIcon {

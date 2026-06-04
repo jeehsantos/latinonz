@@ -15,7 +15,7 @@ export function SearchBar({
   onSubmit?: () => void;
 }) {
   const { t } = useI18n();
-  const { categories } = useCategories();
+  const { groups, categories } = useCategories();
 
   return (
     <form
@@ -45,11 +45,19 @@ export function SearchBar({
           className="md:col-span-3 bg-neutral-950 border border-white/10 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-3 text-sm outline-none focus:border-[#df991b] text-white"
         >
           <option value="">{t("directory.all_areas")}</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.canonicalName}>
-              {c.name}
-            </option>
-          ))}
+          {groups.map((group) => {
+            const groupCats = categories.filter((c) => c.group === group.id);
+            if (groupCats.length === 0) return null;
+            return (
+              <optgroup key={group.id} label={group.label}>
+                {groupCats.map((c) => (
+                  <option key={c.key} value={c.key}>
+                    {c.label}
+                  </option>
+                ))}
+              </optgroup>
+            );
+          })}
         </select>
         <label htmlFor="directory-city" className="sr-only">{t("directory.all_nz")}</label>
         <select

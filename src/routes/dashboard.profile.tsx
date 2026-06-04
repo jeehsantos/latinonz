@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
@@ -55,7 +55,6 @@ export const Route = createFileRoute("/dashboard/profile")({
   component: ProfileEditor,
 });
 
-type BusinessType = "Serviço" | "Produto";
 type DayKey = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 type TabId = "general" | "locations" | "features";
 
@@ -129,7 +128,6 @@ function ProfileEditor() {
   const [activeTab, setActiveTab] = useState<TabId>("general");
 
   // ---- General tab state ----
-  const [businessType, setBusinessType] = useState<BusinessType>("Serviço");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<string>("");
@@ -176,7 +174,6 @@ function ProfileEditor() {
 
     if (loaded.business) {
       const b = loaded.business;
-      if (b.type === "Serviço" || b.type === "Produto") setBusinessType(b.type as BusinessType);
       setName(b.name ?? "");
       setDescription(b.description ?? "");
       if (b.macro_category) setCategory(b.macro_category);
@@ -268,21 +265,14 @@ function ProfileEditor() {
     }
   }, [loaded]);
 
-  const { categories: dbCategories } = useCategories();
-  const wantedKind: "service" | "product" = businessType === "Produto" ? "product" : "service";
-  const activeCategories = useMemo(
-    () => dbCategories.filter((c) => c.kind === wantedKind).map((c) => c.canonicalName),
-    [dbCategories, wantedKind],
-  );
+  const { groups, categories: allCategories } = useCategories();
+  
+  // Set default category if none selected
   useEffect(() => {
-    if (!category && activeCategories.length > 0) {
-      setCategory(activeCategories[0]);
-      return;
+    if (!category && allCategories.length > 0) {
+      setCategory(allCategories[0].key);
     }
-    if (category && activeCategories.length > 0 && !activeCategories.includes(category)) {
-      setCategory(activeCategories[0]);
-    }
-  }, [activeCategories, category]);
+  }, [allCategories, category]);
 
   // ---- Branch mutators ----
   const updateBranch = (id: string, patch: Partial<Branch>) =>
@@ -414,7 +404,6 @@ function ProfileEditor() {
         data: {
           name: name.trim() || undefined,
           description: description.trim(),
-          type: businessType,
           macro_category: category,
           phone: phone.trim() || null,
           website: website.trim() || null,
@@ -565,13 +554,10 @@ function ProfileEditor() {
             <GeneralTab
               name={name}
               setName={setName}
-              businessType={businessType}
-              setBusinessType={setBusinessType}
               description={description}
               setDescription={setDescription}
               category={category}
               setCategory={setCategory}
-              activeCategories={activeCategories}
               phone={phone}
               setPhone={setPhone}
               website={website}
@@ -639,13 +625,10 @@ function ProfileEditor() {
 type GeneralTabProps = {
   name: string;
   setName: (v: string) => void;
-  businessType: BusinessType;
-  setBusinessType: (v: BusinessType) => void;
   description: string;
   setDescription: (v: string) => void;
   category: string;
   setCategory: (v: string) => void;
-  activeCategories: string[];
   phone: string;
   setPhone: (v: string) => void;
   website: string;
@@ -662,6 +645,7 @@ type GeneralTabProps = {
 
 function GeneralTab(p: GeneralTabProps) {
   const { t } = useI18n();
+  const { groups, categories } = useCategories();
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-6">
@@ -684,14 +668,19 @@ function GeneralTab(p: GeneralTabProps) {
                     onChange={(e) => p.setCategory(e.target.value)}
                     className={`${inputCls} appearance-none pr-10`}
                   >
-                    {p.activeCategories.length === 0 && (
-                      <option value="">{t("directory.empty_title")}</option>
-                    )}
-                    {p.activeCategories.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
+                    {groups.map((group) => {
+                      const groupCats = categories.filter((c) => c.group === group.id);
+                      if (groupCats.length === 0) return null;
+                      return (
+                        <optgroup key={group.id} label={group.label}>
+                          {groupCats.map((c) => (
+                            <option key={c.key} value={c.key}>
+                              {c.label}
+                            </option>
+                          ))}
+                        </optgroup>
+                      );
+                    })}
                   </select>
                   <ChevronDown
                     size={16}
@@ -700,24 +689,6 @@ function GeneralTab(p: GeneralTabProps) {
                 </div>
               </Field>
             </div>
-
-            <Field label={t("profile.business_type_label")}>
-              <div className="flex bg-white/5 p-1 rounded-xl">
-                {(["Serviço", "Produto"] as BusinessType[]).map((bt) => (
-                  <button
-                    key={bt}
-                    onClick={() => p.setBusinessType(bt)}
-                    className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-                      p.businessType === bt
-                        ? "bg-black text-yellow-500"
-                        : "text-zinc-400 hover:text-white"
-                    }`}
-                  >
-                    {bt === "Serviço" ? t("profile.type_service") : t("profile.type_product")}
-                  </button>
-                ))}
-              </div>
-            </Field>
 
             <Field
               label={t("profile.description_asterisk")}

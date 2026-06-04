@@ -1,0 +1,302 @@
+{
+  "groups": [
+    {
+      "id": "food",
+      "iconKey": "utensils-crossed",
+      "colorKey": "red",
+      "labels": {
+        "pt": "Gastronomia & Alimentação",
+        "es": "Gastronomía & Alimentación",
+        "en": "Food & Dining"
+      }
+    },
+    {
+      "id": "beauty",
+      "iconKey": "sparkles",
+      "colorKey": "pink",
+      "labels": {
+        "pt": "Beleza & Estética",
+        "es": "Belleza & Estética",
+        "en": "Beauty & Aesthetics"
+      }
+    },
+    {
+      "id": "health",
+      "iconKey": "heart-pulse",
+      "colorKey": "green",
+      "labels": {
+        "pt": "Saúde & Bem-estar",
+        "es": "Salud & Bienestar",
+        "en": "Health & Wellness"
+      }
+    },
+    {
+      "id": "events",
+      "iconKey": "party-popper",
+      "colorKey": "purple",
+      "labels": {
+        "pt": "Eventos & Entretenimento",
+        "es": "Eventos & Entretenimiento",
+        "en": "Events & Entertainment"
+      }
+    },
+    {
+      "id": "construction",
+      "iconKey": "hammer",
+      "colorKey": "orange",
+      "labels": {
+        "pt": "Casa & Construção",
+        "es": "Casa & Construcción",
+        "en": "Home & Construction"
+      }
+    },
+    {
+      "id": "automotive",
+      "iconKey": "car",
+      "colorKey": "blue",
+      "labels": {
+        "pt": "Automotivo & Transporte",
+        "es": "Automotriz & Transporte",
+        "en": "Automotive & Transport"
+      }
+    },
+    {
+      "id": "professional",
+      "iconKey": "briefcase",
+      "colorKey": "indigo",
+      "labels": {
+        "pt": "Serviços Profissionais",
+        "es": "Servicios Profesionales",
+        "en": "Professional Services"
+      }
+    },
+    {
+      "id": "education",
+      "iconKey": "graduation-cap",
+      "colorKey": "cyan",
+      "labels": {
+        "pt": "Educação & Aulas",
+        "es": "Educación & Clases",
+        "en": "Education & Classes"
+      }
+    },
+    {
+      "id": "fashion",
+      "iconKey": "shirt",
+      "colorKey": "rose",
+      "labels": {
+        "pt": "Moda & Vestuário",
+        "es": "Moda & Vestuario",
+        "en": "Fashion & Apparel"
+      }
+    },
+    {
+      "id": "tourism",
+      "iconKey": "plane",
+      "colorKey": "sky",
+      "labels": {
+        "pt": "Turismo & Viagens",
+        "es": "Turismo & Viajes",
+        "en": "Tourism & Travel"
+      }
+    },
+    {
+      "id": "technology",
+      "iconKey": "laptop",
+      "colorKey": "violet",
+      "labels": {
+        "pt": "Tecnologia & Digital",
+        "es": "Tecnología & Digital",
+        "en": "Technology & Digital"
+      }
+    },
+    {
+      "id": "realestate",
+      "iconKey": "building",
+      "colorKey": "amber",
+      "labels": {
+        "pt": "Imobiliária & Habitação",
+        "es": "Inmobiliaria & Vivienda",
+        "en": "Real Estate & Housing"
+      }
+    },
+    {
+      "id": "pets",
+      "iconKey": "paw-print",
+      "colorKey": "lime",
+      "labels": {
+        "pt": "Pets & Animais",
+        "es": "Mascotas & Animales",
+        "en": "Pets & Animals"
+      }
+    },
+    {
+      "id": "community",
+      "iconKey": "users",
+      "colorKey": "teal",
+      "labels": {
+        "pt": "Comunidade & Cultura",
+        "es": "Comunidad & Cultura",
+        "en": "Community & Culture"
+      }
+    },
+    {
+      "id": "care",
+      "iconKey": "baby",
+      "colorKey": "emerald",
+      "labels": {
+        "pt": "Família & Cuidados",
+        "es": "Familia & Cuidados",
+        "en": "Family & Care"
+      }
+    },
+    {
+      "id": "retail",
+      "iconKey": "shopping-bag",
+      "colorKey": "fuchsia",
+      "labels": {
+        "pt": "Varejo & Produtos Gerais",
+        "es": "Comercio & Productos Generales",
+        "en": "Retail & General Products"
+      }
+    }
+  ],
+  "categories": [
+    {"key": "restaurant", "group": "food", "labels": {"pt": "Restaurante / Café", "es": "Restaurante / Café", "en": "Restaurant / Café"}},
+    {"key": "food_truck", "group": "food", "labels": {"pt": "Food Truck", "es": "Food Truck", "en": "Food Truck"}},
+    {"key": "catering", "group": "food", "labels": {"pt": "Catering & Buffet", "es": "Catering y Buffet", "en": "Catering & Buffet"}},
+    {"key": "bakery", "group": "food", "labels": {"pt": "Padaria & Confeitaria", "es": "Panadería & Repostería", "en": "Bakery & Pastry"}},
+    {"key": "latin_market", "group": "food", "labels": {"pt": "Mercado Latino", "es": "Mercado Latino", "en": "Latin Market"}},
+    {"key": "meal_prep", "group": "food", "labels": {"pt": "Marmita & Refeições", "es": "Viandas & Comidas", "en": "Meal Prep"}},
+    {"key": "sweets", "group": "food", "labels": {"pt": "Doces & Sobremesas", "es": "Dulces & Postres", "en": "Sweets & Desserts"}},
+    {"key": "drinks", "group": "food", "labels": {"pt": "Bebidas & Drinks", "es": "Bebidas y Tragos", "en": "Drinks & Beverages"}},
+    
+    {"key": "hair_salon", "group": "beauty", "labels": {"pt": "Salão de Beleza", "es": "Salón de Belleza", "en": "Hair Salon"}},
+    {"key": "barbershop", "group": "beauty", "labels": {"pt": "Barbearia", "es": "Barbería", "en": "Barbershop"}},
+    {"key": "nails", "group": "beauty", "labels": {"pt": "Manicure & Pedicure", "es": "Manicura & Pedicura", "en": "Nails"}},
+    {"key": "aesthetics", "group": "beauty", "labels": {"pt": "Estética Facial & Corporal", "es": "Estética Facial y Corporal", "en": "Facial & Body Aesthetics"}},
+    {"key": "makeup", "group": "beauty", "labels": {"pt": "Maquiagem", "es": "Maquillaje", "en": "Makeup"}},
+    {"key": "massage", "group": "beauty", "labels": {"pt": "Massagem & Relaxamento", "es": "Masaje & Relajación", "en": "Massage"}},
+    {"key": "eyebrows_lashes", "group": "beauty", "labels": {"pt": "Sobrancelha & Cílios", "es": "Cejas & Pestañas", "en": "Eyebrows & Lashes"}},
+    {"key": "tattoo_piercing", "group": "beauty", "labels": {"pt": "Tatuagem & Piercing", "es": "Tatuaje & Piercing", "en": "Tattoo & Piercing"}},
+    {"key": "beauty_products", "group": "beauty", "labels": {"pt": "Produtos de Beleza", "es": "Productos de Belleza", "en": "Beauty Products"}},
+    
+    {"key": "psychology", "group": "health", "labels": {"pt": "Psicologia & Terapia", "es": "Psicología y Terapia", "en": "Psychology & Therapy"}},
+    {"key": "personal_trainer", "group": "health", "labels": {"pt": "Personal Trainer", "es": "Entrenador Personal", "en": "Personal Trainer"}},
+    {"key": "physiotherapy", "group": "health", "labels": {"pt": "Fisioterapia", "es": "Fisioterapia", "en": "Physiotherapy"}},
+    {"key": "nutrition", "group": "health", "labels": {"pt": "Nutrição & Dietas", "es": "Nutrición y Dietas", "en": "Nutrition"}},
+    {"key": "dentistry", "group": "health", "labels": {"pt": "Odontologia", "es": "Odontología", "en": "Dentistry"}},
+    {"key": "holistic", "group": "health", "labels": {"pt": "Terapias Holísticas", "es": "Terapias Holísticas", "en": "Holistic Therapies"}},
+    {"key": "yoga_pilates", "group": "health", "labels": {"pt": "Yoga & Pilates", "es": "Yoga y Pilates", "en": "Yoga & Pilates"}},
+    {"key": "acupuncture", "group": "health", "labels": {"pt": "Acupuntura", "es": "Acupuntura", "en": "Acupuncture"}},
+    {"key": "nursing_care", "group": "health", "labels": {"pt": "Cuidados de Enfermagem", "es": "Cuidados de Enfermería", "en": "Nursing Care"}},
+    {"key": "pharmacy", "group": "health", "labels": {"pt": "Farmácia & Suplementos", "es": "Farmacia y Suplementos", "en": "Pharmacy"}},
+    
+    {"key": "dj_music", "group": "events", "labels": {"pt": "DJ & Música ao Vivo", "es": "DJ y Música en Vivo", "en": "DJ & Live Music"}},
+    {"key": "photography_video", "group": "events", "labels": {"pt": "Fotografia & Vídeo", "es": "Fotografía y Video", "en": "Photography & Video"}},
+    {"key": "event_planning", "group": "events", "labels": {"pt": "Organização de Eventos", "es": "Organización de Eventos", "en": "Event Planning"}},
+    {"key": "event_space", "group": "events", "labels": {"pt": "Espaço para Festas", "es": "Espacio para Fiestas", "en": "Event Venue"}},
+    {"key": "animation_kids", "group": "events", "labels": {"pt": "Animação Infantil", "es": "Animación Infantil", "en": "Kids Entertainment"}},
+    {"key": "dance", "group": "events", "labels": {"pt": "Escola de Dança", "es": "Escuela de Baile", "en": "Dance Studio"}},
+    {"key": "music_band", "group": "events", "labels": {"pt": "Banda Musical", "es": "Banda Musical", "en": "Music Band"}},
+    {"key": "decor", "group": "events", "labels": {"pt": "Decoração para Eventos", "es": "Decoración para Eventos", "en": "Event Decoration"}},
+    {"key": "sound_lighting", "group": "events", "labels": {"pt": "Som & Iluminação", "es": "Sonido e Iluminación", "en": "Sound & Lighting"}},
+    
+    {"key": "construction", "group": "construction", "labels": {"pt": "Construção & Reformas", "es": "Construcción y Reformas", "en": "Construction"}},
+    {"key": "plumbing", "group": "construction", "labels": {"pt": "Encanamento", "es": "Plomería", "en": "Plumbing"}},
+    {"key": "electrical", "group": "construction", "labels": {"pt": "Eletricista", "es": "Electricista", "en": "Electrician"}},
+    {"key": "painting", "group": "construction", "labels": {"pt": "Pintura Residencial", "es": "Pintura Residencial", "en": "House Painting"}},
+    {"key": "carpentry", "group": "construction", "labels": {"pt": "Marcenaria", "es": "Carpintería", "en": "Carpentry"}},
+    {"key": "cleaning", "group": "construction", "labels": {"pt": "Limpeza", "es": "Limpieza", "en": "Cleaning"}},
+    {"key": "landscaping", "group": "construction", "labels": {"pt": "Jardinagem", "es": "Jardinería", "en": "Landscaping"}},
+    {"key": "flooring", "group": "construction", "labels": {"pt": "Piso & Revestimento", "es": "Pisos", "en": "Flooring"}},
+    {"key": "roofing", "group": "construction", "labels": {"pt": "Telhado", "es": "Techos", "en": "Roofing"}},
+    {"key": "pest_control", "group": "construction", "labels": {"pt": "Controle de Pragas", "es": "Control de Plagas", "en": "Pest Control"}},
+    {"key": "interior_design", "group": "construction", "labels": {"pt": "Design de Interiores", "es": "Diseño de Interiores", "en": "Interior Design"}},
+    {"key": "security_systems", "group": "construction", "labels": {"pt": "Sistemas de Segurança", "es": "Sistemas de Seguridad", "en": "Security Systems"}},
+    {"key": "appliance_repair", "group": "construction", "labels": {"pt": "Conserto de Eletrodomésticos", "es": "Reparación de Electrodomésticos", "en": "Appliance Repair"}},
+    
+    {"key": "mechanic", "group": "automotive", "labels": {"pt": "Mecânica", "es": "Mecánica", "en": "Mechanic"}},
+    {"key": "auto_detailing", "group": "automotive", "labels": {"pt": "Estética Automotiva", "es": "Estética Automotriz", "en": "Auto Detailing"}},
+    {"key": "moving", "group": "automotive", "labels": {"pt": "Mudanças & Fretes", "es": "Mudanzas y Fletes", "en": "Moving"}},
+    {"key": "taxi_rideshare", "group": "automotive", "labels": {"pt": "Taxi & Transfer", "es": "Taxi y Transfer", "en": "Taxi"}},
+    {"key": "driving_school", "group": "automotive", "labels": {"pt": "Escola de Condução", "es": "Escuela de Manejo", "en": "Driving School"}},
+    {"key": "bus_tour", "group": "automotive", "labels": {"pt": "Excursões de Ônibus", "es": "Excursiones en Bus", "en": "Bus Tours"}},
+    {"key": "towing", "group": "automotive", "labels": {"pt": "Guincho", "es": "Grúa", "en": "Towing"}},
+    
+    {"key": "accounting", "group": "professional", "labels": {"pt": "Contabilidade", "es": "Contabilidad", "en": "Accounting"}},
+    {"key": "legal", "group": "professional", "labels": {"pt": "Advocacia", "es": "Abogacía", "en": "Legal Services"}},
+    {"key": "immigration", "group": "professional", "labels": {"pt": "Vistos & Imigração", "es": "Visas e Inmigración", "en": "Immigration"}},
+    {"key": "marketing", "group": "professional", "labels": {"pt": "Marketing", "es": "Marketing", "en": "Marketing"}},
+    {"key": "web_design", "group": "professional", "labels": {"pt": "Web Design", "es": "Diseño Web", "en": "Web Design"}},
+    {"key": "translation", "group": "professional", "labels": {"pt": "Tradução", "es": "Traducción", "en": "Translation"}},
+    {"key": "hr_recruitment", "group": "professional", "labels": {"pt": "Recursos Humanos", "es": "Recursos Humanos", "en": "HR"}},
+    {"key": "consulting", "group": "professional", "labels": {"pt": "Consultoria", "es": "Consultoría", "en": "Consulting"}},
+    {"key": "insurance", "group": "professional", "labels": {"pt": "Seguros", "es": "Seguros", "en": "Insurance"}},
+    {"key": "tax_return", "group": "professional", "labels": {"pt": "Declaração de Imposto", "es": "Declaración de Impuestos", "en": "Tax Returns"}},
+    {"key": "financial_planning", "group": "professional", "labels": {"pt": "Planejamento Financeiro", "es": "Planificación Financiera", "en": "Financial Planning"}},
+    {"key": "notary", "group": "professional", "labels": {"pt": "Cartório", "es": "Notaría", "en": "Notary"}},
+    
+    {"key": "language_classes", "group": "education", "labels": {"pt": "Aulas de Idiomas", "es": "Clases de Idiomas", "en": "Language Classes"}},
+    {"key": "tutoring", "group": "education", "labels": {"pt": "Apoio Escolar", "es": "Apoyo Escolar", "en": "Tutoring"}},
+    {"key": "dance_classes", "group": "education", "labels": {"pt": "Aulas de Dança", "es": "Clases de Baile", "en": "Dance Classes"}},
+    {"key": "music_classes", "group": "education", "labels": {"pt": "Aulas de Música", "es": "Clases de Música", "en": "Music Classes"}},
+    {"key": "cooking_classes", "group": "education", "labels": {"pt": "Aulas de Culinária", "es": "Clases de Cocina", "en": "Cooking Classes"}},
+    {"key": "sports_coaching", "group": "education", "labels": {"pt": "Treinamento Esportivo", "es": "Entrenamiento Deportivo", "en": "Sports Coaching"}},
+    {"key": "coaching_career", "group": "education", "labels": {"pt": "Coaching de Carreira", "es": "Coaching de Carrera", "en": "Career Coaching"}},
+    {"key": "art_classes", "group": "education", "labels": {"pt": "Aulas de Arte", "es": "Clases de Arte", "en": "Art Classes"}},
+    {"key": "kids_activities", "group": "education", "labels": {"pt": "Atividades Infantis", "es": "Actividades Infantiles", "en": "Kids Activities"}},
+    {"key": "driving_instructor", "group": "education", "labels": {"pt": "Instrutor de Condução", "es": "Instructor de Manejo", "en": "Driving Instructor"}},
+    
+    {"key": "sewing_alterations", "group": "fashion", "labels": {"pt": "Costura & Consertos", "es": "Costura y Arreglos", "en": "Sewing"}},
+    {"key": "clothing_store", "group": "fashion", "labels": {"pt": "Loja de Roupas", "es": "Tienda de Ropa", "en": "Clothing Store"}},
+    {"key": "accessories", "group": "fashion", "labels": {"pt": "Acessórios & Joias", "es": "Accesorios y Joyería", "en": "Accessories"}},
+    {"key": "shoes", "group": "fashion", "labels": {"pt": "Calçados", "es": "Calzado", "en": "Footwear"}},
+    {"key": "uniforms", "group": "fashion", "labels": {"pt": "Uniformes", "es": "Uniformes", "en": "Uniforms"}},
+    
+    {"key": "travel_agency", "group": "tourism", "labels": {"pt": "Agência de Viagens", "es": "Agencia de Viajes", "en": "Travel Agency"}},
+    {"key": "tour_guide", "group": "tourism", "labels": {"pt": "Guia de Turismo", "es": "Guía Turístico", "en": "Tour Guide"}},
+    {"key": "accommodation", "group": "tourism", "labels": {"pt": "Hospedagem", "es": "Alojamiento", "en": "Accommodation"}},
+    {"key": "adventure_tours", "group": "tourism", "labels": {"pt": "Turismo de Aventura", "es": "Turismo de Aventura", "en": "Adventure Tourism"}},
+    {"key": "airport_transfer", "group": "tourism", "labels": {"pt": "Transfer Aeroporto", "es": "Transfer Aeropuerto", "en": "Airport Transfer"}},
+    
+    {"key": "software_dev", "group": "technology", "labels": {"pt": "Desenvolvimento de Software", "es": "Desarrollo de Software", "en": "Software Development"}},
+    {"key": "it_support", "group": "technology", "labels": {"pt": "Suporte de TI", "es": "Soporte de TI", "en": "IT Support"}},
+    {"key": "social_media", "group": "technology", "labels": {"pt": "Gestão de Redes Sociais", "es": "Gestión de Redes Sociales", "en": "Social Media Management"}},
+    {"key": "graphic_design", "group": "technology", "labels": {"pt": "Design Gráfico", "es": "Diseño Gráfico", "en": "Graphic Design"}},
+    {"key": "video_production", "group": "technology", "labels": {"pt": "Produção de Vídeo", "es": "Producción de Video", "en": "Video Production"}},
+    {"key": "ecommerce", "group": "technology", "labels": {"pt": "E-commerce", "es": "E-commerce", "en": "E-commerce"}},
+    {"key": "cybersecurity", "group": "technology", "labels": {"pt": "Cibersegurança", "es": "Ciberseguridad", "en": "Cybersecurity"}},
+    
+    {"key": "realestate_agent", "group": "realestate", "labels": {"pt": "Agente Imobiliário", "es": "Agente Inmobiliario", "en": "Real Estate Agent"}},
+    {"key": "property_management", "group": "realestate", "labels": {"pt": "Gestão de Imóveis", "es": "Administración de Propiedades", "en": "Property Management"}},
+    {"key": "mortgage_broker", "group": "realestate", "labels": {"pt": "Corretor de Financiamentos", "es": "Corredor Hipotecario", "en": "Mortgage Broker"}},
+    {"key": "home_staging", "group": "realestate", "labels": {"pt": "Home Staging", "es": "Home Staging", "en": "Home Staging"}},
+    {"key": "building_inspection", "group": "realestate", "labels": {"pt": "Inspeção de Imóveis", "es": "Inspección de Propiedades", "en": "Building Inspection"}},
+    
+    {"key": "pet_grooming", "group": "pets", "labels": {"pt": "Banho & Tosa", "es": "Baño y Grooming", "en": "Pet Grooming"}},
+    {"key": "vet", "group": "pets", "labels": {"pt": "Veterinário", "es": "Veterinario", "en": "Veterinarian"}},
+    {"key": "pet_sitting", "group": "pets", "labels": {"pt": "Cuidador de Pets", "es": "Cuidador de Mascotas", "en": "Pet Sitting"}},
+    {"key": "pet_products", "group": "pets", "labels": {"pt": "Produtos para Pets", "es": "Productos para Mascotas", "en": "Pet Products"}},
+    {"key": "pet_training", "group": "pets", "labels": {"pt": "Adestramento", "es": "Adiestramiento", "en": "Pet Training"}},
+    
+    {"key": "church", "group": "community", "labels": {"pt": "Igreja", "es": "Iglesia", "en": "Church"}},
+    {"key": "ngo", "group": "community", "labels": {"pt": "ONG", "es": "ONG", "en": "NGO"}},
+    {"key": "cultural_group", "group": "community", "labels": {"pt": "Grupo Cultural", "es": "Grupo Cultural", "en": "Cultural Group"}},
+    {"key": "sports_club", "group": "community", "labels": {"pt": "Clube Esportivo", "es": "Club Deportivo", "en": "Sports Club"}},
+    {"key": "community_radio", "group": "community", "labels": {"pt": "Rádio Comunitário", "es": "Radio Comunitario", "en": "Community Radio"}},
+    
+    {"key": "childcare", "group": "care", "labels": {"pt": "Creche & Babysitter", "es": "Guardería y Niñera", "en": "Childcare"}},
+    {"key": "elderly_care", "group": "care", "labels": {"pt": "Cuidados com Idosos", "es": "Cuidados de Adultos Mayores", "en": "Elderly Care"}},
+    {"key": "disability_support", "group": "care", "labels": {"pt": "Suporte a Deficientes", "es": "Apoyo a Personas con Discapacidad", "en": "Disability Support"}},
+    {"key": "domestic_assistant", "group": "care", "labels": {"pt": "Auxiliar Doméstica", "es": "Auxiliar Doméstica", "en": "Domestic Assistant"}},
+    
+    {"key": "latin_products", "group": "retail", "labels": {"pt": "Produtos Latinos", "es": "Productos Latinos", "en": "Latin Products"}},
+    {"key": "artisan_crafts", "group": "retail", "labels": {"pt": "Artesanato", "es": "Artesanía", "en": "Artisan Crafts"}},
+    {"key": "electronics", "group": "retail", "labels": {"pt": "Eletrônicos", "es": "Electrónicos", "en": "Electronics"}},
+    {"key": "gift_shop", "group": "retail", "labels": {"pt": "Presentes", "es": "Regalos", "en": "Gifts"}},
+    {"key": "second_hand", "group": "retail", "labels": {"pt": "Brechó", "es": "Segunda Mano", "en": "Second-hand"}},
+    
+    {"key": "other", "group": "retail", "labels": {"pt": "Outro", "es": "Otro", "en": "Other"}}
+  ]
+}

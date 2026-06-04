@@ -48,7 +48,7 @@ function DirectoryPage() {
     category: initial.category,
     city: initial.city,
   });
-  const { categories } = useCategories();
+  const { groups, categories } = useCategories();
 
   const fetchBusinesses = useServerFn(getBusinesses);
   const { data } = useQuery({
@@ -65,14 +65,24 @@ function DirectoryPage() {
       const q = search.q.trim().toLowerCase();
       if (q && !b.name.toLowerCase().includes(q) && !b.description.toLowerCase().includes(q))
         return false;
-      if (search.category && b.macro !== search.category) return false;
+      if (search.category) {
+        // Support filtering by group id (matches any category in that group)
+        // or by specific category key
+        const isGroup = groups.some((g) => g.id === search.category);
+        if (isGroup) {
+          const groupKeys = categories.filter((c) => c.group === search.category).map((c) => c.key);
+          if (!groupKeys.includes(b.macro ?? "")) return false;
+        } else {
+          if (b.macro !== search.category) return false;
+        }
+      }
       if (search.city) {
         const cities = b.locations && b.locations.length > 0 ? b.locations : [b.location];
         if (!cities.includes(search.city)) return false;
       }
       return true;
     });
-  }, [businesses, search]);
+  }, [businesses, search, groups, categories]);
 
   return (
     <SiteShell>
@@ -115,17 +125,17 @@ function DirectoryPage() {
           >
             {t("directory.all_categories")}
           </button>
-          {categories.map((c) => (
+          {groups.map((g) => (
             <button
-              key={c.id}
-              onClick={() => setSearch({ ...search, category: c.canonicalName })}
+              key={g.id}
+              onClick={() => setSearch({ ...search, category: g.id })}
               className={`shrink-0 text-sm font-semibold px-4 py-2 rounded-full border whitespace-nowrap transition ${
-                search.category === c.canonicalName
+                search.category === g.id
                   ? "bg-[#facc15] text-black border-[#facc15]"
                   : "bg-neutral-900 border-white/10 hover:border-[#df991b] text-neutral-200"
               }`}
             >
-              {c.name}
+              {g.label}
             </button>
           ))}
         </div>

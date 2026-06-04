@@ -39,7 +39,8 @@ export function DirectoryHome() {
     queryKey: ["businesses", "all"],
     queryFn: () => fetchBusinesses({ data: {} }),
   });
-  const { categories, isLoading: catsLoading } = useCategories();
+  const { groups, categories, isLoading: catsLoading } = useCategories();
+  void catsLoading;
   const featured = useMemo(() => {
     if (!data?.ok) return [];
     return data.rows.slice(0, 4).map((r) => adaptBusiness(r));
@@ -50,7 +51,7 @@ export function DirectoryHome() {
     { icon: ShieldCheck, value: "100%", label: t("directory.trust_verified") },
     {
       icon: Sparkles,
-      value: String(categories.length || 0),
+      value: String(groups.length),
       label: t("directory.trust_categories"),
     },
   ];
@@ -124,58 +125,31 @@ export function DirectoryHome() {
           </Link>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-          {catsLoading && categories.length === 0
-            ? Array.from({ length: 10 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="spotlight-card rounded-2xl p-4 sm:p-5 animate-pulse h-44"
-                >
-                  <div className="w-11 h-11 rounded-xl bg-white/5" />
-                  <div className="mt-4 h-4 bg-white/5 rounded w-3/4" />
-                  <div className="mt-2 h-3 bg-white/5 rounded w-1/2" />
+          {groups.slice(0, 10).map((g) => {
+            const Icon = getIcon(g.iconKey);
+            const count = categories.filter((c) => c.group === g.id).length;
+            return (
+              <Link
+                key={g.id}
+                to="/directory"
+                search={{ category: categories.find((c) => c.group === g.id)?.key ?? "" }}
+                onMouseMove={handleSpotlight}
+                className="spotlight-card group rounded-2xl p-4 sm:p-5 transition-transform duration-300 hover:-translate-y-1 flex flex-col"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="w-11 h-11 rounded-xl bg-[#FFC700] text-black flex items-center justify-center shadow-[0_0_22px_-4px_rgba(255,199,0,0.6)]">
+                    <Icon size={20} />
+                  </div>
+                  <span className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#FFC700] text-black">
+                    {count}
+                  </span>
                 </div>
-              ))
-            : categories.slice(0, 10).map((c) => {
-                const Icon = getIcon(c.iconKey);
-                const active = c.count > 0;
-                return (
-                  <Link
-                    key={c.id}
-                    to="/directory"
-                    onMouseMove={handleSpotlight}
-                    className="spotlight-card group rounded-2xl p-4 sm:p-5 transition-transform duration-300 hover:-translate-y-1 flex flex-col"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div
-                        className={
-                          active
-                            ? "w-11 h-11 rounded-xl bg-[#FFC700] text-black flex items-center justify-center shadow-[0_0_22px_-4px_rgba(255,199,0,0.6)]"
-                            : "w-11 h-11 rounded-xl bg-white/[0.04] border border-white/10 text-neutral-400 flex items-center justify-center"
-                        }
-                      >
-                        <Icon size={20} />
-                      </div>
-                      <span
-                        className={
-                          active
-                            ? "inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#FFC700] text-black"
-                            : "inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/10 text-neutral-400"
-                        }
-                      >
-                        {c.count} {t("directory.listings_count")}
-                      </span>
-                    </div>
-                    <p className="mt-5 font-extrabold text-white text-[15px] leading-tight transition-colors group-hover:text-[#FFC700]">
-                      {c.name}
-                    </p>
-                    {c.blurb && (
-                      <p className="mt-2 text-xs text-neutral-500 leading-relaxed line-clamp-2">
-                        {c.blurb}
-                      </p>
-                    )}
-                  </Link>
-                );
-              })}
+                <p className="mt-5 font-extrabold text-white text-[15px] leading-tight transition-colors group-hover:text-[#FFC700]">
+                  {g.label}
+                </p>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
