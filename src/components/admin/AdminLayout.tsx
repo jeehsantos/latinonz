@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import {
   BarChart3,
   Briefcase,
-  FolderTree,
   UserCog,
   Inbox,
   ShieldAlert,
