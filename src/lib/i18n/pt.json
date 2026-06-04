@@ -275,6 +275,8 @@
     "save_changes": "Salvar Alterações",
     "business_name_asterisk": "Nome do negócio *",
     "category_asterisk": "Categoria Principal *",
+    "group_asterisk": "Grupo *",
+    "group_placeholder": "Selecione um grupo",
     "business_type_label": "Tipo de Negócio",
     "description_asterisk": "Descrição Completa *",
     "contact_links_title": "Contato & Links",
