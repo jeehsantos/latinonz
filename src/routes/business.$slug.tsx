@@ -596,9 +596,12 @@ function BusinessPage() {
                       .join("")
                       .toUpperCase();
                     return (
-                      <div
+                      <button
+                        type="button"
                         key={i}
-                        className="bg-neutral-900 border border-white/10 rounded-2xl p-5 hover:border-[#facc15]/40 transition"
+                        onClick={() => googleReviewsUrl && openGooglePopup(googleReviewsUrl)}
+                        disabled={!googleReviewsUrl}
+                        className="text-left bg-neutral-900 border border-white/10 rounded-2xl p-5 hover:border-[#facc15]/40 transition disabled:cursor-default"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-center gap-3 min-w-0">
@@ -607,18 +610,25 @@ function BusinessPage() {
                             </span>
                             <div className="min-w-0">
                               <p className="font-bold text-white truncate">{r.name}</p>
-                              <div className="flex mt-0.5">
-                                {Array.from({ length: 5 }).map((_, j) => (
-                                  <Star
-                                    key={j}
-                                    size={12}
-                                    className={
-                                      j < r.rating
-                                        ? "fill-[#facc15] text-[#facc15]"
-                                        : "text-white/15"
-                                    }
-                                  />
-                                ))}
+                              <div className="flex items-center gap-2 mt-0.5">
+                                <div className="flex">
+                                  {Array.from({ length: 5 }).map((_, j) => (
+                                    <Star
+                                      key={j}
+                                      size={12}
+                                      className={
+                                        j < r.rating
+                                          ? "fill-[#facc15] text-[#facc15]"
+                                          : "text-white/15"
+                                      }
+                                    />
+                                  ))}
+                                </div>
+                                {r.publishedAt && (
+                                  <span className="text-[11px] text-neutral-400">
+                                    {reviewDateFmt.format(new Date(r.publishedAt))}
+                                  </span>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -626,13 +636,17 @@ function BusinessPage() {
                         <p className="text-sm text-neutral-300 mt-3 leading-relaxed line-clamp-5">
                           {r.text}
                         </p>
-                      </div>
+                      </button>
                     );
                   })}
                 </div>
-                {reviews.length > 4 && (
+                {reviews.length > 4 && googleReviewsUrl && (
                   <div className="mt-6 flex justify-center">
-                    <button className="inline-flex items-center gap-2 border border-[#facc15]/40 text-[#facc15] font-bold rounded-full px-5 py-2.5 text-sm hover:bg-[#facc15]/10 transition">
+                    <button
+                      type="button"
+                      onClick={() => openGooglePopup(googleReviewsUrl)}
+                      className="inline-flex items-center gap-2 border border-[#facc15]/40 text-[#facc15] font-bold rounded-full px-5 py-2.5 text-sm hover:bg-[#facc15]/10 transition"
+                    >
                       {t("business.read_all_reviews").replace("{n}", String(business.reviewCount))}
                     </button>
                   </div>
