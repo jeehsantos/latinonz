@@ -149,15 +149,14 @@ function BusinessPage() {
     publishedAt: r.published_at ?? null,
   }));
 
-  const reviewDateFmt = useMemo(
-    () =>
-      new Intl.DateTimeFormat(t("locale_code") || undefined, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }),
-    [t],
-  );
+  const reviewDateFmt = useMemo(() => {
+    const map: Record<string, string> = { pt: "pt-BR", es: "es-ES", en: "en-NZ" };
+    return new Intl.DateTimeFormat(map[locale] ?? "en-NZ", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  }, [locale]);
 
   const googleReviewsUrl = business.googlePlaceId
     ? `https://search.google.com/local/reviews?placeid=${encodeURIComponent(business.googlePlaceId)}`
