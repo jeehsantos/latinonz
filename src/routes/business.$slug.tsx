@@ -124,7 +124,7 @@ export const Route = createFileRoute("/business/$slug")({
 });
 
 function BusinessPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { getCategoryByKey } = useCategories();
   const { business, hours, serviceOptions, serviceOptionItems, photos, coupons, locations, branches } = Route.useLoaderData();
   const categoryLabel =
