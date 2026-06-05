@@ -22,6 +22,7 @@ type DbBusinessRow = {
   review_count: number | null;
   address_street?: string | null;
   address_suburb?: string | null;
+  google_place_id?: string | null;
 };
 
 /**
@@ -53,5 +54,6 @@ export function adaptBusiness(row: DbBusinessRow, plan: PlanTier = "starter"): B
     fastResponder: row.fast_responder ?? undefined,
     addressStreet: row.address_street ?? undefined,
     addressSuburb: row.address_suburb ?? undefined,
+    googlePlaceId: row.google_place_id ?? null,
   };
 }

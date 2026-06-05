@@ -37,6 +37,7 @@ export type Business = {
   fastResponder?: boolean;
   addressStreet?: string;
   addressSuburb?: string;
+  googlePlaceId?: string | null;
 };
 
 export type Lead = {
