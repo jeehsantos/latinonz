@@ -146,7 +146,34 @@ function BusinessPage() {
     name: r.author_name,
     rating: r.rating,
     text: r.text ?? "",
+    publishedAt: r.published_at ?? null,
   }));
+
+  const reviewDateFmt = useMemo(
+    () =>
+      new Intl.DateTimeFormat(t("locale_code") || undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }),
+    [t],
+  );
+
+  const googleReviewsUrl = business.googlePlaceId
+    ? `https://search.google.com/local/reviews?placeid=${encodeURIComponent(business.googlePlaceId)}`
+    : null;
+
+  const openGooglePopup = (url: string) => {
+    const w = 720;
+    const h = 760;
+    const left = Math.max(0, (window.screen.width - w) / 2);
+    const top = Math.max(0, (window.screen.height - h) / 2);
+    window.open(
+      url,
+      "google-reviews",
+      `popup=yes,width=${w},height=${h},left=${left},top=${top},noopener,noreferrer`,
+    );
+  };
 
   const displayType =
     business.type === "Empresa"
