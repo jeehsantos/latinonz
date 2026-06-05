@@ -22,6 +22,7 @@ type DbBusinessRow = {
   review_count: number | null;
   address_street?: string | null;
   address_suburb?: string | null;
+  google_place_id?: string | null;
 };
 
 /**
