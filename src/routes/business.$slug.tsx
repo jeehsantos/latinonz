@@ -595,6 +595,7 @@ function BusinessPage() {
                       .slice(0, 2)
                       .join("")
                       .toUpperCase();
+                    const isLatest = i === 0;
                     return (
                       <button
                         type="button"
@@ -632,6 +633,11 @@ function BusinessPage() {
                               </div>
                             </div>
                           </div>
+                          {isLatest && (
+                            <span className="text-[10px] font-bold uppercase tracking-wider bg-[#facc15] text-black px-2 py-0.5 rounded-full shrink-0">
+                              {t("business.latest_badge")}
+                            </span>
+                          )}
                         </div>
                         <p className="text-sm text-neutral-300 mt-3 leading-relaxed line-clamp-5">
                           {r.text}
