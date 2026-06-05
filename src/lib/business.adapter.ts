@@ -54,5 +54,6 @@ export function adaptBusiness(row: DbBusinessRow, plan: PlanTier = "starter"): B
     fastResponder: row.fast_responder ?? undefined,
     addressStreet: row.address_street ?? undefined,
     addressSuburb: row.address_suburb ?? undefined,
+    googlePlaceId: row.google_place_id ?? null,
   };
 }
