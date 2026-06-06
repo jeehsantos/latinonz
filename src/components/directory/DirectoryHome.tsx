@@ -138,7 +138,7 @@ export function DirectoryHome() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
           {groups.slice(0, 10).map((g) => {
             const Icon = getIcon(g.iconKey);
-            const count = categories.filter((c) => c.group === g.id).length;
+            const count = businessCountByGroup.get(g.id) ?? 0;
             return (
               <Link
                 key={g.id}
