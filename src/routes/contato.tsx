@@ -164,9 +164,9 @@ function ContatoPage() {
                     </div>
                   ))}
                 </div>
-                <div className="text-sm text-slate-500 font-medium">
+                <div className="text-sm text-white/60 font-medium">
                   {t("contact.community_label")}{" "}
-                  <span className="text-slate-900 font-bold">{t("contact.community_count")}</span>{" "}
+                  <span className="text-white font-bold">{t("contact.community_count")}</span>{" "}
                   {t("contact.community_suffix")}
                 </div>
               </div>
