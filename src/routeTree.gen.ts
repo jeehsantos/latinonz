@@ -38,6 +38,7 @@ import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as AuthAcceptInviteRouteImport } from './routes/auth.accept-invite'
 import { Route as AdminWaitlistRouteImport } from './routes/admin.waitlist'
 import { Route as AdminManagersRouteImport } from './routes/admin.managers'
+import { Route as AdminCouponsRouteImport } from './routes/admin.coupons'
 import { Route as AdminBusinessesRouteImport } from './routes/admin.businesses'
 import { Route as AdminAccountRouteImport } from './routes/admin.account'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe-webhook'
@@ -187,6 +188,11 @@ const AdminManagersRoute = AdminManagersRouteImport.update({
   path: '/managers',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCouponsRoute = AdminCouponsRouteImport.update({
+  id: '/coupons',
+  path: '/coupons',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminBusinessesRoute = AdminBusinessesRouteImport.update({
   id: '/businesses',
   path: '/businesses',
@@ -219,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/admin/account': typeof AdminAccountRoute
   '/admin/businesses': typeof AdminBusinessesRoute
+  '/admin/coupons': typeof AdminCouponsRoute
   '/admin/managers': typeof AdminManagersRoute
   '/admin/waitlist': typeof AdminWaitlistRoute
   '/auth/accept-invite': typeof AuthAcceptInviteRoute
@@ -251,6 +258,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/admin/account': typeof AdminAccountRoute
   '/admin/businesses': typeof AdminBusinessesRoute
+  '/admin/coupons': typeof AdminCouponsRoute
   '/admin/managers': typeof AdminManagersRoute
   '/admin/waitlist': typeof AdminWaitlistRoute
   '/auth/accept-invite': typeof AuthAcceptInviteRoute
@@ -286,6 +294,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/admin/account': typeof AdminAccountRoute
   '/admin/businesses': typeof AdminBusinessesRoute
+  '/admin/coupons': typeof AdminCouponsRoute
   '/admin/managers': typeof AdminManagersRoute
   '/admin/waitlist': typeof AdminWaitlistRoute
   '/auth/accept-invite': typeof AuthAcceptInviteRoute
@@ -322,6 +331,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin/account'
     | '/admin/businesses'
+    | '/admin/coupons'
     | '/admin/managers'
     | '/admin/waitlist'
     | '/auth/accept-invite'
@@ -354,6 +364,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin/account'
     | '/admin/businesses'
+    | '/admin/coupons'
     | '/admin/managers'
     | '/admin/waitlist'
     | '/auth/accept-invite'
@@ -388,6 +399,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/admin/account'
     | '/admin/businesses'
+    | '/admin/coupons'
     | '/admin/managers'
     | '/admin/waitlist'
     | '/auth/accept-invite'
@@ -632,6 +644,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminManagersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/coupons': {
+      id: '/admin/coupons'
+      path: '/coupons'
+      fullPath: '/admin/coupons'
+      preLoaderRoute: typeof AdminCouponsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/businesses': {
       id: '/admin/businesses'
       path: '/businesses'
@@ -659,6 +678,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminAccountRoute: typeof AdminAccountRoute
   AdminBusinessesRoute: typeof AdminBusinessesRoute
+  AdminCouponsRoute: typeof AdminCouponsRoute
   AdminManagersRoute: typeof AdminManagersRoute
   AdminWaitlistRoute: typeof AdminWaitlistRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -667,6 +687,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAccountRoute: AdminAccountRoute,
   AdminBusinessesRoute: AdminBusinessesRoute,
+  AdminCouponsRoute: AdminCouponsRoute,
   AdminManagersRoute: AdminManagersRoute,
   AdminWaitlistRoute: AdminWaitlistRoute,
   AdminIndexRoute: AdminIndexRoute,
