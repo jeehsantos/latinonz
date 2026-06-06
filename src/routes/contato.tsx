@@ -122,7 +122,20 @@ function ContatoPage() {
                     {second && (
                       <span className="inline-block relative">
                         {second}
-                        <span className="block h-1 w-full bg-[#facc15] rounded-full mt-2" />
+                        <svg
+                          aria-hidden="true"
+                          viewBox="0 0 200 12"
+                          preserveAspectRatio="none"
+                          className="absolute left-0 right-0 -bottom-3 w-full h-3"
+                        >
+                          <path
+                            d="M2 8 Q 100 -2 198 8"
+                            stroke="#facc15"
+                            strokeWidth="4"
+                            strokeLinecap="round"
+                            fill="none"
+                          />
+                        </svg>
                       </span>
                     )}
                   </>
