@@ -689,6 +689,7 @@ function GeneralTab(p: GeneralTabProps) {
                     onChange={(e) => p.setCategoryGroup(e.target.value)}
                     className={`${inputCls} appearance-none pr-10`}
                   >
+                    <option value="">{t("profile.group_placeholder")}</option>
                     {groups.map((group) => (
                       <option key={group.id} value={group.id}>
                         {group.label}
