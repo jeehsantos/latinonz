@@ -142,8 +142,8 @@ function ContatoPage() {
                     <Icon size={20} aria-hidden="true" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-slate-900">{title}</h3>
-                    <p className="text-slate-500">{text}</p>
+                    <h3 className="font-bold text-white">{title}</h3>
+                    <p className="text-white/70">{text}</p>
                   </div>
                 </div>
               ))}
