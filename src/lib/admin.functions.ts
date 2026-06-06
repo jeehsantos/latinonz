@@ -272,3 +272,42 @@ export const removeManager = createServerFn({ method: "POST" })
       userId: data.userId,
     }),
   );
+
+// ---------- Coupons (admin view of promo images to share) ----------
+
+export const getAdminCouponPromos = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await requireAdminRole(context.userId, context.supabase);
+
+    const { data: coupons, error } = await supabaseAdmin
+      .from("coupons")
+      .select(
+        "id, business_id, code, title, description, discount_type, discount_value, expires_at, is_active, promo_image_url, promo_image_path, created_at",
+      )
+      .eq("is_active", true)
+      .not("promo_image_url", "is", null)
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+
+    const businessIds = Array.from(new Set((coupons ?? []).map((c) => c.business_id)));
+    let businessMap = new Map<
+      string,
+      { id: string; name: string; slug: string; logo_url: string | null }
+    >();
+    if (businessIds.length > 0) {
+      const { data: bizRows, error: bizErr } = await supabaseAdmin
+        .from("businesses")
+        .select("id, name, slug, logo_url")
+        .in("id", businessIds);
+      if (bizErr) throw new Error(bizErr.message);
+      businessMap = new Map((bizRows ?? []).map((b) => [b.id, b]));
+    }
+
+    return {
+      coupons: (coupons ?? []).map((c) => ({
+        ...c,
+        business: businessMap.get(c.business_id) ?? null,
+      })),
+    };
+  });
