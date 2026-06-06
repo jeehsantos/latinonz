@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Sparkles, ShieldCheck, Users, MapPin, Star, BadgeCheck, Tag } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
+import { MobileSearchBar } from "@/components/directory/MobileSearchBar";
 import { getBusinesses } from "@/lib/business.functions";
 import { adaptBusiness } from "@/lib/business.adapter";
 import { useCategories } from "@/hooks/useCategories";
@@ -74,31 +75,51 @@ export function DirectoryHome() {
         }}
       >
         <div className="absolute inset-0 -z-0 opacity-[0.04] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:48px_48px]" />
-        <div className="relative max-w-6xl mx-auto px-5 sm:px-6 py-10 sm:py-20 md:py-28 text-center">
-          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 backdrop-blur-sm text-white/90 text-[10px] sm:text-[11px] font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-4 sm:mb-8 uppercase tracking-[0.18em]">
+        {/* Desktop hero */}
+        <div className="hidden md:block relative max-w-6xl mx-auto px-5 sm:px-6 py-20 md:py-28 text-center">
+          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 backdrop-blur-sm text-white/90 text-[11px] font-bold px-4 py-2 rounded-full mb-8 uppercase tracking-[0.18em]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#facc15]" />
             {t("directory.home_badge")}
           </div>
-          <h1 className="text-[2rem] sm:text-5xl md:text-7xl font-black tracking-tight leading-[1.05] text-white">
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05] text-white">
             {t("directory.home_headline_before")}
             <span className="text-[#facc15]">{t("directory.home_headline_highlight")}</span>
             {t("directory.home_headline_after")}
           </h1>
-          <p className="mt-3 sm:mt-6 text-sm sm:text-base md:text-lg text-white/60 max-w-2xl mx-auto">
+          <p className="mt-6 text-base md:text-lg text-white/60 max-w-2xl mx-auto">
             {t("directory.home_subheadline")}
           </p>
-          <div className="mt-5 sm:mt-10 max-w-4xl mx-auto">
+          <div className="mt-10 max-w-4xl mx-auto">
             <SearchBar value={search} onChange={setSearch} onSubmit={handleSearchSubmit} />
+          </div>
+        </div>
+
+        {/* Mobile hero — compact */}
+        <div className="md:hidden relative px-5 pt-8 pb-7">
+          <div className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 text-white/90 text-[10px] font-bold px-2.5 py-1 rounded-full mb-3 uppercase tracking-[0.18em]">
+            <span className="w-1 h-1 rounded-full bg-[#facc15]" />
+            {t("directory.home_badge")}
+          </div>
+          <h1 className="text-[28px] font-black tracking-tight leading-[1.1] text-white">
+            {t("directory.home_headline_before")}
+            <span className="text-[#facc15]">{t("directory.home_headline_highlight")}</span>
+            {t("directory.home_headline_after")}
+          </h1>
+          <p className="mt-2.5 text-[13px] text-white/60 leading-snug">
+            {t("directory.home_subheadline")}
+          </p>
+          <div className="mt-5">
+            <MobileSearchBar value={search} onChange={setSearch} />
           </div>
         </div>
       </section>
 
-      {/* Trust strip */}
-      <section className="max-w-7xl mx-auto px-5 sm:px-6 -mt-6 sm:-mt-8 grid grid-cols-3 gap-2 sm:gap-4 relative z-10">
+      {/* Trust strip — desktop */}
+      <section className="hidden md:grid max-w-7xl mx-auto px-5 sm:px-6 -mt-6 sm:-mt-8 grid-cols-3 gap-2 sm:gap-4 relative z-10">
         {trustItems.map(({ icon: Icon, value, label }) => (
           <div
             key={label}
-            className="bg-neutral-900 border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-5 flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 shadow-sm text-center sm:text-left"
+            className="bg-neutral-900 border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-5 flex flex-col sm:flex-row items-center gap-2 sm:gap-4 shadow-sm text-center sm:text-left"
           >
             <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#df991b]/15 text-[#df991b] flex items-center justify-center shrink-0">
               <Icon size={18} />
@@ -111,8 +132,20 @@ export function DirectoryHome() {
         ))}
       </section>
 
-      {/* Categories */}
-      <section className="relative max-w-7xl mx-auto px-5 sm:px-6 py-10 sm:py-16">
+      {/* Trust strip — mobile (inline pill row) */}
+      <section className="md:hidden mx-5 -mt-3 relative z-10 bg-neutral-900 border border-white/10 rounded-2xl px-4 py-3 flex items-center justify-around divide-x divide-white/10">
+        {trustItems.map(({ value, label }) => (
+          <div key={label} className="flex-1 px-2 text-center">
+            <p className="text-base font-black text-white leading-tight">{value}</p>
+            <p className="text-[9px] uppercase tracking-wider text-neutral-400 leading-tight mt-0.5">
+              {label.split(" ")[0]}
+            </p>
+          </div>
+        ))}
+      </section>
+
+      {/* Categories — desktop grid */}
+      <section className="hidden md:block relative max-w-7xl mx-auto px-5 sm:px-6 py-10 sm:py-16">
         <div className="flex items-end justify-between mb-5 sm:mb-6">
           <div className="flex items-start gap-3">
             <span className="mt-1 w-[3px] h-7 bg-[#FFC700] rounded-full shadow-[0_0_12px_rgba(255,199,0,0.6)]" />
@@ -125,7 +158,7 @@ export function DirectoryHome() {
           </div>
           <Link
             to="/directory"
-            className="hidden sm:inline-flex text-sm font-bold text-[#FFC700] items-center gap-1 hover:gap-2 transition-all uppercase tracking-wider"
+            className="inline-flex text-sm font-bold text-[#FFC700] items-center gap-1 hover:gap-2 transition-all uppercase tracking-wider"
           >
             {t("directory.see_all")} <ArrowRight size={14} />
           </Link>
@@ -159,8 +192,42 @@ export function DirectoryHome() {
         </div>
       </section>
 
-      {/* Featured */}
-      <section className="relative max-w-7xl mx-auto px-5 sm:px-6 pb-10 sm:pb-16">
+      {/* Categories — mobile horizontal rail */}
+      <section className="md:hidden mt-7">
+        <div className="flex items-end justify-between px-5 mb-3">
+          <h2 className="text-lg font-black text-white">{t("directory.categories_title")}</h2>
+          <Link to="/directory" className="text-xs font-bold text-[#facc15] uppercase tracking-wider inline-flex items-center gap-0.5">
+            {t("directory.see_all")} <ArrowRight size={12} />
+          </Link>
+        </div>
+        <div className="flex gap-3 overflow-x-auto px-5 pb-1 snap-x snap-mandatory scrollbar-hide">
+          {groups.slice(0, 10).map((g) => {
+            const Icon = getIcon(g.iconKey);
+            const count = businessCountByGroup.get(g.id) ?? 0;
+            return (
+              <Link
+                key={g.id}
+                to="/directory"
+                search={{ category: categories.find((c) => c.group === g.id)?.key ?? "" }}
+                className="snap-start shrink-0 w-[120px] rounded-2xl bg-neutral-900 border border-white/10 p-3 flex flex-col gap-2 active:bg-neutral-800"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-[#FFC700] text-black flex items-center justify-center">
+                    <Icon size={16} />
+                  </div>
+                  <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-[#FFC700]/15 text-[#FFC700]">
+                    {count}
+                  </span>
+                </div>
+                <p className="font-extrabold text-white text-[13px] leading-tight line-clamp-2">{g.label}</p>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Featured — desktop grid */}
+      <section className="hidden md:block relative max-w-7xl mx-auto px-5 sm:px-6 pb-10 sm:pb-16">
         <div className="flex items-end justify-between mb-5 sm:mb-6">
           <div className="flex items-start gap-3">
             <span className="mt-1 w-[3px] h-7 bg-[#FFC700] rounded-full shadow-[0_0_12px_rgba(255,199,0,0.6)]" />
@@ -176,7 +243,6 @@ export function DirectoryHome() {
             {t("directory.see_more")} <ArrowRight size={14} />
           </Link>
         </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {featured.map((b) => (
             <FeaturedCard key={b.id} business={b} />
@@ -184,9 +250,27 @@ export function DirectoryHome() {
         </div>
       </section>
 
+      {/* Featured — mobile horizontal swipe */}
+      <section className="md:hidden mt-8">
+        <div className="flex items-end justify-between px-5 mb-3">
+          <h2 className="text-lg font-black text-white">{t("directory.featured_title")}</h2>
+          <Link to="/directory" className="text-xs font-bold text-[#facc15] uppercase tracking-wider inline-flex items-center gap-0.5">
+            {t("directory.see_more")} <ArrowRight size={12} />
+          </Link>
+        </div>
+        <div className="flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory scrollbar-hide">
+          {featured.map((b) => (
+            <div key={b.id} className="snap-start shrink-0 w-[260px]">
+              <FeaturedCard business={b} />
+            </div>
+          ))}
+        </div>
+      </section>
+
+
       {/* CTA */}
-      <section className="max-w-7xl mx-auto px-5 sm:px-6 pb-16 sm:pb-20">
-        <div className="rounded-3xl bg-gradient-to-br from-[#facc15] via-[#fbbf24] to-[#f59e0b] text-black p-8 sm:p-10 md:p-16 text-center relative overflow-hidden shadow-2xl shadow-[#facc15]/10">
+      <section className="max-w-7xl mx-auto px-5 sm:px-6 pt-8 md:pt-0 pb-10 sm:pb-20">
+        <div className="rounded-2xl md:rounded-3xl bg-gradient-to-br from-[#facc15] via-[#fbbf24] to-[#f59e0b] text-black p-6 sm:p-10 md:p-16 text-center relative overflow-hidden shadow-2xl shadow-[#facc15]/10">
           <div
             className="absolute inset-0 pointer-events-none opacity-40 mix-blend-overlay"
             style={{
@@ -195,11 +279,11 @@ export function DirectoryHome() {
             }}
           />
           <div className="relative">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight">{t("directory.cta_title")}</h2>
-            <p className="mt-3 text-sm sm:text-base text-black/75 max-w-xl mx-auto">{t("directory.cta_body")}</p>
+            <h2 className="text-xl sm:text-3xl md:text-4xl font-black tracking-tight leading-tight">{t("directory.cta_title")}</h2>
+            <p className="mt-2 sm:mt-3 text-[13px] sm:text-base text-black/75 max-w-xl mx-auto">{t("directory.cta_body")}</p>
             <Link
               to="/cadastro"
-              className="inline-flex mt-6 bg-black text-[#facc15] font-bold px-7 py-3 rounded-full hover:bg-neutral-900 transition shadow-lg"
+              className="inline-flex mt-4 sm:mt-6 bg-black text-[#facc15] font-bold px-6 sm:px-7 py-2.5 sm:py-3 rounded-full hover:bg-neutral-900 transition shadow-lg text-sm sm:text-base"
             >
               {t("directory.cta_button")}
             </Link>
