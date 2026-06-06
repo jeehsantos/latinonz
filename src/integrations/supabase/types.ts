@@ -221,6 +221,8 @@ export type Database = {
           expires_at: string | null
           id: string
           is_active: boolean
+          promo_image_path: string | null
+          promo_image_url: string | null
           title: string
         }
         Insert: {
@@ -233,6 +235,8 @@ export type Database = {
           expires_at?: string | null
           id?: string
           is_active?: boolean
+          promo_image_path?: string | null
+          promo_image_url?: string | null
           title: string
         }
         Update: {
@@ -245,6 +249,8 @@ export type Database = {
           expires_at?: string | null
           id?: string
           is_active?: boolean
+          promo_image_path?: string | null
+          promo_image_url?: string | null
           title?: string
         }
         Relationships: [
