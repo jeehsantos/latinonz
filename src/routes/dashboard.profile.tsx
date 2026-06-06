@@ -268,7 +268,7 @@ function ProfileEditor() {
     }
   }, [loaded]);
 
-  const { groups, categories: allCategories, getCategoryByKey } = useCategories();
+  const { groups, getCategoryByKey } = useCategories();
 
   // If a category is loaded from the DB without a group, derive the group.
   // Do NOT auto-pick a group or category from scratch — the user must
