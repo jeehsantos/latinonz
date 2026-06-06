@@ -1,37 +1,73 @@
-## Coupons page enhancements
+# Mobile-First UX Overhaul
 
-### 1. Redesign "New coupon" modal (`src/routes/dashboard.coupons.tsx`)
-- Restructure layout: grouped sections (Basic info / Discount / Validity / Promo image) with clear labels above each field instead of placeholder-only inputs.
-- Replace native `<input type="date">` with the shadcn Datepicker (Popover + Calendar, `pointer-events-auto`).
-- Replace inline red error text with field-level inline validation messages (zod via react-hook-form) and a toast on submit failure. Translate all messages via i18n.
-- Larger modal (max-w-lg), better dark-theme inputs (consistent neutral-950 bg, white text, focus ring in primary color), sticky footer with Cancel + Save buttons.
+Goal: Rework the mobile experience (≤ 768px) across the public site and the business dashboard with a full mobile-first rethink — denser hierarchy, fewer competing elements per viewport, easier search, and an app-like bottom navigation. Desktop layouts (≥ lg) stay exactly as they are today; every change is gated behind Tailwind responsive prefixes (`md:`, `lg:`) so desktop output is unchanged.
 
-### 2. Better coupon card design (`dashboard.coupons.tsx`)
-- Replace amber/cream card with a dark coupon card: dark gradient background (`from-neutral-900 to-neutral-800`), yellow `#facc15` accent border-left, perforated divider, white code text, neutral-300 description. Inactive state desaturated.
-- Add an **Edit** (pencil) button next to Power/Trash. Opens the same modal pre-filled; reuses a new `updateCoupon` server function.
-- Show discount value as a prominent badge (e.g. "20% OFF" or "$10 OFF").
+## Global pieces (built once, used everywhere)
 
-### 3. Edit support (backend)
-- Add `updateCoupon` in `src/lib/coupons.functions.ts` (zod-validated, owner-scoped via RLS) updating code/title/description/discount/expiry/image fields.
+1. **`MobileBottomNav` (public site)** — fixed bottom tab bar shown only `lg:hidden`, with 4 tabs: Home, Directory, Blog, Account (Login if signed out / Dashboard if signed in). Active tab uses `#facc15`. Mounted in `SiteShell`. Adds `pb-20 lg:pb-0` spacer so content isn't hidden behind it.
+2. **`MobileDashboardNav`** — same pattern for the dashboard, 5 slots: Home, Profile, Leads (with badge), Coupons, More (opens a sheet with Gallery, Events, Analytics, Settings, Upgrade, Sign out). Replaces the current hamburger drawer on mobile.
+3. **`SiteHeader` mobile** — slim header on mobile: logo left, language switch + login icon right. Remove hamburger (bottom nav replaces it). Desktop unchanged.
+4. **Safe-area padding** — add `pb-[env(safe-area-inset-bottom)]` on bottom nav to respect iOS home indicator.
 
-### 4. Promo image upload for community sharing
-- Add optional **Promo image** field in the new/edit modal: "Have an image we can share in our hub? Upload it here." Uploads to existing `business-gallery` bucket under a `coupons/` prefix (or new `coupon-promos` bucket — see Technical).
-- DB: add `promo_image_url text` and `promo_image_path text` columns to `coupons`. Migration via `supabase--migration`.
-- Display thumbnail on coupon card.
+## Page-by-page mobile changes (desktop untouched)
 
-### 5. Admin "Coupons" page
-- New sidebar item in `src/components/admin/AdminLayout.tsx`: **Cupons promocionais** (icon: Ticket), route `/admin/coupons`.
-- New route `src/routes/admin.coupons.tsx`: lists all active coupons across all businesses that have a promo image. Each card shows business name + logo, coupon title/code/discount/expiry, the promo image (with download button), and a copy-to-clipboard for the caption text.
-- Server fn `adminListCouponPromos` in `src/lib/admin.functions.ts` (admin/manager role-gated) returning coupons joined with business name/logo, filtered to `is_active = true` and `promo_image_url not null`, ordered by `created_at desc`.
+### Public site
 
-### Technical notes
-- **Storage bucket**: reuse `business-gallery` (already public) with path `coupons/{business_id}/{coupon_id}-{filename}` to avoid a new bucket + RLS migration. Admin page reads via the public URL.
-- **Migration**: `ALTER TABLE public.coupons ADD COLUMN promo_image_url text, ADD COLUMN promo_image_path text;` (no new GRANTs needed — table already wired).
-- **Edit auth**: owner-only via existing `businesses.owner_id = auth.uid()` policy on `coupons`.
-- **Datepicker**: shadcn `Calendar` + `Popover`, store as `yyyy-MM-dd` string for the server validator.
-- i18n: add new keys to `pt.json`, `en.json`, `es.json` for new labels (Edit, Promo image, upload helper, admin page title, validation messages).
-- No changes to public directory pages.
+- **Home (`DirectoryHome`)**
+  - Hero: smaller headline (`text-3xl`), tighter vertical padding, single-line CTA pill.
+  - Search bar: collapse to single primary input + a "Filters" button on mobile that opens a `Sheet` containing Category + City selects. Desktop keeps the 3-field inline form.
+  - Trust strip: scrollable horizontal chips on mobile instead of 3-col grid.
+  - Categories: 2-col grid with smaller cards, hide group description, show 6 (with "See all" link). Desktop unchanged at 5-col.
+  - Featured: 1-col stack on mobile (no `sm:grid-cols-2` until `md`), tighter cards.
+  - CTA section: smaller padding, single-column.
 
-### Out of scope
-- No changes to coupon visibility on the public business page.
-- No new analytics for coupon downloads (can add later if needed).
+- **Directory (`/directory`)**
+  - Replace inline `SearchBar` with sticky search input + "Filters" pill at top on mobile; full filter sheet on tap with category, city, sort, type. Active filter chips below input. Desktop unchanged.
+  - Results: 1-col cards on mobile, condensed `BusinessCard` variant (smaller image aspect, no description if narrow, location + rating in one row).
+  - Pagination/empty states scaled down.
+
+- **Business detail (`business.$slug`)**
+  - Stack hero image + info vertically on mobile, sticky bottom action bar ("Call / WhatsApp / Save") instead of inline buttons.
+  - Tabs (About / Reviews / Coupons / Gallery) become horizontally scrollable on mobile.
+  - Reviews and gallery render as single column.
+
+- **Blog list + post**
+  - 1-col card list with larger touch targets; remove sidebar on mobile.
+  - Post: reduce prose size, add sticky back button.
+
+- **Contato, Sobre, Planos**
+  - Hero text scaled down, plans render as vertical stack of cards (no horizontal scroll), comparison table converts to per-plan accordion on mobile.
+
+- **Cadastro / Login**
+  - Full-bleed form, larger inputs (min-h-12), single-column, sticky submit button at bottom on mobile.
+
+### Business dashboard
+
+- **`DashboardLayout`**
+  - Hide left sidebar on mobile (already hidden); replace hamburger drawer with `MobileDashboardNav` (bottom tabs + "More" sheet).
+  - Header on mobile: logo left, plan badge + avatar right (drop the business name/location text).
+  - Main: reduce padding to `p-4` on mobile.
+
+- **Dashboard index** — stat cards stack 1-col (currently feels cramped at sm).
+- **Profile** — group fields into collapsible sections (Basic, Contact, Location, Description, Photos) on mobile; sticky "Save" at bottom.
+- **Coupons** — list view on mobile (avatar + code + status), tap to expand; "New coupon" modal already redesigned, just verify sheet variant on mobile (use `Drawer` from bottom).
+- **Events, Gallery, Leads, Analytics, Settings** — 1-col layout, larger touch targets, convert tables to card lists on mobile, sticky primary CTA.
+
+## Technical Notes
+
+- All changes use Tailwind responsive variants; **no desktop class is removed** — new mobile styles slot in as the base and existing classes are kept behind `md:`/`lg:`.
+- Bottom nav uses `fixed bottom-0 inset-x-0 lg:hidden`, `backdrop-blur`, `border-t border-white/10`, `bg-neutral-950/95`.
+- Tables → card lists handled via `hidden md:block` / `md:hidden` duplicates only where structure differs too much for pure utility tweaking.
+- Reusable `<MobileFilterSheet>` (shadcn `Sheet`) used by Home and Directory.
+- Touch targets: minimum 44px tappable height on all primary actions.
+- No backend/route/business-logic changes — purely presentational components and Tailwind classes.
+
+## Out of scope
+- Admin panel (per your selection).
+- Auth flow behavior changes.
+- Any desktop visual change.
+- New data, endpoints, or i18n keys beyond labels for "Filters", "More", and bottom-nav tab names.
+
+## Rollout
+
+Single PR-style batch: build `MobileBottomNav`, `MobileDashboardNav`, `MobileFilterSheet`, then update each route/component listed above. Verify on 390×844 viewport (current preview) and a desktop width to confirm desktop is byte-identical visually.
