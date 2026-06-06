@@ -41,10 +41,21 @@ export function DirectoryHome() {
   });
   const { groups, categories, isLoading: catsLoading } = useCategories();
   void catsLoading;
-  const featured = useMemo(() => {
-    if (!data?.ok) return [];
-    return data.rows.slice(0, 4).map((r) => adaptBusiness(r));
-  }, [data]);
+  const allBusinesses = useMemo(
+    () => (data?.ok ? data.rows.map((r) => adaptBusiness(r)) : []),
+    [data],
+  );
+  const businessCountByGroup = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const b of allBusinesses) {
+      const groupId =
+        b.categoryGroup ?? categories.find((c) => c.key === b.macro)?.group;
+      if (!groupId) continue;
+      counts.set(groupId, (counts.get(groupId) ?? 0) + 1);
+    }
+    return counts;
+  }, [allBusinesses, categories]);
+  const featured = useMemo(() => allBusinesses.slice(0, 4), [allBusinesses]);
 
   const trustItems = [
     { icon: Users, value: "600+", label: t("directory.trust_businesses") },
