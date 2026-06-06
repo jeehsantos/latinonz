@@ -114,12 +114,12 @@ export function DirectoryHome() {
         </div>
       </section>
 
-      {/* Trust strip */}
-      <section className="max-w-7xl mx-auto px-5 sm:px-6 -mt-6 sm:-mt-8 grid grid-cols-3 gap-2 sm:gap-4 relative z-10">
+      {/* Trust strip — desktop */}
+      <section className="hidden md:grid max-w-7xl mx-auto px-5 sm:px-6 -mt-6 sm:-mt-8 grid-cols-3 gap-2 sm:gap-4 relative z-10">
         {trustItems.map(({ icon: Icon, value, label }) => (
           <div
             key={label}
-            className="bg-neutral-900 border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-5 flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 shadow-sm text-center sm:text-left"
+            className="bg-neutral-900 border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-5 flex flex-col sm:flex-row items-center gap-2 sm:gap-4 shadow-sm text-center sm:text-left"
           >
             <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#df991b]/15 text-[#df991b] flex items-center justify-center shrink-0">
               <Icon size={18} />
@@ -132,8 +132,20 @@ export function DirectoryHome() {
         ))}
       </section>
 
-      {/* Categories */}
-      <section className="relative max-w-7xl mx-auto px-5 sm:px-6 py-10 sm:py-16">
+      {/* Trust strip — mobile (inline pill row) */}
+      <section className="md:hidden mx-5 -mt-3 relative z-10 bg-neutral-900 border border-white/10 rounded-2xl px-4 py-3 flex items-center justify-around divide-x divide-white/10">
+        {trustItems.map(({ value, label }) => (
+          <div key={label} className="flex-1 px-2 text-center">
+            <p className="text-base font-black text-white leading-tight">{value}</p>
+            <p className="text-[9px] uppercase tracking-wider text-neutral-400 leading-tight mt-0.5">
+              {label.split(" ")[0]}
+            </p>
+          </div>
+        ))}
+      </section>
+
+      {/* Categories — desktop grid */}
+      <section className="hidden md:block relative max-w-7xl mx-auto px-5 sm:px-6 py-10 sm:py-16">
         <div className="flex items-end justify-between mb-5 sm:mb-6">
           <div className="flex items-start gap-3">
             <span className="mt-1 w-[3px] h-7 bg-[#FFC700] rounded-full shadow-[0_0_12px_rgba(255,199,0,0.6)]" />
@@ -146,7 +158,7 @@ export function DirectoryHome() {
           </div>
           <Link
             to="/directory"
-            className="hidden sm:inline-flex text-sm font-bold text-[#FFC700] items-center gap-1 hover:gap-2 transition-all uppercase tracking-wider"
+            className="inline-flex text-sm font-bold text-[#FFC700] items-center gap-1 hover:gap-2 transition-all uppercase tracking-wider"
           >
             {t("directory.see_all")} <ArrowRight size={14} />
           </Link>
@@ -180,8 +192,42 @@ export function DirectoryHome() {
         </div>
       </section>
 
-      {/* Featured */}
-      <section className="relative max-w-7xl mx-auto px-5 sm:px-6 pb-10 sm:pb-16">
+      {/* Categories — mobile horizontal rail */}
+      <section className="md:hidden mt-7">
+        <div className="flex items-end justify-between px-5 mb-3">
+          <h2 className="text-lg font-black text-white">{t("directory.categories_title")}</h2>
+          <Link to="/directory" className="text-xs font-bold text-[#facc15] uppercase tracking-wider inline-flex items-center gap-0.5">
+            {t("directory.see_all")} <ArrowRight size={12} />
+          </Link>
+        </div>
+        <div className="flex gap-3 overflow-x-auto px-5 pb-1 snap-x snap-mandatory scrollbar-hide">
+          {groups.slice(0, 10).map((g) => {
+            const Icon = getIcon(g.iconKey);
+            const count = businessCountByGroup.get(g.id) ?? 0;
+            return (
+              <Link
+                key={g.id}
+                to="/directory"
+                search={{ category: categories.find((c) => c.group === g.id)?.key ?? "" }}
+                className="snap-start shrink-0 w-[120px] rounded-2xl bg-neutral-900 border border-white/10 p-3 flex flex-col gap-2 active:bg-neutral-800"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-[#FFC700] text-black flex items-center justify-center">
+                    <Icon size={16} />
+                  </div>
+                  <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-[#FFC700]/15 text-[#FFC700]">
+                    {count}
+                  </span>
+                </div>
+                <p className="font-extrabold text-white text-[13px] leading-tight line-clamp-2">{g.label}</p>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Featured — desktop grid */}
+      <section className="hidden md:block relative max-w-7xl mx-auto px-5 sm:px-6 pb-10 sm:pb-16">
         <div className="flex items-end justify-between mb-5 sm:mb-6">
           <div className="flex items-start gap-3">
             <span className="mt-1 w-[3px] h-7 bg-[#FFC700] rounded-full shadow-[0_0_12px_rgba(255,199,0,0.6)]" />
@@ -197,13 +243,30 @@ export function DirectoryHome() {
             {t("directory.see_more")} <ArrowRight size={14} />
           </Link>
         </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {featured.map((b) => (
             <FeaturedCard key={b.id} business={b} />
           ))}
         </div>
       </section>
+
+      {/* Featured — mobile horizontal swipe */}
+      <section className="md:hidden mt-8">
+        <div className="flex items-end justify-between px-5 mb-3">
+          <h2 className="text-lg font-black text-white">{t("directory.featured_title")}</h2>
+          <Link to="/directory" className="text-xs font-bold text-[#facc15] uppercase tracking-wider inline-flex items-center gap-0.5">
+            {t("directory.see_more")} <ArrowRight size={12} />
+          </Link>
+        </div>
+        <div className="flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory scrollbar-hide">
+          {featured.map((b) => (
+            <div key={b.id} className="snap-start shrink-0 w-[260px]">
+              <FeaturedCard business={b} />
+            </div>
+          ))}
+        </div>
+      </section>
+
 
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-5 sm:px-6 pb-16 sm:pb-20">
