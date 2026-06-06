@@ -25,6 +25,7 @@ import { useSidebarColor, darken, lighten } from "@/lib/sidebar-color";
 import { useI18n } from "@/lib/i18n";
 import { getMyBusiness } from "@/lib/business.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { MobileDashboardNav } from "./MobileDashboardNav";
 
 export function DashboardLayout() {
   const { t } = useI18n();
@@ -111,12 +112,12 @@ export function DashboardLayout() {
 
   return (
     <div className="min-h-screen bg-neutral-950 flex flex-col">
-      <header className="bg-neutral-900 border-b border-white/10 px-6 py-3 flex items-center gap-4 sticky top-0 z-30">
-        <button className="lg:hidden text-neutral-200" onClick={() => setMobileOpen(true)}>
+      <header className="bg-neutral-900 border-b border-white/10 px-4 sm:px-6 py-3 flex items-center gap-3 sm:gap-4 sticky top-0 z-30">
+        <button className="lg:hidden text-neutral-200" onClick={() => setMobileOpen(true)} aria-label="Menu">
           <Menu size={20} />
         </button>
         <Link to="/" className="flex items-center shrink-0">
-          <img src={logo} alt="Latino Connect" className="h-10 w-auto" />
+          <img src={logo} alt="Latino Connect" className="h-8 sm:h-10 w-auto" />
         </Link>
         <div className="hidden sm:flex items-center gap-3 ml-2">
           <PlanBadge plan={plan} />
@@ -133,7 +134,7 @@ export function DashboardLayout() {
             </select>
           )}
         </div>
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-2 sm:gap-3">
           <div className="hidden sm:block text-right">
             <p className="text-sm font-bold text-white">{businessName}</p>
             {businessLocation && <p className="text-xs text-neutral-400">{businessLocation}</p>}
@@ -152,7 +153,7 @@ export function DashboardLayout() {
           <button
             onClick={handleSignOut}
             title={t("dashboard.sign_out")}
-            className="flex items-center gap-1.5 text-sm text-neutral-300 hover:text-white border border-white/10 rounded-lg px-2.5 py-1.5 hover:bg-neutral-950 transition"
+            className="hidden sm:flex items-center gap-1.5 text-sm text-neutral-300 hover:text-white border border-white/10 rounded-lg px-2.5 py-1.5 hover:bg-neutral-950 transition"
           >
             <LogOut size={16} />
             <span className="hidden sm:inline">{t("dashboard.sign_out")}</span>
@@ -234,10 +235,11 @@ export function DashboardLayout() {
           />
         )}
 
-        <main className="flex-1 p-6 lg:p-10 min-w-0">
+        <main className="flex-1 p-4 sm:p-6 lg:p-10 min-w-0 pb-24 lg:pb-10">
           <Outlet />
         </main>
       </div>
+      <MobileDashboardNav pendingLeads={pendingLeads} />
     </div>
   );
 }
