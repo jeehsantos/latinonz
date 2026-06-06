@@ -110,11 +110,27 @@ function ContatoPage() {
               <span className="animate-pulse">●</span> {t("contact.badge")}
             </div>
 
-            <h1 className="text-5xl md:text-6xl font-black text-slate-900 leading-tight">
-              {t("contact.title")}
+            <h1 className="text-5xl md:text-6xl font-black text-white leading-tight">
+              {(() => {
+                const words = t("contact.title").split(" ");
+                const mid = Math.ceil(words.length / 2);
+                const first = words.slice(0, mid).join(" ");
+                const second = words.slice(mid).join(" ");
+                return (
+                  <>
+                    <span className="block">{first}</span>
+                    {second && (
+                      <span className="inline-block relative">
+                        {second}
+                        <span className="block h-1 w-full bg-[#facc15] rounded-full mt-2" />
+                      </span>
+                    )}
+                  </>
+                );
+              })()}
             </h1>
 
-            <p className="text-xl text-slate-600 max-w-lg leading-relaxed">
+            <p className="text-xl text-white/80 max-w-lg leading-relaxed">
               {t("contact.subtitle")}
             </p>
 
