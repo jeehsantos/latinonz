@@ -410,6 +410,10 @@ function ProfileEditor() {
   const handleSave = async () => {
     setSaveError(null);
     setSaveSuccess(false);
+    if (!category) {
+      setSaveError(t("profile.save_error_category_required"));
+      return;
+    }
     setSaving(true);
     try {
       const cleanBranches = branches.filter((b) => b.name.trim().length > 0);
