@@ -41,15 +41,11 @@ export function DirectoryHome() {
   });
   const { groups, categories, isLoading: catsLoading } = useCategories();
   void catsLoading;
-  const allBusinesses = useMemo(
-    () => (data?.ok ? data.rows.map((r) => adaptBusiness(r)) : []),
-    [data],
-  );
+  const allBusinesses = useMemo(() => (data?.ok ? data.rows.map((r) => adaptBusiness(r)) : []), [data]);
   const businessCountByGroup = useMemo(() => {
     const counts = new Map<string, number>();
     for (const b of allBusinesses) {
-      const groupId =
-        b.categoryGroup ?? categories.find((c) => c.key === b.macro)?.group;
+      const groupId = b.categoryGroup ?? categories.find((c) => c.key === b.macro)?.group;
       if (!groupId) continue;
       counts.set(groupId, (counts.get(groupId) ?? 0) + 1);
     }
@@ -96,7 +92,6 @@ export function DirectoryHome() {
           </div>
         </div>
       </section>
-
 
       {/* Trust strip */}
       <section className="max-w-7xl mx-auto px-5 sm:px-6 -mt-6 sm:-mt-8 grid grid-cols-3 gap-2 sm:gap-4 relative z-10">
@@ -170,9 +165,7 @@ export function DirectoryHome() {
           <div className="flex items-start gap-3">
             <span className="mt-1 w-[3px] h-7 bg-[#FFC700] rounded-full shadow-[0_0_12px_rgba(255,199,0,0.6)]" />
             <div>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white">
-                {t("directory.featured_title")}
-              </h2>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white">{t("directory.featured_title")}</h2>
               <p className="text-sm text-neutral-400 mt-1">{t("directory.featured_subtitle")}</p>
             </div>
           </div>
@@ -213,13 +206,11 @@ export function DirectoryHome() {
           </div>
         </div>
       </section>
-
     </SiteShell>
   );
 }
 
 function FeaturedCard({ business }: { business: Business }) {
-  const planLabel = PLAN_LABELS[business.plan] ?? business.plan;
   const { getCategoryByKey } = useCategories();
   const categoryLabel = getCategoryByKey(business.macro)?.label ?? business.subcategory;
   return (
@@ -239,18 +230,13 @@ function FeaturedCard({ business }: { business: Business }) {
             loading="lazy"
           />
         ) : (
-          <div className="text-6xl font-black text-white/10">
-            {business.name.charAt(0)}
-          </div>
+          <div className="text-6xl font-black text-white/10">{business.name.charAt(0)}</div>
         )}
 
-        {/* Plan badges top-left: BUSINESS + plan tier */}
+        {/* Plan badges top-left: BUSINESS */}
         <div className="absolute top-3 left-3 flex items-center gap-1.5">
           <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-md bg-[#FFC700] text-black shadow-[0_4px_14px_-4px_rgba(255,199,0,0.6)]">
             {business.type === "Empresa" ? "Business" : "Pro"}
-          </span>
-          <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/15 text-white">
-            {planLabel}
           </span>
         </div>
 
@@ -273,16 +259,12 @@ function FeaturedCard({ business }: { business: Business }) {
           </h3>
           <BadgeCheck size={16} className="text-sky-400 shrink-0 fill-sky-400/20" />
         </div>
-        <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed min-h-[2.4rem]">
-          {business.description}
-        </p>
+        <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed min-h-[2.4rem]">{business.description}</p>
         <div className="mt-2 pt-3 border-t border-white/5 flex flex-col gap-1.5">
           <span className="inline-flex items-center gap-1.5 text-[11px] text-neutral-400 min-w-0">
             <MapPin size={12} className="shrink-0 text-[#FFC700]" />
             <span className="truncate">
-              {business.locations && business.locations.length > 0
-                ? business.locations.join(", ")
-                : business.location}
+              {business.locations && business.locations.length > 0 ? business.locations.join(", ") : business.location}
             </span>
           </span>
           <div className="flex items-center justify-between gap-2">
@@ -290,13 +272,10 @@ function FeaturedCard({ business }: { business: Business }) {
               <Tag size={12} className="shrink-0 text-[#FFC700]" />
               <span className="truncate">{categoryLabel}</span>
             </span>
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#FFC700] shrink-0">
-              Active
-            </span>
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#FFC700] shrink-0">Active</span>
           </div>
         </div>
       </div>
-
     </Link>
   );
 }
