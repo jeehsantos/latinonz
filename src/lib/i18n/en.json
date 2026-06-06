@@ -279,6 +279,8 @@
     "category_asterisk": "Main Category *",
     "group_asterisk": "Group *",
     "group_placeholder": "Select a group",
+    "category_placeholder": "Select a category",
+    "save_error_category_required": "Please select a category before saving.",
     "business_type_label": "Business Type",
     "description_asterisk": "Full Description *",
     "contact_links_title": "Contact & Links",

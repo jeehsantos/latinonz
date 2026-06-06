@@ -268,35 +268,26 @@ function ProfileEditor() {
     }
   }, [loaded]);
 
-  const { groups, categories: allCategories, getCategoryByKey } = useCategories();
+  const { groups, getCategoryByKey } = useCategories();
 
-  // Initialize group + category to sensible defaults.
+  // If a category is loaded from the DB without a group, derive the group.
+  // Do NOT auto-pick a group or category from scratch — the user must
+  // explicitly choose so we never silently save defaults.
   useEffect(() => {
     if (groups.length === 0) return;
-    // If category set but group missing, derive group from category.
     if (category && !categoryGroup) {
       const found = getCategoryByKey(category);
       if (found) setCategoryGroup(found.group);
-      return;
     }
-    // If nothing set yet, default to first group + first category in it.
-    if (!categoryGroup) {
-      const firstGroup = groups[0].id;
-      setCategoryGroup(firstGroup);
-      const firstCat = allCategories.find((c) => c.group === firstGroup);
-      if (firstCat && !category) setCategory(firstCat.key);
-    }
-  }, [groups, allCategories, category, categoryGroup, getCategoryByKey]);
+  }, [groups, category, categoryGroup, getCategoryByKey]);
 
-  // When the user changes group, snap category to the first one in that group
-  // if the current category does not belong to it.
+  // When the user changes group, clear category if it no longer fits, forcing
+  // a deliberate re-selection in the (now filtered) category dropdown.
   useEffect(() => {
-    if (!categoryGroup) return;
+    if (!categoryGroup || !category) return;
     const current = getCategoryByKey(category);
-    if (current && current.group === categoryGroup) return;
-    const firstInGroup = allCategories.find((c) => c.group === categoryGroup);
-    if (firstInGroup) setCategory(firstInGroup.key);
-  }, [categoryGroup, allCategories, category, getCategoryByKey]);
+    if (current && current.group !== categoryGroup) setCategory("");
+  }, [categoryGroup, category, getCategoryByKey]);
 
 
   // ---- Branch mutators ----
@@ -419,6 +410,10 @@ function ProfileEditor() {
   const handleSave = async () => {
     setSaveError(null);
     setSaveSuccess(false);
+    if (!category) {
+      setSaveError(t("profile.save_error_category_required"));
+      return;
+    }
     setSaving(true);
     try {
       const cleanBranches = branches.filter((b) => b.name.trim().length > 0);
@@ -698,6 +693,7 @@ function GeneralTab(p: GeneralTabProps) {
                     onChange={(e) => p.setCategoryGroup(e.target.value)}
                     className={`${inputCls} appearance-none pr-10`}
                   >
+                    <option value="">{t("profile.group_placeholder")}</option>
                     {groups.map((group) => (
                       <option key={group.id} value={group.id}>
                         {group.label}
@@ -718,6 +714,7 @@ function GeneralTab(p: GeneralTabProps) {
                   onChange={(e) => p.setCategory(e.target.value)}
                   className={`${inputCls} appearance-none pr-10`}
                 >
+                  <option value="">{t("profile.category_placeholder")}</option>
                   {categories
                     .filter((c) => !p.categoryGroup || c.group === p.categoryGroup)
                     .map((c) => (

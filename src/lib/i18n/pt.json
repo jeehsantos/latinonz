@@ -278,6 +278,8 @@
     "category_asterisk": "Categoria Principal *",
     "group_asterisk": "Grupo *",
     "group_placeholder": "Selecione um grupo",
+    "category_placeholder": "Selecione uma categoria",
+    "save_error_category_required": "Selecione uma categoria antes de salvar.",
     "business_type_label": "Tipo de Negócio",
     "description_asterisk": "Descrição Completa *",
     "contact_links_title": "Contato & Links",
