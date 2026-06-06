@@ -6,6 +6,7 @@ import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { SiteShell } from "@/components/site/SiteShell";
 import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
+import { MobileSearchBar } from "@/components/directory/MobileSearchBar";
 import { BusinessCard } from "@/components/directory/BusinessCard";
 import { getBusinesses } from "@/lib/business.functions";
 import { adaptBusiness } from "@/lib/business.adapter";
@@ -83,8 +84,9 @@ function DirectoryPage() {
 
   return (
     <SiteShell>
+      {/* Desktop hero */}
       <section
-        className="relative text-white overflow-hidden"
+        className="hidden md:block relative text-white overflow-hidden"
         style={{
           background:
             "radial-gradient(ellipse at top, rgba(250,204,21,0.18) 0%, #0a0a0a 60%), radial-gradient(circle at 90% 100%, rgba(250,204,21,0.12), transparent 55%), #050505",
@@ -92,18 +94,26 @@ function DirectoryPage() {
       >
         <div className="absolute inset-0 -z-0 opacity-[0.04] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:48px_48px]" />
         <div className="relative max-w-7xl mx-auto px-5 sm:px-6 py-12 sm:py-20">
-          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 backdrop-blur-sm text-white/90 text-[10px] sm:text-[11px] font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-5 uppercase tracking-[0.18em]">
+          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 backdrop-blur-sm text-white/90 text-[11px] font-bold px-4 py-2 rounded-full mb-5 uppercase tracking-[0.18em]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#facc15]" />
             {t("directory.home_badge")}
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight text-white">
+          <h1 className="text-4xl md:text-5xl font-black leading-tight text-white">
             {t("directory.title")}
           </h1>
-          <p className="mt-3 text-sm sm:text-base text-white/60 max-w-2xl">{t("directory.subtitle")}</p>
-          <div className="mt-6 sm:mt-8">
+          <p className="mt-3 text-base text-white/60 max-w-2xl">{t("directory.subtitle")}</p>
+          <div className="mt-8">
             <SearchBar value={search} onChange={setSearch} />
           </div>
         </div>
+      </section>
+
+      {/* Mobile sticky search header */}
+      <section className="md:hidden">
+        <div className="px-5 pt-5 pb-2">
+          <h1 className="text-2xl font-black text-white leading-tight">{t("directory.title")}</h1>
+        </div>
+        <MobileSearchBar value={search} onChange={setSearch} onSubmit={() => {}} variant="sticky" />
       </section>
 
 
