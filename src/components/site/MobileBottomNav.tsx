@@ -18,12 +18,12 @@ export function MobileBottomNav() {
 
   const accountTo = signedIn ? "/dashboard" : "/login";
 
-  const items = [
+  const items: { to: string; label: string; icon: typeof Home; exact?: boolean }[] = [
     { to: "/", label: t("nav.home"), icon: Home, exact: true },
     { to: "/directory", label: t("nav.directory"), icon: Compass },
     { to: "/blog", label: t("nav.blog"), icon: Newspaper },
-    { to: accountTo, label: signedIn ? t("nav.dashboard") ?? "Account" : t("nav.login"), icon: UserCircle2 },
-  ] as const;
+    { to: accountTo, label: signedIn ? "Account" : t("nav.login"), icon: UserCircle2 },
+  ];
 
   return (
     <nav
