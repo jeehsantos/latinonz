@@ -710,7 +710,7 @@ function GeneralTab(p: GeneralTabProps) {
                   onChange={(e) => p.setCategory(e.target.value)}
                   className={`${inputCls} appearance-none pr-10`}
                 >
-                  <option value="">{t("profile.field_category_placeholder")}</option>
+                  <option value="">{t("profile.category_placeholder")}</option>
                   {categories
                     .filter((c) => !p.categoryGroup || c.group === p.categoryGroup)
                     .map((c) => (
