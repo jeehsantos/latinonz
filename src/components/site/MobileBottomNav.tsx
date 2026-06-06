@@ -36,7 +36,7 @@ export function MobileBottomNav() {
           return (
             <li key={it.to}>
               <Link
-                to={it.to}
+                to={it.to as "/"}
                 activeOptions={it.exact ? { exact: true } : undefined}
                 activeProps={{ className: "text-[#facc15]" }}
                 inactiveProps={{ className: "text-neutral-400" }}
