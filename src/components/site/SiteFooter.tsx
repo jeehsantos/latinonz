@@ -5,7 +5,7 @@ import { useI18n } from "@/lib/i18n";
 export function SiteFooter() {
   const { t } = useI18n();
   return (
-    <footer className="bg-black text-white/80 mt-24 border-t border-white/10">
+    <footer className="bg-black text-white/80 mt-24 border-t border-white/10 pb-20 lg:pb-0">
       <div className="max-w-7xl mx-auto px-6 py-12 grid gap-8 md:grid-cols-4">
         <div>
           <Link to="/" className="flex items-center">
