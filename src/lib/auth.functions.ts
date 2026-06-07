@@ -3,6 +3,7 @@ import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { sendActivationEmail } from "@/lib/email/activation.server";
+import { sendPasswordResetEmail } from "@/lib/email/password-reset.server";
 
 // Accept NZ numbers in flexible formats: +64..., 0064..., or local 0xx...
 const nzPhoneRegex = /^(?:\+?64|0)[\s\-()]*\d(?:[\s\-()]*\d){7,11}$/;
@@ -33,6 +34,11 @@ const signInSchema = z.object({
 });
 
 const resendActivationSchema = z.object({
+  email: z.string().trim().toLowerCase().email().max(320),
+  siteOrigin: siteOriginSchema,
+});
+
+const passwordResetSchema = z.object({
   email: z.string().trim().toLowerCase().email().max(320),
   siteOrigin: siteOriginSchema,
 });
@@ -209,3 +215,47 @@ export const getSession = createServerFn({ method: "GET" }).handler(async () => 
 
   return { ok: true as const, user: data.user };
 });
+
+export const requestPasswordReset = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => passwordResetSchema.parse(input))
+  .handler(async ({ data }) => {
+    // Look up the user to personalize the email (and to avoid sending to non-users).
+    const { data: list, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+    if (listError) {
+      console.error("requestPasswordReset list error", listError);
+      // Don't reveal — respond ok regardless.
+      return { ok: true as const };
+    }
+    const user = list.users.find((u) => u.email?.toLowerCase() === data.email);
+    if (!user) {
+      // Don't reveal whether the email exists.
+      return { ok: true as const };
+    }
+
+    const redirectTo = `${data.siteOrigin}/auth/confirm`;
+    const { data: link, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+      type: "recovery",
+      email: data.email,
+      options: { redirectTo },
+    });
+    if (linkError || !link?.properties?.hashed_token) {
+      console.error("requestPasswordReset generateLink error", linkError);
+      return { ok: false as const, error: "Não foi possível gerar o link de redefinição." };
+    }
+    const resetUrl = `${data.siteOrigin}/auth/confirm?token_hash=${encodeURIComponent(
+      link.properties.hashed_token,
+    )}&type=recovery`;
+
+    const ownerName =
+      (user.user_metadata?.owner_name as string | undefined) ??
+      (user.user_metadata?.business_name as string | undefined) ??
+      null;
+
+    try {
+      await sendPasswordResetEmail({ to: data.email, ownerName, resetUrl });
+    } catch (err) {
+      console.error("requestPasswordReset send error", err);
+      return { ok: false as const, error: "Falha ao enviar o e-mail de redefinição." };
+    }
+    return { ok: true as const };
+  });

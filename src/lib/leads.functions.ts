@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { renderBrandedEmail, sendBrandedEmail, type EmailRow } from "@/lib/email/layout.server";
 
 const submitSchema = z
   .object({
@@ -46,47 +47,39 @@ async function sendOwnerEmail(params: {
   businessName: string;
   lead: { name: string; email?: string | null; phone?: string | null; message?: string | null };
 }) {
-  const LOVABLE_API_KEY = process.env.LOVABLE_API_KEY;
-  const RESEND_API_KEY = process.env.RESEND_API_KEY;
-  if (!LOVABLE_API_KEY || !RESEND_API_KEY) {
-    console.warn("[leads] Email skipped: Resend not configured.");
-    return { sent: false, reason: "resend_not_configured" as const };
-  }
-
   const { to, businessName, lead } = params;
-  const html = `
-    <div style="font-family:system-ui,Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#facc15">
-      <h2 style="margin:0 0 12px;color:#facc15">Novo lead para ${escapeHtml(businessName)}</h2>
-      <p style="margin:0 0 16px;color:#374151">Você recebeu um novo contato pelo Latino Connect.</p>
-      <table style="width:100%;border-collapse:collapse;font-size:14px">
-        <tr><td style="padding:6px 0;color:#6b7280">Nome</td><td style="padding:6px 0;font-weight:600">${escapeHtml(lead.name)}</td></tr>
-        ${lead.email ? `<tr><td style="padding:6px 0;color:#6b7280">Email</td><td style="padding:6px 0">${escapeHtml(lead.email)}</td></tr>` : ""}
-        ${lead.phone ? `<tr><td style="padding:6px 0;color:#6b7280">WhatsApp</td><td style="padding:6px 0">${escapeHtml(lead.phone)}</td></tr>` : ""}
-        ${lead.message ? `<tr><td style="padding:6px 0;color:#6b7280;vertical-align:top">Mensagem</td><td style="padding:6px 0;white-space:pre-wrap">${escapeHtml(lead.message)}</td></tr>` : ""}
-      </table>
-    </div>`;
 
-  const res = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${LOVABLE_API_KEY}`,
-      "X-Connection-Api-Key": RESEND_API_KEY,
-    },
-    body: JSON.stringify({
-      from: "Latino Connect Hub <no-reply@latinoconnecthub.co.nz>",
-      to: [to],
-      subject: `Novo lead — ${businessName}`,
-      html,
-    }),
+  const rows: EmailRow[] = [{ label: "Nome", value: lead.name }];
+  if (lead.email) rows.push({ label: "E-mail", value: lead.email });
+  if (lead.phone) rows.push({ label: "WhatsApp", value: lead.phone });
+
+  const html = renderBrandedEmail({
+    preheader: `Novo lead para ${businessName} via Latino Connect Hub.`,
+    heading: `Novo lead — ${businessName}`,
+    sections: [
+      {
+        kind: "paragraph",
+        text: "Você recebeu um novo contato pelo Latino Connect Hub. Os detalhes estão abaixo — responda o quanto antes para aumentar suas chances de conversão.",
+      },
+      { kind: "rows", rows },
+      ...(lead.message
+        ? ([{ kind: "quote" as const, text: lead.message }] as const)
+        : []),
+      {
+        kind: "fineprint",
+        text: "Dica: leads contatados em até 5 minutos têm muito mais chance de fechar negócio.",
+      },
+    ],
   });
-  if (!res.ok) {
-    const body = await res.text();
-    console.error(`[leads] Resend erro ${res.status}: ${body}`);
-    return { sent: false, reason: `resend_${res.status}` as const };
-  }
-  return { sent: true as const };
+
+  const result = await sendBrandedEmail({
+    to,
+    subject: `Novo lead — ${businessName}`,
+    html,
+  });
+  return { sent: result.ok, reason: result.ok ? undefined : result.reason };
 }
+
 
 async function sendOwnerWhatsApp(params: {
   toPhone: string;
