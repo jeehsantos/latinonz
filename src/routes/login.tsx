@@ -60,7 +60,7 @@ function LoginPage() {
 
   return (
     <SiteShell>
-      <section className="max-w-md mx-auto px-6 py-20">
+      <section className="max-w-md mx-auto px-6 py-12 md:py-20">
         <div className="bg-neutral-900 border border-white/10 rounded-3xl p-8 shadow-2xl shadow-black/40">
           <h1 className="text-2xl font-black text-white">{t("login.title")}</h1>
           <p className="text-sm text-neutral-400 mt-1">{t("login.subtitle")}</p>

@@ -27,7 +27,7 @@ export function MobileBottomNav() {
 
   return (
     <nav
-      className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-neutral-950/95 backdrop-blur-md border-t border-white/10"
+      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-neutral-950/95 backdrop-blur-xl border-t border-white/10 shadow-[0_-4px_20px_rgba(0,0,0,0.5)]"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <ul className="grid grid-cols-4">
@@ -39,11 +39,11 @@ export function MobileBottomNav() {
                 to={it.to as "/"}
                 activeOptions={it.exact ? { exact: true } : undefined}
                 activeProps={{ className: "text-[#facc15]" }}
-                inactiveProps={{ className: "text-neutral-400" }}
-                className="flex flex-col items-center justify-center gap-1 py-2.5 min-h-[56px] text-[10px] font-semibold uppercase tracking-wider"
+                inactiveProps={{ className: "text-neutral-500" }}
+                className="flex flex-col items-center justify-center gap-1 py-3 min-h-[60px] text-[10px] font-semibold uppercase tracking-wider transition-colors"
               >
                 <Icon size={20} />
-                <span className="leading-none truncate max-w-[64px]">{it.label}</span>
+                <span className="leading-none truncate max-w-[72px]">{it.label}</span>
               </Link>
             </li>
           );

@@ -28,7 +28,7 @@ function BlogPage() {
   return (
     <SiteShell>
       <section className="bg-black border-b border-white/10">
-        <div className="max-w-5xl mx-auto px-6 py-16">
+        <div className="max-w-5xl mx-auto px-6 py-10 md:py-16">
           <p className="text-xs font-bold uppercase tracking-wider text-[#facc15]">
             {t("blog.badge")}
           </p>
@@ -37,12 +37,12 @@ function BlogPage() {
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-6 py-16 md:py-24">
+      <section className="max-w-5xl mx-auto px-6 py-10 md:py-24">
         <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-neutral-900 via-black to-neutral-900 border border-white/10 shadow-2xl group">
           {/* Glow */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,#facc15,transparent_60%)] opacity-15 group-hover:opacity-25 transition-opacity duration-1000"></div>
 
-          <div className="relative p-12 md:p-24 text-center">
+          <div className="relative p-8 md:p-24 text-center">
             <div className="inline-flex items-center justify-center p-4 bg-[#facc15]/10 rounded-2xl mb-8 ring-1 ring-[#facc15]/30 backdrop-blur-md">
               <Sparkles className="w-10 h-10 text-[#facc15]" />
             </div>

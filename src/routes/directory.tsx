@@ -121,10 +121,10 @@ function DirectoryPage() {
         <h2 className="text-xs uppercase tracking-wider font-bold text-neutral-400">
           {t("directory.categories_label")}
         </h2>
-        <div className="mt-4 flex gap-2 overflow-x-auto sm:flex-wrap pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 scrollbar-hide">
+        <div className="mt-4 flex gap-2 overflow-x-auto sm:flex-wrap pb-2 -mx-5 px-5 sm:mx-0 sm:px-0 scrollbar-hide snap-x snap-mandatory scroll-pl-5">
           <button
             onClick={() => setSearch({ ...search, category: "" })}
-            className={`shrink-0 text-sm font-semibold px-4 py-2 rounded-full border whitespace-nowrap transition ${
+            className={`snap-start shrink-0 text-sm font-semibold px-4 py-2 rounded-full border whitespace-nowrap transition ${
               !search.category
                 ? "bg-[#facc15] text-black border-[#facc15]"
                 : "bg-neutral-900 border-white/10 hover:border-[#df991b] text-neutral-200"
@@ -136,7 +136,7 @@ function DirectoryPage() {
             <button
               key={g.id}
               onClick={() => setSearch({ ...search, category: g.id })}
-              className={`shrink-0 text-sm font-semibold px-4 py-2 rounded-full border whitespace-nowrap transition ${
+              className={`snap-start shrink-0 text-sm font-semibold px-4 py-2 rounded-full border whitespace-nowrap transition ${
                 search.category === g.id
                   ? "bg-[#facc15] text-black border-[#facc15]"
                   : "bg-neutral-900 border-white/10 hover:border-[#df991b] text-neutral-200"

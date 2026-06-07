@@ -177,7 +177,7 @@ function CadastroPage() {
 
   return (
     <SiteShell>
-      <section className="max-w-2xl mx-auto px-6 py-20">
+      <section className="max-w-2xl mx-auto px-6 py-10 md:py-20">
         <p className="text-xs font-bold uppercase tracking-wider text-[#facc15]">
           {t("register.badge")}
         </p>
@@ -186,7 +186,7 @@ function CadastroPage() {
         </h1>
         <p className="mt-3 text-neutral-300">{t("register.subtitle")}</p>
 
-        <div className="mt-10 bg-neutral-900 border border-white/10 rounded-3xl p-8">
+        <div className="mt-8 md:mt-10 bg-neutral-900 border border-white/10 rounded-3xl p-5 md:p-8">
           <GoogleAuthButton
             label={t("auth.google_signup")}
             onError={(m) => toast.error("Erro no Google", { description: m })}

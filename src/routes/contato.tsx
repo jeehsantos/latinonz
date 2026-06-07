@@ -110,7 +110,7 @@ function ContatoPage() {
               <span className="animate-pulse">●</span> {t("contact.badge")}
             </div>
 
-            <h1 className="text-5xl md:text-6xl font-black text-white leading-tight">
+            <h1 className="text-3xl md:text-6xl font-black text-white leading-tight">
               {(() => {
                 const words = t("contact.title").split(" ");
                 const mid = Math.ceil(words.length / 2);
@@ -187,7 +187,7 @@ function ContatoPage() {
           </div>
 
           <div className="relative">
-            <div className="absolute -top-6 -right-6 z-20 bg-neutral-900 p-3 rounded-2xl shadow-xl border border-slate-50 transform rotate-6 hover:rotate-0 transition-transform">
+            <div className="hidden md:block absolute -top-6 -right-6 z-20 bg-neutral-900 p-3 rounded-2xl shadow-xl border border-slate-50 transform rotate-6 hover:rotate-0 transition-transform">
               <div className="flex flex-col items-center gap-1">
                 <span className="text-4xl transition-all duration-700 ease-in-out transform scale-110">
                   {FLAGS[currentFlagIndex].emoji}
@@ -198,7 +198,7 @@ function ContatoPage() {
               </div>
             </div>
 
-            <div className="bg-neutral-900 p-8 md:p-10 rounded-[2.5rem] shadow-2xl shadow-black/40 border border-white/10 relative z-10">
+            <div className="bg-neutral-900 p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl shadow-black/40 border border-white/10 relative z-10">
               {submitted ? (
                 <div className="text-center py-12 space-y-6">
                   <div className="w-20 h-20 bg-[#facc15]/10 rounded-full flex items-center justify-center mx-auto text-[#facc15] animate-bounce">
@@ -253,7 +253,7 @@ function ContatoPage() {
                     <span className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1 block">
                       {t("contact.field_subject")}
                     </span>
-                    <div role="radiogroup" aria-label={t("contact.field_subject")} className="grid grid-cols-3 gap-2">
+                    <div role="radiogroup" aria-label={t("contact.field_subject")} className="grid grid-cols-1 md:grid-cols-3 gap-2">
                       {subjects.map((opt) => (
                         <button
                           key={opt}

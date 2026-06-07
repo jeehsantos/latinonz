@@ -200,7 +200,7 @@ export function DirectoryHome() {
             {t("directory.see_all")} <ArrowRight size={12} />
           </Link>
         </div>
-        <div className="flex gap-3 overflow-x-auto px-5 pb-1 snap-x snap-mandatory scrollbar-hide">
+        <div className="flex gap-3 overflow-x-auto px-5 pb-1 snap-x snap-mandatory scrollbar-hide scroll-pl-5">
           {groups.slice(0, 10).map((g) => {
             const Icon = getIcon(g.iconKey);
             const count = businessCountByGroup.get(g.id) ?? 0;
@@ -258,9 +258,9 @@ export function DirectoryHome() {
             {t("directory.see_more")} <ArrowRight size={12} />
           </Link>
         </div>
-        <div className="flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory scrollbar-hide">
+        <div className="flex gap-4 overflow-x-auto px-5 pb-2 snap-x snap-mandatory scrollbar-hide scroll-pl-5">
           {featured.map((b) => (
-            <div key={b.id} className="snap-start shrink-0 w-[260px]">
+            <div key={b.id} className="snap-start shrink-0 w-[280px]">
               <FeaturedCard business={b} />
             </div>
           ))}
@@ -269,7 +269,7 @@ export function DirectoryHome() {
 
 
       {/* CTA */}
-      <section className="max-w-7xl mx-auto px-5 sm:px-6 pt-8 md:pt-0 pb-10 sm:pb-20">
+      <section className="max-w-7xl mx-auto px-5 sm:px-6 pt-8 md:pt-0 pb-6 md:pb-20">
         <div className="rounded-2xl md:rounded-3xl bg-gradient-to-br from-[#facc15] via-[#fbbf24] to-[#f59e0b] text-black p-6 sm:p-10 md:p-16 text-center relative overflow-hidden shadow-2xl shadow-[#facc15]/10">
           <div
             className="absolute inset-0 pointer-events-none opacity-40 mix-blend-overlay"
