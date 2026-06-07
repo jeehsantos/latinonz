@@ -38,6 +38,11 @@ const resendActivationSchema = z.object({
   siteOrigin: siteOriginSchema,
 });
 
+const passwordResetSchema = z.object({
+  email: z.string().trim().toLowerCase().email().max(320),
+  siteOrigin: siteOriginSchema,
+});
+
 async function buildAndSendActivation(args: {
   email: string;
   password?: string;
