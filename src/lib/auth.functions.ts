@@ -3,6 +3,7 @@ import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { sendActivationEmail } from "@/lib/email/activation.server";
+import { sendPasswordResetEmail } from "@/lib/email/password-reset.server";
 
 // Accept NZ numbers in flexible formats: +64..., 0064..., or local 0xx...
 const nzPhoneRegex = /^(?:\+?64|0)[\s\-()]*\d(?:[\s\-()]*\d){7,11}$/;
