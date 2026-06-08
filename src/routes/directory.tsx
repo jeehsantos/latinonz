@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
@@ -9,6 +9,7 @@ import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
 import { MobileSearchBar } from "@/components/directory/MobileSearchBar";
 import { BusinessCard } from "@/components/directory/BusinessCard";
 import { getBusinesses } from "@/lib/business.functions";
+import { logSearchQuery } from "@/lib/search.functions";
 import { adaptBusiness } from "@/lib/business.adapter";
 import { useCategories } from "@/hooks/useCategories";
 import { useI18n, usePageMetadata } from "@/lib/i18n";
