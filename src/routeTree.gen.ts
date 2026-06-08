@@ -15,6 +15,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PlanosRouteImport } from './routes/planos'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DirectoryRouteImport } from './routes/directory'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContatoRouteImport } from './routes/contato'
@@ -71,6 +72,11 @@ const PlanosRoute = PlanosRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DirectoryRoute = DirectoryRouteImport.update({
@@ -217,6 +223,7 @@ export interface FileRoutesByFullPath {
   '/contato': typeof ContatoRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/directory': typeof DirectoryRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/planos': typeof PlanosRoute
   '/privacy': typeof PrivacyRoute
@@ -250,6 +257,7 @@ export interface FileRoutesByTo {
   '/cadastro': typeof CadastroRoute
   '/contato': typeof ContatoRoute
   '/directory': typeof DirectoryRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/planos': typeof PlanosRoute
   '/privacy': typeof PrivacyRoute
@@ -286,6 +294,7 @@ export interface FileRoutesById {
   '/contato': typeof ContatoRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/directory': typeof DirectoryRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/planos': typeof PlanosRoute
   '/privacy': typeof PrivacyRoute
@@ -323,6 +332,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/dashboard'
     | '/directory'
+    | '/forgot-password'
     | '/login'
     | '/planos'
     | '/privacy'
@@ -356,6 +366,7 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/contato'
     | '/directory'
+    | '/forgot-password'
     | '/login'
     | '/planos'
     | '/privacy'
@@ -391,6 +402,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/dashboard'
     | '/directory'
+    | '/forgot-password'
     | '/login'
     | '/planos'
     | '/privacy'
@@ -427,6 +439,7 @@ export interface RootRouteChildren {
   ContatoRoute: typeof ContatoRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   DirectoryRoute: typeof DirectoryRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   PlanosRoute: typeof PlanosRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -481,6 +494,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/directory': {
@@ -741,6 +761,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContatoRoute: ContatoRoute,
   DashboardRoute: DashboardRouteWithChildren,
   DirectoryRoute: DirectoryRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   PlanosRoute: PlanosRoute,
   PrivacyRoute: PrivacyRoute,
