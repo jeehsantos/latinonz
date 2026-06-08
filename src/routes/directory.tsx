@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
@@ -9,6 +9,7 @@ import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
 import { MobileSearchBar } from "@/components/directory/MobileSearchBar";
 import { BusinessCard } from "@/components/directory/BusinessCard";
 import { getBusinesses } from "@/lib/business.functions";
+import { logSearchQuery } from "@/lib/search.functions";
 import { adaptBusiness } from "@/lib/business.adapter";
 import { useCategories } from "@/hooks/useCategories";
 import { useI18n, usePageMetadata } from "@/lib/i18n";
@@ -52,10 +53,27 @@ function DirectoryPage() {
   const { groups } = useCategories();
 
   const fetchBusinesses = useServerFn(getBusinesses);
+  const trackSearch = useServerFn(logSearchQuery);
   const { data } = useQuery({
     queryKey: ["businesses", "all"],
     queryFn: () => fetchBusinesses({ data: {} }),
   });
+
+  // Debounce + dedupe search tracking so we record meaningful queries only
+  const lastTrackedRef = useRef<string>("");
+  useEffect(() => {
+    const key = `${search.q.trim().toLowerCase()}|${search.category}|${search.city}`;
+    if (!search.q.trim() && !search.category && !search.city) return;
+    if (key === lastTrackedRef.current) return;
+    const timer = setTimeout(() => {
+      lastTrackedRef.current = key;
+      trackSearch({
+        data: { query: search.q, category: search.category, city: search.city },
+      }).catch(() => {});
+    }, 900);
+    return () => clearTimeout(timer);
+  }, [search.q, search.category, search.city, trackSearch]);
+
   const businesses = useMemo(
     () => (data?.ok ? data.rows.map((r) => adaptBusiness(r)) : []),
     [data],

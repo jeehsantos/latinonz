@@ -463,6 +463,30 @@ export type Database = {
         }
         Relationships: []
       }
+      search_queries: {
+        Row: {
+          category: string | null
+          city: string | null
+          created_at: string
+          id: string
+          query: string | null
+        }
+        Insert: {
+          category?: string | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          query?: string | null
+        }
+        Update: {
+          category?: string | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          query?: string | null
+        }
+        Relationships: []
+      }
       service_option_items: {
         Row: {
           business_id: string
