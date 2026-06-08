@@ -108,6 +108,14 @@ function LoginPage() {
               {loading ? "..." : t("login.submit")}
             </button>
           </form>
+          <div className="mt-3 text-center">
+            <Link
+              to="/forgot-password"
+              className="text-xs font-semibold text-neutral-400 hover:text-[#facc15]"
+            >
+              Esqueceu sua senha?
+            </Link>
+          </div>
           <p className="text-xs text-neutral-400 text-center mt-4">
             {t("login.no_account")}{" "}
             <Link to="/cadastro" className="font-bold text-[#facc15] hover:text-yellow-300">

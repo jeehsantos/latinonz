@@ -50,10 +50,17 @@ function ConfirmPage() {
       }
 
       setStatus("success");
-      setMessage("Conta ativada! Redirecionando para seu painel...");
-      setTimeout(() => {
-        navigate({ to: "/dashboard" });
-      }, 1200);
+      if (type === "recovery") {
+        setMessage("Link validado! Redirecionando para definir nova senha...");
+        setTimeout(() => {
+          navigate({ to: "/reset-password" });
+        }, 800);
+      } else {
+        setMessage("Conta ativada! Redirecionando para seu painel...");
+        setTimeout(() => {
+          navigate({ to: "/dashboard" });
+        }, 1200);
+      }
     };
 
     run();
