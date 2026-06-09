@@ -103,7 +103,7 @@ function SettingsPage() {
         </aside>
 
         {/* Content card */}
-        <section className="bg-neutral-900 border border-white/10 rounded-3xl p-8 min-h-[400px]">
+        <section className="bg-neutral-900 border border-white/10 rounded-3xl p-5 sm:p-8 min-h-[400px] min-w-0">
           {active === "plan" && (
             <div className="space-y-5">
               <div>
