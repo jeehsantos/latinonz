@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useI18n } from "@/lib/i18n";
-import categoriesData from "@/lib/categories.json";
+import { useCategoriesConfig } from "@/hooks/useAppConfig";
 
 export type CategoryGroup = {
   id: string;
