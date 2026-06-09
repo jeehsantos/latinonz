@@ -23,7 +23,6 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const { t } = useI18n();
   usePageMetadata("metadata.login.title", "metadata.login.description");
-  const navigate = useNavigate();
   const search = Route.useSearch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
