@@ -7,6 +7,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 
 export const Route = createFileRoute("/login")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Entrar — Latino Connect" },
