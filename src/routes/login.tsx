@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { useI18n, usePageMetadata } from "@/lib/i18n";
