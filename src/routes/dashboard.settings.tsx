@@ -67,13 +67,14 @@ function SettingsPage() {
   ];
 
   return (
-    <div>
+    <div className="min-w-0">
       <div className="mb-6">
-        <h1 className="text-3xl font-black text-white">{t("settings.title")}</h1>
-        <p className="text-neutral-400 mt-1">{t("settings.subtitle")}</p>
+        <h1 className="text-2xl sm:text-3xl font-black text-white">{t("settings.title")}</h1>
+        <p className="text-sm sm:text-base text-neutral-400 mt-1">{t("settings.subtitle")}</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6 min-w-0">
+
         {/* Inner sidebar */}
         <aside className="lg:sticky lg:top-24 self-start">
           <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible">
