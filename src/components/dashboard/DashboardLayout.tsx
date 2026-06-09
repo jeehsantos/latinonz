@@ -162,7 +162,7 @@ export function DashboardLayout() {
         </div>
       </header>
 
-      <div className="flex flex-1 min-h-0">
+      <div className="flex flex-1 min-h-0 min-w-0">
         <aside
           style={{ backgroundColor: bg, borderColor: borderCol }}
           className={`fixed lg:static inset-y-0 left-0 z-40 w-72 border-r flex flex-col transform transition-transform lg:translate-x-0 ${
