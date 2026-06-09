@@ -79,9 +79,11 @@ export function useSiteModeConfig() {
       }
     },
     staleTime: 60_000,
-    initialData: "waitlist" as const,
   });
-  return { mode: q.data ?? "waitlist", isLoading: q.isLoading };
+  // No initialData on purpose: gating routes on a default "waitlist" before
+  // the real config has loaded causes a false redirect away from /business,
+  // post-login /admin transitions, etc. Wait for the real fetch.
+  return { mode: q.data ?? "waitlist", isLoading: !q.isFetched };
 }
 
 export function useUpdateAppConfig() {
