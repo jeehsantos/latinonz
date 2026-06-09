@@ -1,5 +1,6 @@
 // App config server functions. Public read (anyone can fetch config),
 // admin-only write. Keys: "categories", "cities", "site_mode".
+// Values are transported as JSON strings to keep the serializer happy.
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
@@ -8,7 +9,7 @@ const KEY = z.enum(["categories", "cities", "site_mode"]);
 
 export const getAppConfig = createServerFn({ method: "GET" })
   .inputValidator((input) => z.object({ key: KEY }).parse(input))
-  .handler(async ({ data }) => {
+  .handler(async ({ data }): Promise<{ json: string | null; updatedAt: string | null }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("app_config")
@@ -16,19 +17,27 @@ export const getAppConfig = createServerFn({ method: "GET" })
       .eq("key", data.key)
       .maybeSingle();
     if (error) throw error;
-    return { value: (row?.value ?? null) as unknown as Record<string, unknown> | unknown[] | string | null, updatedAt: row?.updated_at ?? null };
+    return {
+      json: row?.value !== undefined && row?.value !== null ? JSON.stringify(row.value) : null,
+      updatedAt: row?.updated_at ?? null,
+    };
   });
 
-export const getAllAppConfig = createServerFn({ method: "GET" }).handler(async () => {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin
-    .from("app_config")
-    .select("key, value, updated_at");
-  if (error) throw error;
-  const map: Record<string, unknown> = {};
-  for (const r of data ?? []) map[r.key as string] = r.value;
-  return map;
-});
+export const getAllAppConfig = createServerFn({ method: "GET" }).handler(
+  async (): Promise<{ entries: Array<{ key: string; json: string }> }> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from("app_config")
+      .select("key, value");
+    if (error) throw error;
+    return {
+      entries: (data ?? []).map((r) => ({
+        key: String(r.key),
+        json: JSON.stringify(r.value),
+      })),
+    };
+  },
+);
 
 export const updateAppConfig = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -36,12 +45,12 @@ export const updateAppConfig = createServerFn({ method: "POST" })
     z
       .object({
         key: KEY,
-        // value can be any JSON-serializable shape — validated per-key in the handler.
-        value: z.unknown(),
+        // JSON-encoded payload; parsed and validated per-key inside handler.
+        json: z.string().min(1).max(200_000),
       })
       .parse(input),
   )
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data, context }): Promise<{ ok: true }> => {
     // Verify admin/manager role.
     const { data: profile, error: pErr } = await context.supabase
       .from("profiles")
@@ -53,15 +62,19 @@ export const updateAppConfig = createServerFn({ method: "POST" })
       throw new Response("Forbidden", { status: 403 });
     }
 
-    // Per-key lightweight shape validation.
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(data.json);
+    } catch {
+      throw new Response("Invalid JSON payload", { status: 400 });
+    }
+
+    let value: unknown = parsed;
     if (data.key === "cities") {
-      const arr = z.array(z.string().trim().min(1).max(80)).max(200).parse(data.value);
-      data = { ...data, value: arr };
+      value = z.array(z.string().trim().min(1).max(80)).max(200).parse(parsed);
     } else if (data.key === "site_mode") {
-      const mode = z.enum(["waitlist", "live"]).parse(data.value);
-      data = { ...data, value: mode };
+      value = z.enum(["waitlist", "live"]).parse(parsed);
     } else if (data.key === "categories") {
-      // Loose schema: must be { groups: [...], categories: [...] }.
       const schema = z.object({
         groups: z.array(
           z.object({
@@ -79,21 +92,19 @@ export const updateAppConfig = createServerFn({ method: "POST" })
           }),
         ),
       });
-      data = { ...data, value: schema.parse(data.value) };
+      value = schema.parse(parsed);
     }
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin
-      .from("app_config")
-      .upsert(
-        {
-          key: data.key,
-          value: data.value as never,
-          updated_by: context.userId,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "key" },
-      );
+    const { error } = await supabaseAdmin.from("app_config").upsert(
+      {
+        key: data.key,
+        value: value as never,
+        updated_by: context.userId,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "key" },
+    );
     if (error) throw error;
     return { ok: true };
   });
