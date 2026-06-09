@@ -6,12 +6,11 @@ export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [{ title: "Admin — Latino Connect" }, { name: "robots", content: "noindex,nofollow" }],
   }),
+  // Auth state lives in the browser's localStorage via supabase-js, so this
+  // route must be client-only — an SSR pass has no session and would always
+  // bounce signed-in users back to /login on hard reload.
+  ssr: false,
   beforeLoad: async ({ location }) => {
-    // Defense-in-depth: redirect on SSR too so the protected UI shell is
-    // never delivered to unauthenticated requesters.
-    if (typeof window === "undefined") {
-      throw redirect({ to: "/login", search: { redirect: location.href } as never });
-    }
     const {
       data: { session },
     } = await supabase.auth.getSession();
