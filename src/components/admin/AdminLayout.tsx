@@ -12,6 +12,7 @@ import {
   X,
   UserCircle,
   Ticket,
+  Settings,
 } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,6 +25,7 @@ const NAV: NavItem[] = [
   { to: "/admin/coupons", label: "Cupons promo", icon: Ticket },
   { to: "/admin/managers", label: "Gerentes", icon: UserCog },
   { to: "/admin/waitlist", label: "Lista de espera", icon: Inbox },
+  { to: "/admin/settings", label: "Configurações", icon: Settings },
   { to: "/admin/account", label: "Minha conta", icon: UserCircle },
 ];
 
