@@ -16,7 +16,7 @@ export const getAppConfig = createServerFn({ method: "GET" })
       .eq("key", data.key)
       .maybeSingle();
     if (error) throw error;
-    return { value: (row?.value ?? null) as unknown, updatedAt: row?.updated_at ?? null };
+    return { value: (row?.value ?? null) as unknown as Record<string, unknown> | unknown[] | string | null, updatedAt: row?.updated_at ?? null };
   });
 
 export const getAllAppConfig = createServerFn({ method: "GET" }).handler(async () => {
