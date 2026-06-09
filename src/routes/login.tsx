@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { useI18n, usePageMetadata } from "@/lib/i18n";
@@ -7,6 +7,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 
 export const Route = createFileRoute("/login")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Entrar — Latino Connect" },
@@ -20,7 +23,7 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const { t } = useI18n();
   usePageMetadata("metadata.login.title", "metadata.login.description");
-  const navigate = useNavigate();
+  const search = Route.useSearch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -50,7 +53,21 @@ function LoginPage() {
         .eq("id", res.user.id)
         .maybeSingle();
       const isStaff = profile?.role === "admin" || profile?.role === "manager";
-      navigate({ to: isStaff ? "/admin" : "/dashboard" });
+      // Prefer the ?redirect= the protected route added when bouncing here.
+      // Strip Lovable preview tracking params that would otherwise stick around.
+      const fallback = isStaff ? "/admin" : "/dashboard";
+      const target = (() => {
+        if (!search.redirect) return fallback;
+        try {
+          const url = new URL(search.redirect, window.location.origin);
+          return url.pathname + url.search.replace(/([?&])__lovable_[^=]+=[^&]*/g, "").replace(/^&/, "?");
+        } catch {
+          return fallback;
+        }
+      })();
+      // Use a full reload so the supabase client and any route loaders pick
+      // up the freshly-persisted session without race conditions.
+      window.location.assign(target);
     } catch (err) {
       setError(err instanceof Error ? err.message : t("auth.unexpected_error"));
     } finally {

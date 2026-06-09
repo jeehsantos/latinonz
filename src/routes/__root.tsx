@@ -151,6 +151,8 @@ const ALLOWED_IN_WAITLIST_PREFIXES = [
   "/cadastro",
   "/privacy",
   "/terms",
+  "/forgot-password",
+  "/reset-password",
 ];
 
 function SiteGate({ children }: { children: React.ReactNode }) {
