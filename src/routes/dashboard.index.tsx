@@ -62,13 +62,14 @@ function DashboardOverview() {
   const businessName = business?.name ?? "";
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8 min-w-0">
       <div>
-        <h1 className="text-3xl font-black text-white">
+        <h1 className="text-2xl sm:text-3xl font-black text-white break-words">
           {t("dashboard.greeting")}{businessName ? `, ${businessName}` : ""} 👋
         </h1>
-        <p className="text-neutral-400 mt-1">{t("dashboard.overview_subtitle")}</p>
+        <p className="text-sm sm:text-base text-neutral-400 mt-1">{t("dashboard.overview_subtitle")}</p>
       </div>
+
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
