@@ -236,9 +236,10 @@ export function DashboardLayout() {
           />
         )}
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-10 min-w-0 pb-24 lg:pb-10">
+        <main className="flex-1 p-4 sm:p-6 lg:p-10 min-w-0 max-w-full overflow-x-hidden pb-24 lg:pb-10">
           <Outlet />
         </main>
+
       </div>
       <MobileDashboardNav pendingLeads={pendingLeads} />
     </div>
