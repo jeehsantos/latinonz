@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
-import { NZ_CITIES } from "@/lib/mock/categories";
 import { useCategories } from "@/hooks/useCategories";
+import { useCitiesConfig } from "@/hooks/useAppConfig";
 import { useI18n } from "@/lib/i18n";
 
 export type SearchValue = { q: string; category: string; city: string };
@@ -16,6 +16,7 @@ export function SearchBar({
 }) {
   const { t } = useI18n();
   const { groups, categories } = useCategories();
+  const NZ_CITIES = useCitiesConfig();
 
   return (
     <form

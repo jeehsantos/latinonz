@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useI18n } from "@/lib/i18n";
-import categoriesData from "@/lib/categories.json";
+import { useCategoriesConfig } from "@/hooks/useAppConfig";
 
 export type CategoryGroup = {
   id: string;
@@ -30,6 +30,7 @@ function isValidLocale(locale: string): locale is Locale {
 export function useCategories() {
   const { locale } = useI18n();
   const safeLocale: Locale = isValidLocale(locale) ? locale : "pt";
+  const categoriesData = useCategoriesConfig();
 
   const groups = useMemo<CategoryGroup[]>(() => {
     return categoriesData.groups.map((g) => ({
@@ -38,7 +39,7 @@ export function useCategories() {
       colorKey: g.colorKey,
       label: g.labels[safeLocale],
     }));
-  }, [safeLocale]);
+  }, [safeLocale, categoriesData]);
 
   const categories = useMemo<Category[]>(() => {
     return categoriesData.categories.map((c) => ({
@@ -46,7 +47,7 @@ export function useCategories() {
       group: c.group,
       label: c.labels[safeLocale],
     }));
-  }, [safeLocale]);
+  }, [safeLocale, categoriesData]);
 
   const groupsById = useMemo(() => {
     const map = new Map<string, CategoryGroup>();

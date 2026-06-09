@@ -2,7 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { NZ_CITIES } from "@/lib/mock/categories";
+import { useCitiesConfig } from "@/hooks/useAppConfig";
 import { useCategories } from "@/hooks/useCategories";
 import { useI18n } from "@/lib/i18n";
 
@@ -22,6 +22,7 @@ export function MobileSearchBar({
   const { t } = useI18n();
   const navigate = useNavigate();
   const { groups, categories } = useCategories();
+  const NZ_CITIES = useCitiesConfig();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(value);
 
