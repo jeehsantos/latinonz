@@ -111,7 +111,8 @@ export function DashboardLayout() {
   const mutedText = lighten(sidebarColor, 0.55);
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex flex-col">
+    <div className="min-h-screen bg-neutral-950 flex flex-col overflow-x-hidden">
+
       <header className="bg-neutral-900 border-b border-white/10 px-4 sm:px-6 py-3 flex items-center gap-3 sm:gap-4 sticky top-0 z-30">
         <button className="lg:hidden text-neutral-200" onClick={() => setMobileOpen(true)} aria-label="Menu">
           <Menu size={20} />
