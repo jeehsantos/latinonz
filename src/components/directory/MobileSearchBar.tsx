@@ -22,6 +22,7 @@ export function MobileSearchBar({
   const { t } = useI18n();
   const navigate = useNavigate();
   const { groups, categories } = useCategories();
+  const NZ_CITIES = useCitiesConfig();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(value);
 
