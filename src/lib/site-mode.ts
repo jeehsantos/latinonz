@@ -1,30 +1,15 @@
-// Single source of truth for whether the public platform is live or whether
-// we are still in waitlist-only mode. Today this is a localStorage flag set
-// from the admin panel; later it will be backed by a server-fn / DB row.
-// The hook signature stays the same when we wire it to the backend.
+// Site mode: "waitlist" vs "live". Backed by the app_config DB row so it's
+// shared across all visitors (was previously per-browser localStorage).
+// `?preview=platform` still lets anyone preview the live platform locally.
 
 import { useEffect, useState } from "react";
+import { useSiteModeConfig, useUpdateAppConfig } from "@/hooks/useAppConfig";
 
-const STORAGE_KEY = "latinonz_site_mode";
 const PREVIEW_QS = "preview";
 const PREVIEW_VALUE = "platform";
+const PREVIEW_SESSION_KEY = "latinonz_preview_session";
 
 export type SiteMode = "waitlist" | "live";
-
-export function getStoredSiteMode(): SiteMode {
-  if (typeof window === "undefined") return "waitlist";
-  const v = window.localStorage.getItem(STORAGE_KEY);
-  return v === "live" ? "live" : "waitlist";
-}
-
-export function setStoredSiteMode(mode: SiteMode) {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, mode);
-  // Notify other tabs and our own listeners
-  window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY, newValue: mode }));
-}
-
-const PREVIEW_SESSION_KEY = "latinonz_preview_session";
 
 function hasPreviewOverride(): boolean {
   if (typeof window === "undefined") return false;
@@ -41,27 +26,28 @@ export function clearPreviewOverride() {
 
 /**
  * Effective mode the visitor experiences.
- * - Admin can set "live" via the dashboard panel.
- * - Anyone can preview the live platform locally with `?preview=platform`
- *   (persisted in sessionStorage so navigation keeps the override).
+ * - Admin can set "live" via the admin Settings page (persisted in DB).
+ * - Anyone can preview the live platform locally with `?preview=platform`.
  */
 export function useSiteMode(): { mode: SiteMode; isPreview: boolean; ready: boolean } {
-  const [mode, setMode] = useState<SiteMode>("waitlist");
+  const { mode, isLoading } = useSiteModeConfig();
   const [isPreview, setIsPreview] = useState(false);
-  const [ready, setReady] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    setMode(getStoredSiteMode());
     setIsPreview(hasPreviewOverride());
-    setReady(true);
-
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY) setMode(getStoredSiteMode());
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    setHydrated(true);
   }, []);
 
   const effective: SiteMode = isPreview ? "live" : mode;
-  return { mode: effective, isPreview, ready };
+  return { mode: effective, isPreview, ready: hydrated && !isLoading };
+}
+
+/** Admin-only hook to flip the site mode. */
+export function useSetSiteMode() {
+  const updater = useUpdateAppConfig();
+  return {
+    setMode: (mode: SiteMode) => updater.mutate({ key: "site_mode", value: mode }),
+    isUpdating: updater.isPending,
+  };
 }
