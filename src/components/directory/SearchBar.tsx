@@ -16,6 +16,7 @@ export function SearchBar({
 }) {
   const { t } = useI18n();
   const { groups, categories } = useCategories();
+  const NZ_CITIES = useCitiesConfig();
 
   return (
     <form
