@@ -75,14 +75,15 @@ function LeadsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-w-0">
       <div>
-        <h1 className="text-3xl font-black text-white">{t("leads.title")}</h1>
-        <p className="text-neutral-400 mt-1">{t("leads.subtitle")}</p>
+        <h1 className="text-2xl sm:text-3xl font-black text-white">{t("leads.title")}</h1>
+        <p className="text-sm sm:text-base text-neutral-400 mt-1">{t("leads.subtitle")}</p>
       </div>
       <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-neutral-900 border border-white/10 rounded-3xl overflow-hidden">
-          <table className="w-full text-left text-sm">
+        <div className="lg:col-span-2 bg-neutral-900 border border-white/10 rounded-3xl overflow-x-auto">
+          <table className="w-full min-w-[480px] text-left text-sm">
+
             <thead>
               <tr className="bg-neutral-950 text-xs uppercase tracking-wider text-neutral-400">
                 <th className="p-4 font-bold">{t("leads.col_client")}</th>
