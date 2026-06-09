@@ -76,8 +76,9 @@ function SettingsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6 min-w-0">
 
         {/* Inner sidebar */}
-        <aside className="lg:sticky lg:top-24 self-start">
-          <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible">
+        <aside className="lg:sticky lg:top-24 self-start min-w-0 -mx-4 sm:mx-0 px-4 sm:px-0">
+          <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible scrollbar-hide">
+
             {items.map((it) => {
               const Icon = it.icon;
               const isActive = active === it.id;
