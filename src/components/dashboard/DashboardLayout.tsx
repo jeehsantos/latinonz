@@ -111,7 +111,8 @@ export function DashboardLayout() {
   const mutedText = lighten(sidebarColor, 0.55);
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex flex-col">
+    <div className="min-h-screen bg-neutral-950 flex flex-col overflow-x-hidden">
+
       <header className="bg-neutral-900 border-b border-white/10 px-4 sm:px-6 py-3 flex items-center gap-3 sm:gap-4 sticky top-0 z-30">
         <button className="lg:hidden text-neutral-200" onClick={() => setMobileOpen(true)} aria-label="Menu">
           <Menu size={20} />
@@ -161,7 +162,7 @@ export function DashboardLayout() {
         </div>
       </header>
 
-      <div className="flex flex-1 min-h-0">
+      <div className="flex flex-1 min-h-0 min-w-0">
         <aside
           style={{ backgroundColor: bg, borderColor: borderCol }}
           className={`fixed lg:static inset-y-0 left-0 z-40 w-72 border-r flex flex-col transform transition-transform lg:translate-x-0 ${
@@ -235,9 +236,10 @@ export function DashboardLayout() {
           />
         )}
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-10 min-w-0 pb-24 lg:pb-10">
+        <main className="flex-1 p-4 sm:p-6 lg:p-10 min-w-0 max-w-full overflow-x-hidden pb-24 lg:pb-10">
           <Outlet />
         </main>
+
       </div>
       <MobileDashboardNav pendingLeads={pendingLeads} />
     </div>

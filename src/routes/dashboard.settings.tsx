@@ -67,16 +67,18 @@ function SettingsPage() {
   ];
 
   return (
-    <div>
+    <div className="min-w-0">
       <div className="mb-6">
-        <h1 className="text-3xl font-black text-white">{t("settings.title")}</h1>
-        <p className="text-neutral-400 mt-1">{t("settings.subtitle")}</p>
+        <h1 className="text-2xl sm:text-3xl font-black text-white">{t("settings.title")}</h1>
+        <p className="text-sm sm:text-base text-neutral-400 mt-1">{t("settings.subtitle")}</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6 min-w-0">
+
         {/* Inner sidebar */}
-        <aside className="lg:sticky lg:top-24 self-start">
-          <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible">
+        <aside className="lg:sticky lg:top-24 self-start min-w-0 -mx-4 sm:mx-0 px-4 sm:px-0">
+          <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible scrollbar-hide">
+
             {items.map((it) => {
               const Icon = it.icon;
               const isActive = active === it.id;
@@ -101,7 +103,7 @@ function SettingsPage() {
         </aside>
 
         {/* Content card */}
-        <section className="bg-neutral-900 border border-white/10 rounded-3xl p-8 min-h-[400px]">
+        <section className="bg-neutral-900 border border-white/10 rounded-3xl p-5 sm:p-8 min-h-[400px] min-w-0">
           {active === "plan" && (
             <div className="space-y-5">
               <div>

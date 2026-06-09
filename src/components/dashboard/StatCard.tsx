@@ -12,15 +12,16 @@ export function StatCard({
   icon: LucideIcon;
 }) {
   return (
-    <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
-      <div className="flex items-center justify-between">
-        <p className="text-xs font-bold uppercase tracking-wider text-neutral-400">{label}</p>
-        <div className="w-9 h-9 rounded-xl bg-[#facc15]/10 text-[#facc15] flex items-center justify-center">
+    <div className="bg-neutral-900 border border-white/10 rounded-3xl p-5 sm:p-6 min-w-0">
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs font-bold uppercase tracking-wider text-neutral-400 truncate">{label}</p>
+        <div className="shrink-0 w-9 h-9 rounded-xl bg-[#facc15]/10 text-[#facc15] flex items-center justify-center">
           <Icon size={16} />
         </div>
       </div>
-      <p className="text-3xl font-black text-white mt-3">{value}</p>
-      {hint && <p className="text-xs text-neutral-500 mt-1">{hint}</p>}
+      <p className="text-2xl sm:text-3xl font-black text-white mt-3 truncate">{value}</p>
+      {hint && <p className="text-xs text-neutral-500 mt-1 truncate">{hint}</p>}
     </div>
   );
+
 }

@@ -62,13 +62,14 @@ function DashboardOverview() {
   const businessName = business?.name ?? "";
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8 min-w-0">
       <div>
-        <h1 className="text-3xl font-black text-white">
+        <h1 className="text-2xl sm:text-3xl font-black text-white break-words">
           {t("dashboard.greeting")}{businessName ? `, ${businessName}` : ""} 👋
         </h1>
-        <p className="text-neutral-400 mt-1">{t("dashboard.overview_subtitle")}</p>
+        <p className="text-sm sm:text-base text-neutral-400 mt-1">{t("dashboard.overview_subtitle")}</p>
       </div>
+
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
@@ -97,7 +98,7 @@ function DashboardOverview() {
         />
       </div>
 
-      <div className="bg-neutral-900 border border-white/10 rounded-3xl p-8">
+      <div className="bg-neutral-900 border border-white/10 rounded-3xl p-5 sm:p-8">
         <div className="flex items-center justify-between">
           <h2 className="font-extrabold text-white">{t("dashboard.recent_leads_title")}</h2>
           <Link to="/dashboard/leads" className="text-sm font-bold text-[#facc15]">

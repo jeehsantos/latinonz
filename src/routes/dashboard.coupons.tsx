@@ -245,24 +245,25 @@ function CouponsPage() {
   const selectedDate = form.expiresAt ? new Date(`${form.expiresAt}T00:00:00`) : undefined;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-black text-white">{t("coupons.title")}</h1>
-          <p className="text-neutral-400 mt-1">{t("coupons.subtitle")}</p>
+    <div className="space-y-6 min-w-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-black text-white">{t("coupons.title")}</h1>
+          <p className="text-sm sm:text-base text-neutral-400 mt-1">{t("coupons.subtitle")}</p>
         </div>
         {unlocked && (
           <button
             onClick={openCreate}
-            className="bg-[#facc15] hover:bg-[#fde047] text-neutral-900 font-bold rounded-xl px-4 py-2.5 text-sm flex items-center gap-2"
+            className="self-start sm:self-auto bg-[#facc15] hover:bg-[#fde047] text-neutral-900 font-bold rounded-xl px-4 py-2.5 text-sm flex items-center gap-2 whitespace-nowrap"
           >
             <Plus size={16} /> {t("coupons.new_button")}
           </button>
         )}
       </div>
 
-      <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
+      <div className="bg-neutral-900 border border-white/10 rounded-3xl p-4 sm:p-6">
         <h2 className="text-lg font-extrabold text-white mb-4">{t("coupons.active_title")}</h2>
+
 
         {unlocked ? (
           coupons.length === 0 ? (
