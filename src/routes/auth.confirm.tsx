@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { useI18n, usePageMetadata } from "@/lib/i18n";
 
 export const Route = createFileRoute("/auth/confirm")({
   head: () => ({
@@ -18,8 +19,11 @@ type Status = "loading" | "success" | "error";
 
 function ConfirmPage() {
   const navigate = useNavigate();
+  const { t } = useI18n();
+  usePageMetadata(undefined, undefined, `${t("auth_confirm.title_loading")} — Latino Connect`);
+
   const [status, setStatus] = useState<Status>("loading");
-  const [message, setMessage] = useState("Validando seu link de ativação...");
+  const [message, setMessage] = useState(t("auth_confirm.loading_message"));
 
   useEffect(() => {
     const run = async () => {
@@ -29,7 +33,7 @@ function ConfirmPage() {
 
       if (!tokenHash) {
         setStatus("error");
-        setMessage("Link inválido ou expirado.");
+        setMessage(t("auth_confirm.error_no_token"));
         return;
       }
 
@@ -43,20 +47,20 @@ function ConfirmPage() {
         setStatus("error");
         setMessage(
           error?.message?.includes("expired")
-            ? "Este link expirou. Solicite um novo e-mail de ativação."
-            : "Não foi possível ativar sua conta. O link pode ter expirado.",
+            ? t("auth_confirm.error_expired")
+            : t("auth_confirm.error_generic"),
         );
         return;
       }
 
       setStatus("success");
       if (type === "recovery") {
-        setMessage("Link validado! Redirecionando para definir nova senha...");
+        setMessage(t("auth_confirm.redirect_recovery"));
         setTimeout(() => {
           navigate({ to: "/reset-password" });
         }, 800);
       } else {
-        setMessage("Conta ativada! Redirecionando para seu painel...");
+        setMessage(t("auth_confirm.redirect_dashboard"));
         setTimeout(() => {
           navigate({ to: "/dashboard" });
         }, 1200);
@@ -64,7 +68,7 @@ function ConfirmPage() {
     };
 
     run();
-  }, [navigate]);
+  }, [navigate, t]);
 
   return (
     <SiteShell>
@@ -79,10 +83,10 @@ function ConfirmPage() {
           {status === "error" && <XCircle className="h-12 w-12 mx-auto text-red-600" />}
           <h1 className="mt-5 text-xl font-black text-white">
             {status === "loading"
-              ? "Ativando sua conta"
+              ? t("auth_confirm.title_loading")
               : status === "success"
-                ? "Tudo certo!"
-                : "Algo deu errado"}
+                ? t("auth_confirm.title_success")
+                : t("auth_confirm.title_error")}
           </h1>
           <p className="mt-2 text-sm text-neutral-300">{message}</p>
           {status === "error" && (
@@ -90,7 +94,7 @@ function ConfirmPage() {
               href="/cadastro"
               className="inline-block mt-6 text-sm font-bold text-[#df991b] underline"
             >
-              Voltar para o cadastro
+              {t("auth_confirm.back_to_register")}
             </a>
           )}
         </div>

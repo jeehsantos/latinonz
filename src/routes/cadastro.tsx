@@ -71,12 +71,12 @@ function CadastroPage() {
     const errs = validate();
     setFieldErrors(errs);
     const missingConsent = !consent;
-    setConsentError(missingConsent ? "Você precisa aceitar para continuar." : null);
+    setConsentError(missingConsent ? t("register.consent_error_checkbox") : null);
     if (Object.keys(errs).length > 0 || missingConsent) {
       const firstError = missingConsent
-        ? "Aceite a Política de Privacidade e Termos de Uso."
+        ? t("register.consent_error_toast")
         : Object.values(errs)[0]!;
-      toast.error("Preencha todos os campos corretamente", {
+      toast.error(t("toasts.validation_error"), {
         description: firstError,
         icon: <AlertCircle className="h-4 w-4" />,
       });
@@ -95,19 +95,19 @@ function CadastroPage() {
         },
       });
       if (!res.ok) {
-        toast.error("Não foi possível cadastrar", {
+        toast.error(t("toasts.registration_error"), {
           description: res.error,
           icon: <AlertCircle className="h-4 w-4" />,
         });
         return;
       }
       setSent(email.trim());
-      toast.success("E-mail de ativação enviado!", {
-        description: `Enviamos um link para ${email.trim()}.`,
+      toast.success(t("toasts.activation_email_sent"), {
+        description: t("register.confirm_email_desc").replace("{email}", email.trim()),
         icon: <CheckCircle2 className="h-4 w-4" />,
       });
     } catch (err) {
-      toast.error("Erro inesperado", {
+      toast.error(t("toasts.unexpected_error"), {
         description: err instanceof Error ? err.message : t("auth.unexpected_error"),
       });
     } finally {
@@ -123,11 +123,11 @@ function CadastroPage() {
         data: { email: sent, siteOrigin: window.location.origin },
       });
       if (!res.ok) {
-        toast.error("Não foi possível reenviar", { description: res.error });
+        toast.error(t("toasts.resend_error"), { description: res.error });
         return;
       }
-      toast.success("Link reenviado!", {
-        description: `Verifique a caixa de entrada de ${sent}.`,
+      toast.success(t("toasts.resend_success"), {
+        description: t("register.confirm_email_desc").replace("{email}", sent),
       });
     } finally {
       setResending(false);
@@ -142,11 +142,11 @@ function CadastroPage() {
             <div className="mx-auto h-16 w-16 rounded-full bg-[#df991b]/15 flex items-center justify-center">
               <Mail className="h-8 w-8 text-[#df991b]" />
             </div>
-            <h1 className="mt-6 text-2xl font-black text-white">Confirme seu e-mail</h1>
+            <h1 className="mt-6 text-2xl font-black text-white">{t("register.confirm_email_title")}</h1>
             <p className="mt-3 text-sm text-neutral-300 leading-relaxed">
-              Enviamos um link de ativação para{" "}
-              <span className="font-bold text-white">{sent}</span>. Clique no botão dentro do
-              e-mail para ativar sua conta e acessar seu painel.
+              {t("register.confirm_email_desc").split("{email}")[0]}
+              <span className="font-bold text-white">{sent}</span>
+              {t("register.confirm_email_desc").split("{email}")[1]}
             </p>
             <button
               type="button"
@@ -154,12 +154,12 @@ function CadastroPage() {
               disabled={resending}
               className="mt-6 text-sm font-bold text-[#df991b] underline disabled:opacity-50"
             >
-              {resending ? "Reenviando..." : "Não recebi o e-mail — reenviar"}
+              {resending ? t("register.resending_email") : t("register.resend_email_button")}
             </button>
             <p className="mt-6 text-xs text-neutral-400">
-              Já ativou?{" "}
+              {t("register.already_activated")}{" "}
               <Link to="/login" className="font-bold text-white underline">
-                Faça login
+                {t("register.login_link")}
               </Link>
             </p>
           </div>
@@ -189,7 +189,7 @@ function CadastroPage() {
         <div className="mt-8 md:mt-10 bg-neutral-900 border border-white/10 rounded-3xl p-5 md:p-8">
           <GoogleAuthButton
             label={t("auth.google_signup")}
-            onError={(m) => toast.error("Erro no Google", { description: m })}
+            onError={(m) => toast.error(t("toasts.google_error"), { description: m })}
           />
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px bg-white/10" />
@@ -304,15 +304,15 @@ function CadastroPage() {
                   className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-black"
                 />
                 <span>
-                  Li e concordo com a{" "}
+                  {t("register.consent_prefix")}{" "}
                   <Link to="/privacy" target="_blank" className="underline font-semibold">
-                    Política de Privacidade
+                    {t("footer_legal.privacy")}
                   </Link>{" "}
-                  e os{" "}
+                  {t("register.consent_and")}{" "}
                   <Link to="/terms" target="_blank" className="underline font-semibold">
-                    Termos de Uso
+                    {t("footer_legal.terms")}
                   </Link>
-                  . Meus dados serão tratados conforme o Privacy Act 2020 (NZ).
+                  {t("register.consent_suffix")}
                 </span>
               </label>
               {consentError && (
@@ -326,7 +326,7 @@ function CadastroPage() {
               disabled={loading}
               className="block w-full text-center bg-[#df991b] hover:bg-[#c4861a] disabled:opacity-60 text-black font-bold rounded-xl py-3 text-sm transition"
             >
-              {loading ? "Enviando..." : t("register.submit")}
+              {loading ? t("register.resending_email") : t("register.submit")}
             </button>
             <p className="text-xs text-neutral-400 text-center">
               {t("register.has_account")}{" "}

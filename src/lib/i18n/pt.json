@@ -7,7 +7,8 @@
     "about": "Sobre",
     "contact": "Contato",
     "login": "Entrar",
-    "register": "Cadastrar na rede"
+    "register": "Cadastrar na rede",
+    "account": "Minha Conta"
   },
   "hero": {
     "badge": "Comunidade Latina na NZ",
@@ -52,7 +53,17 @@
     "password": "Senha",
     "submit": "Criar conta",
     "has_account": "Já tem conta?",
-    "login_link": "Entrar"
+    "login_link": "Faça login",
+    "consent_error_checkbox": "Você precisa aceitar para continuar.",
+    "consent_error_toast": "Aceite a Política de Privacidade e Termos de Uso.",
+    "consent_prefix": "Li e concordo com a",
+    "consent_and": "e os",
+    "consent_suffix": ". Meus dados serão tratados conforme o Privacy Act 2020 (NZ).",
+    "confirm_email_title": "Confirme seu e-mail",
+    "confirm_email_desc": "Enviamos um link de ativação para {email}. Clique no botão dentro do e-mail para ativar sua conta e acessar seu painel.",
+    "resend_email_button": "Não recebi o e-mail — reenviar",
+    "resending_email": "Reenviando...",
+    "already_activated": "Já ativou?"
   },
   "plans": {
     "badge": "Planos",
@@ -88,21 +99,103 @@
       "Suporte prioritário"
     ],
     "comparison_rows": [
-      { "feature": "Perfil personalizado", "starter": "Básico", "premium": "Completo", "ultra": "Completo + Destaque" },
-      { "feature": "Fotos", "starter": "3 fotos", "premium": "Ilimitado", "ultra": "Ilimitado", "highlight": true },
-      { "feature": "Contato", "starter": "Formulário", "premium": "WhatsApp", "ultra": "WhatsApp" },
-      { "feature": "Notificação de lead", "starter": "E-mail", "premium": "WhatsApp", "ultra": "E-mail & WhatsApp", "highlight": true },
-      { "feature": "Horários de funcionamento", "starter": "—", "premium": "✓", "ultra": "✓" },
-      { "feature": "Opções de atendimento", "starter": "—", "premium": "✓", "ultra": "✓", "highlight": true },
-      { "feature": "Cupons de desconto", "starter": "—", "premium": "✓", "ultra": "✓" },
-      { "feature": "Mensagens diretas", "starter": "—", "premium": "✓", "ultra": "✓", "highlight": true },
-      { "feature": "QR Code do perfil", "starter": "—", "premium": "✓", "ultra": "✓" },
-      { "feature": "Analytics do perfil", "starter": "—", "premium": "✓", "ultra": "✓", "highlight": true },
-      { "feature": "Google Reviews", "starter": "✓", "premium": "✓", "ultra": "✓" },
-      { "feature": "Criação de eventos", "starter": "—", "premium": "—", "ultra": "✓", "highlight": true },
-      { "feature": "Post no Instagram & Facebook", "starter": "—", "premium": "—", "ultra": "✓" },
-      { "feature": "Post no WhatsApp da comunidade", "starter": "—", "premium": "—", "ultra": "✓", "highlight": true },
-      { "feature": "Destaque no topo da rede", "starter": "—", "premium": "—", "ultra": "✓" }
+      {
+        "feature": "Perfil personalizado",
+        "starter": "Básico",
+        "premium": "Completo",
+        "ultra": "Completo + Destaque"
+      },
+      {
+        "feature": "Fotos",
+        "starter": "3 fotos",
+        "premium": "Ilimitado",
+        "ultra": "Ilimitado",
+        "highlight": true
+      },
+      {
+        "feature": "Contato",
+        "starter": "Formulário",
+        "premium": "WhatsApp",
+        "ultra": "WhatsApp"
+      },
+      {
+        "feature": "Notificação de lead",
+        "starter": "E-mail",
+        "premium": "WhatsApp",
+        "ultra": "E-mail & WhatsApp",
+        "highlight": true
+      },
+      {
+        "feature": "Horários de funcionamento",
+        "starter": "—",
+        "premium": "✓",
+        "ultra": "✓"
+      },
+      {
+        "feature": "Opções de atendimento",
+        "starter": "—",
+        "premium": "✓",
+        "ultra": "✓",
+        "highlight": true
+      },
+      {
+        "feature": "Cupons de desconto",
+        "starter": "—",
+        "premium": "✓",
+        "ultra": "✓"
+      },
+      {
+        "feature": "Mensagens diretas",
+        "starter": "—",
+        "premium": "✓",
+        "ultra": "✓",
+        "highlight": true
+      },
+      {
+        "feature": "QR Code do perfil",
+        "starter": "—",
+        "premium": "✓",
+        "ultra": "✓"
+      },
+      {
+        "feature": "Analytics do perfil",
+        "starter": "—",
+        "premium": "✓",
+        "ultra": "✓",
+        "highlight": true
+      },
+      {
+        "feature": "Google Reviews",
+        "starter": "✓",
+        "premium": "✓",
+        "ultra": "✓"
+      },
+      {
+        "feature": "Criação de eventos",
+        "starter": "—",
+        "premium": "—",
+        "ultra": "✓",
+        "highlight": true
+      },
+      {
+        "feature": "Post no Instagram & Facebook",
+        "starter": "—",
+        "premium": "—",
+        "ultra": "✓"
+      },
+      {
+        "feature": "Post no WhatsApp da comunidade",
+        "starter": "—",
+        "premium": "—",
+        "ultra": "✓",
+        "highlight": true
+      },
+      {
+        "feature": "Destaque no topo da rede",
+        "starter": "—",
+        "premium": "—",
+        "ultra": "✓"
+      }
     ]
   },
   "about": {
@@ -237,6 +330,12 @@
       "disclaimer": "Informe email ou WhatsApp para contato.",
       "submitting": "Enviando...",
       "submit": "Enviar mensagem"
+    },
+    "badges": {
+      "active": "Ativo",
+      "pro": "Pro",
+      "business": "Business",
+      "inactive": "Inativo"
     }
   },
   "dashboard": {
@@ -517,7 +616,18 @@
     "account_delete_body": "Solicite a exclusão permanente da sua conta e de todos os dados pessoais associados. Esta ação não pode ser desfeita.",
     "account_delete_btn": "Solicitar exclusão de conta",
     "privacy_policy_link": "Leia nossa Política de Privacidade completa",
-    "account_update_subtitle": "Atualize suas credenciais de acesso."
+    "account_update_subtitle": "Atualize suas credenciais de acesso.",
+    "colors": {
+      "verde": "Verde Latino",
+      "azul": "Azul Oceano",
+      "vinho": "Vinho",
+      "roxo": "Roxo",
+      "grafite": "Grafite",
+      "ambar": "Âmbar"
+    },
+    "portal_unavailable": "Portal indisponível.",
+    "portal_error": "Erro ao abrir portal",
+    "opening_portal": "Abrindo..."
   },
   "upgrade": {
     "title": "Escolha o seu plano",
@@ -641,5 +751,176 @@
       "title": "Aceitar convite — Latino Connect",
       "description": "Aceite o convite e defina sua senha no Latino Connect."
     }
+  },
+  "cookie_consent": {
+    "title": "Sua privacidade importa",
+    "body_prefix": "Usamos cookies essenciais para que o site funcione e, com seu consentimento, cookies de análise para melhorar a experiência. Saiba mais na ",
+    "privacy_link": "Política de Privacidade",
+    "body_suffix": ".",
+    "accept_all": "Aceitar todos",
+    "accept_essential": "Apenas essenciais",
+    "dialog_label": "Aviso de cookies",
+    "close_label": "Fechar",
+    "previous_label": "Anterior",
+    "next_label": "Próximo"
+  },
+  "footer_legal": {
+    "privacy": "Política de Privacidade",
+    "terms": "Termos de Uso"
+  },
+  "toasts": {
+    "checkout_init_error": "Não foi possível iniciar o checkout.",
+    "checkout_error": "Erro no checkout",
+    "validation_error": "Preencha todos os campos corretamente",
+    "registration_error": "Não foi possível cadastrar",
+    "activation_email_sent": "E-mail de ativação enviado!",
+    "unexpected_error": "Erro inesperado",
+    "resend_error": "Não foi possível reenviar",
+    "resend_success": "Link reenviado!",
+    "google_error": "Erro no Google",
+    "max_file_size": "Max 5MB"
+  },
+  "forgot_password": {
+    "title": "Recuperar senha",
+    "subtitle": "Informe seu e-mail e enviaremos um link para criar uma nova senha.",
+    "success_message": "Se este e-mail estiver cadastrado, você receberá um link de redefinição em instantes. Verifique também sua caixa de spam.",
+    "email_label": "E-mail",
+    "button_sending": "Enviando...",
+    "button_send": "Enviar link de redefinição",
+    "back_to_login": "Lembrou da senha?",
+    "back_to_login_action": "Entrar"
+  },
+  "reset_password": {
+    "title": "Definir nova senha",
+    "invalid_link": "Seu link de redefinição é inválido ou expirou. Solicite um novo link.",
+    "request_new_link": "Solicitar novo link",
+    "success_message": "Senha atualizada! Redirecionando para o painel...",
+    "instructions": "Escolha uma nova senha de no mínimo 8 caracteres.",
+    "new_password_label": "Nova senha",
+    "confirm_password_label": "Confirmar senha",
+    "error_min_length": "A senha deve ter ao menos 8 caracteres.",
+    "error_mismatch": "As senhas não coincidem.",
+    "button_saving": "Salvando...",
+    "button_save": "Salvar nova senha"
+  },
+  "auth_confirm": {
+    "title_loading": "Ativando sua conta",
+    "title_success": "Tudo certo!",
+    "title_error": "Algo deu errado",
+    "loading_message": "Validando seu link de ativação...",
+    "error_no_token": "Link inválido ou expirado.",
+    "error_expired": "Este link expirou. Solicite um novo e-mail de ativação.",
+    "error_generic": "Não foi possível ativar sua conta. O link pode ter expirado.",
+    "redirect_recovery": "Link validado! Redirecionando para definir nova senha...",
+    "redirect_dashboard": "Conta ativada! Redirecionando para seu painel...",
+    "back_to_register": "Voltar para o cadastro"
+  },
+  "privacy": {
+    "title": "Política de Privacidade",
+    "last_updated": "Última atualização: 29 de maio de 2026",
+    "intro": "A Latino Connect Hub (\"nós\", \"nosso\") respeita sua privacidade e está comprometida em proteger seus dados pessoais. Esta política descreve como coletamos, usamos, armazenamos e divulgamos suas informações em conformidade com o Privacy Act 2020 da Nova Zelândia e seus 13 Princípios de Privacidade (IPPs).",
+    "sections": [
+      {
+        "title": "1. Quem somos",
+        "content": "Latino Connect Hub é um diretório digital de negócios da comunidade latina na Nova Zelândia. Operamos em Auckland, NZ. Você pode nos contatar a qualquer momento em hello@latinoconnecthub.co.nz."
+      },
+      {
+        "title": "2. Quais dados coletamos (IPP 1, 4)",
+        "content": "Coletamos apenas o necessário para a finalidade declarada:\n• Cadastro / waitlist: nome, nome do negócio, e-mail, número de WhatsApp e categoria de serviço.\n• Conta: e-mail, senha (hash) e dados do perfil que você fornecer.\n• Negócios: dados do estabelecimento, fotos, endereço, horário e avaliações públicas.\n• Leads: mensagens enviadas por consumidores aos negócios.\n• Técnicos: endereço IP (em formato anonimizado/hashed), tipo de navegador e páginas visitadas, exclusivamente para segurança e métricas agregadas.\n\nNunca coletamos dados sensíveis (saúde, religião, etnia) ou dados de menores de 16 anos."
+      },
+      {
+        "title": "3. Como coletamos (IPP 2, 3, 4)",
+        "content": "Coletamos dados diretamente de você quando preenche um formulário, cria conta, lista seu negócio ou entra em contato. Antes de enviar, você verá claramente para que os dados serão usados, com quem podem ser compartilhados e seus direitos. Não usamos meios ocultos ou enganosos."
+      },
+      {
+        "title": "4. Para que usamos seus dados (IPP 10)",
+        "content": "• Operar a plataforma, sua conta e listagem.\n• Enviar e-mails transacionais (ativação, recuperação de senha, notificações).\n• Permitir contato entre consumidores e negócios listados.\n• Prevenir fraude, abuso e violações dos termos.\n• Comunicações de marketing — apenas com seu consentimento explícito, com opção de cancelar."
+      },
+      {
+        "title": "5. Com quem compartilhamos (IPP 11, 12)",
+        "content": "Compartilhamos dados apenas com prestadores estritamente necessários:\n• Supabase (banco de dados e autenticação) — armazenamento seguro.\n• Resend (envio de e-mails transacionais).\n• Cloudflare (hospedagem edge e proteção contra ataques).\n• Google (login opcional via OAuth, se você escolher).\n\nEsses provedores podem armazenar dados fora da Nova Zelândia. Selecionamos parceiros com padrões de proteção comparáveis ao Privacy Act 2020. Não vendemos seus dados."
+      },
+      {
+        "title": "6. Segurança (IPP 5)",
+        "content": "Aplicamos medidas técnicas e organizacionais: HTTPS/TLS em todo o tráfego, Row Level Security (RLS) no banco de dados, hash de senhas, controle de acesso por papel, rate-limiting contra abuso e revisão de logs. Apesar dos esforços, nenhum sistema é 100% seguro — se ocorrer um incidente sério, notificaremos você e a Office of the Privacy Commissioner conforme exigido por lei."
+      },
+      {
+        "title": "7. Retenção (IPP 9)",
+        "content": "Mantemos seus dados apenas enquanto forem necessários para a finalidade coletada ou exigência legal. Dados de waitlist são removidos após o lançamento e migração. Você pode solicitar exclusão a qualquer momento."
+      },
+      {
+        "title": "8. Seus direitos (IPP 6, 7)",
+        "content": "Você tem direito a:\n• Acessar uma cópia dos dados que mantemos sobre você.\n• Corrigir dados imprecisos ou desatualizados.\n• Solicitar exclusão da sua conta e dados pessoais.\n• Retirar consentimento de marketing a qualquer momento.\n• Reclamar à Office of the Privacy Commissioner NZ.\n\nEnvie pedidos para hello@latinoconnecthub.co.nz — respondemos em até 20 dias úteis."
+      },
+      {
+        "title": "9. Cookies",
+        "content": "Usamos cookies essenciais (sessão, autenticação, preferências de idioma) que não requerem consentimento, e cookies opcionais de análise apenas após seu aceite. Você pode revisar a escolha pelo banner exibido na sua primeira visita ou limpando os dados do navegador."
+      },
+      {
+        "title": "10. Mudanças nesta política",
+        "content": "Podemos atualizar esta política. Avisaremos por e-mail ou aviso na plataforma quando houver mudanças relevantes."
+      }
+    ],
+    "footer_see_also": "Veja também os {link}."
+  },
+  "terms": {
+    "title": "Termos de Uso",
+    "last_updated": "Última atualização: 29 de maio de 2026",
+    "intro": "Estes Termos regem o uso da plataforma Latino Connect Hub. Ao acessar ou usar o site, você concorda com estes Termos e com nossa Política de Privacidade. Se não concordar, não utilize a plataforma.",
+    "sections": [
+      {
+        "title": "1. Sobre a plataforma",
+        "content": "Latino Connect Hub é um diretório online que conecta negócios da comunidade latina na Nova Zelândia com consumidores. Não somos parte de qualquer transação entre você e os negócios listados."
+      },
+      {
+        "title": "2. Elegibilidade",
+        "content": "Você deve ter pelo menos 16 anos para criar uma conta. Negócios listados devem operar legalmente na Nova Zelândia."
+      },
+      {
+        "title": "3. Sua conta",
+        "content": "• Forneça informações verdadeiras, completas e atualizadas.\n• Mantenha sua senha em sigilo — você é responsável por toda atividade na conta.\n• Notifique-nos imediatamente sobre uso não autorizado."
+      },
+      {
+        "title": "4. Uso aceitável",
+        "content": "É proibido:\n• Publicar conteúdo falso, enganoso, ofensivo, discriminatório ou ilegal.\n• Coletar dados de outros usuários (scraping, harvesting).\n• Tentar burlar segurança, RLS ou rate-limiting.\n• Enviar spam, malware ou publicidade não autorizada.\n• Usar a plataforma para fraude ou concorrência desleal.\n\nPodemos suspender ou excluir contas que violem estas regras, sem aviso prévio."
+      },
+      {
+        "title": "5. Conteúdo do usuário",
+        "content": "Você mantém a propriedade do conteúdo que envia (descrições, fotos, eventos). Ao publicar, concede à Latino Connect Hub uma licença não exclusiva, mundial e gratuita para hospedar, exibir e promover esse conteúdo dentro da plataforma. Você garante ter os direitos sobre todo conteúdo enviado."
+      },
+      {
+        "title": "6. Negócios listados e leads",
+        "content": "Negócios são responsáveis pela exatidão da sua listagem e pelos serviços prestados. Leads enviados via plataforma devem ser tratados em conformidade com o Privacy Act 2020 — use os dados apenas para responder ao consumidor."
+      },
+      {
+        "title": "7. Pagamentos e planos",
+        "content": "Alguns recursos requerem assinatura paga. Os pagamentos são processados por terceiros (ex: Stripe). Reembolsos seguem a política do plano e a legislação do consumidor da Nova Zelândia (Consumer Guarantees Act 1993)."
+      },
+      {
+        "title": "8. Propriedade intelectual",
+        "content": "Logotipos, marca, código e design da Latino Connect Hub são protegidos. É proibido copiar, redistribuir ou criar trabalhos derivados sem autorização."
+      },
+      {
+        "title": "9. Isenções e limitações",
+        "content": "A plataforma é fornecida \"como está\". Não garantimos disponibilidade ininterrupta nem a exatidão de listagens de terceiros. Na máxima extensão permitida em lei, não somos responsáveis por danos indiretos decorrentes do uso da plataforma. Nada nestes Termos limita seus direitos sob o Consumer Guarantees Act 1993 ou Fair Trading Act 1986."
+      },
+      {
+        "title": "10. Encerramento",
+        "content": "Você pode encerrar sua conta a qualquer momento pelo painel ou solicitando em hello@latinoconnecthub.co.nz. Podemos encerrar contas que violem estes Termos."
+      },
+      {
+        "title": "11. Mudanças nos Termos",
+        "content": "Podemos atualizar estes Termos. Mudanças significativas serão notificadas por e-mail ou aviso na plataforma. O uso contínuo após a atualização constitui aceite."
+      },
+      {
+        "title": "12. Lei aplicável",
+        "content": "Estes Termos são regidos pelas leis da Nova Zelândia. Disputas serão submetidas aos tribunais competentes de Auckland, NZ."
+      },
+      {
+        "title": "13. Contato",
+        "content": "Dúvidas? Entre em contato pelo e-mail hello@latinoconnecthub.co.nz."
+      }
+    ],
+    "footer_see_also": "Veja também a {link}."
   }
 }

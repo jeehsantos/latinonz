@@ -3,6 +3,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { useI18n, usePageMetadata } from "@/lib/i18n";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
@@ -16,6 +17,9 @@ export const Route = createFileRoute("/reset-password")({
 
 function ResetPasswordPage() {
   const navigate = useNavigate();
+  const { t } = useI18n();
+  usePageMetadata(undefined, undefined, `${t("reset_password.title")} — Latino Connect`);
+
   const [checking, setChecking] = useState(true);
   const [hasSession, setHasSession] = useState(false);
   const [password, setPassword] = useState("");
@@ -35,11 +39,11 @@ function ResetPasswordPage() {
     e.preventDefault();
     setError(null);
     if (password.length < 8) {
-      setError("A senha deve ter ao menos 8 caracteres.");
+      setError(t("reset_password.error_min_length"));
       return;
     }
     if (password !== confirm) {
-      setError("As senhas não coincidem.");
+      setError(t("reset_password.error_mismatch"));
       return;
     }
     setLoading(true);
@@ -60,7 +64,7 @@ function ResetPasswordPage() {
     <SiteShell>
       <section className="max-w-md mx-auto px-6 py-12 md:py-20">
         <div className="bg-neutral-900 border border-white/10 rounded-3xl p-8 shadow-2xl shadow-black/40">
-          <h1 className="text-2xl font-black text-white">Definir nova senha</h1>
+          <h1 className="text-2xl font-black text-white">{t("reset_password.title")}</h1>
 
           {checking ? (
             <div className="mt-8 flex justify-center">
@@ -69,26 +73,26 @@ function ResetPasswordPage() {
           ) : !hasSession ? (
             <div className="mt-6 space-y-4">
               <p className="text-sm text-neutral-300">
-                Seu link de redefinição é inválido ou expirou. Solicite um novo link.
+                {t("reset_password.invalid_link")}
               </p>
               <Link
                 to="/forgot-password"
                 className="block w-full text-center bg-[#facc15] hover:bg-yellow-300 text-black font-bold rounded-xl py-3 text-sm transition"
               >
-                Solicitar novo link
+                {t("reset_password.request_new_link")}
               </Link>
             </div>
           ) : success ? (
             <p className="mt-6 text-sm text-green-300">
-              Senha atualizada! Redirecionando para o painel...
+              {t("reset_password.success_message")}
             </p>
           ) : (
             <form className="space-y-4 mt-6" onSubmit={onSubmit}>
               <p className="text-sm text-neutral-400">
-                Escolha uma nova senha de no mínimo 8 caracteres.
+                {t("reset_password.instructions")}
               </p>
               <div>
-                <label className="text-xs font-bold uppercase text-neutral-400">Nova senha</label>
+                <label className="text-xs font-bold uppercase text-neutral-400">{t("reset_password.new_password_label")}</label>
                 <input
                   type="password"
                   required
@@ -99,7 +103,7 @@ function ResetPasswordPage() {
               </div>
               <div>
                 <label className="text-xs font-bold uppercase text-neutral-400">
-                  Confirmar senha
+                  {t("reset_password.confirm_password_label")}
                 </label>
                 <input
                   type="password"
@@ -115,7 +119,7 @@ function ResetPasswordPage() {
                 disabled={loading}
                 className="block w-full text-center bg-[#facc15] hover:bg-yellow-300 disabled:opacity-60 text-black font-bold rounded-xl py-3 text-sm transition"
               >
-                {loading ? "Salvando..." : "Salvar nova senha"}
+                {loading ? t("reset_password.button_saving") : t("reset_password.button_save")}
               </button>
             </form>
           )}

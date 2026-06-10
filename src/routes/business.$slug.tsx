@@ -300,10 +300,10 @@ function BusinessPage() {
 
   const serviceOptionBadges: { key: string; label: string }[] = [];
   if (serviceOptions) {
-    if (serviceOptions.takeaway) serviceOptionBadges.push({ key: "takeaway", label: "Take away" });
-    if (serviceOptions.dinein) serviceOptionBadges.push({ key: "dinein", label: "Dine in" });
-    if (serviceOptions.delivery) serviceOptionBadges.push({ key: "delivery", label: "Delivery" });
-    if (serviceOptions.booking) serviceOptionBadges.push({ key: "booking", label: "Book in advance" });
+    if (serviceOptions.takeaway) serviceOptionBadges.push({ key: "takeaway", label: t("service_options.takeaway_label") });
+    if (serviceOptions.dinein) serviceOptionBadges.push({ key: "dinein", label: t("service_options.dinein_label") });
+    if (serviceOptions.delivery) serviceOptionBadges.push({ key: "delivery", label: t("service_options.delivery_label") });
+    if (serviceOptions.booking) serviceOptionBadges.push({ key: "booking", label: t("service_options.booking_label") });
     if (serviceOptions.other && serviceOptions.other.trim())
       serviceOptionBadges.push({ key: "other", label: serviceOptions.other.trim() });
   }
@@ -899,7 +899,7 @@ function BusinessPage() {
               <button
                 onClick={() => setLeadOpen(false)}
                 className="text-neutral-500 hover:text-neutral-200"
-                aria-label="Close"
+                aria-label={t("business.lead_modal.close")}
               >
                 <X size={20} />
               </button>
@@ -974,7 +974,7 @@ function BusinessPage() {
               setLightboxIndex(null);
             }}
             className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
-            aria-label="Close"
+            aria-label={t("business.lead_modal.close")}
           >
             <X size={20} />
           </button>
@@ -988,7 +988,7 @@ function BusinessPage() {
                 );
               }}
               className="absolute left-4 md:left-8 h-12 w-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
-              aria-label="Previous"
+              aria-label={t("cookie_consent.previous_label")}
             >
               <ChevronLeft size={24} />
             </button>
@@ -1011,7 +1011,7 @@ function BusinessPage() {
                 setLightboxIndex((lightboxIndex + 1) % visiblePhotos.length);
               }}
               className="absolute right-4 md:right-8 h-12 w-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition"
-              aria-label="Next"
+              aria-label={t("cookie_consent.next_label")}
             >
               <ChevronRight size={24} />
             </button>

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { requestPasswordReset } from "@/lib/auth.functions";
+import { useI18n, usePageMetadata } from "@/lib/i18n";
 
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
@@ -15,6 +16,9 @@ export const Route = createFileRoute("/forgot-password")({
 });
 
 function ForgotPasswordPage() {
+  const { t } = useI18n();
+  usePageMetadata(undefined, undefined, `${t("forgot_password.title")} — Latino Connect`);
+
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -34,7 +38,7 @@ function ForgotPasswordPage() {
       }
       setSent(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro inesperado.");
+      setError(err instanceof Error ? err.message : t("toasts.unexpected_error"));
     } finally {
       setLoading(false);
     }
@@ -44,20 +48,19 @@ function ForgotPasswordPage() {
     <SiteShell>
       <section className="max-w-md mx-auto px-6 py-12 md:py-20">
         <div className="bg-neutral-900 border border-white/10 rounded-3xl p-8 shadow-2xl shadow-black/40">
-          <h1 className="text-2xl font-black text-white">Recuperar senha</h1>
+          <h1 className="text-2xl font-black text-white">{t("forgot_password.title")}</h1>
           <p className="text-sm text-neutral-400 mt-1">
-            Informe seu e-mail e enviaremos um link para criar uma nova senha.
+            {t("forgot_password.subtitle")}
           </p>
 
           {sent ? (
             <div className="mt-6 rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-200">
-              Se este e-mail estiver cadastrado, você receberá um link de redefinição em
-              instantes. Verifique também sua caixa de spam.
+              {t("forgot_password.success_message")}
             </div>
           ) : (
             <form className="space-y-4 mt-6" onSubmit={onSubmit}>
               <div>
-                <label className="text-xs font-bold uppercase text-neutral-400">E-mail</label>
+                <label className="text-xs font-bold uppercase text-neutral-400">{t("forgot_password.email_label")}</label>
                 <input
                   type="email"
                   required
@@ -72,15 +75,15 @@ function ForgotPasswordPage() {
                 disabled={loading}
                 className="block w-full text-center bg-[#facc15] hover:bg-yellow-300 disabled:opacity-60 text-black font-bold rounded-xl py-3 text-sm transition"
               >
-                {loading ? "Enviando..." : "Enviar link de redefinição"}
+                {loading ? t("forgot_password.button_sending") : t("forgot_password.button_send")}
               </button>
             </form>
           )}
 
           <p className="text-xs text-neutral-400 text-center mt-4">
-            Lembrou da senha?{" "}
+            {t("forgot_password.back_to_login")}{" "}
             <Link to="/login" className="font-bold text-[#facc15] hover:text-yellow-300">
-              Entrar
+              {t("forgot_password.back_to_login_action")}
             </Link>
           </p>
         </div>

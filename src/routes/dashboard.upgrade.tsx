@@ -31,10 +31,10 @@ function UpgradePage() {
       if (res?.url) {
         window.location.href = res.url;
       } else {
-        toast.error("Não foi possível iniciar o checkout.");
+        toast.error(t("toasts.checkout_init_error"));
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro no checkout");
+      toast.error(err instanceof Error ? err.message : t("toasts.checkout_error"));
     } finally {
       setLoading(null);
     }

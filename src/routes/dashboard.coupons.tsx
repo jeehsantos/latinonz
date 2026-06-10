@@ -229,7 +229,7 @@ function CouponsPage() {
   function onPickFile(file: File | null) {
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("Max 5MB");
+      toast.error(t("toasts.max_file_size"));
       return;
     }
     setPendingImage(file);
@@ -596,7 +596,7 @@ function CouponCard({
             )}
             {!c.is_active && (
               <span className="text-[10px] font-bold uppercase tracking-wider bg-white/5 text-neutral-400 rounded-full px-2 py-0.5">
-                inactive
+                {t("business.badges.inactive")}
               </span>
             )}
           </div>

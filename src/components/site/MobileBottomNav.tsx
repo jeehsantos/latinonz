@@ -22,7 +22,7 @@ export function MobileBottomNav() {
     { to: "/", label: t("nav.home"), icon: Home, exact: true },
     { to: "/directory", label: t("nav.directory"), icon: Compass },
     { to: "/blog", label: t("nav.blog"), icon: Newspaper },
-    { to: accountTo, label: signedIn ? "Account" : t("nav.login"), icon: UserCircle2 },
+    { to: accountTo, label: signedIn ? t("nav.account") : t("nav.login"), icon: UserCircle2 },
   ];
 
   return (

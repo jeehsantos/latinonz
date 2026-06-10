@@ -12,12 +12,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
 const PRESET_COLORS = [
-  { name: "Verde Latino", value: "#facc15" },
-  { name: "Azul Oceano", value: "#1E3A8A" },
-  { name: "Vinho", value: "#7F1D1D" },
-  { name: "Roxo", value: "#5B21B6" },
-  { name: "Grafite", value: "#1F2937" },
-  { name: "Âmbar", value: "#92400E" },
+  { nameKey: "settings.colors.verde", value: "#facc15" },
+  { nameKey: "settings.colors.azul", value: "#1E3A8A" },
+  { nameKey: "settings.colors.vinho", value: "#7F1D1D" },
+  { nameKey: "settings.colors.roxo", value: "#5B21B6" },
+  { nameKey: "settings.colors.grafite", value: "#1F2937" },
+  { nameKey: "settings.colors.ambar", value: "#92400E" },
 ];
 
 export const Route = createFileRoute("/dashboard/settings")({
@@ -51,9 +51,9 @@ function SettingsPage() {
       setPortalLoading(true);
       const res = await billingPortal();
       if (res.ok && res.url) window.location.href = res.url;
-      else toast.error(res.ok ? "Portal indisponível." : res.error);
+      else toast.error(res.ok ? t("settings.portal_unavailable") : res.error);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao abrir portal");
+      toast.error(err instanceof Error ? err.message : t("settings.portal_error"));
     } finally {
       setPortalLoading(false);
     }
@@ -121,7 +121,7 @@ function SettingsPage() {
                 disabled={portalLoading}
                 className="inline-flex bg-[#facc15] hover:bg-[#facc15]/90 disabled:opacity-60 text-neutral-950 font-bold rounded-xl px-5 py-2.5 text-sm"
               >
-                {portalLoading ? "Abrindo..." : t("settings.change_plan")}
+                {portalLoading ? t("settings.opening_portal") : t("settings.change_plan")}
               </button>
             </div>
           )}
@@ -144,14 +144,14 @@ function SettingsPage() {
                       key={c.value}
                       type="button"
                       onClick={() => setSidebarColor(c.value)}
-                      title={c.name}
+                      title={t(c.nameKey as any)}
                       style={{ backgroundColor: c.value }}
                       className={`h-10 w-10 rounded-full border-2 transition ${
                         isActive
                           ? "border-white ring-2 ring-offset-2 ring-offset-neutral-900 ring-white"
                           : "border-white/20"
                       }`}
-                      aria-label={c.name}
+                      aria-label={t(c.nameKey as any)}
                     />
                   );
                 })}

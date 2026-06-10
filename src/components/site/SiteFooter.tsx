@@ -66,10 +66,10 @@ export function SiteFooter() {
           </p>
           <div className="flex flex-wrap gap-4">
             <Link to="/privacy" className="hover:text-[#facc15]">
-              Política de Privacidade
+              {t("footer_legal.privacy")}
             </Link>
             <Link to="/terms" className="hover:text-[#facc15]">
-              Termos de Uso
+              {t("footer_legal.terms")}
             </Link>
             <span>{t("footer_made_with")}</span>
           </div>

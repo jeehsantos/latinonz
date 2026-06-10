@@ -295,6 +295,7 @@ export function DirectoryHome() {
 }
 
 function FeaturedCard({ business }: { business: Business }) {
+  const { t } = useI18n();
   const { getCategoryByKey } = useCategories();
   const categoryLabel = getCategoryByKey(business.macro)?.label ?? business.subcategory;
   return (
@@ -320,7 +321,7 @@ function FeaturedCard({ business }: { business: Business }) {
         {/* Plan badges top-left: BUSINESS */}
         <div className="absolute top-3 left-3 flex items-center gap-1.5">
           <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-md bg-[#FFC700] text-black shadow-[0_4px_14px_-4px_rgba(255,199,0,0.6)]">
-            {business.type === "Empresa" ? "Business" : "Pro"}
+            {business.type === "Empresa" ? t("business.badges.business") : t("business.badges.pro")}
           </span>
         </div>
 
@@ -356,7 +357,7 @@ function FeaturedCard({ business }: { business: Business }) {
               <Tag size={12} className="shrink-0 text-[#FFC700]" />
               <span className="truncate">{categoryLabel}</span>
             </span>
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#FFC700] shrink-0">Active</span>
+            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#FFC700] shrink-0">{t("business.badges.active")}</span>
           </div>
         </div>
       </div>
