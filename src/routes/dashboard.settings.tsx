@@ -2,12 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { CreditCard, Palette, User, Shield, Download, Trash2, ExternalLink } from "lucide-react";
+import { CreditCard, Palette, User, Shield, Download, Trash2, ExternalLink, Globe } from "lucide-react";
 import { useCurrentPlan } from "@/lib/dev-plan";
 import { PLAN_LABELS } from "@/lib/plans";
 import { useSidebarColor, DEFAULT_SIDEBAR_COLOR } from "@/lib/sidebar-color";
 import { useI18n } from "@/lib/i18n";
 import { createBillingPortalSession } from "@/lib/stripe.functions";
+import { getMyBusiness, updateMyBusiness } from "@/lib/business.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -33,12 +34,21 @@ function SettingsPage() {
   const billingPortal = useServerFn(createBillingPortalSession);
   const [portalLoading, setPortalLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const [emailLang, setEmailLang] = useState<string>("en");
+  const [langSaving, setLangSaving] = useState(false);
   const [active, setActive] = useState<Section>("plan");
   const navigate = Route.useNavigate();
+  const myBusiness = useServerFn(getMyBusiness);
+  const updateBiz = useServerFn(updateMyBusiness);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       if (data.user?.email) setEmail(data.user.email);
+    });
+    myBusiness().then((res) => {
+      if (res.ok && res.business) {
+        setEmailLang((res.business as any).language_preference ?? "en");
+      }
     });
   }, []);
 
@@ -215,6 +225,46 @@ function SettingsPage() {
               <button className="bg-[#facc15] hover:bg-[#facc15]/90 text-neutral-950 font-bold rounded-xl px-5 py-2.5 text-sm">
                 {t("settings.save_button")}
               </button>
+
+              {/* Email Language Preference */}
+              <div className="border-t border-white/10 pt-5 mt-2">
+                <div className="flex items-center gap-2 mb-1">
+                  <Globe className="h-4 w-4 text-[#facc15]" />
+                  <label className="text-xs font-bold uppercase text-neutral-400">
+                    {t("settings.email_language_label" as any)}
+                  </label>
+                </div>
+                <p className="text-sm text-neutral-400 mb-3">
+                  {t("settings.email_language_description" as any)}
+                </p>
+                <select
+                  id="email-language-select"
+                  value={emailLang}
+                  disabled={langSaving}
+                  onChange={async (e) => {
+                    const val = e.target.value as "pt" | "es" | "en";
+                    setEmailLang(val);
+                    setLangSaving(true);
+                    try {
+                      const res = await updateBiz({ data: { language_preference: val } });
+                      if (res.ok) {
+                        toast.success(t("settings.email_language_saved" as any));
+                      } else {
+                        toast.error(t("settings.email_language_error" as any));
+                      }
+                    } catch {
+                      toast.error(t("settings.email_language_error" as any));
+                    } finally {
+                      setLangSaving(false);
+                    }
+                  }}
+                  className="w-full sm:w-64 bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white appearance-none cursor-pointer disabled:opacity-60"
+                >
+                  <option value="en">English</option>
+                  <option value="pt">Português</option>
+                  <option value="es">Español</option>
+                </select>
+              </div>
             </div>
           )}
 

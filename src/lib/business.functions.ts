@@ -40,6 +40,7 @@ const updateBusinessSchema = z.object({
   response_time: z.string().trim().max(50).nullable().optional(),
   address_street: z.string().trim().max(200).nullable().optional(),
   address_suburb: z.string().trim().max(100).nullable().optional(),
+  language_preference: z.enum(["pt", "es", "en"]).optional(),
 });
 
 const slotSchema = z.object({
@@ -370,6 +371,7 @@ export const updateMyBusiness = createServerFn({ method: "POST" })
           response_time: data.response_time ?? null,
           address_street: data.address_street ?? null,
           address_suburb: data.address_suburb ?? null,
+          language_preference: data.language_preference ?? "en",
         })
         .select()
         .maybeSingle();

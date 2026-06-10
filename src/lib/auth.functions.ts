@@ -4,6 +4,7 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { sendActivationEmail } from "@/lib/email/activation.server";
 import { sendPasswordResetEmail } from "@/lib/email/password-reset.server";
+import type { EmailLocale } from "@/lib/email/email-i18n";
 
 // Accept NZ numbers in flexible formats: +64..., 0064..., or local 0xx...
 const nzPhoneRegex = /^(?:\+?64|0)[\s\-()]*\d(?:[\s\-()]*\d){7,11}$/;
@@ -48,6 +49,7 @@ async function buildAndSendActivation(args: {
   password?: string;
   ownerName: string;
   siteOrigin: string;
+  locale?: EmailLocale;
 }) {
   const redirectTo = `${args.siteOrigin}/auth/confirm`;
   const linkResult = args.password
@@ -78,6 +80,7 @@ async function buildAndSendActivation(args: {
     to: args.email,
     ownerName: args.ownerName,
     activationUrl,
+    locale: args.locale ?? "en",
   });
 }
 
@@ -102,11 +105,13 @@ export const signUp = createServerFn({ method: "POST" })
     }
 
     try {
+      // New user — no business yet, so fall back to default locale.
       await buildAndSendActivation({
         email: data.email,
         password: data.password,
         ownerName: data.ownerName,
         siteOrigin: data.siteOrigin,
+        locale: "en",
       });
     } catch (err) {
       console.error("signUp activation email error", err);
@@ -148,10 +153,19 @@ export const resendActivation = createServerFn({ method: "POST" })
       "";
 
     try {
+      // Look up the user's business for language preference.
+      const { data: biz } = await supabaseAdmin
+        .from("businesses")
+        .select("language_preference")
+        .eq("owner_id", user.id)
+        .maybeSingle();
+      const locale = (biz?.language_preference as EmailLocale) || "en";
+
       await buildAndSendActivation({
         email: data.email,
         ownerName,
         siteOrigin: data.siteOrigin,
+        locale,
       });
     } catch (err) {
       console.error("resendActivation send error", err);
@@ -251,8 +265,16 @@ export const requestPasswordReset = createServerFn({ method: "POST" })
       (user.user_metadata?.business_name as string | undefined) ??
       null;
 
+    // Look up the user's business for language preference.
+    const { data: biz } = await supabaseAdmin
+      .from("businesses")
+      .select("language_preference")
+      .eq("owner_id", user.id)
+      .maybeSingle();
+    const locale = (biz?.language_preference as EmailLocale) || "en";
+
     try {
-      await sendPasswordResetEmail({ to: data.email, ownerName, resetUrl });
+      await sendPasswordResetEmail({ to: data.email, ownerName, resetUrl, locale });
     } catch (err) {
       console.error("requestPasswordReset send error", err);
       return { ok: false as const, error: "Falha ao enviar o e-mail de redefinição." };

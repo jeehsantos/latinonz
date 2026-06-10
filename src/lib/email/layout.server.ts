@@ -1,6 +1,8 @@
 // Shared branded email layout for all Latino Connect Hub transactional emails.
 // Keep all email HTML inline and table-based for maximum client compatibility.
 
+import { getEmailText, type EmailLocale } from "./email-i18n";
+
 const LOGO_URL =
   "https://cpttcriscektmbnjckjo.supabase.co/storage/v1/object/public/business-logos/brand%2Flatino-connect-logo.png";
 
@@ -29,18 +31,21 @@ export type BrandedEmailOptions = {
   heading: string;
   sections: EmailSection[];
   footerNote?: string;
+  locale?: EmailLocale;
 };
 
 export function renderBrandedEmail(opts: BrandedEmailOptions): string {
+  const locale = opts.locale ?? "en";
   const preheader = opts.preheader ?? "";
   const heading = escapeHtml(opts.heading);
-  const sectionsHtml = opts.sections.map(renderSection).join("\n");
+  const sectionsHtml = opts.sections.map((s) => renderSection(s, locale)).join("\n");
+  const footerText = getEmailText("layout", "footer", locale);
   const footerNote = opts.footerNote
     ? `<p style="margin:8px 0 0;font-size:11px;color:${BRAND.muted};text-align:center;line-height:1.6;">${escapeHtml(opts.footerNote)}</p>`
     : "";
 
   return `<!doctype html>
-<html lang="pt">
+<html lang="${locale}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -68,7 +73,7 @@ export function renderBrandedEmail(opts: BrandedEmailOptions): string {
             <tr>
               <td style="padding:20px 32px 28px;border-top:1px solid #f1f1f3;">
                 <p style="margin:0;font-size:12px;color:${BRAND.muted};text-align:center;">
-                  © ${new Date().getFullYear()} Latino Connect Hub — Aotearoa, Nova Zelândia
+                  © ${new Date().getFullYear()} ${escapeHtml(footerText)}
                 </p>
                 ${footerNote}
               </td>
@@ -81,7 +86,7 @@ export function renderBrandedEmail(opts: BrandedEmailOptions): string {
 </html>`;
 }
 
-function renderSection(s: EmailSection): string {
+function renderSection(s: EmailSection, locale: EmailLocale): string {
   switch (s.kind) {
     case "paragraph":
       return `<p style="margin:0 0 16px;font-size:15px;line-height:1.65;color:${BRAND.body};">${escapeHtml(s.text)}</p>`;
@@ -99,12 +104,14 @@ function renderSection(s: EmailSection): string {
     }
     case "quote":
       return `<div style="margin:0 0 18px;padding:14px 16px;background:${BRAND.surface};border-left:3px solid ${BRAND.yellowDark};border-radius:8px;font-size:14px;color:${BRAND.body};white-space:pre-wrap;line-height:1.6;">${escapeHtml(s.text)}</div>`;
-    case "cta":
+    case "cta": {
+      const ctaFallback = getEmailText("layout", "cta_fallback", locale);
       return `<div style="text-align:center;margin:24px 0 18px;">
         <a href="${escapeAttr(s.url)}" style="display:inline-block;background:${BRAND.yellowDark};color:#ffffff;text-decoration:none;font-weight:800;font-size:15px;padding:14px 30px;border-radius:12px;">${escapeHtml(s.label)}</a>
       </div>
-      <p style="margin:0 0 8px;font-size:12px;color:${BRAND.muted};line-height:1.6;">Ou copie e cole este link no navegador:</p>
+      <p style="margin:0 0 8px;font-size:12px;color:${BRAND.muted};line-height:1.6;">${escapeHtml(ctaFallback)}</p>
       <p style="margin:0 0 18px;font-size:12px;color:${BRAND.ink};word-break:break-all;background:${BRAND.surface};border:1px solid ${BRAND.border};border-radius:8px;padding:10px;">${escapeHtml(s.url)}</p>`;
+    }
     case "fineprint":
       return `<p style="margin:8px 0 4px;font-size:12px;color:${BRAND.muted};line-height:1.6;">${escapeHtml(s.text)}</p>`;
   }

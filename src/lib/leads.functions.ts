@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { renderBrandedEmail, sendBrandedEmail, type EmailRow } from "@/lib/email/layout.server";
+import { getEmailText, type EmailLocale } from "@/lib/email/email-i18n";
 
 const submitSchema = z
   .object({
@@ -46,20 +47,22 @@ async function sendOwnerEmail(params: {
   to: string;
   businessName: string;
   lead: { name: string; email?: string | null; phone?: string | null; message?: string | null };
+  locale?: EmailLocale;
 }) {
-  const { to, businessName, lead } = params;
+  const { to, businessName, lead, locale = "en" } = params;
 
-  const rows: EmailRow[] = [{ label: "Nome", value: lead.name }];
-  if (lead.email) rows.push({ label: "E-mail", value: lead.email });
-  if (lead.phone) rows.push({ label: "WhatsApp", value: lead.phone });
+  const rows: EmailRow[] = [{ label: getEmailText("lead", "label_name", locale), value: lead.name }];
+  if (lead.email) rows.push({ label: getEmailText("lead", "label_email", locale), value: lead.email });
+  if (lead.phone) rows.push({ label: getEmailText("lead", "label_whatsapp", locale), value: lead.phone });
 
   const html = renderBrandedEmail({
-    preheader: `Novo lead para ${businessName} via Latino Connect Hub.`,
-    heading: `Novo lead — ${businessName}`,
+    locale,
+    preheader: getEmailText("lead", "preheader", locale, { business: businessName }),
+    heading: getEmailText("lead", "heading", locale, { business: businessName }),
     sections: [
       {
         kind: "paragraph",
-        text: "Você recebeu um novo contato pelo Latino Connect Hub. Os detalhes estão abaixo — responda o quanto antes para aumentar suas chances de conversão.",
+        text: getEmailText("lead", "body", locale),
       },
       { kind: "rows", rows },
       ...(lead.message
@@ -67,14 +70,14 @@ async function sendOwnerEmail(params: {
         : []),
       {
         kind: "fineprint",
-        text: "Dica: leads contatados em até 5 minutos têm muito mais chance de fechar negócio.",
+        text: getEmailText("lead", "fineprint", locale),
       },
     ],
   });
 
   const result = await sendBrandedEmail({
     to,
-    subject: `Novo lead — ${businessName}`,
+    subject: getEmailText("lead", "subject", locale, { business: businessName }),
     html,
   });
   return { sent: result.ok, reason: result.ok ? undefined : result.reason };
@@ -174,7 +177,7 @@ export const submitLead = createServerFn({ method: "POST" })
     // Fetch business + owner plan to decide notifications
     const { data: biz, error: bizErr } = await supabaseAdmin
       .from("businesses")
-      .select("id, name, owner_id, phone")
+      .select("id, name, owner_id, phone, language_preference")
       .eq("id", data.businessId)
       .maybeSingle();
     if (bizErr || !biz) {
@@ -194,6 +197,7 @@ export const submitLead = createServerFn({ method: "POST" })
     const plan = normalizePlan(profile?.plan_tier ?? null);
     const ownerEmail = await getOwnerEmail(biz.owner_id);
     const ownerPhone = biz.phone;
+    const bizLocale = (biz.language_preference as EmailLocale) || "en";
 
     const leadPayload = {
       name: data.name,
@@ -211,6 +215,7 @@ export const submitLead = createServerFn({ method: "POST" })
           to: ownerEmail,
           businessName: biz.name,
           lead: leadPayload,
+          locale: bizLocale,
         });
       } else if (plan === "premium" && ownerPhone) {
         whatsappResult = await sendOwnerWhatsApp({
@@ -231,6 +236,7 @@ export const submitLead = createServerFn({ method: "POST" })
             to: ownerEmail,
             businessName: biz.name,
             lead: leadPayload,
+            locale: bizLocale,
           });
         }
       }

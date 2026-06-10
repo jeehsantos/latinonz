@@ -616,7 +616,11 @@
     "account_delete_body": "Request permanent deletion of your account and all associated personal data. This action cannot be undone.",
     "account_delete_btn": "Request Account Deletion",
     "privacy_policy_link": "Read our full Privacy Policy",
-    "account_update_subtitle": "Update your account credentials.",
+    "account_update_subtitle": "Update your login credentials.",
+    "email_language_label": "Preferred language",
+    "email_language_description": "Choose your preferred language.",
+    "email_language_saved": "Language preference saved successfully.",
+    "email_language_error": "Could not save language preference.",
     "colors": {
       "verde": "Latin Green",
       "azul": "Ocean Blue",

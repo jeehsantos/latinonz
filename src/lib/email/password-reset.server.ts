@@ -1,36 +1,42 @@
 import { renderBrandedEmail, sendBrandedEmail } from "./layout.server";
+import { getEmailText, type EmailLocale } from "./email-i18n";
 
 type SendArgs = {
   to: string;
   ownerName?: string | null;
   resetUrl: string;
+  locale?: EmailLocale;
 };
 
-export async function sendPasswordResetEmail({ to, ownerName, resetUrl }: SendArgs) {
-  const heading = ownerName ? `Olá, ${ownerName}` : "Redefinição de senha";
+export async function sendPasswordResetEmail({ to, ownerName, resetUrl, locale = "en" }: SendArgs) {
+  const heading = ownerName
+    ? getEmailText("password_reset", "greeting", locale, { name: ownerName })
+    : getEmailText("password_reset", "greeting_no_name", locale);
+
   const html = renderBrandedEmail({
-    preheader: "Redefina sua senha do Latino Connect Hub.",
+    locale,
+    preheader: getEmailText("password_reset", "preheader", locale),
     heading,
     sections: [
       {
         kind: "paragraph",
-        text: "Recebemos uma solicitação para redefinir a senha da sua conta. Clique no botão abaixo para criar uma nova senha. Este link expira em 1 hora.",
+        text: getEmailText("password_reset", "body", locale),
       },
-      { kind: "cta", label: "Redefinir minha senha", url: resetUrl },
+      { kind: "cta", label: getEmailText("password_reset", "cta", locale), url: resetUrl },
       {
         kind: "fineprint",
-        text: "Se você não solicitou esta redefinição, ignore este e-mail — sua senha atual continua segura.",
+        text: getEmailText("password_reset", "fineprint", locale),
       },
     ],
   });
 
   const result = await sendBrandedEmail({
     to,
-    subject: "Redefinir sua senha — Latino Connect Hub",
+    subject: getEmailText("password_reset", "subject", locale),
     html,
   });
   if (!result.ok) {
-    throw new Error(`Falha ao enviar e-mail de redefinição: ${result.reason}`);
+    throw new Error(`Failed to send password reset email: ${result.reason}`);
   }
   return result;
 }

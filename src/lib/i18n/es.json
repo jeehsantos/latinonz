@@ -617,6 +617,10 @@
     "account_delete_btn": "Solicitar eliminación de cuenta",
     "privacy_policy_link": "Lee nuestra Política de Privacidad completa",
     "account_update_subtitle": "Actualiza tus credenciales de acceso.",
+    "email_language_label": "Idioma preferido",
+    "email_language_description": "Elige tu idioma de preferencia.",
+    "email_language_saved": "Preferencia de idioma guardada con éxito.",
+    "email_language_error": "No se pudo guardar la preferencia de idioma.",
     "colors": {
       "verde": "Verde Latino",
       "azul": "Azul Océano",
