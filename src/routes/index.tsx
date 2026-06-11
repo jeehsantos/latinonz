@@ -9,17 +9,17 @@ import logo from "@/assets/logo.png";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Latino Connect — Negócios latinos na Nova Zelândia" },
+      { title: "Latino Connect — Latin businesses in New Zealand" },
       {
         name: "description",
         content:
-          "A plataforma que conecta a comunidade latina aos melhores negócios e serviços em Nova Zelândia. Entre na lista de espera.",
+          "The platform connecting the Latin community with the best businesses and services in New Zealand. Join the waitlist.",
       },
-      { property: "og:title", content: "Latino Connect — Negócios latinos na Nova Zelândia" },
+      { property: "og:title", content: "Latino Connect — Latin businesses in New Zealand" },
       {
         property: "og:description",
         content:
-          "Cadastre seu negócio latino e tenha acesso antecipado à plataforma Latino Connect.",
+          "Register your Latin business and get early access to the Latino Connect platform.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://latinoconnecthub.co.nz/" },
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/")({
           "@type": "WebSite",
           name: "Latino Connect",
           url: "https://latinoconnecthub.co.nz/",
-          inLanguage: "pt-BR",
+          inLanguage: "en",
         }),
       },
       {

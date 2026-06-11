@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
-    meta: [{ title: "Painel — Latino Connect" }, { name: "robots", content: "noindex,nofollow" }],
+    meta: [{ title: "Dashboard — Latino Connect" }, { name: "robots", content: "noindex,nofollow" }],
   }),
   beforeLoad: async ({ location }) => {
     // Defense-in-depth: redirect on SSR too so the protected UI shell is

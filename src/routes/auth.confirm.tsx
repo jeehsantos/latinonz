@@ -8,7 +8,7 @@ import { useI18n, usePageMetadata } from "@/lib/i18n";
 export const Route = createFileRoute("/auth/confirm")({
   head: () => ({
     meta: [
-      { title: "Ativando conta — Latino Connect" },
+      { title: "Activating account — Latino Connect" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),

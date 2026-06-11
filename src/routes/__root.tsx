@@ -80,15 +80,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Latino Connect" },
-      { name: "description", content: "Encontre negócios latinos na Nova Zelândia" },
+      { name: "description", content: "Find Latin businesses in New Zealand" },
       { name: "author", content: "Latino Connect" },
       { property: "og:title", content: "Latino Connect" },
-      { property: "og:description", content: "Encontre negócios latinos na Nova Zelândia" },
+      { property: "og:description", content: "Find Latin businesses in New Zealand" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@LatinoConnectHub" },
       { name: "twitter:title", content: "Latino Connect" },
-      { name: "twitter:description", content: "Encontre negócios latinos na Nova Zelândia" },
+      { name: "twitter:description", content: "Find Latin businesses in New Zealand" },
       {
         property: "og:image",
         content:
@@ -101,6 +101,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
     ],
     links: [
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
       {
         rel: "stylesheet",
         href: appCss,

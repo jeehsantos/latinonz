@@ -7,7 +7,7 @@ import { useI18n, usePageMetadata } from "@/lib/i18n";
 export const Route = createFileRoute("/auth/accept-invite")({
   head: () => ({
     meta: [
-      { title: "Aceitar convite — Latino Connect" },
+      { title: "Accept invitation — Latino Connect" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),

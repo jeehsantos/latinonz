@@ -5,10 +5,10 @@ import { useI18n, usePageMetadata } from "@/lib/i18n";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Termos de Uso — Latino Connect" },
+      { title: "Terms of Use — Latino Connect" },
       {
         name: "description",
-        content: "Termos de Uso do Latino Connect Hub.",
+        content: "Terms of Use of Latino Connect Hub.",
       },
       { name: "robots", content: "noindex,nofollow" },
     ],

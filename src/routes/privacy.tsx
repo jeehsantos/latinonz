@@ -5,10 +5,10 @@ import { useI18n, usePageMetadata } from "@/lib/i18n";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Política de Privacidade — Latino Connect" },
+      { title: "Privacy Policy — Latino Connect" },
       {
         name: "description",
-        content: "Política de Privacidade do Latino Connect Hub.",
+        content: "Privacy Policy of Latino Connect Hub.",
       },
       { name: "robots", content: "noindex,nofollow" },
     ],

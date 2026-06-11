@@ -8,17 +8,17 @@ import { useI18n, usePageMetadata } from "@/lib/i18n";
 export const Route = createFileRoute("/planos")({
   head: () => ({
     meta: [
-      { title: "Planos — Latino Connect" },
+      { title: "Packages — Latino Connect" },
       {
         name: "description",
         content:
-          "Conheça os planos Starter, Premium e Ultra do Latino Connect e escolha o ideal para o seu negócio na Nova Zelândia.",
+          "Learn about Latino Connect's Starter, Premium, and Ultra packages and choose the ideal one for your business in New Zealand.",
       },
-      { property: "og:title", content: "Planos — Latino Connect" },
+      { property: "og:title", content: "Packages — Latino Connect" },
       {
         property: "og:description",
         content:
-          "Compare os planos Starter, Premium e Ultra do Latino Connect para divulgar seu negócio latino na Nova Zelândia.",
+          "Compare Latino Connect's Starter, Premium, and Ultra packages to promote your Latin business in New Zealand.",
       },
       { property: "og:url", content: "https://latinoconnecthub.co.nz/planos" },
     ],

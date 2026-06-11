@@ -33,11 +33,11 @@ function detectLocale(): Locale {
     if (stored && ["pt", "es", "en"].includes(stored)) return stored;
   }
   // 2. Fall back to browser language
-  if (typeof navigator === "undefined") return "pt";
+  if (typeof navigator === "undefined") return "en";
   const lang = navigator.language?.toLowerCase() ?? "";
+  if (lang.startsWith("pt")) return "pt";
   if (lang.startsWith("es")) return "es";
-  if (lang.startsWith("en")) return "en";
-  return "pt"; // default: Portuguese
+  return "en"; // default: English
 }
 
 type I18nContextValue = {

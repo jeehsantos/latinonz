@@ -10,10 +10,10 @@ export const Route = createFileRoute("/blog")({
       { title: "Blog — Latino Connect" },
       {
         name: "description",
-        content: "Notícias, guias e dicas úteis para a comunidade latina na Nova Zelândia.",
+        content: "News, guides, and useful tips for the Latin community in New Zealand.",
       },
       { property: "og:title", content: "Blog — Latino Connect" },
-      { property: "og:description", content: "Vistos, finanças, comunidade e mais." },
+      { property: "og:description", content: "Visas, finances, community and more." },
       { property: "og:url", content: "https://latinoconnecthub.co.nz/blog" },
     ],
     links: [{ rel: "canonical", href: "https://latinoconnecthub.co.nz/blog" }],

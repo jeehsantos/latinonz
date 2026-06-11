@@ -8,7 +8,7 @@ import { useI18n, usePageMetadata } from "@/lib/i18n";
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
-      { title: "Redefinir senha — Latino Connect" },
+      { title: "Reset password — Latino Connect" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),

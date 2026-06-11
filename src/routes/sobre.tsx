@@ -5,16 +5,16 @@ import { useI18n, usePageMetadata } from "@/lib/i18n";
 export const Route = createFileRoute("/sobre")({
   head: () => ({
     meta: [
-      { title: "Sobre — Latino Connect" },
+      { title: "About — Latino Connect" },
       {
         name: "description",
-        content: "Conheça a missão da Latino Connect Hub: conectar a comunidade latina em NZ.",
+        content: "Learn about Latino Connect Hub's mission: connecting the Latin community in NZ.",
       },
-      { property: "og:title", content: "Sobre a Latino Connect" },
+      { property: "og:title", content: "About Latino Connect" },
       {
         property: "og:description",
         content:
-          "Missão, visão e valores da plataforma que conecta a comunidade latina na Nova Zelândia.",
+          "Mission, vision and values of the platform connecting the Latin community in New Zealand.",
       },
       { property: "og:url", content: "https://latinoconnecthub.co.nz/sobre" },
     ],

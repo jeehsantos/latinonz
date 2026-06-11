@@ -16,14 +16,14 @@ import { useI18n, usePageMetadata } from "@/lib/i18n";
 export const Route = createFileRoute("/contato")({
   head: () => ({
     meta: [
-      { title: "Contato — Latino Connect" },
+      { title: "Contact — Latino Connect" },
       {
         name: "description",
         content:
-          "Fale com a equipe Latino Connect — tire dúvidas sobre planos, parcerias e cadastro.",
+          "Contact the Latino Connect team — ask questions about packages, partnerships, and registration.",
       },
-      { property: "og:title", content: "Contato — Latino Connect" },
-      { property: "og:description", content: "Envie sua mensagem para a equipe Latino Connect." },
+      { property: "og:title", content: "Contact — Latino Connect" },
+      { property: "og:description", content: "Send your message to the Latino Connect team." },
       { property: "og:url", content: "https://latinoconnecthub.co.nz/contato" },
     ],
     links: [{ rel: "canonical", href: "https://latinoconnecthub.co.nz/contato" }],

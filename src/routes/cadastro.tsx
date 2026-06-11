@@ -10,15 +10,15 @@ import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 export const Route = createFileRoute("/cadastro")({
   head: () => ({
     meta: [
-      { title: "Cadastrar — Latino Connect" },
+      { title: "Sign Up — Latino Connect" },
       {
         name: "description",
-        content: "Cadastre seu negócio ou organização na maior rede da comunidade latina em NZ.",
+        content: "Register your business or organisation in the largest network for the Latin community in NZ.",
       },
-      { property: "og:title", content: "Cadastrar — Latino Connect" },
+      { property: "og:title", content: "Sign Up — Latino Connect" },
       {
         property: "og:description",
-        content: "Cadastre seu negócio ou organização na maior rede da comunidade latina em NZ.",
+        content: "Register your business or organisation in the largest network for the Latin community in NZ.",
       },
       { property: "og:url", content: "https://latinoconnecthub.co.nz/cadastro" },
     ],

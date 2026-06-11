@@ -24,15 +24,15 @@ export const Route = createFileRoute("/directory")({
   validateSearch: zodValidator(directorySearchSchema),
   head: () => ({
     meta: [
-      { title: "Nossa Rede — Latino Connect" },
+      { title: "Our Network — Latino Connect" },
       {
         name: "description",
-        content: "Explore negócios, profissionais e organizações latinas em toda a Nova Zelândia.",
+        content: "Explore Latin businesses, professionals, and organisations across New Zealand.",
       },
-      { property: "og:title", content: "Nossa Rede — Latino Connect" },
+      { property: "og:title", content: "Our Network — Latino Connect" },
       {
         property: "og:description",
-        content: "Encontre a comunidade latina em Auckland, Wellington e toda NZ.",
+        content: "Find the Latin community in Auckland, Wellington and all of NZ.",
       },
       { property: "og:url", content: "https://latinoconnecthub.co.nz/directory" },
     ],

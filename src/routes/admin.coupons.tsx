@@ -9,7 +9,7 @@ import { getAdminCouponPromos } from "@/lib/admin.functions";
 export const Route = createFileRoute("/admin/coupons")({
   head: () => ({
     meta: [
-      { title: "Cupons promocionais — Admin" },
+      { title: "Promo coupons — Admin" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
