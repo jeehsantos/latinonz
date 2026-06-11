@@ -154,7 +154,6 @@ export type Database = {
           id: string
           is_active: boolean
           is_verified: boolean
-          language_preference: string
           keywords: string[] | null
           locations: string[] | null
           logo_url: string | null
@@ -184,7 +183,6 @@ export type Database = {
           id?: string
           is_active?: boolean
           is_verified?: boolean
-          language_preference?: string
           keywords?: string[] | null
           locations?: string[] | null
           logo_url?: string | null
@@ -214,7 +212,6 @@ export type Database = {
           id?: string
           is_active?: boolean
           is_verified?: boolean
-          language_preference?: string
           keywords?: string[] | null
           locations?: string[] | null
           logo_url?: string | null
