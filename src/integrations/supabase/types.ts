@@ -155,6 +155,7 @@ export type Database = {
           is_active: boolean
           is_verified: boolean
           keywords: string[] | null
+          language_preference: string
           locations: string[] | null
           logo_url: string | null
           macro_category: string
@@ -184,6 +185,7 @@ export type Database = {
           is_active?: boolean
           is_verified?: boolean
           keywords?: string[] | null
+          language_preference?: string
           locations?: string[] | null
           logo_url?: string | null
           macro_category: string
@@ -213,6 +215,7 @@ export type Database = {
           is_active?: boolean
           is_verified?: boolean
           keywords?: string[] | null
+          language_preference?: string
           locations?: string[] | null
           logo_url?: string | null
           macro_category?: string
