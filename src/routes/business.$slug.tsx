@@ -841,12 +841,12 @@ function BusinessPage() {
                   })}
                 </div>
 
-                  <button
-                  type="button"
-                  className="mt-4 w-full text-xs text-neutral-500 underline-offset-4 hover:underline hover:text-neutral-300 transition"
+                <Link
+                  to="/contato"
+                  className="mt-4 block w-full text-center text-xs text-neutral-500 underline-offset-4 hover:underline hover:text-neutral-300 transition"
                 >
                   {t("business.report_incorrect")}
-                </button>
+                </Link>
               </div>
             )}
 
@@ -863,17 +863,26 @@ function BusinessPage() {
                       code: string;
                       title: string;
                       expires_at: string | null;
+                      discount_type?: string | null;
+                      discount_value?: number | null;
                     }) => (
                       <div
                         key={c.id}
-                        className="bg-[#facc15]/10 border border-[#facc15]/30 rounded-xl p-3"
+                        className="bg-[#facc15]/10 border border-[#facc15]/30 rounded-xl p-3 flex flex-col"
                       >
-                        <p className="font-extrabold text-[#facc15] tracking-wider text-sm">
-                          {c.code}
-                        </p>
-                        <p className="text-xs text-neutral-200 mt-0.5">{c.title}</p>
+                        <div className="flex justify-between items-start mb-1.5 gap-2">
+                          <p className="font-extrabold text-[#facc15] tracking-wider text-sm">
+                            {c.code}
+                          </p>
+                          {c.discount_value ? (
+                            <span className="bg-[#facc15] text-black text-[10px] font-black px-2 py-0.5 rounded-md shrink-0">
+                              {c.discount_type === "percentage" ? `${c.discount_value}% OFF` : `$${c.discount_value} OFF`}
+                            </span>
+                          ) : null}
+                        </div>
+                        <p className="text-xs text-neutral-200">{c.title}</p>
                         {c.expires_at && (
-                          <p className="text-[10px] text-neutral-500 mt-1">
+                          <p className="text-[10px] text-neutral-500 mt-1.5">
                             {t("business.coupon_valid_until")} {c.expires_at}
                           </p>
                         )}

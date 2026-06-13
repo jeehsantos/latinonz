@@ -20,6 +20,9 @@ export const PLAN_FEATURES = {
   // Profile level shown in the directory
   profileLevel: { starter: "basic", premium: "full", ultra: "full+highlight" },
 
+  // Description / About section character limit
+  aboutCharacterLimit: { starter: 1000, premium: 1500, ultra: 2000 },
+
   // Contact / lead channel shown on the public profile
   // Starter: form modal → email notification only
   // Premium: WhatsApp redirect → WhatsApp notification only

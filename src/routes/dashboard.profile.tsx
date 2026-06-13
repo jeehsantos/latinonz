@@ -166,6 +166,7 @@ function ProfileEditor() {
   const [generating, setGenerating] = useState(false);
   const [plan] = useCurrentPlan();
   const canUseQr = can(plan, "qrCode");
+  const aboutCharLimit = getLimit(plan, "aboutCharacterLimit");
   const slug = loaded?.business?.slug ?? "";
   const qrUrl = slug ? `https://latinoconnecthub.co.nz/business/${slug}` : "";
 
@@ -556,11 +557,10 @@ function ProfileEditor() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-5 py-3 text-sm font-medium transition-all relative whitespace-nowrap ${
-                activeTab === tab.id
+              className={`px-5 py-3 text-sm font-medium transition-all relative whitespace-nowrap ${activeTab === tab.id
                   ? "text-yellow-500"
                   : "text-zinc-400 hover:text-white"
-              }`}
+                }`}
             >
               {tab.label}
               {activeTab === tab.id && (
@@ -593,6 +593,7 @@ function ProfileEditor() {
               logoError={logoError}
               onUploadLogo={handleLogoUpload}
               onRemoveLogo={() => setLogo(null)}
+              aboutCharLimit={aboutCharLimit}
             />
           )}
 
@@ -666,6 +667,7 @@ type GeneralTabProps = {
   logoError: string | null;
   onUploadLogo: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onRemoveLogo: () => void;
+  aboutCharLimit: number;
 };
 
 function GeneralTab(p: GeneralTabProps) {
@@ -733,14 +735,14 @@ function GeneralTab(p: GeneralTabProps) {
 
             <Field
               label={t("profile.description_asterisk")}
-              right={<span className="text-xs text-zinc-600">{p.description.length}/500</span>}
+              right={<span className="text-xs text-zinc-600">{p.description.length}/{p.aboutCharLimit}</span>}
             >
               <textarea
                 rows={5}
-                maxLength={500}
+                maxLength={p.aboutCharLimit}
                 value={p.description}
                 onChange={(e) => p.setDescription(e.target.value)}
-                className={`${inputCls} resize-none`}
+                className={`${inputCls} resize`}
               />
             </Field>
 
@@ -895,9 +897,8 @@ function LocationsTab(p: LocationsTabProps) {
               >
                 <div className="flex items-center gap-4 min-w-0">
                   <div
-                    className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors shrink-0 ${
-                      expanded ? "bg-yellow-500 text-black" : "bg-white/5 text-zinc-400"
-                    }`}
+                    className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors shrink-0 ${expanded ? "bg-yellow-500 text-black" : "bg-white/5 text-zinc-400"
+                      }`}
                   >
                     <Store className="w-5 h-5" />
                   </div>
@@ -912,9 +913,8 @@ function LocationsTab(p: LocationsTabProps) {
                   </div>
                 </div>
                 <ChevronDown
-                  className={`w-5 h-5 text-zinc-500 transition-transform duration-300 shrink-0 ml-3 ${
-                    expanded ? "rotate-180" : ""
-                  }`}
+                  className={`w-5 h-5 text-zinc-500 transition-transform duration-300 shrink-0 ml-3 ${expanded ? "rotate-180" : ""
+                    }`}
                 />
               </button>
 
@@ -1020,20 +1020,17 @@ function LocationsTab(p: LocationsTabProps) {
                                   <button
                                     type="button"
                                     onClick={() => p.onToggleDay(branch.id, key)}
-                                    className={`w-8 h-4 rounded-full relative transition-colors shrink-0 ${
-                                      !day.closed ? "bg-yellow-500" : "bg-zinc-700"
-                                    }`}
+                                    className={`w-8 h-4 rounded-full relative transition-colors shrink-0 ${!day.closed ? "bg-yellow-500" : "bg-zinc-700"
+                                      }`}
                                   >
                                     <div
-                                      className={`w-3 h-3 bg-white rounded-full absolute top-0.5 transition-transform ${
-                                        !day.closed ? "translate-x-4" : "translate-x-0.5"
-                                      }`}
+                                      className={`w-3 h-3 bg-white rounded-full absolute top-0.5 transition-transform ${!day.closed ? "translate-x-4" : "translate-x-0.5"
+                                        }`}
                                     />
                                   </button>
                                   <span
-                                    className={`text-sm ${
-                                      !day.closed ? "text-zinc-200" : "text-zinc-500"
-                                    }`}
+                                    className={`text-sm ${!day.closed ? "text-zinc-200" : "text-zinc-500"
+                                      }`}
                                   >
                                     {p.dayLabels[key]}
                                   </span>
@@ -1178,11 +1175,11 @@ const SERVICE_OPTIONS: {
   labelKey: TranslationKey;
   hintKey: TranslationKey;
 }[] = [
-  { key: "takeaway", labelKey: "service_options.takeaway_label", hintKey: "service_options.takeaway_hint" },
-  { key: "dinein", labelKey: "service_options.dinein_label", hintKey: "service_options.dinein_hint" },
-  { key: "delivery", labelKey: "service_options.delivery_label", hintKey: "service_options.delivery_hint" },
-  { key: "booking", labelKey: "service_options.booking_label", hintKey: "service_options.booking_hint" },
-];
+    { key: "takeaway", labelKey: "service_options.takeaway_label", hintKey: "service_options.takeaway_hint" },
+    { key: "dinein", labelKey: "service_options.dinein_label", hintKey: "service_options.dinein_hint" },
+    { key: "delivery", labelKey: "service_options.delivery_label", hintKey: "service_options.delivery_hint" },
+    { key: "booking", labelKey: "service_options.booking_label", hintKey: "service_options.booking_hint" },
+  ];
 
 function ServiceOptionsCard({
   plan,
@@ -1242,17 +1239,15 @@ function ServiceOptionsCard({
                   key={opt.key}
                   type="button"
                   onClick={() => onToggleFlag(opt.key)}
-                  className={`flex flex-col text-left p-4 rounded-xl border transition-all ${
-                    active
+                  className={`flex flex-col text-left p-4 rounded-xl border transition-all ${active
                       ? "bg-yellow-500/10 border-yellow-500/50"
                       : "bg-[#111] border-white/5 hover:border-white/20"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center justify-between w-full mb-1">
                     <span
-                      className={`font-medium ${
-                        active ? "text-yellow-500" : "text-zinc-300"
-                      }`}
+                      className={`font-medium ${active ? "text-yellow-500" : "text-zinc-300"
+                        }`}
                     >
                       {t(opt.labelKey)}
                     </span>
@@ -1320,11 +1315,10 @@ function ServiceOptionsCard({
                             key={key}
                             type="button"
                             onClick={() => updateItem(idx, { icon_key: key })}
-                            className={`flex items-center justify-center h-8 w-8 rounded-lg border transition-colors ${
-                              a
+                            className={`flex items-center justify-center h-8 w-8 rounded-lg border transition-colors ${a
                                 ? "border-yellow-500 bg-yellow-500/10 text-yellow-500"
                                 : "border-white/10 text-zinc-500 hover:border-white/30"
-                            }`}
+                              }`}
                           >
                             <I size={14} />
                           </button>
