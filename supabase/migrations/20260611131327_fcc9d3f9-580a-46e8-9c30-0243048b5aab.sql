@@ -1,0 +1,1 @@
+ALTER TABLE public.businesses ADD COLUMN IF NOT EXISTS language_preference text NOT NULL DEFAULT 'en' CHECK (language_preference IN ('pt','es','en'));

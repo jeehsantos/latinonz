@@ -23,13 +23,17 @@ function AdminWaitlistPage() {
   const fetchList = useServerFn(listWaitlist);
   const [query, setQuery] = useState("");
 
-  const { data: res, isLoading: loading, error: queryError } = useQuery({
+  const {
+    data: res,
+    isLoading: loading,
+    error: queryError,
+  } = useQuery({
     queryKey: ["admin", "waitlist"],
     queryFn: () => fetchList(),
   });
 
   const rows = (res?.ok ? res.rows : []) as Row[];
-  const error = res && !res.ok ? res.error : queryError?.message ?? null;
+  const error = res && !res.ok ? res.error : (queryError?.message ?? null);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -75,7 +79,7 @@ function AdminWaitlistPage() {
           <p className="text-neutral-400 mt-1">Empresas registradas antes do lançamento.</p>
         </div>
         <div className="bg-neutral-900 px-4 py-3 rounded-xl border border-white/10 flex items-center gap-3">
-          <div className="p-2 bg-emerald-50 rounded-lg">
+          <div className="p-2 bg-[#000000] rounded-lg">
             <Users size={18} className="text-[#facc15]" />
           </div>
           <div>
@@ -98,7 +102,7 @@ function AdminWaitlistPage() {
           </div>
           <button
             onClick={exportCsv}
-            className="text-sm font-semibold text-[#facc15] bg-[#EBF4ED] border border-[#facc15]/20 px-3 py-1.5 rounded-lg hover:bg-[#facc15]/10 flex items-center gap-2"
+            className="text-sm font-semibold text-[#facc15] bg-[#000000] border border-[#facc15]/20 px-3 py-1.5 rounded-lg hover:bg-[#facc15]/10 flex items-center gap-2"
           >
             <Download size={16} /> Exportar CSV
           </button>

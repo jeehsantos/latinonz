@@ -150,7 +150,6 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
       { data: photos },
       { data: coupons },
       { data: branches },
-      planRpc,
     ] = await Promise.all([
       supabaseAdmin.from("business_hours").select("*").eq("business_id", business.id),
       supabaseAdmin
@@ -178,21 +177,35 @@ export const getBusinessBySlug = createServerFn({ method: "GET" })
         .select("id, location, address_street, address_suburb, phone, position")
         .eq("business_id", business.id)
         .order("position", { ascending: true }),
-      business.owner_id
-        ? supabaseAdmin.rpc("get_owner_plan_tier", { p_owner: business.owner_id })
-        : Promise.resolve({ data: null, error: null }),
     ]);
 
-    if ((planRpc as { error?: unknown }).error) {
-      console.warn(
-        `[getBusinessBySlug] get_owner_plan_tier RPC failed for slug=${business.slug}:`,
-        (planRpc as { error?: unknown }).error,
+    // Resolve owner plan tier separately so any failure here can be logged and
+    // does not silently mask the business response with a starter fallback.
+    let plan: "starter" | "premium" | "ultra" = "starter";
+    if (business.owner_id) {
+      const { data: profileRow, error: profileError } = await supabaseAdmin
+        .from("profiles")
+        .select("plan_tier")
+        .eq("id", business.owner_id)
+        .maybeSingle();
+      if (profileError) {
+        console.error(
+          `[getBusinessBySlug] plan_tier lookup failed for slug=${business.slug} owner=${business.owner_id}:`,
+          profileError,
+        );
+      }
+      const rawTier = profileRow?.plan_tier ?? null;
+      if (rawTier === "premium" || rawTier === "ultra") {
+        plan = rawTier;
+      }
+      console.log(
+        `[getBusinessBySlug] slug=${business.slug} owner=${business.owner_id} rawTier=${rawTier} resolvedPlan=${plan}`,
       );
+    } else {
+      console.warn(`[getBusinessBySlug] business ${business.slug} has no owner_id`);
     }
 
-    const rawTier = ((planRpc as { data?: string | null }).data ?? null) as string | null;
-    const plan: "starter" | "premium" | "ultra" =
-      rawTier === "ultra" || rawTier === "premium" ? rawTier : "starter";
+
 
     return {
       ok: true as const,

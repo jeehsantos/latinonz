@@ -51,11 +51,7 @@ export function AdminLayout() {
         if (!cancelled) setAuth({ status: "anonymous" });
         return;
       }
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", session.user.id)
-        .maybeSingle();
+      const { data: profile } = await supabase.from("profiles").select("role").eq("id", session.user.id).maybeSingle();
       if (cancelled) return;
       const role = profile?.role;
       if (role === "admin" || role === "manager") {
@@ -104,12 +100,10 @@ export function AdminLayout() {
           </div>
           <h1 className="text-xl font-extrabold text-white mb-1">Acesso negado</h1>
           <p className="text-sm text-neutral-400 mb-1">
-            Sua conta {auth.email ? <span className="font-semibold">{auth.email}</span> : null} não
-            tem permissão para acessar o painel administrativo.
+            Sua conta {auth.email ? <span className="font-semibold">{auth.email}</span> : null} não tem permissão para
+            acessar o painel administrativo.
           </p>
-          <p className="text-xs text-neutral-500 mb-6">
-            Solicite a um administrador para conceder acesso.
-          </p>
+          <p className="text-xs text-neutral-500 mb-6">Solicite a um administrador para conceder acesso.</p>
           <div className="flex flex-col gap-2">
             <button
               onClick={logout}
@@ -139,11 +133,7 @@ export function AdminLayout() {
           Admin
         </span>
         <div className="ml-auto flex items-center gap-3">
-          {auth.email && (
-            <span className="hidden sm:inline text-xs text-neutral-400 font-semibold">
-              {auth.email}
-            </span>
-          )}
+          {auth.email && <span className="hidden sm:inline text-xs text-neutral-400 font-semibold">{auth.email}</span>}
           <button
             onClick={logout}
             className="text-sm font-semibold text-neutral-300 hover:text-white inline-flex items-center gap-2"
@@ -155,7 +145,7 @@ export function AdminLayout() {
 
       <div className="flex flex-1 min-h-0">
         <aside
-          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-[#facc15] border-r border-[#0a2d1a] flex flex-col transform transition-transform lg:translate-x-0 ${
+          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-[#0a0a0a] border-r border-[#0a2d1a] flex flex-col transform transition-transform lg:translate-x-0 ${
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -175,9 +165,7 @@ export function AdminLayout() {
                   to={n.to}
                   onClick={() => setMobileOpen(false)}
                   className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition ${
-                    active
-                      ? "bg-[#facc15] text-white font-bold"
-                      : "text-white/70 hover:bg-[#143d27] font-medium"
+                    active ? "bg-[#facc15] text-white font-bold" : "text-white/70 hover:bg-[#143d27] font-medium"
                   }`}
                 >
                   <Icon size={18} />
@@ -190,10 +178,7 @@ export function AdminLayout() {
         </aside>
 
         {mobileOpen && (
-          <div
-            className="lg:hidden fixed inset-0 z-30 bg-black/40"
-            onClick={() => setMobileOpen(false)}
-          />
+          <div className="lg:hidden fixed inset-0 z-30 bg-black/40" onClick={() => setMobileOpen(false)} />
         )}
 
         <main className="flex-1 p-6 lg:p-10 min-w-0">

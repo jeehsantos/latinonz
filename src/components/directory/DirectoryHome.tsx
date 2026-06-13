@@ -171,7 +171,7 @@ export function DirectoryHome() {
               <Link
                 key={g.id}
                 to="/directory"
-                search={{ category: categories.find((c) => c.group === g.id)?.key ?? "" }}
+                search={{ category: g.id }}
                 onMouseMove={handleSpotlight}
                 className="spotlight-card group rounded-2xl p-4 sm:p-5 transition-transform duration-300 hover:-translate-y-1 flex flex-col"
               >
@@ -208,7 +208,7 @@ export function DirectoryHome() {
               <Link
                 key={g.id}
                 to="/directory"
-                search={{ category: categories.find((c) => c.group === g.id)?.key ?? "" }}
+                search={{ category: g.id }}
                 className="snap-start shrink-0 w-[120px] rounded-2xl bg-neutral-900 border border-white/10 p-3 flex flex-col gap-2 active:bg-neutral-800"
               >
                 <div className="flex items-center justify-between">
