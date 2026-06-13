@@ -171,7 +171,7 @@ export function DirectoryHome() {
               <Link
                 key={g.id}
                 to="/directory"
-                search={{ category: categories.find((c) => c.group === g.id)?.key ?? "" }}
+                search={{ category: g.id }}
                 onMouseMove={handleSpotlight}
                 className="spotlight-card group rounded-2xl p-4 sm:p-5 transition-transform duration-300 hover:-translate-y-1 flex flex-col"
               >
