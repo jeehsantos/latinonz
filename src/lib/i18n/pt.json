@@ -77,12 +77,7 @@
     "per_month": "/mês",
     "cta_default": "Escolher plano",
     "table_feature": "Recurso",
-    "features_starter": [
-      "Perfil básico no diretório",
-      "Até 3 fotos",
-      "Contatos por e-mail",
-      "Avaliações de clientes"
-    ],
+    "features_starter": ["Perfil básico no diretório", "Até 3 fotos", "Contatos por e-mail", "Avaliações de clientes"],
     "features_premium": [
       "Perfil completo destacado",
       "Galeria ilimitada de fotos",
@@ -646,7 +641,7 @@
     "upgrade_button": "Fazer upgrade"
   },
   "modal": {
-    "social_proof": "+35 perfis já garantiram seu lugar —",
+    "social_proof": "+65 perfis já garantiram seu lugar —",
     "social_proof_cta": "não fique de fora!",
     "badge": "Acesso Antecipado",
     "title": "Junte-se à Nossa Rede",
