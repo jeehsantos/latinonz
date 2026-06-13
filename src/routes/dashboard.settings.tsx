@@ -156,11 +156,10 @@ function SettingsPage() {
                       onClick={() => setSidebarColor(c.value)}
                       title={t(c.nameKey as any)}
                       style={{ backgroundColor: c.value }}
-                      className={`h-10 w-10 rounded-full border-2 transition ${
-                        isActive
+                      className={`h-10 w-10 rounded-full border-2 transition ${isActive
                           ? "border-white ring-2 ring-offset-2 ring-offset-neutral-900 ring-white"
                           : "border-white/20"
-                      }`}
+                        }`}
                       aria-label={t(c.nameKey as any)}
                     />
                   );
@@ -208,6 +207,7 @@ function SettingsPage() {
                   {t("settings.email_label")}
                 </label>
                 <input
+                  readOnly
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white"
