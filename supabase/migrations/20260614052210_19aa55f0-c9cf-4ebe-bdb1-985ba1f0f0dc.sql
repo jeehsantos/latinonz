@@ -1,0 +1,2 @@
+ALTER TABLE public.businesses DROP CONSTRAINT IF EXISTS businesses_description_check;
+ALTER TABLE public.businesses ADD CONSTRAINT businesses_description_check CHECK (description IS NULL OR length(description) <= 2000);
