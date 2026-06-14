@@ -48,7 +48,7 @@ import { uploadLogo } from "@/lib/storage.functions";
 import { connectGooglePlace, syncGoogleReviews } from "@/lib/reviews.functions";
 import QRCode from "qrcode";
 import { useCurrentPlan } from "@/lib/dev-plan";
-import { can } from "@/lib/plans";
+import { can, getLimit } from "@/lib/plans";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/dashboard/profile")({
