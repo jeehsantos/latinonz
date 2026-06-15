@@ -180,6 +180,7 @@ export const resendActivation = createServerFn({ method: "POST" })
 export const signIn = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => signInSchema.parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: result, error } = await supabaseAdmin.auth.signInWithPassword({
       email: data.email,
       password: data.password,
@@ -205,6 +206,7 @@ export const signIn = createServerFn({ method: "POST" })
   });
 
 export const signOut = createServerFn({ method: "POST" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const authHeader = getRequestHeader("authorization");
   const token = authHeader?.replace(/^Bearer\s+/i, "");
   if (token) {
@@ -218,6 +220,7 @@ export const signOut = createServerFn({ method: "POST" }).handler(async () => {
 });
 
 export const getSession = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const authHeader = getRequestHeader("authorization");
   const token = authHeader?.replace(/^Bearer\s+/i, "");
   if (!token) {
@@ -235,6 +238,7 @@ export const getSession = createServerFn({ method: "GET" }).handler(async () => 
 export const requestPasswordReset = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => passwordResetSchema.parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // Look up the user to personalize the email (and to avoid sending to non-users).
     const { data: list, error: listError } = await supabaseAdmin.auth.admin.listUsers();
     if (listError) {
