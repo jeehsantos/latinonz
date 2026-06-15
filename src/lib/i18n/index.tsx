@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from "
 import pt from "./pt.json";
 import es from "./es.json";
 import en from "./en.json";
+import { supabase } from "@/integrations/supabase/client";
 
 export type Locale = "pt" | "es" | "en";
 
