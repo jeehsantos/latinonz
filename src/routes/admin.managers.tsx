@@ -10,6 +10,13 @@ export const Route = createFileRoute("/admin/managers")({
 });
 
 type RoleValue = "manager" | "admin";
+type ManagerListItem = {
+  id: string;
+  name: string | null;
+  email: string | null;
+  role: RoleValue;
+  createdAt: string;
+};
 
 const INVITE_ACCEPT_URL = "https://latinoconnecthub.co.nz/auth/accept-invite";
 
@@ -75,7 +82,7 @@ function AdminManagersPage() {
     inviteMut.mutate({ name: name.trim(), email: email.trim(), role });
   };
 
-  const list = data?.managers ?? [];
+  const list: ManagerListItem[] = data?.managers ?? [];
 
   return (
     <div className="space-y-6">

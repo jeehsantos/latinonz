@@ -1,8 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { renderBrandedEmail, sendBrandedEmail, type EmailRow } from "@/lib/email/layout.server";
 import { getEmailText, type EmailLocale } from "@/lib/email/email-i18n";
 
 const submitSchema = z
@@ -35,6 +33,7 @@ function normalizePlan(value: string | null | undefined): PlanTier {
 
 async function getOwnerEmail(ownerId: string): Promise<string | null> {
   try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin.auth.admin.getUserById(ownerId);
     if (error) return null;
     return data.user?.email ?? null;
@@ -50,8 +49,9 @@ async function sendOwnerEmail(params: {
   locale?: EmailLocale;
 }) {
   const { to, businessName, lead, locale = "en" } = params;
+  const { renderBrandedEmail, sendBrandedEmail } = await import("@/lib/email/layout.server");
 
-  const rows: EmailRow[] = [{ label: getEmailText("lead", "label_name", locale), value: lead.name }];
+  const rows = [{ label: getEmailText("lead", "label_name", locale), value: lead.name }];
   if (lead.email) rows.push({ label: getEmailText("lead", "label_email", locale), value: lead.email });
   if (lead.phone) rows.push({ label: getEmailText("lead", "label_whatsapp", locale), value: lead.phone });
 
@@ -156,6 +156,7 @@ function escapeHtml(s: string): string {
 export const submitLead = createServerFn({ method: "POST" })
   .inputValidator((input) => submitSchema.parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // Insert the lead with the service role so anonymous visitors work
     // regardless of session state; the INSERT policy allows anon anyway.
     const { data: inserted, error: insErr } = await supabaseAdmin

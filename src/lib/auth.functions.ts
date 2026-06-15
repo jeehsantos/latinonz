@@ -1,9 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { sendActivationEmail } from "@/lib/email/activation.server";
-import { sendPasswordResetEmail } from "@/lib/email/password-reset.server";
 import type { EmailLocale } from "@/lib/email/email-i18n";
 
 // Accept NZ numbers in flexible formats: +64..., 0064..., or local 0xx...
@@ -51,6 +48,8 @@ async function buildAndSendActivation(args: {
   siteOrigin: string;
   locale?: EmailLocale;
 }) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { sendActivationEmail } = await import("@/lib/email/activation.server");
   const redirectTo = `${args.siteOrigin}/auth/confirm`;
   const linkResult = args.password
     ? await supabaseAdmin.auth.admin.generateLink({
@@ -87,6 +86,7 @@ async function buildAndSendActivation(args: {
 export const signUp = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => signUpSchema.parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: created, error: createError } = await supabaseAdmin.auth.admin.createUser({
       email: data.email,
       password: data.password,
@@ -132,6 +132,7 @@ export const signUp = createServerFn({ method: "POST" })
 export const resendActivation = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => resendActivationSchema.parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // Look up user by email so we have the owner name for the email template.
     const { data: list, error: listError } = await supabaseAdmin.auth.admin.listUsers();
     if (listError) {
@@ -178,6 +179,7 @@ export const resendActivation = createServerFn({ method: "POST" })
 export const signIn = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => signInSchema.parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: result, error } = await supabaseAdmin.auth.signInWithPassword({
       email: data.email,
       password: data.password,
@@ -203,6 +205,7 @@ export const signIn = createServerFn({ method: "POST" })
   });
 
 export const signOut = createServerFn({ method: "POST" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const authHeader = getRequestHeader("authorization");
   const token = authHeader?.replace(/^Bearer\s+/i, "");
   if (token) {
@@ -216,6 +219,7 @@ export const signOut = createServerFn({ method: "POST" }).handler(async () => {
 });
 
 export const getSession = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const authHeader = getRequestHeader("authorization");
   const token = authHeader?.replace(/^Bearer\s+/i, "");
   if (!token) {
@@ -233,6 +237,7 @@ export const getSession = createServerFn({ method: "GET" }).handler(async () => 
 export const requestPasswordReset = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => passwordResetSchema.parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // Look up the user to personalize the email (and to avoid sending to non-users).
     const { data: list, error: listError } = await supabaseAdmin.auth.admin.listUsers();
     if (listError) {
@@ -274,6 +279,7 @@ export const requestPasswordReset = createServerFn({ method: "POST" })
     const locale = (biz?.language_preference as EmailLocale) || "en";
 
     try {
+      const { sendPasswordResetEmail } = await import("@/lib/email/password-reset.server");
       await sendPasswordResetEmail({ to: data.email, ownerName, resetUrl, locale });
     } catch (err) {
       console.error("requestPasswordReset send error", err);

@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const logSchema = z.object({
   query: z.string().trim().max(200).optional().default(""),
@@ -11,6 +10,7 @@ const logSchema = z.object({
 export const logSearchQuery = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => logSchema.parse(input ?? {}))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // Skip empty searches (no query/category/city)
     if (!data.query && !data.category && !data.city) {
       return { ok: true as const, skipped: true as const };

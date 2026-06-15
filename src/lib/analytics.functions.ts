@@ -3,7 +3,6 @@ import { getRequest } from "@tanstack/react-start/server";
 import { createHash } from "crypto";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const logSchema = z.object({
   businessId: z.string().uuid(),
@@ -19,6 +18,7 @@ function hashIp(ip: string | null): string | null {
 export const logProfileView = createServerFn({ method: "POST" })
   .inputValidator((input) => logSchema.parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     let ip: string | null = null;
     let referrer: string | null = data.referrer ?? null;
     try {

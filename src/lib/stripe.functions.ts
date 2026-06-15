@@ -2,7 +2,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import Stripe from "stripe";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export type StripePlanTier = "premium" | "ultra";
 
@@ -35,6 +34,7 @@ function appOrigin(): string {
 }
 
 async function ensureCustomer(stripe: Stripe, userId: string, email?: string | null) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data: profile } = await supabaseAdmin
     .from("profiles")
     .select("stripe_customer_id")
@@ -79,6 +79,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
 export const createBillingPortalSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const stripe = getStripe();
     const { userId } = context;
     const { data: profile } = await supabaseAdmin
@@ -97,6 +98,7 @@ export const createBillingPortalSession = createServerFn({ method: "POST" })
   });
 
 async function updateProfileFromSubscription(sub: Stripe.Subscription) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer.id;
   const priceId = sub.items.data[0]?.price?.id ?? null;
   const userIdFromMeta = sub.metadata?.supabase_user_id ?? null;
@@ -118,6 +120,7 @@ async function updateProfileFromSubscription(sub: Stripe.Subscription) {
 }
 
 export async function handleStripeWebhook(event: Stripe.Event): Promise<void> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const stripe = getStripe();
   switch (event.type) {
     case "checkout.session.completed": {

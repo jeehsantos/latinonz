@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import categoriesData from "@/lib/categories.json";
 
@@ -44,6 +43,8 @@ const updateBusinessSchema = z.object({
   address_suburb: z.string().trim().max(100).nullable().optional(),
   language_preference: z.enum(["pt", "es", "en"]).optional(),
 });
+
+type BusinessWritePayload = Record<string, unknown>;
 
 const slotSchema = z.object({
   open: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
@@ -100,6 +101,7 @@ const updateServiceOptionItemsSchema = z.object({
 export const getBusinesses = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => listFilterSchema.parse(input ?? {}))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     let query = supabaseAdmin
       .from("businesses")
       .select(
@@ -130,6 +132,7 @@ export const getBusinesses = createServerFn({ method: "GET" })
 export const getBusinessBySlug = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => slugSchema.parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: business, error } = await supabaseAdmin
       .from("businesses")
       .select("*")
@@ -366,30 +369,32 @@ export const updateMyBusiness = createServerFn({ method: "POST" })
           .slice(0, 60) || "negocio";
       const slug = `${baseSlug}-${userId.slice(0, 6)}`;
 
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const insertPayload = {
+        owner_id: userId,
+        slug,
+        name: data.name,
+        description: data.description ?? null,
+        category_group: data.category_group ?? null,
+        macro_category: data.macro_category ?? "Outros",
+        subcategory: data.subcategory ?? null,
+        tags: data.tags ?? [],
+        phone: data.phone ?? null,
+        email: data.email ?? null,
+        website: data.website ?? null,
+        facebook_url: data.facebook_url ?? null,
+        instagram_url: data.instagram_url ?? null,
+        locations: data.locations ?? [],
+        keywords: data.keywords ?? [],
+        google_place_id: data.google_place_id ?? null,
+        response_time: data.response_time ?? null,
+        address_street: data.address_street ?? null,
+        address_suburb: data.address_suburb ?? null,
+        language_preference: data.language_preference ?? "en",
+      } satisfies BusinessWritePayload & { owner_id: string; slug: string; name: string; macro_category: string };
       const { data: created, error: createError } = await supabaseAdmin
         .from("businesses")
-        .insert({
-          owner_id: userId,
-          slug,
-          name: data.name,
-          description: data.description ?? null,
-          category_group: data.category_group ?? null,
-          macro_category: data.macro_category ?? "Outros",
-          subcategory: data.subcategory ?? null,
-          tags: data.tags ?? [],
-          phone: data.phone ?? null,
-          email: data.email ?? null,
-          website: data.website ?? null,
-          facebook_url: data.facebook_url ?? null,
-          instagram_url: data.instagram_url ?? null,
-          locations: data.locations ?? [],
-          keywords: data.keywords ?? [],
-          google_place_id: data.google_place_id ?? null,
-          response_time: data.response_time ?? null,
-          address_street: data.address_street ?? null,
-          address_suburb: data.address_suburb ?? null,
-          language_preference: data.language_preference ?? "en",
-        })
+        .insert(insertPayload as never)
         .select()
         .maybeSingle();
 
@@ -404,9 +409,10 @@ export const updateMyBusiness = createServerFn({ method: "POST" })
       return { ok: true as const, business: created };
     }
 
+    const updatePayload = data satisfies BusinessWritePayload;
     const { data: updated, error } = await supabase
       .from("businesses")
-      .update(data)
+      .update(updatePayload as never)
       .eq("owner_id", userId)
       .select()
       .maybeSingle();
