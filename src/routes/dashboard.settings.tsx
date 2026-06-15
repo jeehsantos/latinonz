@@ -28,7 +28,7 @@ export const Route = createFileRoute("/dashboard/settings")({
 type Section = "plan" | "appearance" | "account" | "privacy";
 
 function SettingsPage() {
-  const { t } = useI18n();
+  const { t, setLocale } = useI18n();
   const [plan] = useCurrentPlan();
   const [sidebarColor, setSidebarColor] = useSidebarColor();
   const billingPortal = useServerFn(createBillingPortalSession);
