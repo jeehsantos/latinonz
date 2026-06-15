@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { sendActivationEmail } from "@/lib/email/activation.server";
 import { sendPasswordResetEmail } from "@/lib/email/password-reset.server";
 import type { EmailLocale } from "@/lib/email/email-i18n";
@@ -51,6 +50,7 @@ async function buildAndSendActivation(args: {
   siteOrigin: string;
   locale?: EmailLocale;
 }) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const redirectTo = `${args.siteOrigin}/auth/confirm`;
   const linkResult = args.password
     ? await supabaseAdmin.auth.admin.generateLink({
@@ -87,6 +87,7 @@ async function buildAndSendActivation(args: {
 export const signUp = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => signUpSchema.parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: created, error: createError } = await supabaseAdmin.auth.admin.createUser({
       email: data.email,
       password: data.password,
@@ -132,6 +133,7 @@ export const signUp = createServerFn({ method: "POST" })
 export const resendActivation = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => resendActivationSchema.parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // Look up user by email so we have the owner name for the email template.
     const { data: list, error: listError } = await supabaseAdmin.auth.admin.listUsers();
     if (listError) {
