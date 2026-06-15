@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 // NZ phone: starts with +64 then 8-12 digits, spaces allowed
 const nzPhoneRegex = /^\+64[\s\d]{7,15}$/;
@@ -35,6 +34,7 @@ function rateLimit(key: string, limit = 5, windowMs = 60_000) {
 export const submitWaitlist = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => submitSchema.parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (!rateLimit(`submit:${data.email}`)) {
       return { ok: false as const, error: "Muitas tentativas. Tente novamente em alguns minutos." };
     }

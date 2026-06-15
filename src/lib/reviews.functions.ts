@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const placeIdSchema = z.object({
   placeId: z
@@ -36,6 +35,7 @@ type PlaceDetailsResponse = {
 };
 
 async function fetchAndCache(businessId: string, placeId: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const key = process.env.GOOGLE_PLACES_API_KEY;
   if (!key) {
     throw new Error("GOOGLE_PLACES_API_KEY não configurada.");
@@ -158,6 +158,7 @@ export const syncGoogleReviews = createServerFn({ method: "POST" })
 export const getReviews = createServerFn({ method: "GET" })
   .inputValidator((input) => businessIdSchema.parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows, error } = await supabaseAdmin
       .from("google_reviews")
       .select("id, author_name, author_photo_url, rating, text, published_at")
