@@ -156,6 +156,7 @@ function escapeHtml(s: string): string {
 export const submitLead = createServerFn({ method: "POST" })
   .inputValidator((input) => submitSchema.parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // Insert the lead with the service role so anonymous visitors work
     // regardless of session state; the INSERT policy allows anon anyway.
     const { data: inserted, error: insErr } = await supabaseAdmin
