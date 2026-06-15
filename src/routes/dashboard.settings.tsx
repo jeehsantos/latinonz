@@ -248,6 +248,7 @@ function SettingsPage() {
                     try {
                       const res = await updateBiz({ data: { language_preference: val } });
                       if (res.ok) {
+                        setLocale(val);
                         toast.success(t("settings.email_language_saved" as any));
                       } else {
                         toast.error(t("settings.email_language_error" as any));
