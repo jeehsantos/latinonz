@@ -4,14 +4,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import {
-  deleteAdminManager,
-  inviteAdminManager,
-  listAdminManagers,
-  requireAdminRole,
-  type AdminRole,
-} from "@/lib/admin-managers.server";
+import type { AdminRole } from "@/lib/admin-managers.server";
 
 // ---------- Businesses ----------
 
@@ -26,6 +19,8 @@ export const getAdminBusinesses = createServerFn({ method: "POST" })
       .parse(input ?? {}),
   )
   .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { requireAdminRole } = await import("@/lib/admin-managers.server");
     const viewerRole = await requireAdminRole(context.userId, context.supabase);
 
     let q = supabaseAdmin
@@ -94,6 +89,7 @@ export const setBusinessPlan = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
+    const { requireAdminRole } = await import("@/lib/admin-managers.server");
     const role = await requireAdminRole(context.userId, context.supabase);
     if (role !== "admin") {
       throw new Error("Forbidden: only admins can change business plan");
@@ -124,6 +120,8 @@ export const approveBusiness = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ businessId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { requireAdminRole } = await import("@/lib/admin-managers.server");
     await requireAdminRole(context.userId, context.supabase);
     const { error } = await supabaseAdmin
       .from("businesses")
