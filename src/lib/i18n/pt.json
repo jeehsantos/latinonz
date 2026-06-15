@@ -55,11 +55,11 @@
     "submit": "Criar conta",
     "has_account": "Já tem conta?",
     "login_link": "Faça login",
-    "consent_error_checkbox": "Você precisa aceitar para continuar.",
+    "consent_privacy_error_checkbox": "Você precisa aceitar a Política de Privacidade para continuar.",
+    "consent_terms_error_checkbox": "Você precisa aceitar os Termos de Uso para continuar.",
     "consent_error_toast": "Aceite a Política de Privacidade e Termos de Uso.",
-    "consent_prefix": "Li e concordo com a",
-    "consent_and": "e os",
-    "consent_suffix": ". Meus dados serão tratados conforme o Privacy Act 2020 (NZ).",
+    "consent_privacy": "Li e concordo com a {privacy_link}. Meus dados serão tratados conforme o Privacy Act 2020 (NZ).",
+    "consent_terms": "Li e concordo com os {terms_link}.",
     "confirm_email_title": "Confirme seu e-mail",
     "confirm_email_desc": "Enviamos um link de ativação para {email}. Clique no botão dentro do e-mail para ativar sua conta e acessar seu painel.",
     "resend_email_button": "Não recebi o e-mail — reenviar",
@@ -888,7 +888,7 @@
     "sections": [
       {
         "title": "1. Sobre a plataforma",
-        "content": "Latino Connect Hub é um diretório online que conecta negócios da comunidade latina na Nova Zelândia com consumidores. Não somos parte de qualquer transação entre você e os negócios listados."
+        "content": "Latino Connect Hub é um diretório online que conecta negócios da comunidade latina na Nova Zelândia com consumidores. Atuamos exclusivamente como uma plataforma de divulgação para dar visibilidade a esses negócios. Não participamos, não controlamos e não assumimos qualquer responsabilidade pelas negociações, acordos ou pela qualidade dos serviços prestados pelos negócios aos usuários. Quaisquer acordos, transações ou comunicações realizadas são estritamente entre o consumidor e o negócio, e não somos parte dessas transações."
       },
       {
         "title": "2. Elegibilidade",

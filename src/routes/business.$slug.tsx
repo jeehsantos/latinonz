@@ -904,7 +904,7 @@ function BusinessPage() {
                           </p>
                           {c.discount_value ? (
                             <span className="bg-[#facc15] text-black text-[10px] font-black px-2 py-0.5 rounded-md shrink-0">
-                              {c.discount_type === "percentage" ? `${c.discount_value}% OFF` : `$${c.discount_value} OFF`}
+                              {c.discount_type === "percent" ? `${c.discount_value}% OFF` : `$${c.discount_value} OFF`}
                             </span>
                           ) : null}
                         </div>

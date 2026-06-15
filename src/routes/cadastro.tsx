@@ -13,12 +13,14 @@ export const Route = createFileRoute("/cadastro")({
       { title: "Sign Up — Latino Connect" },
       {
         name: "description",
-        content: "Register your business or organisation in the largest network for the Latin community in NZ.",
+        content:
+          "Register your business or organisation in the largest network for the Latin community in NZ.",
       },
       { property: "og:title", content: "Sign Up — Latino Connect" },
       {
         property: "og:description",
-        content: "Register your business or organisation in the largest network for the Latin community in NZ.",
+        content:
+          "Register your business or organisation in the largest network for the Latin community in NZ.",
       },
       { property: "og:url", content: "https://latinoconnecthub.co.nz/cadastro" },
     ],
@@ -42,8 +44,10 @@ function CadastroPage() {
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [password, setPassword] = useState("");
-  const [consent, setConsent] = useState(false);
-  const [consentError, setConsentError] = useState<string | null>(null);
+  const [consentPrivacy, setConsentPrivacy] = useState(false);
+  const [consentTerms, setConsentTerms] = useState(false);
+  const [consentPrivacyError, setConsentPrivacyError] = useState<string | null>(null);
+  const [consentTermsError, setConsentTermsError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [sent, setSent] = useState<string | null>(null);
@@ -70,12 +74,15 @@ function CadastroPage() {
     e.preventDefault();
     const errs = validate();
     setFieldErrors(errs);
-    const missingConsent = !consent;
-    setConsentError(missingConsent ? t("register.consent_error_checkbox") : null);
-    if (Object.keys(errs).length > 0 || missingConsent) {
-      const firstError = missingConsent
-        ? t("register.consent_error_toast")
-        : Object.values(errs)[0]!;
+    const missingPrivacy = !consentPrivacy;
+    const missingTerms = !consentTerms;
+    setConsentPrivacyError(missingPrivacy ? t("register.consent_privacy_error_checkbox") : null);
+    setConsentTermsError(missingTerms ? t("register.consent_terms_error_checkbox") : null);
+    if (Object.keys(errs).length > 0 || missingPrivacy || missingTerms) {
+      const firstError =
+        missingPrivacy || missingTerms
+          ? t("register.consent_error_toast")
+          : Object.values(errs)[0]!;
       toast.error(t("toasts.validation_error"), {
         description: firstError,
         icon: <AlertCircle className="h-4 w-4" />,
@@ -142,7 +149,9 @@ function CadastroPage() {
             <div className="mx-auto h-16 w-16 rounded-full bg-[#df991b]/15 flex items-center justify-center">
               <Mail className="h-8 w-8 text-[#df991b]" />
             </div>
-            <h1 className="mt-6 text-2xl font-black text-white">{t("register.confirm_email_title")}</h1>
+            <h1 className="mt-6 text-2xl font-black text-white">
+              {t("register.confirm_email_title")}
+            </h1>
             <p className="mt-3 text-sm text-neutral-300 leading-relaxed">
               {t("register.confirm_email_desc").split("{email}")[0]}
               <span className="font-bold text-white">{sent}</span>
@@ -181,9 +190,7 @@ function CadastroPage() {
         <p className="text-xs font-bold uppercase tracking-wider text-[#facc15]">
           {t("register.badge")}
         </p>
-        <h1 className="mt-3 text-3xl md:text-4xl font-black text-white">
-          {t("register.title")}
-        </h1>
+        <h1 className="mt-3 text-3xl md:text-4xl font-black text-white">{t("register.title")}</h1>
         <p className="mt-3 text-neutral-300">{t("register.subtitle")}</p>
 
         <div className="mt-8 md:mt-10 bg-neutral-900 border border-white/10 rounded-3xl p-5 md:p-8">
@@ -193,13 +200,18 @@ function CadastroPage() {
           />
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px bg-white/10" />
-            <span className="text-xs uppercase tracking-wider text-neutral-500">{t("auth.or")}</span>
+            <span className="text-xs uppercase tracking-wider text-neutral-500">
+              {t("auth.or")}
+            </span>
             <div className="flex-1 h-px bg-white/10" />
           </div>
 
           <form className="space-y-4" onSubmit={onSubmit} noValidate>
             <div>
-              <label htmlFor="reg-business-name" className="text-xs font-bold uppercase text-neutral-400">
+              <label
+                htmlFor="reg-business-name"
+                className="text-xs font-bold uppercase text-neutral-400"
+              >
                 {t("register.business_name")}
               </label>
               <input
@@ -216,7 +228,10 @@ function CadastroPage() {
               )}
             </div>
             <div>
-              <label htmlFor="reg-owner-name" className="text-xs font-bold uppercase text-neutral-400">
+              <label
+                htmlFor="reg-owner-name"
+                className="text-xs font-bold uppercase text-neutral-400"
+              >
                 {t("register.owner_name")}
               </label>
               <input
@@ -252,7 +267,10 @@ function CadastroPage() {
                 )}
               </div>
               <div>
-                <label htmlFor="reg-whatsapp" className="text-xs font-bold uppercase text-neutral-400">
+                <label
+                  htmlFor="reg-whatsapp"
+                  className="text-xs font-bold uppercase text-neutral-400"
+                >
                   {t("register.whatsapp")}
                 </label>
                 <input
@@ -271,7 +289,10 @@ function CadastroPage() {
               </div>
             </div>
             <div>
-              <label htmlFor="reg-password" className="text-xs font-bold uppercase text-neutral-400">
+              <label
+                htmlFor="reg-password"
+                className="text-xs font-bold uppercase text-neutral-400"
+              >
                 {t("register.password")}
               </label>
               <input
@@ -288,38 +309,65 @@ function CadastroPage() {
                 </p>
               )}
             </div>
-            <div>
-              <label
-                className={`flex items-start gap-2 text-xs leading-snug cursor-pointer ${
-                  consentError ? "text-red-600" : "text-neutral-300"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={consent}
-                  onChange={(e) => {
-                    setConsent(e.target.checked);
-                    if (e.target.checked) setConsentError(null);
-                  }}
-                  className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-black"
-                />
-                <span>
-                  {t("register.consent_prefix")}{" "}
-                  <Link to="/privacy" target="_blank" className="underline font-semibold">
-                    {t("footer_legal.privacy")}
-                  </Link>{" "}
-                  {t("register.consent_and")}{" "}
-                  <Link to="/terms" target="_blank" className="underline font-semibold">
-                    {t("footer_legal.terms")}
-                  </Link>
-                  {t("register.consent_suffix")}
-                </span>
-              </label>
-              {consentError && (
-                <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
-                  <AlertCircle className="h-3 w-3" /> {consentError}
-                </p>
-              )}
+            <div className="space-y-4">
+              <div>
+                <label
+                  className={`flex items-start gap-2 text-xs leading-snug cursor-pointer ${
+                    consentPrivacyError ? "text-red-600" : "text-neutral-300"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={consentPrivacy}
+                    onChange={(e) => {
+                      setConsentPrivacy(e.target.checked);
+                      if (e.target.checked) setConsentPrivacyError(null);
+                    }}
+                    className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-black shrink-0"
+                  />
+                  <span>
+                    {t("register.consent_privacy").split("{privacy_link}")[0]}
+                    <Link to="/privacy" target="_blank" className="underline font-semibold">
+                      {t("footer_legal.privacy")}
+                    </Link>
+                    {t("register.consent_privacy").split("{privacy_link}")[1]}
+                  </span>
+                </label>
+                {consentPrivacyError && (
+                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" /> {consentPrivacyError}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label
+                  className={`flex items-start gap-2 text-xs leading-snug cursor-pointer ${
+                    consentTermsError ? "text-red-600" : "text-neutral-300"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={consentTerms}
+                    onChange={(e) => {
+                      setConsentTerms(e.target.checked);
+                      if (e.target.checked) setConsentTermsError(null);
+                    }}
+                    className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-black shrink-0"
+                  />
+                  <span>
+                    {t("register.consent_terms").split("{terms_link}")[0]}
+                    <Link to="/terms" target="_blank" className="underline font-semibold">
+                      {t("footer_legal.terms")}
+                    </Link>
+                    {t("register.consent_terms").split("{terms_link}")[1]}
+                  </span>
+                </label>
+                {consentTermsError && (
+                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3" /> {consentTermsError}
+                  </p>
+                )}
+              </div>
             </div>
             <button
               type="submit"

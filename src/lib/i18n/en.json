@@ -55,11 +55,11 @@
     "submit": "Create account",
     "has_account": "Already have an account?",
     "login_link": "Log in",
-    "consent_error_checkbox": "You must accept to continue.",
+    "consent_privacy_error_checkbox": "You must accept the Privacy Policy to continue.",
+    "consent_terms_error_checkbox": "You must accept the Terms of Use to continue.",
     "consent_error_toast": "Please accept the Privacy Policy and Terms of Use.",
-    "consent_prefix": "I have read and agree to the",
-    "consent_and": "and",
-    "consent_suffix": ". My data will be handled in compliance with the Privacy Act 2020 (NZ).",
+    "consent_privacy": "I have read and agree to the {privacy_link}. My data will be handled in compliance with the Privacy Act 2020 (NZ).",
+    "consent_terms": "I have read and agree to the {terms_link}.",
     "confirm_email_title": "Confirm your email",
     "confirm_email_desc": "We sent an activation link to {email}. Click the button inside the email to activate your account and access your dashboard.",
     "resend_email_button": "I didn't receive the email — resend",
@@ -883,7 +883,7 @@
     "sections": [
       {
         "title": "1. About the Platform",
-        "content": "Latino Connect Hub is an online directory connecting Latin community businesses in New Zealand with consumers. We are not a party to any transactions between you and the listed businesses."
+        "content": "Latino Connect Hub is an online directory connecting Latin community businesses in New Zealand with consumers. We act solely as a promotional platform to provide visibility to these businesses. We do not participate in, control, or take any responsibility for the negotiations, deals, or quality of services provided by the businesses to the users. Any agreements, transactions, or communications made are strictly between the consumer and the business, and we are not a party to any such transactions."
       },
       {
         "title": "2. Eligibility",

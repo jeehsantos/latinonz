@@ -55,11 +55,11 @@
     "submit": "Crear cuenta",
     "has_account": "¿Ya tienes cuenta?",
     "login_link": "Iniciar sesión",
-    "consent_error_checkbox": "Debe aceptar para continuar.",
+    "consent_privacy_error_checkbox": "Debe aceptar la Política de Privacidad para continuar.",
+    "consent_terms_error_checkbox": "Debe aceptar los Términos de Uso para continuar.",
     "consent_error_toast": "Acepte la Política de Privacidad y Términos de Uso.",
-    "consent_prefix": "He leído y acepto la",
-    "consent_and": "y los",
-    "consent_suffix": ". Mis datos serán tratados conforme a la Privacy Act 2020 (NZ).",
+    "consent_privacy": "He leído y acepto la {privacy_link}. Mis datos serán tratados conforme a la Privacy Act 2020 (NZ).",
+    "consent_terms": "He leído y acepto los {terms_link}.",
     "confirm_email_title": "Confirme su correo electrónico",
     "confirm_email_desc": "Enviamos un enlace de activación a {email}. Haga clic en el botón del correo electrónico para activar su cuenta y acceder a su panel.",
     "resend_email_button": "No recibí el correo — reenviar",
@@ -888,7 +888,7 @@
     "sections": [
       {
         "title": "1. Sobre la plataforma",
-        "content": "Latino Connect Hub es un directorio en línea que conecta negocios de la comunidad latina en Nueva Zelanda con consumidores. No formamos parte de ninguna transacción entre usted y los negocios registrados."
+        "content": "Latino Connect Hub es un directorio en línea que conecta negocios de la comunidad latina en Nueva Zelanda con consumidores. Actuamos exclusivamente como una plataforma publicitaria para dar visibilidad a estos negocios. No participamos, no controlamos ni asumimos ninguna responsabilidad por las negociaciones, acuerdos o la calidad de los servicios prestados por los negocios a los usuarios. Cualquier acuerdo, transacción o comunicación realizada es estrictamente entre el consumidor y el negocio, y nosotros no somos parte de dichas transacciones."
       },
       {
         "title": "2. Elegibilidad",
