@@ -44,10 +44,7 @@ const updateBusinessSchema = z.object({
   language_preference: z.enum(["pt", "es", "en"]).optional(),
 });
 
-type BusinessWritePayload = Omit<z.infer<typeof updateBusinessSchema>, "facebook_url" | "instagram_url"> & {
-  facebook_url?: string | null;
-  instagram_url?: string | null;
-};
+type BusinessWritePayload = Record<string, unknown>;
 
 const slotSchema = z.object({
   open: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
