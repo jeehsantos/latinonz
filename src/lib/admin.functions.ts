@@ -135,6 +135,8 @@ export const lockBusiness = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ businessId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { requireAdminRole } = await import("@/lib/admin-managers.server");
     await requireAdminRole(context.userId, context.supabase);
     const { error } = await supabaseAdmin
       .from("businesses")
@@ -148,6 +150,8 @@ export const unlockBusiness = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ businessId: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { requireAdminRole } = await import("@/lib/admin-managers.server");
     await requireAdminRole(context.userId, context.supabase);
     const { error } = await supabaseAdmin
       .from("businesses")
@@ -191,6 +195,8 @@ export const getAdminMetrics = createServerFn({ method: "POST" })
       .parse(input ?? {}),
   )
   .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { requireAdminRole } = await import("@/lib/admin-managers.server");
     await requireAdminRole(context.userId, context.supabase);
     const range: MetricRange = data.range ?? "month";
     const sinceIso = rangeStartIso(range);
@@ -292,12 +298,13 @@ export const getAdminMetrics = createServerFn({ method: "POST" })
 
 export const getAdminManagers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) =>
-    listAdminManagers({
+  .handler(async ({ context }) => {
+    const { listAdminManagers } = await import("@/lib/admin-managers.server");
+    return listAdminManagers({
       callerUserId: context.userId,
       supabase: context.supabase,
-    }),
-  );
+    });
+  });
 
 export const inviteManager = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -311,33 +318,37 @@ export const inviteManager = createServerFn({ method: "POST" })
       })
       .parse(input),
   )
-  .handler(async ({ data, context }) =>
-    inviteAdminManager({
+  .handler(async ({ data, context }) => {
+    const { inviteAdminManager } = await import("@/lib/admin-managers.server");
+    return inviteAdminManager({
       callerUserId: context.userId,
       supabase: context.supabase,
       name: data.name,
       email: data.email,
       role: data.role,
       redirectTo: data.redirectTo,
-    }),
-  );
+    });
+  });
 
 export const removeManager = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ userId: z.string().uuid() }).parse(input))
-  .handler(async ({ data, context }) =>
-    deleteAdminManager({
+  .handler(async ({ data, context }) => {
+    const { deleteAdminManager } = await import("@/lib/admin-managers.server");
+    return deleteAdminManager({
       callerUserId: context.userId,
       supabase: context.supabase,
       userId: data.userId,
-    }),
-  );
+    });
+  });
 
 // ---------- Coupons (admin view of promo images to share) ----------
 
 export const getAdminCouponPromos = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { requireAdminRole } = await import("@/lib/admin-managers.server");
     await requireAdminRole(context.userId, context.supabase);
 
     const { data: coupons, error } = await supabaseAdmin
