@@ -1,8 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
-import { sendActivationEmail } from "@/lib/email/activation.server";
-import { sendPasswordResetEmail } from "@/lib/email/password-reset.server";
 import type { EmailLocale } from "@/lib/email/email-i18n";
 
 // Accept NZ numbers in flexible formats: +64..., 0064..., or local 0xx...
@@ -51,6 +49,7 @@ async function buildAndSendActivation(args: {
   locale?: EmailLocale;
 }) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { sendActivationEmail } = await import("@/lib/email/activation.server");
   const redirectTo = `${args.siteOrigin}/auth/confirm`;
   const linkResult = args.password
     ? await supabaseAdmin.auth.admin.generateLink({
@@ -280,6 +279,7 @@ export const requestPasswordReset = createServerFn({ method: "POST" })
     const locale = (biz?.language_preference as EmailLocale) || "en";
 
     try {
+      const { sendPasswordResetEmail } = await import("@/lib/email/password-reset.server");
       await sendPasswordResetEmail({ to: data.email, ownerName, resetUrl, locale });
     } catch (err) {
       console.error("requestPasswordReset send error", err);
