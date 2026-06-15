@@ -15,7 +15,7 @@ type ManagerListItem = {
   name: string | null;
   email: string | null;
   role: RoleValue;
-  created_at: string | null;
+  createdAt: string;
 };
 
 const INVITE_ACCEPT_URL = "https://latinoconnecthub.co.nz/auth/accept-invite";
