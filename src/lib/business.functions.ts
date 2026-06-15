@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import categoriesData from "@/lib/categories.json";
 
@@ -100,6 +99,7 @@ const updateServiceOptionItemsSchema = z.object({
 export const getBusinesses = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => listFilterSchema.parse(input ?? {}))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     let query = supabaseAdmin
       .from("businesses")
       .select(
@@ -130,6 +130,7 @@ export const getBusinesses = createServerFn({ method: "GET" })
 export const getBusinessBySlug = createServerFn({ method: "GET" })
   .inputValidator((input: unknown) => slugSchema.parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: business, error } = await supabaseAdmin
       .from("businesses")
       .select("*")
@@ -366,6 +367,7 @@ export const updateMyBusiness = createServerFn({ method: "POST" })
           .slice(0, 60) || "negocio";
       const slug = `${baseSlug}-${userId.slice(0, 6)}`;
 
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       const { data: created, error: createError } = await supabaseAdmin
         .from("businesses")
         .insert({
