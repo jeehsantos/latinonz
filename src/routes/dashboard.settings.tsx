@@ -28,7 +28,7 @@ export const Route = createFileRoute("/dashboard/settings")({
 type Section = "plan" | "appearance" | "account" | "privacy";
 
 function SettingsPage() {
-  const { t } = useI18n();
+  const { t, setLocale } = useI18n();
   const [plan] = useCurrentPlan();
   const [sidebarColor, setSidebarColor] = useSidebarColor();
   const billingPortal = useServerFn(createBillingPortalSession);
@@ -248,6 +248,7 @@ function SettingsPage() {
                     try {
                       const res = await updateBiz({ data: { language_preference: val } });
                       if (res.ok) {
+                        setLocale(val);
                         toast.success(t("settings.email_language_saved" as any));
                       } else {
                         toast.error(t("settings.email_language_error" as any));

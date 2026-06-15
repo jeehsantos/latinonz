@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from "
 import pt from "./pt.json";
 import es from "./es.json";
 import en from "./en.json";
+import { supabase } from "@/integrations/supabase/client";
 
 export type Locale = "pt" | "es" | "en";
 
@@ -74,6 +75,40 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       document.documentElement.lang = locale;
     }
   }, [locale]);
+
+  // Sync locale from signed-in business owner's saved language_preference.
+  // This makes the user's saved preference win over browser detection and
+  // persist across devices.
+  useEffect(() => {
+    let mounted = true;
+    const applyFromBusiness = async () => {
+      try {
+        const { data: u } = await supabase.auth.getUser();
+        if (!u.user) return;
+        const { data } = await supabase
+          .from("businesses")
+          .select("language_preference")
+          .eq("owner_id", u.user.id)
+          .maybeSingle();
+        const pref = data?.language_preference as Locale | undefined;
+        if (!mounted || !pref) return;
+        if (pref === "pt" || pref === "es" || pref === "en") {
+          setLocaleState(pref);
+          if (typeof localStorage !== "undefined") localStorage.setItem("locale", pref);
+        }
+      } catch {
+        /* no-op */
+      }
+    };
+    applyFromBusiness();
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_IN" || event === "USER_UPDATED") applyFromBusiness();
+    });
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
 
   return (
     <I18nContext.Provider value={{ locale, setLocale, t, raw }}>{children}</I18nContext.Provider>
