@@ -23,6 +23,8 @@ type DbBusinessRow = {
   address_street?: string | null;
   address_suburb?: string | null;
   google_place_id?: string | null;
+  facebook_url?: string | null;
+  instagram_url?: string | null;
 };
 
 /**
@@ -55,5 +57,7 @@ export function adaptBusiness(row: DbBusinessRow, plan: PlanTier = "starter"): B
     addressStreet: row.address_street ?? undefined,
     addressSuburb: row.address_suburb ?? undefined,
     googlePlaceId: row.google_place_id ?? null,
+    facebookUrl: row.facebook_url ?? undefined,
+    instagramUrl: row.instagram_url ?? undefined,
   };
 }

@@ -2,9 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { CreditCard, Palette, User, Shield, Download, Trash2, ExternalLink, Globe } from "lucide-react";
+import { CreditCard, Palette, User, Shield, Download, Trash2, ExternalLink, Globe, Sparkles, CalendarDays, RefreshCw, CheckCircle2, Zap } from "lucide-react";
 import { useCurrentPlan } from "@/lib/dev-plan";
-import { PLAN_LABELS } from "@/lib/plans";
+import { PLAN_LABELS, PLAN_PRICES_NZD, PLAN_FEATURES } from "@/lib/plans";
+import type { PlanTier } from "@/lib/plans";
 import { useSidebarColor, DEFAULT_SIDEBAR_COLOR } from "@/lib/sidebar-color";
 import { useI18n } from "@/lib/i18n";
 import { createBillingPortalSession } from "@/lib/stripe.functions";
@@ -20,6 +21,33 @@ const PRESET_COLORS = [
   { nameKey: "settings.colors.grafite", value: "#1F2937" },
   { nameKey: "settings.colors.ambar", value: "#92400E" },
 ];
+
+const PLAN_ACCENT: Record<PlanTier, string> = {
+  starter: "#facc15",
+  premium: "#a78bfa",
+  ultra: "#f472b6",
+};
+
+const PLAN_GRADIENT: Record<PlanTier, string> = {
+  starter: "from-[#facc15]/10 to-transparent",
+  premium: "from-[#a78bfa]/10 to-transparent",
+  ultra:   "from-[#f472b6]/10 to-transparent",
+};
+
+function getPlanFeatures(plan: PlanTier): string[] {
+  const features: string[] = [];
+  const limit = PLAN_FEATURES.photoLimit[plan];
+  features.push(limit === Infinity ? "∞ photos" : `${limit} photos`);
+  if (PLAN_FEATURES.businessHours[plan]) features.push("Business hours");
+  if (PLAN_FEATURES.serviceOptions[plan]) features.push("Service options");
+  if (PLAN_FEATURES.coupons[plan]) features.push("Coupons");
+  if (PLAN_FEATURES.qrCode[plan]) features.push("QR Code");
+  if (PLAN_FEATURES.analytics[plan]) features.push("Analytics");
+  if (PLAN_FEATURES.events[plan]) features.push("Events");
+  if (PLAN_FEATURES.socialPosts[plan]) features.push("Social posts");
+  if (PLAN_FEATURES.topPlacement[plan]) features.push("Top placement");
+  return features;
+}
 
 export const Route = createFileRoute("/dashboard/settings")({
   component: SettingsPage,
@@ -37,6 +65,7 @@ function SettingsPage() {
   const [emailLang, setEmailLang] = useState<string>("en");
   const [langSaving, setLangSaving] = useState(false);
   const [active, setActive] = useState<Section>("plan");
+  const [memberSince, setMemberSince] = useState<string>("");
   const navigate = Route.useNavigate();
   const myBusiness = useServerFn(getMyBusiness);
   const updateBiz = useServerFn(updateMyBusiness);
@@ -44,6 +73,7 @@ function SettingsPage() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       if (data.user?.email) setEmail(data.user.email);
+      if (data.user?.created_at) setMemberSince(data.user.created_at);
     });
     myBusiness().then((res) => {
       if (res.ok && res.business) {
@@ -68,6 +98,31 @@ function SettingsPage() {
       setPortalLoading(false);
     }
   };
+
+  const formatDate = (dateStr: string) => {
+    try {
+      return new Date(dateStr).toLocaleDateString(undefined, {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+    } catch {
+      return "—";
+    }
+  };
+
+  const getNextRenewal = () => {
+    if (plan === "starter") return t("settings.plan_renewal_na" as any);
+    // When Stripe is integrated, this will come from the subscription object.
+    // For now, show the next month from today as a placeholder.
+    const next = new Date();
+    next.setMonth(next.getMonth() + 1);
+    return formatDate(next.toISOString());
+  };
+
+  const accent = PLAN_ACCENT[plan];
+  const price = PLAN_PRICES_NZD[plan];
+  const features = getPlanFeatures(plan);
 
   const items: { id: Section; label: string; icon: typeof CreditCard }[] = [
     { id: "plan", label: t("settings.current_plan_title"), icon: CreditCard },
@@ -115,24 +170,85 @@ function SettingsPage() {
         {/* Content card */}
         <section className="bg-neutral-900 border border-white/10 rounded-3xl p-5 sm:p-8 min-h-[400px] min-w-0">
           {active === "plan" && (
-            <div className="space-y-5">
-              <div>
-                <h2 className="text-xl font-extrabold text-white">
-                  {t("settings.current_plan_title")}
-                </h2>
-                <p className="text-sm text-neutral-400 mt-1">
-                  {t("settings.current_plan_on")}{" "}
-                  <span className="font-bold text-white">{PLAN_LABELS[plan]}</span>.
-                </p>
+            <div className="space-y-6">
+              {/* Plan header card */}
+              <div className={cn("relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br", PLAN_GRADIENT[plan])}>
+                {/* Decorative glow */}
+                <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full blur-3xl opacity-20" style={{ backgroundColor: accent }} />
+
+                <div className="relative p-6 sm:p-8">
+                  {/* Top row: plan name + status badge */}
+                  <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="h-12 w-12 rounded-2xl flex items-center justify-center" style={{ backgroundColor: `${accent}15`, border: `1px solid ${accent}30` }}>
+                        {plan === "starter" ? <Sparkles className="w-6 h-6" style={{ color: accent }} /> : <Zap className="w-6 h-6" style={{ color: accent }} />}
+                      </div>
+                      <div>
+                        <h2 className="text-xl sm:text-2xl font-black text-white">{PLAN_LABELS[plan]}</h2>
+                        <p className="text-sm text-neutral-400">{t("settings.current_plan_on" as any)} <span className="font-bold text-white">{PLAN_LABELS[plan]}</span></p>
+                      </div>
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border" style={{ color: accent, borderColor: `${accent}40`, backgroundColor: `${accent}10` }}>
+                      <span className="h-2 w-2 rounded-full animate-pulse" style={{ backgroundColor: accent }} />
+                      {t("settings.plan_status_active" as any)}
+                    </span>
+                  </div>
+
+                  {/* Price */}
+                  <div className="mb-6">
+                    <p className="text-xs font-bold uppercase text-neutral-500 tracking-wider mb-1">{t("settings.plan_price_label" as any)}</p>
+                    {price === 0 ? (
+                      <p className="text-3xl font-black text-white">{t("settings.plan_price_free" as any)}</p>
+                    ) : (
+                      <p className="text-3xl font-black text-white">
+                        NZ${price}<span className="text-base font-medium text-neutral-400">{t("settings.plan_price_month" as any)}</span>
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Info grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                    <div className="rounded-xl bg-white/5 border border-white/5 p-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <CalendarDays className="h-4 w-4 text-neutral-500" />
+                        <span className="text-xs font-bold uppercase text-neutral-500 tracking-wider">{t("settings.plan_start_label" as any)}</span>
+                      </div>
+                      <p className="text-sm font-semibold text-white">{memberSince ? formatDate(memberSince) : "—"}</p>
+                    </div>
+                    <div className="rounded-xl bg-white/5 border border-white/5 p-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <RefreshCw className="h-4 w-4 text-neutral-500" />
+                        <span className="text-xs font-bold uppercase text-neutral-500 tracking-wider">{t("settings.plan_renewal_label" as any)}</span>
+                      </div>
+                      <p className="text-sm font-semibold text-white">{getNextRenewal()}</p>
+                    </div>
+                  </div>
+
+                  {/* CTA button */}
+                  <button
+                    type="button"
+                    onClick={handleChangePlan}
+                    disabled={portalLoading}
+                    className="inline-flex items-center gap-2 bg-[#facc15] hover:bg-[#facc15]/90 disabled:opacity-60 text-neutral-950 font-bold rounded-xl px-6 py-3 text-sm transition-all hover:shadow-lg hover:shadow-[#facc15]/20"
+                  >
+                    <CreditCard className="h-4 w-4" />
+                    {portalLoading ? t("settings.opening_portal") : t("settings.change_plan")}
+                  </button>
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={handleChangePlan}
-                disabled={portalLoading}
-                className="inline-flex bg-[#facc15] hover:bg-[#facc15]/90 disabled:opacity-60 text-neutral-950 font-bold rounded-xl px-5 py-2.5 text-sm"
-              >
-                {portalLoading ? t("settings.opening_portal") : t("settings.change_plan")}
-              </button>
+
+              {/* Included features */}
+              <div>
+                <h3 className="text-sm font-bold uppercase text-neutral-500 tracking-wider mb-3">{t("settings.plan_features_label" as any)}</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                  {features.map((f) => (
+                    <div key={f} className="flex items-center gap-2.5 rounded-xl bg-white/5 border border-white/5 px-4 py-3">
+                      <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: accent }} />
+                      <span className="text-sm text-white">{f}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 

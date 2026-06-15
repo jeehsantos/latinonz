@@ -32,6 +32,8 @@ import {
   RefreshCw,
   Star,
   UploadCloud,
+  Facebook,
+  Instagram,
 } from "lucide-react";
 import { useCategories } from "@/hooks/useCategories";
 import { useI18n } from "@/lib/i18n";
@@ -134,6 +136,8 @@ function ProfileEditor() {
   const [category, setCategory] = useState<string>("");
   const [phone, setPhone] = useState("");
   const [website, setWebsite] = useState("");
+  const [facebookUrl, setFacebookUrl] = useState("");
+  const [instagramUrl, setInstagramUrl] = useState("");
   const [keywords, setKeywords] = useState("");
   const [logo, setLogo] = useState<string | null>(null);
   const [logoUploading, setLogoUploading] = useState(false);
@@ -183,6 +187,8 @@ function ProfileEditor() {
       if (loadedGroup) setCategoryGroup(loadedGroup);
       setPhone(b.phone ?? "");
       setWebsite(b.website ?? "");
+      setFacebookUrl((b as any).facebook_url ?? "");
+      setInstagramUrl((b as any).instagram_url ?? "");
       setKeywords((b.keywords ?? []).join(", "));
       if (b.logo_url) setLogo(b.logo_url);
 
@@ -429,6 +435,8 @@ function ProfileEditor() {
           category_group: categoryGroup || null,
           phone: phone.trim() || null,
           website: website.trim() || null,
+          facebook_url: facebookUrl.trim() || null,
+          instagram_url: instagramUrl.trim() || null,
           locations,
           address_street: primary?.addressStreet.trim() || null,
           address_suburb: primary?.addressSuburb.trim() || null,
@@ -585,6 +593,10 @@ function ProfileEditor() {
               setPhone={setPhone}
               website={website}
               setWebsite={setWebsite}
+              facebookUrl={facebookUrl}
+              setFacebookUrl={setFacebookUrl}
+              instagramUrl={instagramUrl}
+              setInstagramUrl={setInstagramUrl}
               keywords={keywords}
               setKeywords={setKeywords}
               logo={logo}
@@ -659,6 +671,10 @@ type GeneralTabProps = {
   setPhone: (v: string) => void;
   website: string;
   setWebsite: (v: string) => void;
+  facebookUrl: string;
+  setFacebookUrl: (v: string) => void;
+  instagramUrl: string;
+  setInstagramUrl: (v: string) => void;
   keywords: string;
   setKeywords: (v: string) => void;
   logo: string | null;
@@ -778,6 +794,36 @@ function GeneralTab(p: GeneralTabProps) {
                 onChange={(e) => p.setWebsite(e.target.value)}
                 className={inputCls}
               />
+            </Field>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
+            <Field label={t("profile.facebook_label" as any)}>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">
+                  <Facebook size={16} />
+                </span>
+                <input
+                  type="url"
+                  placeholder={t("profile.facebook_placeholder" as any)}
+                  value={p.facebookUrl}
+                  onChange={(e) => p.setFacebookUrl(e.target.value)}
+                  className={`${inputCls} pl-11`}
+                />
+              </div>
+            </Field>
+            <Field label={t("profile.instagram_label" as any)}>
+              <div className="relative">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500">
+                  <Instagram size={16} />
+                </span>
+                <input
+                  type="url"
+                  placeholder={t("profile.instagram_placeholder" as any)}
+                  value={p.instagramUrl}
+                  onChange={(e) => p.setInstagramUrl(e.target.value)}
+                  className={`${inputCls} pl-11`}
+                />
+              </div>
             </Field>
           </div>
         </Card>

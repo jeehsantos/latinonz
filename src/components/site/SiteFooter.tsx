@@ -2,6 +2,8 @@ import { Link } from "@tanstack/react-router";
 import logo from "@/assets/Latino_Connecthub_White.png";
 import { useI18n } from "@/lib/i18n";
 
+import { Facebook, Instagram } from "lucide-react";
+
 export function SiteFooter() {
   const { t } = useI18n();
   return (
@@ -57,6 +59,14 @@ export function SiteFooter() {
           <p className="text-[#facc15] font-bold mb-3">{t("footer_contact_col")}</p>
           <p className="text-sm">hello@latinoconnecthub.co.nz</p>
           <p className="text-sm">Auckland, Nova Zelândia</p>
+          <div className="flex items-center gap-4 mt-6">
+            <a href="#" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-[#facc15] transition-colors" aria-label="Facebook">
+              <Facebook className="w-5 h-5" />
+            </a>
+            <a href="#" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-[#facc15] transition-colors" aria-label="Instagram">
+              <Instagram className="w-5 h-5" />
+            </a>
+          </div>
         </div>
       </div>
       <div className="border-t border-white/10">

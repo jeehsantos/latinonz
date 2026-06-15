@@ -38,6 +38,8 @@ export type Business = {
   addressStreet?: string;
   addressSuburb?: string;
   googlePlaceId?: string | null;
+  facebookUrl?: string;
+  instagramUrl?: string;
 };
 
 export type Lead = {

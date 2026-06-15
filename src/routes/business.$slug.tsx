@@ -28,6 +28,8 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
+  Facebook,
+  Instagram,
 } from "lucide-react";
 
 
@@ -728,6 +730,32 @@ function BusinessPage() {
                       <Mail size={14} />
                     </span>
                     <span className="truncate">{business.email}</span>
+                  </a>
+                )}
+                {business.facebookUrl && (
+                  <a
+                    href={business.facebookUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15] transition"
+                  >
+                    <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0">
+                      <Facebook size={14} />
+                    </span>
+                    <span className="truncate">Facebook</span>
+                  </a>
+                )}
+                {business.instagramUrl && (
+                  <a
+                    href={business.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15] transition"
+                  >
+                    <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0">
+                      <Instagram size={14} />
+                    </span>
+                    <span className="truncate">Instagram</span>
                   </a>
                 )}
               </div>
