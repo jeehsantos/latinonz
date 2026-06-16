@@ -20,7 +20,6 @@ export const logProfileView = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     let ip: string | null = null;
-    let referrer: string | null = data.referrer ?? null;
     try {
       const req = getRequest();
       if (req?.headers) {
@@ -29,16 +28,14 @@ export const logProfileView = createServerFn({ method: "POST" })
           req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
           req.headers.get("x-real-ip") ??
           null;
-        if (!referrer) referrer = req.headers.get("referer");
       }
     } catch {
-      // Request context not available — proceed without IP/referrer.
+      // Request context not available — proceed without IP.
     }
 
-    const { error } = await supabaseAdmin.from("profile_views").insert({
-      business_id: data.businessId,
-      viewer_ip_hash: hashIp(ip),
-      referrer,
+    const { error } = await supabaseAdmin.rpc("record_profile_view", {
+      _business_id: data.businessId,
+      _viewer_ip_hash: hashIp(ip) ?? "",
     });
     if (error) return { ok: false as const, error: error.message };
     return { ok: true as const };
@@ -68,13 +65,14 @@ export const getAnalytics = createServerFn({ method: "GET" })
     const since = new Date();
     since.setDate(since.getDate() - 30);
     const sinceIso = since.toISOString();
+    const sinceDay = sinceIso.slice(0, 10);
 
     const [viewsRes, leadsRes, clicksRes] = await Promise.all([
       supabase
-        .from("profile_views")
-        .select("id", { count: "exact", head: true })
+        .from("profile_views_daily")
+        .select("views")
         .eq("business_id", biz.id)
-        .gte("created_at", sinceIso),
+        .gte("day", sinceDay),
       supabase
         .from("leads")
         .select("id", { count: "exact", head: true })
@@ -92,7 +90,7 @@ export const getAnalytics = createServerFn({ method: "GET" })
     if (leadsRes.error) return { ok: false as const, error: leadsRes.error.message };
     if (clicksRes.error) return { ok: false as const, error: clicksRes.error.message };
 
-    const views = viewsRes.count ?? 0;
+    const views = (viewsRes.data ?? []).reduce((sum, r) => sum + (r.views ?? 0), 0);
     const leads = leadsRes.count ?? 0;
     const contactClicks = clicksRes.count ?? 0;
     const conversionRate = views > 0 ? (leads / views) * 100 : 0;
