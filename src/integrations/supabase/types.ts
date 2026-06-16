@@ -422,31 +422,49 @@ export type Database = {
           },
         ]
       }
-      profile_views: {
+      profile_view_dedupe: {
         Row: {
           business_id: string
-          created_at: string
-          id: string
-          referrer: string | null
-          viewer_ip_hash: string | null
+          day: string
+          viewer_ip_hash: string
         }
         Insert: {
           business_id: string
-          created_at?: string
-          id?: string
-          referrer?: string | null
-          viewer_ip_hash?: string | null
+          day: string
+          viewer_ip_hash: string
         }
         Update: {
           business_id?: string
-          created_at?: string
-          id?: string
-          referrer?: string | null
-          viewer_ip_hash?: string | null
+          day?: string
+          viewer_ip_hash?: string
+        }
+        Relationships: []
+      }
+      profile_views_daily: {
+        Row: {
+          business_id: string
+          day: string
+          unique_viewers: number
+          updated_at: string
+          views: number
+        }
+        Insert: {
+          business_id: string
+          day: string
+          unique_viewers?: number
+          updated_at?: string
+          views?: number
+        }
+        Update: {
+          business_id?: string
+          day?: string
+          unique_viewers?: number
+          updated_at?: string
+          views?: number
         }
         Relationships: [
           {
-            foreignKeyName: "profile_views_business_id_fkey"
+            foreignKeyName: "profile_views_daily_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
@@ -487,27 +505,30 @@ export type Database = {
         }
         Relationships: []
       }
-      search_queries: {
+      search_queries_daily: {
         Row: {
-          category: string | null
-          city: string | null
-          created_at: string
-          id: string
-          query: string | null
+          category: string
+          city: string
+          day: string
+          hits: number
+          query: string
+          updated_at: string
         }
         Insert: {
-          category?: string | null
-          city?: string | null
-          created_at?: string
-          id?: string
-          query?: string | null
+          category?: string
+          city?: string
+          day: string
+          hits?: number
+          query?: string
+          updated_at?: string
         }
         Update: {
-          category?: string | null
-          city?: string | null
-          created_at?: string
-          id?: string
-          query?: string | null
+          category?: string
+          city?: string
+          day?: string
+          hits?: number
+          query?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -627,6 +648,14 @@ export type Database = {
           id: string
           role: string
         }[]
+      }
+      record_profile_view: {
+        Args: { _business_id: string; _viewer_ip_hash: string }
+        Returns: undefined
+      }
+      record_search_query: {
+        Args: { _category: string; _city: string; _query: string }
+        Returns: undefined
       }
     }
     Enums: {
