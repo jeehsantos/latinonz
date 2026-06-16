@@ -11,17 +11,15 @@ export const logSearchQuery = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => logSchema.parse(input ?? {}))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    // Skip empty searches (no query/category/city)
     if (!data.query && !data.category && !data.city) {
       return { ok: true as const, skipped: true as const };
     }
-    const { error } = await supabaseAdmin.from("search_queries").insert({
-      query: data.query || null,
-      category: data.category || null,
-      city: data.city || null,
+    const { error } = await supabaseAdmin.rpc("record_search_query", {
+      _query: data.query,
+      _category: data.category,
+      _city: data.city,
     });
     if (error) {
-      // Don't surface tracking errors to the UI
       console.error("logSearchQuery error", error);
       return { ok: false as const, error: error.message };
     }

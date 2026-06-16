@@ -1,73 +1,94 @@
-# Mobile-First UX Overhaul
+## Revised approach: counters instead of event logs
 
-Goal: Rework the mobile experience (≤ 768px) across the public site and the business dashboard with a full mobile-first rethink — denser hierarchy, fewer competing elements per viewport, easier search, and an app-like bottom navigation. Desktop layouts (≥ lg) stay exactly as they are today; every change is gated behind Tailwind responsive prefixes (`md:`, `lg:`) so desktop output is unchanged.
+You're right. We don't need raw events + cron deletes. We only need the numbers. Switch both tables to **pre-aggregated daily counters** that grow in a bounded, predictable way and keep history forever.
 
-## Global pieces (built once, used everywhere)
+## Growth math (why this works long-term)
 
-1. **`MobileBottomNav` (public site)** — fixed bottom tab bar shown only `lg:hidden`, with 4 tabs: Home, Directory, Blog, Account (Login if signed out / Dashboard if signed in). Active tab uses `#facc15`. Mounted in `SiteShell`. Adds `pb-20 lg:pb-0` spacer so content isn't hidden behind it.
-2. **`MobileDashboardNav`** — same pattern for the dashboard, 5 slots: Home, Profile, Leads (with badge), Coupons, More (opens a sheet with Gallery, Events, Analytics, Settings, Upgrade, Sign out). Replaces the current hamburger drawer on mobile.
-3. **`SiteHeader` mobile** — slim header on mobile: logo left, language switch + login icon right. Remove hamburger (bottom nav replaces it). Desktop unchanged.
-4. **Safe-area padding** — add `pb-[env(safe-area-inset-bottom)]` on bottom nav to respect iOS home indicator.
+- `profile_views_daily`: 1 row per business per day. 1,000 businesses × 365 days = **365k rows/year**. Trivial.
+- `search_queries_daily`: 1 row per unique (term, category, city) per day. Realistically a few hundred to a few thousand per day = **<1M rows/year**, still trivial.
 
-## Page-by-page mobile changes (desktop untouched)
+Compare to today's design where 1,000 businesses each getting 200 views/day = **73M rows/year** in `profile_views` alone.
 
-### Public site
+## New schema
 
-- **Home (`DirectoryHome`)**
-  - Hero: smaller headline (`text-3xl`), tighter vertical padding, single-line CTA pill.
-  - Search bar: collapse to single primary input + a "Filters" button on mobile that opens a `Sheet` containing Category + City selects. Desktop keeps the 3-field inline form.
-  - Trust strip: scrollable horizontal chips on mobile instead of 3-col grid.
-  - Categories: 2-col grid with smaller cards, hide group description, show 6 (with "See all" link). Desktop unchanged at 5-col.
-  - Featured: 1-col stack on mobile (no `sm:grid-cols-2` until `md`), tighter cards.
-  - CTA section: smaller padding, single-column.
+```text
+profile_views_daily(
+  business_id uuid,
+  day date,
+  views int,            -- total hits
+  unique_viewers int,   -- distinct viewer_ip_hash that day
+  PRIMARY KEY (business_id, day)
+)
 
-- **Directory (`/directory`)**
-  - Replace inline `SearchBar` with sticky search input + "Filters" pill at top on mobile; full filter sheet on tap with category, city, sort, type. Active filter chips below input. Desktop unchanged.
-  - Results: 1-col cards on mobile, condensed `BusinessCard` variant (smaller image aspect, no description if narrow, location + rating in one row).
-  - Pagination/empty states scaled down.
+search_queries_daily(
+  day date,
+  query text,           -- normalized (lower/trim), '' if empty
+  category text,
+  city text,
+  hits int,
+  PRIMARY KEY (day, query, category, city)
+)
+```
 
-- **Business detail (`business.$slug`)**
-  - Stack hero image + info vertically on mobile, sticky bottom action bar ("Call / WhatsApp / Save") instead of inline buttons.
-  - Tabs (About / Reviews / Coupons / Gallery) become horizontally scrollable on mobile.
-  - Reviews and gallery render as single column.
+RLS: admin/manager SELECT; business owner SELECT own rows on `profile_views_daily`; service_role ALL. No anon access.
 
-- **Blog list + post**
-  - 1-col card list with larger touch targets; remove sidebar on mobile.
-  - Post: reduce prose size, add sticky back button.
+## Write path (the counter trick)
 
-- **Contato, Sobre, Planos**
-  - Hero text scaled down, plans render as vertical stack of cards (no horizontal scroll), comparison table converts to per-plan accordion on mobile.
+Replace `INSERT` with an atomic upsert. Postgres does this in one statement:
 
-- **Cadastro / Login**
-  - Full-bleed form, larger inputs (min-h-12), single-column, sticky submit button at bottom on mobile.
+```sql
+-- profile_views
+INSERT INTO profile_views_daily (business_id, day, views, unique_viewers)
+VALUES ($1, current_date, 1, 1)
+ON CONFLICT (business_id, day) DO UPDATE
+  SET views = profile_views_daily.views + 1;
+-- unique_viewers handled separately (see below)
+```
 
-### Business dashboard
+For `unique_viewers` we still need to know "have I seen this IP today?" without storing every event. Two options — I'll pick **(a)** unless you prefer (b):
 
-- **`DashboardLayout`**
-  - Hide left sidebar on mobile (already hidden); replace hamburger drawer with `MobileDashboardNav` (bottom tabs + "More" sheet).
-  - Header on mobile: logo left, plan badge + avatar right (drop the business name/location text).
-  - Main: reduce padding to `p-4` on mobile.
+- **(a) Small short-lived dedupe table** `profile_view_dedupe(business_id, day, viewer_ip_hash)` with PK on all three. Insert with `ON CONFLICT DO NOTHING`; if it inserted a row, also bump `unique_viewers`. A nightly job (or just `WHERE day < current_date - 2`) trims it — this is the only table that ever needs purging, and it stays tiny (~today + yesterday only).
+- **(b)** Use a HyperLogLog sketch column (approximate, no dedupe table, ~1% error). More complex; only worth it at very high scale.
 
-- **Dashboard index** — stat cards stack 1-col (currently feels cramped at sm).
-- **Profile** — group fields into collapsible sections (Basic, Contact, Location, Description, Photos) on mobile; sticky "Save" at bottom.
-- **Coupons** — list view on mobile (avatar + code + status), tap to expand; "New coupon" modal already redesigned, just verify sheet variant on mobile (use `Drawer` from bottom).
-- **Events, Gallery, Leads, Analytics, Settings** — 1-col layout, larger touch targets, convert tables to card lists on mobile, sticky primary CTA.
+Search counter is simpler — no uniqueness needed:
 
-## Technical Notes
+```sql
+INSERT INTO search_queries_daily (day, query, category, city, hits)
+VALUES (current_date, $1, $2, $3, 1)
+ON CONFLICT (day, query, category, city) DO UPDATE
+  SET hits = search_queries_daily.hits + 1;
+```
 
-- All changes use Tailwind responsive variants; **no desktop class is removed** — new mobile styles slot in as the base and existing classes are kept behind `md:`/`lg:`.
-- Bottom nav uses `fixed bottom-0 inset-x-0 lg:hidden`, `backdrop-blur`, `border-t border-white/10`, `bg-neutral-950/95`.
-- Tables → card lists handled via `hidden md:block` / `md:hidden` duplicates only where structure differs too much for pure utility tweaking.
-- Reusable `<MobileFilterSheet>` (shadcn `Sheet`) used by Home and Directory.
-- Touch targets: minimum 44px tappable height on all primary actions.
-- No backend/route/business-logic changes — purely presentational components and Tailwind classes.
+## Read path
+
+- **Business analytics (last 30 days)**: `SELECT sum(views), sum(unique_viewers) FROM profile_views_daily WHERE business_id=$1 AND day >= current_date - 30`. One indexed scan over ~30 rows.
+- **Admin metrics (any range incl. "all time")**: same shape, no business_id filter. Fast forever.
+- **Top searches**: `SELECT query, sum(hits) FROM search_queries_daily WHERE day >= … GROUP BY query ORDER BY sum DESC LIMIT 10`.
+
+## Migration steps (single migration)
+
+1. Create the three new tables + GRANTs + RLS + policies.
+2. Backfill from existing `profile_views` / `search_queries` (group by business_id+date / term+date).
+3. Drop old `profile_views` and `search_queries` tables.
+4. (Optional) Schedule a tiny daily pg_cron to trim `profile_view_dedupe` rows older than 2 days. This is the only retention job and it touches a table that never grows beyond ~2 days of data.
+
+## Code changes
+
+- `src/lib/analytics.functions.ts`
+  - `logProfileView`: do the dedupe-insert + upsert counter (two statements in one handler).
+  - `getAnalytics`: read sums from `profile_views_daily`.
+- `src/lib/search.functions.ts`
+  - `logSearchQuery`: normalize inputs, upsert counter.
+- `src/lib/admin.functions.ts` (`getAdminMetrics`)
+  - Reads `profile_views_daily` and `search_queries_daily` for all ranges including "all time".
 
 ## Out of scope
-- Admin panel (per your selection).
-- Auth flow behavior changes.
-- Any desktop visual change.
-- New data, endpoints, or i18n keys beyond labels for "Filters", "More", and bottom-nav tab names.
 
-## Rollout
+- Per-hour granularity (we'd lose it — confirm you only need daily, which is what the dashboards already show).
+- Tracking referrer per event (would defeat the counter design). If you want top referrers, we can add `referrer_daily(day, referrer, hits)` later.
 
-Single PR-style batch: build `MobileBottomNav`, `MobileDashboardNav`, `MobileFilterSheet`, then update each route/component listed above. Verify on 390×844 viewport (current preview) and a desktop width to confirm desktop is byte-identical visually.
+## Confirm before I build
+
+1. Daily granularity is fine? (vs hourly)
+2. OK to **drop** the existing `profile_views` and `search_queries` tables after backfill? Current data will be preserved as daily totals, but per-event detail will be gone.
+3. Use approach **(a)** small dedupe table for unique-viewer counting?

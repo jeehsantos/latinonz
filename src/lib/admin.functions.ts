@@ -200,23 +200,23 @@ export const getAdminMetrics = createServerFn({ method: "POST" })
     await requireAdminRole(context.userId, context.supabase);
     const range: MetricRange = data.range ?? "month";
     const sinceIso = rangeStartIso(range);
+    const sinceDay = sinceIso ? sinceIso.slice(0, 10) : null;
 
     const leadsQ = context.supabase.from("leads").select("id", { count: "exact", head: true });
-    const viewsQ = context.supabase
-      .from("profile_views")
-      .select("id", { count: "exact", head: true });
     const waitlistQ = context.supabase
       .from("waitlist_signups")
       .select("id", { count: "exact", head: true });
-    const searchesQ = supabaseAdmin
-      .from("search_queries")
-      .select("query, category, city, created_at");
+
+    let viewsQ = supabaseAdmin.from("profile_views_daily").select("views");
+    let searchesQ = supabaseAdmin.from("search_queries_daily").select("query, hits");
 
     if (sinceIso) {
       leadsQ.gte("created_at", sinceIso);
-      viewsQ.gte("created_at", sinceIso);
       waitlistQ.gte("created_at", sinceIso);
-      searchesQ.gte("created_at", sinceIso);
+    }
+    if (sinceDay) {
+      viewsQ = viewsQ.gte("day", sinceDay);
+      searchesQ = searchesQ.gte("day", sinceDay);
     }
 
     const [businessesRes, profilesRes, leadsRes, viewsRes, waitlistRes, searchesRes] =
@@ -231,6 +231,8 @@ export const getAdminMetrics = createServerFn({ method: "POST" })
 
     if (businessesRes.error) throw new Error(businessesRes.error.message);
     if (profilesRes.error) throw new Error(profilesRes.error.message);
+    if (viewsRes.error) throw new Error(viewsRes.error.message);
+    if (searchesRes.error) throw new Error(searchesRes.error.message);
 
     const businesses = businessesRes.data ?? [];
     const profiles = profilesRes.data ?? [];
@@ -255,18 +257,21 @@ export const getAdminMetrics = createServerFn({ method: "POST" })
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count);
 
-    // Aggregate top searches by query term (lowercased, trimmed)
+    const totalViews = (viewsRes.data ?? []).reduce((s, r) => s + (r.views ?? 0), 0);
+
     const searchMap = new Map<string, number>();
+    let totalSearches = 0;
     for (const s of searchesRes.data ?? []) {
-      const term = (s.query ?? "").trim().toLowerCase();
+      const hits = s.hits ?? 0;
+      totalSearches += hits;
+      const term = (s.query ?? "").trim();
       if (!term) continue;
-      searchMap.set(term, (searchMap.get(term) ?? 0) + 1);
+      searchMap.set(term, (searchMap.get(term) ?? 0) + hits);
     }
     const topSearches = Array.from(searchMap.entries())
       .map(([term, count]) => ({ term, count }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
-    const totalSearches = searchesRes.data?.length ?? 0;
 
     return {
       range,
@@ -276,10 +281,11 @@ export const getAdminMetrics = createServerFn({ method: "POST" })
         pendingBusinesses: businesses.filter((b) => !b.is_verified && b.is_active).length,
         blockedBusinesses: businesses.filter((b) => !b.is_active).length,
         leads: leadsRes.count ?? 0,
-        profileViews: viewsRes.count ?? 0,
+        profileViews: totalViews,
         waitlist: waitlistRes.count ?? 0,
         searches: totalSearches,
       },
+
       planCounts,
       byCategory,
       topSearches,
