@@ -50,7 +50,7 @@ import { uploadLogo } from "@/lib/storage.functions";
 import { connectGooglePlace, syncGoogleReviews } from "@/lib/reviews.functions";
 import QRCode from "qrcode";
 import { useCurrentPlan } from "@/lib/dev-plan";
-import { can, getLimit } from "@/lib/plans";
+import { can, getLimit, type PlanTier } from "@/lib/plans";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/dashboard/profile")({
@@ -307,6 +307,7 @@ function ProfileEditor() {
     );
 
   const addBranch = () => {
+    if (!can(plan, "multipleBranches")) return;
     const b = newBranch({ name: "" });
     setBranches((prev) => [...prev, b]);
     setExpandedBranchId(b.id);
@@ -896,6 +897,7 @@ type LocationsTabProps = {
 function LocationsTab(p: LocationsTabProps) {
   const { t } = useI18n();
   const hoursLocked = p.plan === "starter";
+  const branchesLocked = !can(p.plan as PlanTier, "multipleBranches");
   return (
     <div className="space-y-6 max-w-4xl">
       <div className="flex items-center justify-between mb-2 gap-4">
@@ -905,13 +907,38 @@ function LocationsTab(p: LocationsTabProps) {
             {t("profile.manage_branches_subtitle")}
           </p>
         </div>
-        <button
-          onClick={p.onAdd}
-          className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors border border-white/5 shrink-0"
-        >
-          <Plus className="w-4 h-4" /> {t("profile.add_branch_btn")}
-        </button>
+        {branchesLocked ? (
+          <Link
+            to="/dashboard/upgrade"
+            className="bg-white/5 text-zinc-400 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 border border-white/5 shrink-0 hover:bg-white/10 hover:text-white transition-colors"
+            title={t("profile.branches_premium_title")}
+          >
+            <Lock className="w-4 h-4" /> {t("profile.add_branch_btn")}
+          </Link>
+        ) : (
+          <button
+            onClick={p.onAdd}
+            className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors border border-white/5 shrink-0"
+          >
+            <Plus className="w-4 h-4" /> {t("profile.add_branch_btn")}
+          </button>
+        )}
       </div>
+
+      {branchesLocked && (
+        <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/5 p-4 flex items-start gap-3">
+          <Lock className="w-4 h-4 text-yellow-500 mt-0.5" />
+          <div className="text-sm">
+            <p className="text-white font-medium">{t("profile.branches_premium_title")}</p>
+            <p className="text-zinc-400 text-xs mt-1">
+              {t("profile.branches_premium_body")}{" "}
+              <Link to="/dashboard/upgrade" className="text-yellow-500 hover:underline font-medium">
+                {t("profile.branches_premium_link")}
+              </Link>
+            </p>
+          </div>
+        </div>
+      )}
 
       {hoursLocked && (
         <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/5 p-4 flex items-start gap-3">
