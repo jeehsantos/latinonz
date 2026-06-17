@@ -38,6 +38,7 @@ export const PLAN_FEATURES = {
   businessHours: { starter: false, premium: true, ultra: true },
   serviceOptions: { starter: false, premium: true, ultra: true },
   coupons: { starter: false, premium: true, ultra: true },
+  multipleBranches: { starter: false, premium: true, ultra: true },
 
   // Communication
   directMessages: { starter: false, premium: true, ultra: true },
