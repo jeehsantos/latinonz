@@ -149,9 +149,11 @@ export type Database = {
           created_at: string
           description: string | null
           email: string | null
+          facebook_url: string | null
           fast_responder: boolean
           google_place_id: string | null
           id: string
+          instagram_url: string | null
           is_active: boolean
           is_verified: boolean
           keywords: string[] | null
@@ -179,9 +181,11 @@ export type Database = {
           created_at?: string
           description?: string | null
           email?: string | null
+          facebook_url?: string | null
           fast_responder?: boolean
           google_place_id?: string | null
           id?: string
+          instagram_url?: string | null
           is_active?: boolean
           is_verified?: boolean
           keywords?: string[] | null
@@ -209,9 +213,11 @@ export type Database = {
           created_at?: string
           description?: string | null
           email?: string | null
+          facebook_url?: string | null
           fast_responder?: boolean
           google_place_id?: string | null
           id?: string
+          instagram_url?: string | null
           is_active?: boolean
           is_verified?: boolean
           keywords?: string[] | null
