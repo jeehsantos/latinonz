@@ -176,9 +176,10 @@ function AcceptInvitePage() {
 
         {status === "no-session" && (
           <div className="mt-6 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
-            {t("auth.accept_invite.invalid")}
+            {linkErrorMessage ?? t("auth.accept_invite.invalid")}
           </div>
         )}
+
 
         {(status === "ready" || status === "saving" || status === "done") && (
           <form onSubmit={onSubmit} className="mt-6 space-y-4">
