@@ -307,6 +307,10 @@ function ProfileEditor() {
     );
 
   const addBranch = () => {
+    if (!can(plan, "multipleBranches")) {
+      toast.error(t("profile.branches_premium_toast"));
+      return;
+    }
     const b = newBranch({ name: "" });
     setBranches((prev) => [...prev, b]);
     setExpandedBranchId(b.id);
