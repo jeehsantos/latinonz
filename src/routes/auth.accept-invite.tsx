@@ -27,6 +27,7 @@ function AcceptInvitePage() {
   const [confirm, setConfirm] = useState("");
   const [fullName, setFullName] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [linkErrorMessage, setLinkErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -36,6 +37,23 @@ function AcceptInvitePage() {
       const code = url.searchParams.get("code");
       const tokenHash = url.searchParams.get("token_hash");
       const typeParam = url.searchParams.get("type");
+
+      // Supabase returns auth errors in the URL hash, e.g.
+      // #error=access_denied&error_code=otp_expired&error_description=Email+link+is+invalid+or+has+expired
+      const hashError = hash.get("error") || hash.get("error_code");
+      if (hashError) {
+        const desc = hash.get("error_description")?.replace(/\+/g, " ");
+        const isExpired =
+          hash.get("error_code") === "otp_expired" || /expired|invalid/i.test(desc ?? "");
+        setLinkErrorMessage(
+          isExpired
+            ? "This invitation link has expired or has already been used. Please ask an admin to send you a new invitation email."
+            : desc || "This invitation link is invalid. Please request a new one.",
+        );
+        setStatus("no-session");
+        return;
+      }
+
 
       try {
         if (code) {
@@ -158,9 +176,10 @@ function AcceptInvitePage() {
 
         {status === "no-session" && (
           <div className="mt-6 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
-            {t("auth.accept_invite.invalid")}
+            {linkErrorMessage ?? t("auth.accept_invite.invalid")}
           </div>
         )}
+
 
         {(status === "ready" || status === "saving" || status === "done") && (
           <form onSubmit={onSubmit} className="mt-6 space-y-4">
