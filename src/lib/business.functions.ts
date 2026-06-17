@@ -299,6 +299,16 @@ export const updateBusinessBranches = createServerFn({ method: "POST" })
       return { ok: false as const, error: "Negócio não encontrado." };
     }
 
+    if (data.branches.length > 1) {
+      const { data: planTier } = await supabase.rpc("get_owner_plan_tier", { p_owner: userId });
+      if (planTier !== "premium" && planTier !== "ultra") {
+        return {
+          ok: false as const,
+          error: "Multiple branches require a Premium or Ultra plan.",
+        };
+      }
+    }
+
     const { error: delError } = await supabase
       .from("business_branches")
       .delete()
