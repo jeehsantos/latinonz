@@ -38,13 +38,8 @@ export function BusinessCard({ business }: { business: Business }) {
             {business.name.charAt(0)}
           </div>
         )}
-        <div className="absolute top-3 left-3 flex items-center gap-2 flex-wrap">
-          <span className="text-[10px] font-bold uppercase bg-neutral-900/90 text-neutral-100 px-2 py-0.5 rounded-full">
-            {displayType}
-          </span>
-          <PlanBadge plan={business.plan} />
-        </div>
       </div>
+
       <div className="p-4 sm:p-5">
         <h3 className="font-extrabold text-white group-hover:text-[#facc15] line-clamp-1">
           {business.name}
