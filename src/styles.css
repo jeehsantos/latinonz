@@ -137,11 +137,18 @@
     border-color: var(--color-border);
   }
 
+  html {
+    /* App-like feel on mobile: disable pinch-zoom. Desktop browsers ignore touch-action for mouse. */
+    touch-action: pan-x pan-y;
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
 }
+
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
