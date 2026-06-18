@@ -585,7 +585,11 @@ function BusinessPage() {
             )}
           </div>
 
+          {/* Contact (mobile only — between About and Gallery for visibility) */}
+          <div className="lg:hidden">{contactBlock}</div>
+
           {/* Gallery */}
+
           {visiblePhotos.length > 0 && (
             <div>
               <div className="flex items-center justify-between mb-5">
