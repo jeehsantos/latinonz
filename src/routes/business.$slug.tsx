@@ -366,6 +366,88 @@ function BusinessPage() {
     sun: t("profile.day_sun"),
   };
 
+  const contactBlock = (
+    <div>
+      <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 mb-3">
+        {t("business.contact_title")}
+      </p>
+      <div className="space-y-3 text-sm">
+        {business.phone && (
+          <a
+            href={`tel:${business.phone}`}
+            className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15] transition"
+          >
+            <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0">
+              <Phone size={14} />
+            </span>
+            <span>{business.phone}</span>
+          </a>
+        )}
+        {addressLine && (
+          <a
+            href={mapsUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-start gap-3 text-neutral-200 hover:text-[#facc15] transition group"
+          >
+            <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0 mt-0.5">
+              <MapPin size={14} />
+            </span>
+            <span className="flex-1">
+              {addressLine}
+              {cityForMaps && <>, {cityForMaps}</>}
+            </span>
+            <ExternalLink
+              size={12}
+              className="text-neutral-500 group-hover:text-[#facc15] mt-1 shrink-0"
+            />
+          </a>
+        )}
+        {business.email && (
+          <a
+            href={`mailto:${business.email}`}
+            className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15] transition"
+          >
+            <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0">
+              <Mail size={14} />
+            </span>
+            <span className="truncate">{business.email}</span>
+          </a>
+        )}
+        {business.facebookUrl && (
+          <a
+            href={business.facebookUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15] transition"
+          >
+            <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0">
+              <Facebook size={14} />
+            </span>
+            <span className="truncate">Facebook</span>
+          </a>
+        )}
+        {business.instagramUrl && (
+          <a
+            href={business.instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15] transition"
+          >
+            <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0">
+              <Instagram size={14} />
+            </span>
+            <span className="truncate">Instagram</span>
+          </a>
+        )}
+      </div>
+      {business.responseTime && (
+        <p className="text-xs text-neutral-500 mt-3">{business.responseTime}</p>
+      )}
+    </div>
+  );
+
+
   return (
     <SiteShell>
       {/* HERO */}
