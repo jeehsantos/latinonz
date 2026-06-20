@@ -33,6 +33,7 @@ import { Route as DashboardLeadsRouteImport } from './routes/dashboard.leads'
 import { Route as DashboardGalleryRouteImport } from './routes/dashboard.gallery'
 import { Route as DashboardEventsRouteImport } from './routes/dashboard.events'
 import { Route as DashboardCouponsRouteImport } from './routes/dashboard.coupons'
+import { Route as DashboardCheckoutSuccessRouteImport } from './routes/dashboard.checkout-success'
 import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard.analytics'
 import { Route as BusinessSlugRouteImport } from './routes/business.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
@@ -166,6 +167,12 @@ const DashboardCouponsRoute = DashboardCouponsRouteImport.update({
   path: '/coupons',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardCheckoutSuccessRoute =
+  DashboardCheckoutSuccessRouteImport.update({
+    id: '/checkout-success',
+    path: '/checkout-success',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 const DashboardAnalyticsRoute = DashboardAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
@@ -254,6 +261,7 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/business/$slug': typeof BusinessSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/checkout-success': typeof DashboardCheckoutSuccessRoute
   '/dashboard/coupons': typeof DashboardCouponsRoute
   '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/gallery': typeof DashboardGalleryRoute
@@ -290,6 +298,7 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/business/$slug': typeof BusinessSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/checkout-success': typeof DashboardCheckoutSuccessRoute
   '/dashboard/coupons': typeof DashboardCouponsRoute
   '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/gallery': typeof DashboardGalleryRoute
@@ -329,6 +338,7 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/business/$slug': typeof BusinessSlugRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/checkout-success': typeof DashboardCheckoutSuccessRoute
   '/dashboard/coupons': typeof DashboardCouponsRoute
   '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/gallery': typeof DashboardGalleryRoute
@@ -369,6 +379,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/business/$slug'
     | '/dashboard/analytics'
+    | '/dashboard/checkout-success'
     | '/dashboard/coupons'
     | '/dashboard/events'
     | '/dashboard/gallery'
@@ -405,6 +416,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/business/$slug'
     | '/dashboard/analytics'
+    | '/dashboard/checkout-success'
     | '/dashboard/coupons'
     | '/dashboard/events'
     | '/dashboard/gallery'
@@ -443,6 +455,7 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/business/$slug'
     | '/dashboard/analytics'
+    | '/dashboard/checkout-success'
     | '/dashboard/coupons'
     | '/dashboard/events'
     | '/dashboard/gallery'
@@ -647,6 +660,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCouponsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/checkout-success': {
+      id: '/dashboard/checkout-success'
+      path: '/checkout-success'
+      fullPath: '/dashboard/checkout-success'
+      preLoaderRoute: typeof DashboardCheckoutSuccessRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/analytics': {
       id: '/dashboard/analytics'
       path: '/analytics'
@@ -768,6 +788,7 @@ const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
 interface DashboardRouteChildren {
   DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
+  DashboardCheckoutSuccessRoute: typeof DashboardCheckoutSuccessRoute
   DashboardCouponsRoute: typeof DashboardCouponsRoute
   DashboardEventsRoute: typeof DashboardEventsRoute
   DashboardGalleryRoute: typeof DashboardGalleryRoute
@@ -780,6 +801,7 @@ interface DashboardRouteChildren {
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAnalyticsRoute: DashboardAnalyticsRoute,
+  DashboardCheckoutSuccessRoute: DashboardCheckoutSuccessRoute,
   DashboardCouponsRoute: DashboardCouponsRoute,
   DashboardEventsRoute: DashboardEventsRoute,
   DashboardGalleryRoute: DashboardGalleryRoute,
@@ -818,13 +840,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
