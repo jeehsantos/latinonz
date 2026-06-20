@@ -58,17 +58,27 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ planTier: z.enum(["premium", "ultra"]) }).parse(input))
   .handler(async ({ data, context }) => {
+    const { getRequestHeader } = await import("@tanstack/react-start/server");
     const stripe = getStripe();
     const { userId, claims } = context;
     const email = (claims as { email?: string } | null)?.email ?? null;
     const customerId = await ensureCustomer(stripe, userId, email);
 
-    const origin = appOrigin();
+    const originHeader = getRequestHeader("origin") ?? getRequestHeader("referer") ?? null;
+    let inferredOrigin: string | null = null;
+    if (originHeader) {
+      try {
+        inferredOrigin = new URL(originHeader).origin;
+      } catch {
+        inferredOrigin = null;
+      }
+    }
+    const origin = appOrigin(inferredOrigin);
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer: customerId,
       line_items: [{ price: priceIdFor(data.planTier), quantity: 1 }],
-      success_url: `${origin}/dashboard?checkout=success`,
+      success_url: `${origin}/dashboard/checkout-success`,
       cancel_url: `${origin}/dashboard/upgrade?checkout=cancelled`,
       metadata: { supabase_user_id: userId, plan_tier: data.planTier },
       subscription_data: {
