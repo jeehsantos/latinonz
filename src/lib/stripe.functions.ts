@@ -25,7 +25,10 @@ function tierFromPriceId(priceId: string | null | undefined): StripePlanTier | "
   return "starter";
 }
 
-function appOrigin(): string {
+function appOrigin(requestOrigin?: string | null): string {
+  if (requestOrigin && /^https?:\/\//.test(requestOrigin)) {
+    return requestOrigin.replace(/\/$/, "");
+  }
   return (
     process.env.APP_PUBLIC_URL ??
     process.env.PUBLIC_URL ??

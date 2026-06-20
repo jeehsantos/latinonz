@@ -1,8 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
-import { useServerFn } from "@tanstack/react-start";
-import { getMyBusiness } from "@/lib/business.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/dashboard/checkout-success")({
   ssr: false,
@@ -17,32 +16,39 @@ export const Route = createFileRoute("/dashboard/checkout-success")({
 
 function CheckoutSuccessPage() {
   const navigate = useNavigate();
-  const fetchMyBusiness = useServerFn(getMyBusiness);
   const [status, setStatus] = useState<"syncing" | "success" | "timeout">("syncing");
   const [tier, setTier] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    const MAX_ATTEMPTS = 12;
+    const MAX_ATTEMPTS = 15;
     const INTERVAL = 1500;
 
     const poll = async () => {
       for (let i = 0; i < MAX_ATTEMPTS; i++) {
         if (cancelled) return;
         try {
-          const res = await fetchMyBusiness();
-          const profileTier =
-            (res as { profile?: { plan_tier?: string } } | null)?.profile?.plan_tier ?? null;
-          if (profileTier && profileTier !== "starter") {
-            setTier(profileTier);
-            setStatus("success");
-            setTimeout(() => {
-              if (!cancelled) navigate({ to: "/dashboard" });
-            }, 1800);
-            return;
+          const { data: sessionData } = await supabase.auth.getSession();
+          const userId = sessionData.session?.user?.id;
+          if (userId) {
+            const { data } = await supabase
+              .from("profiles")
+              .select("plan_tier, subscription_status")
+              .eq("id", userId)
+              .maybeSingle();
+            const t = data?.plan_tier;
+            if (t && t !== "starter") {
+              if (cancelled) return;
+              setTier(t);
+              setStatus("success");
+              setTimeout(() => {
+                if (!cancelled) navigate({ to: "/dashboard" });
+              }, 2000);
+              return;
+            }
           }
         } catch {
-          // ignore and retry
+          // retry
         }
         await new Promise((r) => setTimeout(r, INTERVAL));
       }
@@ -53,7 +59,7 @@ function CheckoutSuccessPage() {
     return () => {
       cancelled = true;
     };
-  }, [fetchMyBusiness, navigate]);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-6">
@@ -71,7 +77,7 @@ function CheckoutSuccessPage() {
         )}
         {status === "success" && (
           <>
-            <div className="mx-auto w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mb-6 animate-in zoom-in duration-300">
+            <div className="mx-auto w-16 h-16 rounded-full bg-emerald-500/10 flex items-center justify-center mb-6">
               <CheckCircle2 className="w-9 h-9 text-emerald-400" />
             </div>
             <h1 className="text-2xl font-black text-white mb-2">You're all set!</h1>
@@ -89,7 +95,7 @@ function CheckoutSuccessPage() {
             <h1 className="text-2xl font-black text-white mb-2">Almost there</h1>
             <p className="text-neutral-400 text-sm mb-6">
               Your payment was received but activation is taking a little longer than expected. It
-              should appear shortly.
+              should appear in your dashboard shortly.
             </p>
             <button
               onClick={() => navigate({ to: "/dashboard" })}
