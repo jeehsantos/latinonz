@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import logo from "@/assets/Latino_Connecthub_White.png";
 import { useI18n } from "@/lib/i18n";
 
-import { Facebook, Instagram } from "lucide-react";
+import { Facebook, Instagram, MessageCircle } from "lucide-react";
 
 export function SiteFooter() {
   const { t } = useI18n();
@@ -65,6 +65,9 @@ export function SiteFooter() {
             </a>
             <a href="#" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-[#facc15] transition-colors" aria-label="Instagram">
               <Instagram className="w-5 h-5" />
+            </a>
+            <a href="#" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-[#facc15] transition-colors" aria-label="WhatsApp">
+              <MessageCircle className="w-5 h-5" />
             </a>
           </div>
         </div>

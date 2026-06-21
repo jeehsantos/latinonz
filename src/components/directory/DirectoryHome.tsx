@@ -179,7 +179,7 @@ export function DirectoryHome() {
                   <div className="w-11 h-11 rounded-xl bg-[#FFC700] text-black flex items-center justify-center shadow-[0_0_22px_-4px_rgba(255,199,0,0.6)]">
                     <Icon size={20} />
                   </div>
-                  <span className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#FFC700] text-black">
+                  <span className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#FFC700]/15 text-[#FFC700]">
                     {count}
                   </span>
                 </div>
