@@ -77,18 +77,10 @@ export function DirectoryHome() {
         <div className="absolute inset-0 -z-0 opacity-[0.04] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:48px_48px]" />
         {/* Desktop hero */}
         <div className="hidden md:block relative max-w-6xl mx-auto px-5 sm:px-6 py-20 md:py-28 text-center">
-          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 backdrop-blur-sm text-white/90 text-[11px] font-bold px-4 py-2 rounded-full mb-8 uppercase tracking-[0.18em]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#facc15]" />
-            {t("directory.home_badge")}
-          </div>
-          <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05] text-white">
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05] text-white uppercase">
             {t("directory.home_headline_before")}
             <span className="text-[#facc15]">{t("directory.home_headline_highlight")}</span>
-            {t("directory.home_headline_after")}
           </h1>
-          <p className="mt-6 text-base md:text-lg text-white/60 max-w-2xl mx-auto">
-            {t("directory.home_subheadline")}
-          </p>
           <div className="mt-10 max-w-4xl mx-auto">
             <SearchBar value={search} onChange={setSearch} onSubmit={handleSearchSubmit} />
           </div>
