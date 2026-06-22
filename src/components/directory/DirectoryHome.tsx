@@ -314,12 +314,6 @@ function FeaturedCard({ business }: { business: Business }) {
           <div className="text-6xl font-black text-white/10">{business.name.charAt(0)}</div>
         )}
 
-        {/* Plan badges top-left: BUSINESS */}
-        <div className="absolute top-3 left-3 flex items-center gap-1.5">
-          <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-md bg-[#FFC700] text-black shadow-[0_4px_14px_-4px_rgba(255,199,0,0.6)]">
-            {business.type === "Empresa" ? t("business.badges.business") : t("business.badges.pro")}
-          </span>
-        </div>
 
         {/* Rating top-right */}
         <span className="absolute top-3 right-3 inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/15 text-white">
@@ -348,13 +342,10 @@ function FeaturedCard({ business }: { business: Business }) {
               {business.locations && business.locations.length > 0 ? business.locations.join(", ") : business.location}
             </span>
           </span>
-          <div className="flex items-center justify-between gap-2">
-            <span className="inline-flex items-center gap-1.5 text-[11px] text-neutral-400 min-w-0">
-              <Tag size={12} className="shrink-0 text-[#FFC700]" />
-              <span className="truncate">{categoryLabel}</span>
-            </span>
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#FFC700] shrink-0">{t("business.badges.active")}</span>
-          </div>
+          <span className="inline-flex items-center gap-1.5 text-[11px] text-neutral-400 min-w-0">
+            <Tag size={12} className="shrink-0 text-[#FFC700]" />
+            <span className="truncate">{categoryLabel}</span>
+          </span>
         </div>
       </div>
     </Link>
