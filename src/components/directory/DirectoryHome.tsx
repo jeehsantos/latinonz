@@ -7,6 +7,7 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
 import { MobileSearchBar } from "@/components/directory/MobileSearchBar";
 import { getBusinesses } from "@/lib/business.functions";
+import auckland from "@/assets/auckland-skyline.jpg.asset.json";
 import { adaptBusiness } from "@/lib/business.adapter";
 import { useCategories } from "@/hooks/useCategories";
 import { getIcon } from "@/lib/category-icons";
@@ -67,18 +68,28 @@ export function DirectoryHome() {
   return (
     <SiteShell>
       {/* Hero */}
-      <section
-        className="relative text-white overflow-hidden"
-        style={{
-          background:
-            "radial-gradient(ellipse at top, rgba(250,204,21,0.18) 0%, #0a0a0a 60%), radial-gradient(circle at bottom right, rgba(250,204,21,0.12), transparent 60%), #050505",
-        }}
-      >
-        <div className="absolute inset-0 -z-0 opacity-[0.04] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:48px_48px]" />
+      <section className="relative text-white overflow-hidden w-full">
+        {/* Background image — full bleed */}
+        <img
+          src={auckland.url}
+          alt="Auckland skyline"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* Yellow tint + dark vignette overlays */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse at top, rgba(250,204,21,0.28) 0%, rgba(10,10,10,0.55) 55%, rgba(5,5,5,0.85) 100%), radial-gradient(circle at bottom right, rgba(250,204,21,0.18), transparent 60%)",
+          }}
+        />
+        <div className="absolute inset-0 bg-black/35 pointer-events-none" />
+
         {/* Desktop hero */}
-        <div className="hidden md:block relative max-w-6xl mx-auto px-5 sm:px-6 py-20 md:py-28 text-center">
-          <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05] text-white uppercase">
+        <div className="hidden md:block relative max-w-6xl mx-auto px-5 sm:px-6 py-14 md:py-20 text-center">
+          <h1 className="font-['Barlow_Condensed'] font-black tracking-tight leading-[0.95] text-white uppercase text-5xl md:text-7xl whitespace-pre-line drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
             {t("directory.home_headline_before")}
+            {"\n"}
             <span className="text-[#facc15]">{t("directory.home_headline_highlight")}</span>
           </h1>
           <div className="mt-10 max-w-4xl mx-auto">
@@ -88,8 +99,9 @@ export function DirectoryHome() {
 
         {/* Mobile hero — compact */}
         <div className="md:hidden relative px-5 pt-8 pb-7">
-          <h1 className="text-[28px] font-black tracking-tight leading-[1.1] text-white uppercase">
+          <h1 className="font-['Barlow_Condensed'] text-[32px] font-black tracking-tight leading-[0.95] text-white uppercase whitespace-pre-line drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
             {t("directory.home_headline_before")}
+            {"\n"}
             <span className="text-[#facc15]">{t("directory.home_headline_highlight")}</span>
           </h1>
           <div className="mt-5">
