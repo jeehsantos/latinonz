@@ -88,18 +88,10 @@ export function DirectoryHome() {
 
         {/* Mobile hero — compact */}
         <div className="md:hidden relative px-5 pt-8 pb-7">
-          <div className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 text-white/90 text-[10px] font-bold px-2.5 py-1 rounded-full mb-3 uppercase tracking-[0.18em]">
-            <span className="w-1 h-1 rounded-full bg-[#facc15]" />
-            {t("directory.home_badge")}
-          </div>
-          <h1 className="text-[28px] font-black tracking-tight leading-[1.1] text-white">
+          <h1 className="text-[28px] font-black tracking-tight leading-[1.1] text-white uppercase">
             {t("directory.home_headline_before")}
             <span className="text-[#facc15]">{t("directory.home_headline_highlight")}</span>
-            {t("directory.home_headline_after")}
           </h1>
-          <p className="mt-2.5 text-[13px] text-white/60 leading-snug">
-            {t("directory.home_subheadline")}
-          </p>
           <div className="mt-5">
             <MobileSearchBar value={search} onChange={setSearch} />
           </div>
