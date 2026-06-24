@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { syncSubscriptionFromStripe } from "@/lib/stripe.functions";
 
 export const Route = createFileRoute("/dashboard/checkout-success")({
   ssr: false,
@@ -19,8 +21,11 @@ function CheckoutSuccessPage() {
   const [status, setStatus] = useState<"syncing" | "success" | "timeout">("syncing");
   const [tier, setTier] = useState<string | null>(null);
 
+  const syncFn = useServerFn(syncSubscriptionFromStripe);
+
   useEffect(() => {
     let cancelled = false;
+    let syncTried = false;
     const MAX_ATTEMPTS = 15;
     const INTERVAL = 1500;
 
@@ -50,16 +55,34 @@ function CheckoutSuccessPage() {
         } catch {
           // retry
         }
+        // After ~4.5s without a webhook update, try a direct Stripe sync once.
+        if (!syncTried && i >= 3) {
+          syncTried = true;
+          try {
+            const res = await syncFn();
+            if (!cancelled && res?.ok && res.tier && res.tier !== "starter") {
+              setTier(res.tier);
+              setStatus("success");
+              setTimeout(() => {
+                if (!cancelled) navigate({ to: "/dashboard" });
+              }, 2000);
+              return;
+            }
+          } catch {
+            // ignore — keep polling
+          }
+        }
         await new Promise((r) => setTimeout(r, INTERVAL));
       }
       if (!cancelled) setStatus("timeout");
     };
 
+
     poll();
     return () => {
       cancelled = true;
     };
-  }, [navigate]);
+  }, [navigate, syncFn]);
 
   return (
     <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-6">
