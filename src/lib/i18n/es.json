@@ -656,7 +656,17 @@
     "current_plan_label": "Plan actual",
     "redirecting": "Redireccionando...",
     "subscribe_premium": "Suscribirse a Premium",
-    "subscribe_ultra": "Suscribirse a Ultra"
+    "subscribe_ultra": "Suscribirse a Ultra",
+    "downgrade_button": "Cambiar a plan inferior",
+    "downgrade_confirm": "Pasarás al plan {plan} el {date}. Mantienes los beneficios actuales hasta esa fecha. ¿Continuar?",
+    "downgrade_scheduled": "Cambio al plan {plan} programado para {date}.",
+    "downgrade_cancelled": "Cambio programado cancelado.",
+    "downgrade_error": "No se pudo programar el cambio. Inténtalo de nuevo.",
+    "cancel_downgrade": "Cancelar cambio programado",
+    "cancelling": "Cancelando…",
+    "next_renewal": "próxima renovación",
+    "pending_change_title": "Cambio al plan {plan} programado",
+    "pending_change_body": "Tu plan cambiará automáticamente a {plan} el {date}. Hasta entonces mantienes todos los beneficios actuales."
   },
   "locked_feature": {
     "available_from": "Disponible desde el plan",

@@ -656,7 +656,17 @@
     "current_plan_label": "Plano atual",
     "redirecting": "Redirecionando...",
     "subscribe_premium": "Assinar Premium",
-    "subscribe_ultra": "Assinar Ultra"
+    "subscribe_ultra": "Assinar Ultra",
+    "downgrade_button": "Fazer downgrade",
+    "downgrade_confirm": "Você será movido para o plano {plan} em {date}. Você mantém os benefícios atuais até essa data. Continuar?",
+    "downgrade_scheduled": "Downgrade para {plan} agendado para {date}.",
+    "downgrade_cancelled": "Downgrade agendado cancelado.",
+    "downgrade_error": "Não foi possível agendar o downgrade. Tente novamente.",
+    "cancel_downgrade": "Cancelar downgrade agendado",
+    "cancelling": "Cancelando…",
+    "next_renewal": "próxima renovação",
+    "pending_change_title": "Downgrade para {plan} agendado",
+    "pending_change_body": "Seu plano será alterado automaticamente para {plan} em {date}. Até lá você mantém todos os benefícios atuais."
   },
   "locked_feature": {
     "available_from": "Disponível a partir do plano",

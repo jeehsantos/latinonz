@@ -651,7 +651,17 @@
     "current_plan_label": "Current package",
     "redirecting": "Redirecting...",
     "subscribe_premium": "Subscribe Premium",
-    "subscribe_ultra": "Subscribe Ultra"
+    "subscribe_ultra": "Subscribe Ultra",
+    "downgrade_button": "Downgrade",
+    "downgrade_confirm": "You will be moved to the {plan} plan on {date}. You keep your current benefits until then. Continue?",
+    "downgrade_scheduled": "Downgrade to {plan} scheduled for {date}.",
+    "downgrade_cancelled": "Scheduled downgrade cancelled.",
+    "downgrade_error": "Could not schedule the downgrade. Please try again.",
+    "cancel_downgrade": "Cancel scheduled downgrade",
+    "cancelling": "Cancelling…",
+    "next_renewal": "next renewal",
+    "pending_change_title": "Downgrade to {plan} scheduled",
+    "pending_change_body": "Your plan will automatically change to {plan} on {date}. Until then you keep all current benefits."
   },
   "locked_feature": {
     "available_from": "Available from the",
