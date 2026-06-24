@@ -216,6 +216,153 @@ export async function handleStripeWebhook(event: Stripe.Event): Promise<void> {
   }
 }
 
+const PLAN_RANK = { starter: 0, premium: 1, ultra: 2 } as const;
+
+export const getSubscriptionSchedule = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const stripe = getStripe();
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("stripe_subscription_id, plan_tier")
+      .eq("id", context.userId)
+      .maybeSingle();
+    const currentTier = (profile?.plan_tier ?? "starter") as "starter" | "premium" | "ultra";
+    if (!profile?.stripe_subscription_id) {
+      return {
+        ok: true as const,
+        currentTier,
+        periodEnd: null as number | null,
+        pendingTier: null as null | "starter" | "premium" | "ultra",
+      };
+    }
+    const sub = await stripe.subscriptions.retrieve(profile.stripe_subscription_id);
+    const item = sub.items.data[0];
+    const periodEnd =
+      (item as unknown as { current_period_end?: number })?.current_period_end ??
+      (sub as unknown as { current_period_end?: number })?.current_period_end ??
+      null;
+    let pendingTier: null | "starter" | "premium" | "ultra" = null;
+    if (sub.cancel_at_period_end) pendingTier = "starter";
+    if (sub.schedule) {
+      const sid = typeof sub.schedule === "string" ? sub.schedule : sub.schedule.id;
+      try {
+        const schedule = await stripe.subscriptionSchedules.retrieve(sid);
+        const now = Math.floor(Date.now() / 1000);
+        const nextPhase = schedule.phases.find((p) => (p.start_date ?? 0) > now);
+        const nextPrice = nextPhase?.items?.[0]?.price;
+        if (typeof nextPrice === "string") {
+          const nextTier = tierFromPriceId(nextPrice);
+          if (PLAN_RANK[nextTier] < PLAN_RANK[currentTier]) pendingTier = nextTier;
+        }
+      } catch {
+        // ignore
+      }
+    }
+    return { ok: true as const, currentTier, periodEnd, pendingTier };
+  });
+
+export const scheduleDowngrade = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z.object({ targetTier: z.enum(["starter", "premium"]) }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const stripe = getStripe();
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("stripe_subscription_id, plan_tier")
+      .eq("id", context.userId)
+      .maybeSingle();
+    if (!profile?.stripe_subscription_id) {
+      return { ok: false as const, error: "no_subscription" };
+    }
+    const currentTier = (profile.plan_tier ?? "starter") as "starter" | "premium" | "ultra";
+    if (PLAN_RANK[data.targetTier] >= PLAN_RANK[currentTier]) {
+      return { ok: false as const, error: "not_a_downgrade" };
+    }
+
+    const sub = await stripe.subscriptions.retrieve(profile.stripe_subscription_id);
+    const item = sub.items.data[0];
+    const periodEnd =
+      (item as unknown as { current_period_end?: number })?.current_period_end ??
+      (sub as unknown as { current_period_end?: number })?.current_period_end ??
+      null;
+
+    if (data.targetTier === "starter") {
+      if (sub.schedule) {
+        const sid = typeof sub.schedule === "string" ? sub.schedule : sub.schedule.id;
+        try {
+          await stripe.subscriptionSchedules.release(sid);
+        } catch {
+          // ignore
+        }
+      }
+      await stripe.subscriptions.update(sub.id, { cancel_at_period_end: true });
+    } else {
+      // ultra -> premium: schedule price change at period end
+      const newPrice = priceIdFor(data.targetTier);
+      const currentPriceId = item.price.id;
+      let scheduleId =
+        typeof sub.schedule === "string" ? sub.schedule : (sub.schedule?.id ?? null);
+      if (!scheduleId) {
+        const created = await stripe.subscriptionSchedules.create({ from_subscription: sub.id });
+        scheduleId = created.id;
+      }
+      const schedule = await stripe.subscriptionSchedules.retrieve(scheduleId);
+      const firstStart = schedule.phases[0]?.start_date;
+      await stripe.subscriptionSchedules.update(scheduleId, {
+        end_behavior: "release",
+        phases: [
+          {
+            items: [{ price: currentPriceId, quantity: 1 }],
+            start_date: firstStart,
+            end_date: periodEnd ?? undefined,
+            proration_behavior: "none",
+          },
+          {
+            items: [{ price: newPrice, quantity: 1 }],
+            proration_behavior: "none",
+            metadata: { supabase_user_id: context.userId, plan_tier: data.targetTier },
+          },
+        ],
+      });
+      if (sub.cancel_at_period_end) {
+        await stripe.subscriptions.update(sub.id, { cancel_at_period_end: false });
+      }
+    }
+
+    return { ok: true as const, effectiveAt: periodEnd, targetTier: data.targetTier };
+  });
+
+export const cancelScheduledDowngrade = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const stripe = getStripe();
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("stripe_subscription_id")
+      .eq("id", context.userId)
+      .maybeSingle();
+    if (!profile?.stripe_subscription_id) return { ok: false as const, error: "no_subscription" };
+    const sub = await stripe.subscriptions.retrieve(profile.stripe_subscription_id);
+    if (sub.schedule) {
+      const sid = typeof sub.schedule === "string" ? sub.schedule : sub.schedule.id;
+      try {
+        await stripe.subscriptionSchedules.release(sid);
+      } catch {
+        // ignore
+      }
+    }
+    if (sub.cancel_at_period_end) {
+      await stripe.subscriptions.update(sub.id, { cancel_at_period_end: false });
+    }
+    return { ok: true as const };
+  });
+
 export const syncSubscriptionFromStripe = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
