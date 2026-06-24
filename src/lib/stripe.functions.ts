@@ -163,8 +163,36 @@ export async function handleStripeWebhook(event: Stripe.Event): Promise<void> {
       }
       break;
     }
+    case "customer.subscription.created":
     case "customer.subscription.updated": {
       await updateProfileFromSubscription(event.data.object as Stripe.Subscription);
+      break;
+    }
+    case "invoice.paid":
+    case "invoice.payment_succeeded": {
+      const invoice = event.data.object as Stripe.Invoice & {
+        subscription?: string | Stripe.Subscription | null;
+        parent?: { subscription_details?: { subscription?: string | null } | null } | null;
+      };
+      const subFromTop =
+        typeof invoice.subscription === "string"
+          ? invoice.subscription
+          : (invoice.subscription?.id ?? null);
+      const subFromParent = invoice.parent?.subscription_details?.subscription ?? null;
+      const subscriptionId = subFromTop ?? subFromParent ?? null;
+      if (!subscriptionId) break;
+
+      const sub = await stripe.subscriptions.retrieve(subscriptionId);
+      if (!sub.metadata?.supabase_user_id) {
+        const lineMetaUser = invoice.lines?.data?.[0]?.metadata?.supabase_user_id ?? null;
+        if (lineMetaUser) {
+          await stripe.subscriptions.update(subscriptionId, {
+            metadata: { ...sub.metadata, supabase_user_id: lineMetaUser },
+          });
+          sub.metadata = { ...sub.metadata, supabase_user_id: lineMetaUser };
+        }
+      }
+      await updateProfileFromSubscription(sub);
       break;
     }
     case "customer.subscription.deleted": {
@@ -187,3 +215,47 @@ export async function handleStripeWebhook(event: Stripe.Event): Promise<void> {
       break;
   }
 }
+
+export const syncSubscriptionFromStripe = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const stripe = getStripe();
+    const { userId } = context;
+
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("stripe_customer_id, plan_tier")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (!profile?.stripe_customer_id) {
+      return { ok: false as const, error: "no_customer" };
+    }
+
+    const subs = await stripe.subscriptions.list({
+      customer: profile.stripe_customer_id,
+      status: "all",
+      limit: 5,
+    });
+    const active = subs.data.find((s) =>
+      ["active", "trialing", "past_due", "incomplete"].includes(s.status),
+    );
+    if (!active) {
+      return { ok: false as const, error: "no_subscription" };
+    }
+    if (!active.metadata?.supabase_user_id) {
+      await stripe.subscriptions.update(active.id, {
+        metadata: { ...active.metadata, supabase_user_id: userId },
+      });
+      active.metadata = { ...active.metadata, supabase_user_id: userId };
+    }
+    await updateProfileFromSubscription(active);
+
+    const { data: updated } = await supabaseAdmin
+      .from("profiles")
+      .select("plan_tier")
+      .eq("id", userId)
+      .maybeSingle();
+    return { ok: true as const, tier: updated?.plan_tier ?? "starter" };
+  });
