@@ -79,20 +79,18 @@ function UpgradePage() {
     if (RANK[p] < RANK[plan]) {
       if (p === "ultra") return; // can't downgrade to ultra
       const effective = schedule?.periodEnd ? formatDate(schedule.periodEnd) : "";
-      const confirmMsg = t("upgrade.downgrade_confirm", {
-        plan: p,
-        date: effective || t("upgrade.next_renewal"),
-      });
+      const confirmMsg = t("upgrade.downgrade_confirm")
+        .replace("{plan}", p)
+        .replace("{date}", effective || t("upgrade.next_renewal"));
       if (!window.confirm(confirmMsg)) return;
       try {
         setLoading(p);
         const res = await downgradeFn({ data: { targetTier: p as "starter" | "premium" } });
         if (res?.ok) {
           toast.success(
-            t("upgrade.downgrade_scheduled", {
-              plan: p,
-              date: res.effectiveAt ? formatDate(res.effectiveAt) : "",
-            }),
+            t("upgrade.downgrade_scheduled")
+              .replace("{plan}", p)
+              .replace("{date}", res.effectiveAt ? formatDate(res.effectiveAt) : ""),
           );
           await refreshSchedule();
         } else {
@@ -163,15 +161,12 @@ function UpgradePage() {
           <Info className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
           <div className="flex-1 text-sm">
             <p className="text-amber-100 font-semibold">
-              {t("upgrade.pending_change_title", {
-                plan: schedule.pendingTier,
-              })}
+              {t("upgrade.pending_change_title").replace("{plan}", schedule.pendingTier)}
             </p>
             <p className="text-amber-100/80 mt-1">
-              {t("upgrade.pending_change_body", {
-                plan: schedule.pendingTier,
-                date: formatDate(schedule.periodEnd),
-              })}
+              {t("upgrade.pending_change_body")
+                .replace("{plan}", schedule.pendingTier)
+                .replace("{date}", formatDate(schedule.periodEnd))}
             </p>
             <button
               onClick={cancelPending}
