@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { syncSubscriptionFromStripe } from "@/lib/stripe.functions";
 
 export const Route = createFileRoute("/dashboard/checkout-success")({
   ssr: false,
