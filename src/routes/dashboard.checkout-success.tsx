@@ -82,7 +82,7 @@ function CheckoutSuccessPage() {
     return () => {
       cancelled = true;
     };
-  }, [navigate]);
+  }, [navigate, syncFn]);
 
   return (
     <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-6">
