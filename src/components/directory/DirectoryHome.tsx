@@ -266,7 +266,7 @@ export function DirectoryHome() {
 
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-5 sm:px-6 pt-8 md:pt-0 pb-6 md:pb-20">
-        <div className="rounded-2xl md:rounded-3xl bg-gradient-to-br from-[#df991b] via-[#fbbf24] to-[#f59e0b] text-black p-6 sm:p-10 md:p-16 text-center relative overflow-hidden shadow-2xl shadow-[#df991b]/10">
+        <div className="rounded-2xl md:rounded-3xl bg-gradient-to-br from-[#df991b] via-[#df991b] to-[#c4861a] text-black p-6 sm:p-10 md:p-16 text-center relative overflow-hidden shadow-2xl shadow-[#df991b]/10">
           <div
             className="absolute inset-0 pointer-events-none opacity-40 mix-blend-overlay"
             style={{
