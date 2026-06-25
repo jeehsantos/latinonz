@@ -73,7 +73,7 @@ export function SiteFooter() {
               <Instagram className="w-5 h-5" />
             </a>
             <a href="#" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-[#df991b] transition-colors" aria-label="WhatsApp">
-              <MessageCircle className="w-5 h-5" />
+              <WhatsAppIcon className="w-5 h-5" />
             </a>
           </div>
         </div>
