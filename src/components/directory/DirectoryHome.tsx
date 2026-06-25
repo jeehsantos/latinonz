@@ -144,7 +144,7 @@ export function DirectoryHome() {
       <section className="hidden md:block relative max-w-7xl mx-auto px-5 sm:px-6 py-10 sm:py-16">
         <div className="flex items-end justify-between mb-5 sm:mb-6">
           <div className="flex items-start gap-3">
-            <span className="mt-1 w-[3px] h-7 bg-[#FFC700] rounded-full shadow-[0_0_12px_rgba(255,199,0,0.6)]" />
+            <span className="mt-1 w-[3px] h-7 bg-[#df991b] rounded-full shadow-[0_0_12px_rgba(223,153,27,0.6)]" />
             <div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white">
                 {t("directory.categories_title")}
@@ -154,7 +154,7 @@ export function DirectoryHome() {
           </div>
           <Link
             to="/directory"
-            className="inline-flex text-sm font-bold text-[#FFC700] items-center gap-1 hover:gap-2 transition-all uppercase tracking-wider"
+            className="inline-flex text-sm font-bold text-[#df991b] items-center gap-1 hover:gap-2 transition-all uppercase tracking-wider"
           >
             {t("directory.see_all")} <ArrowRight size={14} />
           </Link>
@@ -172,14 +172,14 @@ export function DirectoryHome() {
                 className="spotlight-card group rounded-2xl p-4 sm:p-5 transition-transform duration-300 hover:-translate-y-1 flex flex-col"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <div className="w-11 h-11 rounded-xl bg-[#FFC700] text-black flex items-center justify-center shadow-[0_0_22px_-4px_rgba(255,199,0,0.6)]">
+                  <div className="w-11 h-11 rounded-xl bg-[#df991b] text-black flex items-center justify-center shadow-[0_0_22px_-4px_rgba(223,153,27,0.6)]">
                     <Icon size={20} />
                   </div>
-                  <span className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#FFC700]/15 text-[#FFC700]">
+                  <span className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#df991b]/15 text-[#df991b]">
                     {count}
                   </span>
                 </div>
-                <p className="mt-5 font-extrabold text-white text-[15px] leading-tight transition-colors group-hover:text-[#FFC700]">
+                <p className="mt-5 font-extrabold text-white text-[15px] leading-tight transition-colors group-hover:text-[#df991b]">
                   {g.label}
                 </p>
               </Link>
@@ -208,10 +208,10 @@ export function DirectoryHome() {
                 className="snap-start shrink-0 w-[120px] rounded-2xl bg-neutral-900 border border-white/10 p-3 flex flex-col gap-2 active:bg-neutral-800"
               >
                 <div className="flex items-center justify-between">
-                  <div className="w-9 h-9 rounded-xl bg-[#FFC700] text-black flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-[#df991b] text-black flex items-center justify-center">
                     <Icon size={16} />
                   </div>
-                  <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-[#FFC700]/15 text-[#FFC700]">
+                  <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-[#df991b]/15 text-[#df991b]">
                     {count}
                   </span>
                 </div>
@@ -226,7 +226,7 @@ export function DirectoryHome() {
       <section className="hidden md:block relative max-w-7xl mx-auto px-5 sm:px-6 pb-10 sm:pb-16">
         <div className="flex items-end justify-between mb-5 sm:mb-6">
           <div className="flex items-start gap-3">
-            <span className="mt-1 w-[3px] h-7 bg-[#FFC700] rounded-full shadow-[0_0_12px_rgba(255,199,0,0.6)]" />
+            <span className="mt-1 w-[3px] h-7 bg-[#df991b] rounded-full shadow-[0_0_12px_rgba(223,153,27,0.6)]" />
             <div>
               <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white">{t("directory.featured_title")}</h2>
               <p className="text-sm text-neutral-400 mt-1">{t("directory.featured_subtitle")}</p>
@@ -234,7 +234,7 @@ export function DirectoryHome() {
           </div>
           <Link
             to="/directory"
-            className="text-sm font-bold text-[#FFC700] inline-flex items-center gap-1 hover:gap-2 transition-all uppercase tracking-wider"
+            className="text-sm font-bold text-[#df991b] inline-flex items-center gap-1 hover:gap-2 transition-all uppercase tracking-wider"
           >
             {t("directory.see_more")} <ArrowRight size={14} />
           </Link>
@@ -302,7 +302,7 @@ function FeaturedCard({ business }: { business: Business }) {
       className="spotlight-card group rounded-3xl overflow-hidden flex flex-col cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.015]"
     >
       {/* Image */}
-      <div className="relative aspect-[4/3] bg-gradient-to-br from-neutral-900 via-[#FFC700]/5 to-neutral-950 flex items-center justify-center overflow-hidden">
+      <div className="relative aspect-[4/3] bg-gradient-to-br from-neutral-900 via-[#df991b]/5 to-neutral-950 flex items-center justify-center overflow-hidden">
         {business.logoUrl ? (
           <img
             src={business.logoUrl}
@@ -317,7 +317,7 @@ function FeaturedCard({ business }: { business: Business }) {
 
         {/* Rating top-right */}
         <span className="absolute top-3 right-3 inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/15 text-white">
-          <Star size={11} className="fill-[#FFC700] text-[#FFC700]" />
+          <Star size={11} className="fill-[#df991b] text-[#df991b]" />
           {business.rating.toFixed(1)}
           <span className="text-neutral-400 font-normal">({business.reviewCount})</span>
         </span>
@@ -329,7 +329,7 @@ function FeaturedCard({ business }: { business: Business }) {
       {/* Footer content */}
       <div className="p-4 sm:p-5 flex flex-col gap-2">
         <div className="flex items-center gap-1.5 min-w-0">
-          <h3 className="font-extrabold text-white text-lg leading-tight truncate group-hover:text-[#FFC700] transition-colors">
+          <h3 className="font-extrabold text-white text-lg leading-tight truncate group-hover:text-[#df991b] transition-colors">
             {business.name}
           </h3>
           <BadgeCheck size={16} className="text-sky-400 shrink-0 fill-sky-400/20" />
@@ -337,13 +337,13 @@ function FeaturedCard({ business }: { business: Business }) {
         <p className="text-xs text-neutral-400 line-clamp-2 leading-relaxed min-h-[2.4rem]">{business.description}</p>
         <div className="mt-2 pt-3 border-t border-white/5 flex flex-col gap-1.5">
           <span className="inline-flex items-center gap-1.5 text-[11px] text-neutral-400 min-w-0">
-            <MapPin size={12} className="shrink-0 text-[#FFC700]" />
+            <MapPin size={12} className="shrink-0 text-[#df991b]" />
             <span className="truncate">
               {business.locations && business.locations.length > 0 ? business.locations.join(", ") : business.location}
             </span>
           </span>
           <span className="inline-flex items-center gap-1.5 text-[11px] text-neutral-400 min-w-0">
-            <Tag size={12} className="shrink-0 text-[#FFC700]" />
+            <Tag size={12} className="shrink-0 text-[#df991b]" />
             <span className="truncate">{categoryLabel}</span>
           </span>
         </div>
