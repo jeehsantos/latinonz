@@ -77,7 +77,7 @@ export function SearchBar({
       </div>
       <button
         type="submit"
-        className="md:col-span-2 bg-neutral-900 hover:bg-[#df991b] transition-colors text-[#df991b] font-bold rounded-xl sm:rounded-2xl px-4 py-3 text-sm"
+        className="md:col-span-2 bg-neutral-900 hover:bg-[#df991b] transition-colors text-[#df991b] hover:text-white font-bold rounded-xl sm:rounded-2xl px-4 py-3 text-sm"
       >
         {t("directory.search_button")}
       </button>
