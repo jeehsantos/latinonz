@@ -113,7 +113,7 @@ function DirectoryPage() {
         <div className="absolute inset-0 -z-0 opacity-[0.04] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:48px_48px]" />
         <div className="relative max-w-7xl mx-auto px-5 sm:px-6 py-12 sm:py-20">
           <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 backdrop-blur-sm text-white/90 text-[11px] font-bold px-4 py-2 rounded-full mb-5 uppercase tracking-[0.18em]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#facc15]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#df991b]" />
             {t("directory.home_badge")}
           </div>
           <h1 className="text-4xl md:text-5xl font-black leading-tight text-white">
@@ -144,7 +144,7 @@ function DirectoryPage() {
             onClick={() => setSearch({ ...search, category: "" })}
             className={`snap-start shrink-0 text-sm font-semibold px-4 py-2 rounded-full border whitespace-nowrap transition ${
               !search.category
-                ? "bg-[#facc15] text-black border-[#facc15]"
+                ? "bg-[#df991b] text-black border-[#df991b]"
                 : "bg-neutral-900 border-white/10 hover:border-[#df991b] text-neutral-200"
             }`}
           >
@@ -156,7 +156,7 @@ function DirectoryPage() {
               onClick={() => setSearch({ ...search, category: g.id })}
               className={`snap-start shrink-0 text-sm font-semibold px-4 py-2 rounded-full border whitespace-nowrap transition ${
                 search.category === g.id
-                  ? "bg-[#facc15] text-black border-[#facc15]"
+                  ? "bg-[#df991b] text-black border-[#df991b]"
                   : "bg-neutral-900 border-white/10 hover:border-[#df991b] text-neutral-200"
               }`}
             >

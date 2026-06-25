@@ -16,57 +16,57 @@ export function SiteFooter() {
           <p className="text-sm mt-2 text-white/60">{t("footer_tagline")}</p>
         </div>
         <div>
-          <p className="text-[#facc15] font-bold mb-3">{t("footer_platform")}</p>
+          <p className="text-[#df991b] font-bold mb-3">{t("footer_platform")}</p>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link to="/directory" className="hover:text-[#facc15]">
+              <Link to="/directory" className="hover:text-[#df991b]">
                 {t("nav.directory")}
               </Link>
             </li>
             <li>
-              <Link to="/planos" className="hover:text-[#facc15]">
+              <Link to="/planos" className="hover:text-[#df991b]">
                 {t("nav.plans")}
               </Link>
             </li>
             <li>
-              <Link to="/cadastro" className="hover:text-[#facc15]">
+              <Link to="/cadastro" className="hover:text-[#df991b]">
                 {t("nav.register")}
               </Link>
             </li>
           </ul>
         </div>
         <div>
-          <p className="text-[#facc15] font-bold mb-3">{t("footer_content")}</p>
+          <p className="text-[#df991b] font-bold mb-3">{t("footer_content")}</p>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link to="/blog" className="hover:text-[#facc15]">
+              <Link to="/blog" className="hover:text-[#df991b]">
                 {t("nav.blog")}
               </Link>
             </li>
             <li>
-              <Link to="/sobre" className="hover:text-[#facc15]">
+              <Link to="/sobre" className="hover:text-[#df991b]">
                 {t("nav.about")}
               </Link>
             </li>
             <li>
-              <Link to="/contato" className="hover:text-[#facc15]">
+              <Link to="/contato" className="hover:text-[#df991b]">
                 {t("nav.contact")}
               </Link>
             </li>
           </ul>
         </div>
         <div>
-          <p className="text-[#facc15] font-bold mb-3">{t("footer_contact_col")}</p>
+          <p className="text-[#df991b] font-bold mb-3">{t("footer_contact_col")}</p>
           <p className="text-sm">hello@latinoconnecthub.co.nz</p>
           <p className="text-sm">Auckland, Nova Zelândia</p>
           <div className="flex items-center gap-4 mt-6">
-            <a href="#" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-[#facc15] transition-colors" aria-label="Facebook">
+            <a href="#" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-[#df991b] transition-colors" aria-label="Facebook">
               <Facebook className="w-5 h-5" />
             </a>
-            <a href="#" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-[#facc15] transition-colors" aria-label="Instagram">
+            <a href="#" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-[#df991b] transition-colors" aria-label="Instagram">
               <Instagram className="w-5 h-5" />
             </a>
-            <a href="#" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-[#facc15] transition-colors" aria-label="WhatsApp">
+            <a href="#" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-[#df991b] transition-colors" aria-label="WhatsApp">
               <MessageCircle className="w-5 h-5" />
             </a>
           </div>
@@ -78,10 +78,10 @@ export function SiteFooter() {
             © {new Date().getFullYear()} Latino Connect Hub. {t("footer_rights")}
           </p>
           <div className="flex flex-wrap gap-4">
-            <Link to="/privacy" className="hover:text-[#facc15]">
+            <Link to="/privacy" className="hover:text-[#df991b]">
               {t("footer_legal.privacy")}
             </Link>
-            <Link to="/terms" className="hover:text-[#facc15]">
+            <Link to="/terms" className="hover:text-[#df991b]">
               {t("footer_legal.terms")}
             </Link>
             <span>{t("footer_made_with")}</span>

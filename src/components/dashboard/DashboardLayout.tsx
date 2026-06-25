@@ -147,7 +147,7 @@ export function DashboardLayout() {
               className="w-9 h-9 rounded-full object-cover border border-white/10"
             />
           ) : (
-            <div className="w-9 h-9 rounded-full bg-black text-[#facc15] font-bold flex items-center justify-center">
+            <div className="w-9 h-9 rounded-full bg-black text-[#df991b] font-bold flex items-center justify-center">
               {initial}
             </div>
           )}
@@ -208,7 +208,7 @@ export function DashboardLayout() {
                   <Icon size={18} />
                   <span className="flex-1">{n.label}</span>
                   {n.badge ? (
-                    <span className="bg-amber-400 text-[#facc15] text-[11px] font-bold rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center">
+                    <span className="bg-amber-400 text-[#df991b] text-[11px] font-bold rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center">
                       {n.badge}
                     </span>
                   ) : null}

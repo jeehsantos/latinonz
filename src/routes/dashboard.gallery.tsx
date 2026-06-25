@@ -136,7 +136,7 @@ function GalleryPage() {
         </p>
         {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
         {uploading && progress && (
-          <p className="text-sm text-[#facc15] mt-2">
+          <p className="text-sm text-[#df991b] mt-2">
             {t("gallery.uploading_progress")
               .replace("{done}", String(progress.done))
               .replace("{total}", String(progress.total))}
@@ -162,11 +162,11 @@ function GalleryPage() {
           tabIndex={0}
           className={`rounded-2xl border-2 border-dashed p-8 text-center cursor-pointer transition ${
             isDragging
-              ? "border-[#facc15] bg-[#facc15]/5"
-              : "border-white/15 hover:border-[#facc15]/60 hover:bg-white/[0.02]"
+              ? "border-[#df991b] bg-[#df991b]/5"
+              : "border-white/15 hover:border-[#df991b]/60 hover:bg-white/[0.02]"
           } ${uploading ? "opacity-60 cursor-not-allowed" : ""}`}
         >
-          <Plus className="mx-auto text-[#facc15]" size={24} />
+          <Plus className="mx-auto text-[#df991b]" size={24} />
           <p className="mt-2 text-sm font-bold text-white">
             {isDragging
               ? t("gallery.drop_to_upload")

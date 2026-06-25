@@ -68,7 +68,7 @@ function ResetPasswordPage() {
 
           {checking ? (
             <div className="mt-8 flex justify-center">
-              <Loader2 className="h-6 w-6 text-[#facc15] animate-spin" />
+              <Loader2 className="h-6 w-6 text-[#df991b] animate-spin" />
             </div>
           ) : !hasSession ? (
             <div className="mt-6 space-y-4">
@@ -77,7 +77,7 @@ function ResetPasswordPage() {
               </p>
               <Link
                 to="/forgot-password"
-                className="block w-full text-center bg-[#facc15] hover:bg-yellow-300 text-black font-bold rounded-xl py-3 text-sm transition"
+                className="block w-full text-center bg-[#df991b] hover:bg-yellow-300 text-black font-bold rounded-xl py-3 text-sm transition"
               >
                 {t("reset_password.request_new_link")}
               </Link>
@@ -98,7 +98,7 @@ function ResetPasswordPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1 w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#facc15]/50"
+                  className="mt-1 w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#df991b]/50"
                 />
               </div>
               <div>
@@ -110,14 +110,14 @@ function ResetPasswordPage() {
                   required
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
-                  className="mt-1 w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#facc15]/50"
+                  className="mt-1 w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#df991b]/50"
                 />
               </div>
               {error && <p className="text-sm text-red-400">{error}</p>}
               <button
                 type="submit"
                 disabled={loading}
-                className="block w-full text-center bg-[#facc15] hover:bg-yellow-300 disabled:opacity-60 text-black font-bold rounded-xl py-3 text-sm transition"
+                className="block w-full text-center bg-[#df991b] hover:bg-yellow-300 disabled:opacity-60 text-black font-bold rounded-xl py-3 text-sm transition"
               >
                 {loading ? t("reset_password.button_saving") : t("reset_password.button_save")}
               </button>

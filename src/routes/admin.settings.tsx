@@ -43,7 +43,7 @@ function AdminSettingsPage() {
             onClick={() => setTab(t.id)}
             className={`px-4 py-2.5 text-sm font-bold whitespace-nowrap border-b-2 transition ${
               tab === t.id
-                ? "border-[#facc15] text-[#facc15]"
+                ? "border-[#df991b] text-[#df991b]"
                 : "border-transparent text-neutral-400 hover:text-white"
             }`}
           >
@@ -104,7 +104,7 @@ function SiteModeSection() {
         </div>
       )}
       <p className="text-xs text-neutral-500 mt-4">
-        Dica: visite qualquer página com <code className="text-[#facc15]">?preview=platform</code>{" "}
+        Dica: visite qualquer página com <code className="text-[#df991b]">?preview=platform</code>{" "}
         para pré-visualizar a plataforma sem alterar o modo público.
       </p>
     </section>
@@ -131,13 +131,13 @@ function ModeCard({
       disabled={disabled}
       className={`text-left p-5 rounded-2xl border-2 transition disabled:opacity-50 ${
         active
-          ? "border-[#facc15] bg-[#facc15]/10"
+          ? "border-[#df991b] bg-[#df991b]/10"
           : "border-white/10 bg-neutral-950 hover:border-white/20"
       }`}
     >
       <div className="flex items-center justify-between">
         <span className="text-white font-bold">{title}</span>
-        {active && <Check size={16} className="text-[#facc15]" />}
+        {active && <Check size={16} className="text-[#df991b]" />}
       </div>
       <p className="text-xs text-neutral-400 mt-1">{desc}</p>
     </button>
@@ -215,7 +215,7 @@ function CitiesSection() {
             <input
               value={city}
               onChange={(e) => rename(idx, e.target.value)}
-              className="flex-1 bg-neutral-950 border border-white/10 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-[#facc15]"
+              className="flex-1 bg-neutral-950 border border-white/10 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-[#df991b]"
             />
             <button
               type="button"
@@ -240,7 +240,7 @@ function CitiesSection() {
             }
           }}
           placeholder="Nova cidade (ex: Dunedin)"
-          className="flex-1 bg-neutral-950 border border-white/10 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-[#facc15]"
+          className="flex-1 bg-neutral-950 border border-white/10 rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-[#df991b]"
         />
         <button
           type="button"
@@ -257,7 +257,7 @@ function CitiesSection() {
           type="button"
           onClick={save}
           disabled={!dirty || update.isPending}
-          className="px-5 py-2.5 rounded-xl bg-[#facc15] text-neutral-900 font-bold text-sm inline-flex items-center gap-2 disabled:opacity-50"
+          className="px-5 py-2.5 rounded-xl bg-[#df991b] text-neutral-900 font-bold text-sm inline-flex items-center gap-2 disabled:opacity-50"
         >
           {update.isPending ? <Loader2 className="animate-spin" size={14} /> : <Save size={14} />}
           Salvar
@@ -364,7 +364,7 @@ function CategoriesSection() {
           setError(null);
         }}
         spellCheck={false}
-        className="mt-4 w-full h-[480px] font-mono text-xs bg-neutral-950 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-[#facc15] resize-y"
+        className="mt-4 w-full h-[480px] font-mono text-xs bg-neutral-950 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-[#df991b] resize-y"
       />
 
       {error && (
@@ -380,7 +380,7 @@ function CategoriesSection() {
           type="button"
           onClick={save}
           disabled={!dirty || update.isPending}
-          className="px-5 py-2.5 rounded-xl bg-[#facc15] text-neutral-900 font-bold text-sm inline-flex items-center gap-2 disabled:opacity-50"
+          className="px-5 py-2.5 rounded-xl bg-[#df991b] text-neutral-900 font-bold text-sm inline-flex items-center gap-2 disabled:opacity-50"
         >
           {update.isPending ? <Loader2 className="animate-spin" size={14} /> : <Save size={14} />}
           Salvar
