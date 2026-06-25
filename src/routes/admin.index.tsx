@@ -217,7 +217,7 @@ function AdminMetricsPage() {
                       <span className="font-bold text-white">{row.count}</span>
                     </div>
                     <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                      <div className="h-full bg-[#facc15]" style={{ width: `${pct}%` }} />
+                      <div className="h-full bg-[#df991b]" style={{ width: `${pct}%` }} />
                     </div>
                   </li>
                 );
@@ -272,7 +272,7 @@ function AdminMetricsPage() {
           <p className="text-xs text-neutral-500 mt-1">NZ$ 49 / mês</p>
         </div>
         <div className="bg-neutral-900 border border-white/10 rounded-3xl p-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-[#facc15]">Plano Ultra</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-[#df991b]">Plano Ultra</p>
           <p className="text-2xl font-black mt-2">{planCounts.ultra ?? 0}</p>
           <p className="text-xs text-neutral-500 mt-1">NZ$ 99 / mês</p>
         </div>

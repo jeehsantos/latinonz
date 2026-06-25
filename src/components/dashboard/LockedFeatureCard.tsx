@@ -27,7 +27,7 @@ export function LockedFeatureCard({
       </p>
       <Link
         to="/dashboard/upgrade"
-        className="inline-flex mt-5 bg-neutral-900 hover:bg-white/5 text-[#facc15] text-sm font-bold px-5 py-2.5 rounded-xl"
+        className="inline-flex mt-5 bg-neutral-900 hover:bg-white/5 text-[#df991b] text-sm font-bold px-5 py-2.5 rounded-xl"
       >
         {t("locked_feature.upgrade_button")}
       </Link>

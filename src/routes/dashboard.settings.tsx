@@ -14,7 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
 const PRESET_COLORS = [
-  { nameKey: "settings.colors.verde", value: "#facc15" },
+  { nameKey: "settings.colors.verde", value: "#df991b" },
   { nameKey: "settings.colors.azul", value: "#1E3A8A" },
   { nameKey: "settings.colors.vinho", value: "#7F1D1D" },
   { nameKey: "settings.colors.roxo", value: "#5B21B6" },
@@ -23,13 +23,13 @@ const PRESET_COLORS = [
 ];
 
 const PLAN_ACCENT: Record<PlanTier, string> = {
-  starter: "#facc15",
+  starter: "#df991b",
   premium: "#a78bfa",
   ultra: "#f472b6",
 };
 
 const PLAN_GRADIENT: Record<PlanTier, string> = {
-  starter: "from-[#facc15]/10 to-transparent",
+  starter: "from-[#df991b]/10 to-transparent",
   premium: "from-[#a78bfa]/10 to-transparent",
   ultra:   "from-[#f472b6]/10 to-transparent",
 };
@@ -155,7 +155,7 @@ function SettingsPage() {
                   className={cn(
                     "flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-medium transition whitespace-nowrap text-left",
                     isActive
-                      ? "bg-[#facc15]/10 text-[#facc15] border border-[#facc15]/20"
+                      ? "bg-[#df991b]/10 text-[#df991b] border border-[#df991b]/20"
                       : "text-neutral-400 hover:text-white hover:bg-white/5 border border-transparent",
                   )}
                 >
@@ -229,7 +229,7 @@ function SettingsPage() {
                     type="button"
                     onClick={handleChangePlan}
                     disabled={portalLoading}
-                    className="inline-flex items-center gap-2 bg-[#facc15] hover:bg-[#facc15]/90 disabled:opacity-60 text-neutral-950 font-bold rounded-xl px-6 py-3 text-sm transition-all hover:shadow-lg hover:shadow-[#facc15]/20"
+                    className="inline-flex items-center gap-2 bg-[#df991b] hover:bg-[#df991b]/90 disabled:opacity-60 text-neutral-950 font-bold rounded-xl px-6 py-3 text-sm transition-all hover:shadow-lg hover:shadow-[#df991b]/20"
                   >
                     <CreditCard className="h-4 w-4" />
                     {portalLoading ? t("settings.opening_portal") : t("settings.change_plan")}
@@ -338,14 +338,14 @@ function SettingsPage() {
                   className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white"
                 />
               </div>
-              <button className="bg-[#facc15] hover:bg-[#facc15]/90 text-neutral-950 font-bold rounded-xl px-5 py-2.5 text-sm">
+              <button className="bg-[#df991b] hover:bg-[#df991b]/90 text-neutral-950 font-bold rounded-xl px-5 py-2.5 text-sm">
                 {t("settings.save_button")}
               </button>
 
               {/* Email Language Preference */}
               <div className="border-t border-white/10 pt-5 mt-2">
                 <div className="flex items-center gap-2 mb-1">
-                  <Globe className="h-4 w-4 text-[#facc15]" />
+                  <Globe className="h-4 w-4 text-[#df991b]" />
                   <label className="text-xs font-bold uppercase text-neutral-400">
                     {t("settings.email_language_label" as any)}
                   </label>
@@ -397,7 +397,7 @@ function SettingsPage() {
               <div className="space-y-4">
                 <div className="rounded-2xl border border-white/10 p-4 space-y-2">
                   <div className="flex items-center gap-2">
-                    <Download className="h-4 w-4 text-[#facc15]" />
+                    <Download className="h-4 w-4 text-[#df991b]" />
                     <h3 className="font-bold text-sm text-white">{t("settings.data_request_title")}</h3>
                   </div>
                   <p className="text-sm text-neutral-400">
@@ -429,7 +429,7 @@ function SettingsPage() {
 
                 <a
                   href="/privacy"
-                  className="inline-flex items-center gap-1.5 text-sm text-[#facc15] hover:underline"
+                  className="inline-flex items-center gap-1.5 text-sm text-[#df991b] hover:underline"
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
                   {t("settings.privacy_policy_link")}

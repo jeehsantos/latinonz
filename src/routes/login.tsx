@@ -101,7 +101,7 @@ function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#facc15]/50"
+                className="mt-1 w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#df991b]/50"
               />
             </div>
             <div>
@@ -113,14 +113,14 @@ function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#facc15]/50"
+                className="mt-1 w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#df991b]/50"
               />
             </div>
             {error && <p className="text-sm text-red-400">{error}</p>}
             <button
               type="submit"
               disabled={loading}
-              className="block w-full text-center bg-[#facc15] hover:bg-yellow-300 disabled:opacity-60 text-black font-bold rounded-xl py-3 text-sm transition"
+              className="block w-full text-center bg-[#df991b] hover:bg-yellow-300 disabled:opacity-60 text-black font-bold rounded-xl py-3 text-sm transition"
             >
               {loading ? "..." : t("login.submit")}
             </button>
@@ -128,14 +128,14 @@ function LoginPage() {
           <div className="mt-3 text-center">
             <Link
               to="/forgot-password"
-              className="text-xs font-semibold text-neutral-400 hover:text-[#facc15]"
+              className="text-xs font-semibold text-neutral-400 hover:text-[#df991b]"
             >
               {t("login.forgot_password_link")}
             </Link>
           </div>
           <p className="text-xs text-neutral-400 text-center mt-4">
             {t("login.no_account")}{" "}
-            <Link to="/cadastro" className="font-bold text-[#facc15] hover:text-yellow-300">
+            <Link to="/cadastro" className="font-bold text-[#df991b] hover:text-yellow-300">
               {t("login.register_link")}
             </Link>
           </p>

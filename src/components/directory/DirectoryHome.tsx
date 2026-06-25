@@ -90,7 +90,7 @@ export function DirectoryHome() {
           <h1 className="font-['Barlow_Condensed'] font-black tracking-tight leading-[0.95] text-white uppercase text-5xl md:text-7xl whitespace-pre-line drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
             {t("directory.home_headline_before")}
             {"\n"}
-            <span className="text-[#facc15]">{t("directory.home_headline_highlight")}</span>
+            <span className="text-[#df991b]">{t("directory.home_headline_highlight")}</span>
           </h1>
           <div className="mt-10 max-w-4xl mx-auto">
             <SearchBar value={search} onChange={setSearch} onSubmit={handleSearchSubmit} />
@@ -102,7 +102,7 @@ export function DirectoryHome() {
           <h1 className="font-['Barlow_Condensed'] text-[32px] font-black tracking-tight leading-[0.95] text-white uppercase whitespace-pre-line drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
             {t("directory.home_headline_before")}
             {"\n"}
-            <span className="text-[#facc15]">{t("directory.home_headline_highlight")}</span>
+            <span className="text-[#df991b]">{t("directory.home_headline_highlight")}</span>
           </h1>
           <div className="mt-5">
             <MobileSearchBar value={search} onChange={setSearch} />
@@ -192,7 +192,7 @@ export function DirectoryHome() {
       <section className="md:hidden mt-7">
         <div className="flex items-end justify-between px-5 mb-3">
           <h2 className="text-lg font-black text-white">{t("directory.categories_title")}</h2>
-          <Link to="/directory" className="text-xs font-bold text-[#facc15] uppercase tracking-wider inline-flex items-center gap-0.5">
+          <Link to="/directory" className="text-xs font-bold text-[#df991b] uppercase tracking-wider inline-flex items-center gap-0.5">
             {t("directory.see_all")} <ArrowRight size={12} />
           </Link>
         </div>
@@ -250,7 +250,7 @@ export function DirectoryHome() {
       <section className="md:hidden mt-8">
         <div className="flex items-end justify-between px-5 mb-3">
           <h2 className="text-lg font-black text-white">{t("directory.featured_title")}</h2>
-          <Link to="/directory" className="text-xs font-bold text-[#facc15] uppercase tracking-wider inline-flex items-center gap-0.5">
+          <Link to="/directory" className="text-xs font-bold text-[#df991b] uppercase tracking-wider inline-flex items-center gap-0.5">
             {t("directory.see_more")} <ArrowRight size={12} />
           </Link>
         </div>
@@ -266,7 +266,7 @@ export function DirectoryHome() {
 
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-5 sm:px-6 pt-8 md:pt-0 pb-6 md:pb-20">
-        <div className="rounded-2xl md:rounded-3xl bg-gradient-to-br from-[#facc15] via-[#fbbf24] to-[#f59e0b] text-black p-6 sm:p-10 md:p-16 text-center relative overflow-hidden shadow-2xl shadow-[#facc15]/10">
+        <div className="rounded-2xl md:rounded-3xl bg-gradient-to-br from-[#df991b] via-[#fbbf24] to-[#f59e0b] text-black p-6 sm:p-10 md:p-16 text-center relative overflow-hidden shadow-2xl shadow-[#df991b]/10">
           <div
             className="absolute inset-0 pointer-events-none opacity-40 mix-blend-overlay"
             style={{
@@ -279,7 +279,7 @@ export function DirectoryHome() {
             <p className="mt-2 sm:mt-3 text-[13px] sm:text-base text-black/75 max-w-xl mx-auto">{t("directory.cta_body")}</p>
             <Link
               to="/cadastro"
-              className="inline-flex mt-4 sm:mt-6 bg-black text-[#facc15] font-bold px-6 sm:px-7 py-2.5 sm:py-3 rounded-full hover:bg-neutral-900 transition shadow-lg text-sm sm:text-base"
+              className="inline-flex mt-4 sm:mt-6 bg-black text-[#df991b] font-bold px-6 sm:px-7 py-2.5 sm:py-3 rounded-full hover:bg-neutral-900 transition shadow-lg text-sm sm:text-base"
             >
               {t("directory.cta_button")}
             </Link>

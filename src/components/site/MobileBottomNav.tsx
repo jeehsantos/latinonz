@@ -38,7 +38,7 @@ export function MobileBottomNav() {
               <Link
                 to={it.to as "/"}
                 activeOptions={it.exact ? { exact: true } : undefined}
-                activeProps={{ className: "text-[#facc15]" }}
+                activeProps={{ className: "text-[#df991b]" }}
                 inactiveProps={{ className: "text-neutral-500" }}
                 className="flex flex-col items-center justify-center gap-1 py-3 min-h-[60px] text-[10px] font-semibold uppercase tracking-wider transition-colors"
               >

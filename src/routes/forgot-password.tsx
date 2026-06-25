@@ -66,14 +66,14 @@ function ForgotPasswordPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1 w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#facc15]/50"
+                  className="mt-1 w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#df991b]/50"
                 />
               </div>
               {error && <p className="text-sm text-red-400">{error}</p>}
               <button
                 type="submit"
                 disabled={loading}
-                className="block w-full text-center bg-[#facc15] hover:bg-yellow-300 disabled:opacity-60 text-black font-bold rounded-xl py-3 text-sm transition"
+                className="block w-full text-center bg-[#df991b] hover:bg-yellow-300 disabled:opacity-60 text-black font-bold rounded-xl py-3 text-sm transition"
               >
                 {loading ? t("forgot_password.button_sending") : t("forgot_password.button_send")}
               </button>
@@ -82,7 +82,7 @@ function ForgotPasswordPage() {
 
           <p className="text-xs text-neutral-400 text-center mt-4">
             {t("forgot_password.back_to_login")}{" "}
-            <Link to="/login" className="font-bold text-[#facc15] hover:text-yellow-300">
+            <Link to="/login" className="font-bold text-[#df991b] hover:text-yellow-300">
               {t("forgot_password.back_to_login_action")}
             </Link>
           </p>

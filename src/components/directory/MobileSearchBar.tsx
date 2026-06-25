@@ -58,19 +58,19 @@ export function MobileSearchBar({
             value={value.q}
             onChange={(e) => onChange({ ...value, q: e.target.value })}
             placeholder={t("directory.search_placeholder")}
-            className="w-full bg-neutral-900 border border-white/10 rounded-full pl-10 pr-4 py-3 text-sm text-white placeholder:text-neutral-500 focus:border-[#facc15] outline-none"
+            className="w-full bg-neutral-900 border border-white/10 rounded-full pl-10 pr-4 py-3 text-sm text-white placeholder:text-neutral-500 focus:border-[#df991b] outline-none"
           />
         </div>
         <Sheet open={open} onOpenChange={(o) => { setOpen(o); if (o) setDraft(value); }}>
           <SheetTrigger asChild>
             <button
               type="button"
-              className="relative shrink-0 h-12 w-12 rounded-full bg-[#facc15] text-black flex items-center justify-center shadow-lg shadow-[#facc15]/20"
+              className="relative shrink-0 h-12 w-12 rounded-full bg-[#df991b] text-black flex items-center justify-center shadow-lg shadow-[#df991b]/20"
               aria-label="Filters"
             >
               <SlidersHorizontal size={18} />
               {activeFilterCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-black text-[#facc15] text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 border border-[#facc15]">
+                <span className="absolute -top-1 -right-1 bg-black text-[#df991b] text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 border border-[#df991b]">
                   {activeFilterCount}
                 </span>
               )}
@@ -88,7 +88,7 @@ export function MobileSearchBar({
                 <select
                   value={draft.category}
                   onChange={(e) => setDraft({ ...draft, category: e.target.value })}
-                  className="w-full bg-neutral-900 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white outline-none focus:border-[#facc15]"
+                  className="w-full bg-neutral-900 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white outline-none focus:border-[#df991b]"
                 >
                   <option value="">{t("directory.all_areas")}</option>
                   {groups.map((group) => {
@@ -111,7 +111,7 @@ export function MobileSearchBar({
                 <select
                   value={draft.city}
                   onChange={(e) => setDraft({ ...draft, city: e.target.value })}
-                  className="w-full bg-neutral-900 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white outline-none focus:border-[#facc15]"
+                  className="w-full bg-neutral-900 border border-white/10 rounded-2xl px-4 py-3 text-sm text-white outline-none focus:border-[#df991b]"
                 >
                   <option value="">{t("directory.all_nz")}</option>
                   {NZ_CITIES.map((c) => (
@@ -130,7 +130,7 @@ export function MobileSearchBar({
                 <button
                   type="button"
                   onClick={apply}
-                  className="flex-1 py-3 rounded-full bg-[#facc15] text-black font-bold text-sm"
+                  className="flex-1 py-3 rounded-full bg-[#df991b] text-black font-bold text-sm"
                 >
                   {t("directory.search_button")}
                 </button>
@@ -155,7 +155,7 @@ function Chip({ label, onClear }: { label: string; onClear: () => void }) {
   return (
     <button
       onClick={onClear}
-      className="inline-flex items-center gap-1.5 bg-[#facc15]/15 text-[#facc15] border border-[#facc15]/30 rounded-full px-3 py-1 text-xs font-semibold"
+      className="inline-flex items-center gap-1.5 bg-[#df991b]/15 text-[#df991b] border border-[#df991b]/30 rounded-full px-3 py-1 text-xs font-semibold"
     >
       {label}
       <X size={12} />

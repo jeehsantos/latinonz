@@ -71,7 +71,7 @@ function AdminCouponsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-black text-white flex items-center gap-3">
-          <Ticket className="text-[#facc15]" /> Cupons promocionais
+          <Ticket className="text-[#df991b]" /> Cupons promocionais
         </h1>
         <p className="text-neutral-400 mt-1">
           Imagens enviadas pelos negócios para divulgação na nossa comunidade.
@@ -112,7 +112,7 @@ function AdminCouponsPage() {
                       className="w-9 h-9 rounded-full object-cover border border-white/10"
                     />
                   ) : (
-                    <div className="w-9 h-9 rounded-full bg-neutral-800 text-[#facc15] flex items-center justify-center font-bold">
+                    <div className="w-9 h-9 rounded-full bg-neutral-800 text-[#df991b] flex items-center justify-center font-bold">
                       {(c.business?.name ?? "?").charAt(0)}
                     </div>
                   )}
@@ -123,7 +123,7 @@ function AdminCouponsPage() {
                         href={`/business/${c.business.slug}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-xs text-neutral-400 hover:text-[#facc15] inline-flex items-center gap-1"
+                        className="text-xs text-neutral-400 hover:text-[#df991b] inline-flex items-center gap-1"
                       >
                         ver perfil <ExternalLink size={11} />
                       </a>
@@ -139,7 +139,7 @@ function AdminCouponsPage() {
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  <span className="text-xs font-bold tracking-wider bg-[#facc15] text-neutral-900 rounded-full px-3 py-1">
+                  <span className="text-xs font-bold tracking-wider bg-[#df991b] text-neutral-900 rounded-full px-3 py-1">
                     {c.code}
                   </span>
                   {discountLabel(c) && (
@@ -160,7 +160,7 @@ function AdminCouponsPage() {
                     download
                     target="_blank"
                     rel="noreferrer"
-                    className="flex-1 bg-[#facc15] hover:bg-[#fde047] text-neutral-900 font-bold rounded-xl px-3 py-2 text-sm flex items-center justify-center gap-2"
+                    className="flex-1 bg-[#df991b] hover:bg-[#c4861a] text-neutral-900 font-bold rounded-xl px-3 py-2 text-sm flex items-center justify-center gap-2"
                   >
                     <Download size={14} /> Baixar imagem
                   </a>

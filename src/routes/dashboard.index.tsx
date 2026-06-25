@@ -101,7 +101,7 @@ function DashboardOverview() {
       <div className="bg-neutral-900 border border-white/10 rounded-3xl p-5 sm:p-8">
         <div className="flex items-center justify-between">
           <h2 className="font-extrabold text-white">{t("dashboard.recent_leads_title")}</h2>
-          <Link to="/dashboard/leads" className="text-sm font-bold text-[#facc15]">
+          <Link to="/dashboard/leads" className="text-sm font-bold text-[#df991b]">
             {t("dashboard.see_all_leads")}
           </Link>
         </div>

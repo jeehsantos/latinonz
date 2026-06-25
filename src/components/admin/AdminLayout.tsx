@@ -107,7 +107,7 @@ export function AdminLayout() {
           <div className="flex flex-col gap-2">
             <button
               onClick={logout}
-              className="w-full bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold py-3 rounded-xl inline-flex items-center justify-center gap-2"
+              className="w-full bg-neutral-900 hover:bg-white/5 text-[#df991b] font-bold py-3 rounded-xl inline-flex items-center justify-center gap-2"
             >
               <LogOut size={16} /> Sair
             </button>
@@ -129,7 +129,7 @@ export function AdminLayout() {
         <Link to="/" className="flex items-center shrink-0">
           <img src={logo} alt="Latino Connect" className="h-9 w-auto" />
         </Link>
-        <span className="hidden sm:inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border bg-[#facc15]/10 text-[#facc15] border-[#facc15]/20">
+        <span className="hidden sm:inline-flex items-center text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border bg-[#df991b]/10 text-[#df991b] border-[#df991b]/20">
           Admin
         </span>
         <div className="ml-auto flex items-center gap-3">
@@ -165,7 +165,7 @@ export function AdminLayout() {
                   to={n.to}
                   onClick={() => setMobileOpen(false)}
                   className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition ${
-                    active ? "bg-[#facc15] text-white font-bold" : "text-white/70 hover:bg-[#143d27] font-medium"
+                    active ? "bg-[#df991b] text-white font-bold" : "text-white/70 hover:bg-[#143d27] font-medium"
                   }`}
                 >
                   <Icon size={18} />
