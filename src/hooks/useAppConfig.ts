@@ -36,7 +36,7 @@ export function useCitiesConfig() {
       }
     },
     staleTime: 5 * 60_000,
-    initialData: DEFAULT_CITIES,
+    placeholderData: DEFAULT_CITIES,
   });
   return q.data ?? DEFAULT_CITIES;
 }
@@ -59,7 +59,7 @@ export function useCategoriesConfig(): CategoriesConfig {
       }
     },
     staleTime: 5 * 60_000,
-    initialData: categoriesDefault,
+    placeholderData: categoriesDefault,
   });
   return q.data ?? categoriesDefault;
 }
