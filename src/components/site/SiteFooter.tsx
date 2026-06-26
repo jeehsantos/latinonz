@@ -17,7 +17,7 @@ export function SiteFooter() {
       <div className="max-w-7xl mx-auto px-6 py-12 grid gap-8 md:grid-cols-4">
         <div>
           <Link to="/" className="flex items-center">
-            <img src={logo} alt="Latino Connect Hub" className="h-26 md:h-16 w-auto" />
+            <img src={logo} alt="Latino Connect Hub" className="h-16 md:h-24 w-auto" />
           </Link>
           <p className="text-sm mt-2 text-white/60">{t("footer_tagline")}</p>
         </div>
