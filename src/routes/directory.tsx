@@ -118,7 +118,7 @@ function DirectoryPage() {
   useEffect(() => {
     const key = `${search.q}|${search.category}|${search.city}`;
     if (filterKeyRef.current && filterKeyRef.current !== key && (initial.page ?? 1) !== 1) {
-      navigate({ search: (prev) => ({ ...prev, page: 1 }), replace: true });
+      navigate({ search: (prev: Record<string, unknown>) => ({ ...prev, page: 1 }), replace: true });
     }
     filterKeyRef.current = key;
   }, [search.q, search.category, search.city, navigate, initial.page]);
