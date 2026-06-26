@@ -1,9 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
 import { MobileSearchBar } from "@/components/directory/MobileSearchBar";
@@ -14,10 +15,13 @@ import { adaptBusiness } from "@/lib/business.adapter";
 import { useCategories } from "@/hooks/useCategories";
 import { useI18n, usePageMetadata } from "@/lib/i18n";
 
+const PAGE_SIZE = 12;
+
 const directorySearchSchema = z.object({
   q: fallback(z.string(), "").default(""),
   category: fallback(z.string(), "").default(""),
   city: fallback(z.string(), "").default(""),
+  page: fallback(z.number().int().min(1), 1).default(1),
 });
 
 export const Route = createFileRoute("/directory")({
@@ -99,6 +103,50 @@ function DirectoryPage() {
       return true;
     });
   }, [businesses, search, groupIds]);
+
+  const navigate = useNavigate({ from: "/directory" });
+  const page = Math.max(1, initial.page || 1);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const paginated = useMemo(
+    () => filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [filtered, currentPage],
+  );
+
+  // Reset to page 1 when filters change
+  const filterKeyRef = useRef("");
+  useEffect(() => {
+    const key = `${search.q}|${search.category}|${search.city}`;
+    if (filterKeyRef.current && filterKeyRef.current !== key && (initial.page ?? 1) !== 1) {
+      navigate({ search: (prev: Record<string, unknown>) => ({ ...prev, page: 1 }), replace: true });
+    }
+    filterKeyRef.current = key;
+  }, [search.q, search.category, search.city, navigate, initial.page]);
+
+  const goToPage = (p: number) => {
+    const next = Math.min(Math.max(1, p), totalPages);
+    navigate({ search: (prev: Record<string, unknown>) => ({ ...prev, page: next }) });
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const pageNumbers = useMemo(() => {
+    const pages: (number | "ellipsis")[] = [];
+    const add = (n: number) => pages.push(n);
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) add(i);
+    } else {
+      add(1);
+      if (currentPage > 3) pages.push("ellipsis");
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      for (let i = start; i <= end; i++) add(i);
+      if (currentPage < totalPages - 2) pages.push("ellipsis");
+      add(totalPages);
+    }
+    return pages;
+  }, [currentPage, totalPages]);
 
   return (
     <SiteShell>
@@ -187,11 +235,59 @@ function DirectoryPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
-            {filtered.map((b) => (
-              <BusinessCard key={b.id} business={b} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+              {paginated.map((b) => (
+                <BusinessCard key={b.id} business={b} />
+              ))}
+            </div>
+            {totalPages > 1 && (
+              <nav
+                aria-label="Pagination"
+                className="mt-8 sm:mt-10 flex items-center justify-center gap-1.5 flex-wrap"
+              >
+                <button
+                  onClick={() => goToPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="inline-flex items-center gap-1 h-9 px-3 rounded-lg border border-white/10 bg-neutral-900 text-sm font-semibold text-neutral-200 hover:border-[#df991b] hover:text-[#df991b] disabled:opacity-40 disabled:cursor-not-allowed transition"
+                  aria-label="Previous page"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                {pageNumbers.map((p, i) =>
+                  p === "ellipsis" ? (
+                    <span
+                      key={`e-${i}`}
+                      className="h-9 w-9 inline-flex items-center justify-center text-neutral-500 text-sm"
+                    >
+                      …
+                    </span>
+                  ) : (
+                    <button
+                      key={p}
+                      onClick={() => goToPage(p)}
+                      aria-current={p === currentPage ? "page" : undefined}
+                      className={`h-9 min-w-9 px-3 rounded-lg border text-sm font-semibold transition ${
+                        p === currentPage
+                          ? "bg-[#df991b] text-black border-[#df991b]"
+                          : "bg-neutral-900 border-white/10 text-neutral-200 hover:border-[#df991b] hover:text-[#df991b]"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  ),
+                )}
+                <button
+                  onClick={() => goToPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="inline-flex items-center gap-1 h-9 px-3 rounded-lg border border-white/10 bg-neutral-900 text-sm font-semibold text-neutral-200 hover:border-[#df991b] hover:text-[#df991b] disabled:opacity-40 disabled:cursor-not-allowed transition"
+                  aria-label="Next page"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </nav>
+            )}
+          </>
         )}
       </section>
     </SiteShell>
