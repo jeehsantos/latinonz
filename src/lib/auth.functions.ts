@@ -234,9 +234,38 @@ export const getSession = createServerFn({ method: "GET" }).handler(async () => 
   return { ok: true as const, user: data.user };
 });
 
+// Per-email rate limit for password reset: max 3 requests per 30 minutes.
+const PASSWORD_RESET_MAX = 3;
+const PASSWORD_RESET_WINDOW_MS = 30 * 60 * 1000;
+const passwordResetBucket = new Map<string, { count: number; reset: number }>();
+
+function passwordResetRateLimit(email: string): { ok: true } | { ok: false; retryAfterMs: number } {
+  const now = Date.now();
+  const key = email.toLowerCase();
+  const entry = passwordResetBucket.get(key);
+  if (!entry || entry.reset < now) {
+    passwordResetBucket.set(key, { count: 1, reset: now + PASSWORD_RESET_WINDOW_MS });
+    return { ok: true };
+  }
+  if (entry.count >= PASSWORD_RESET_MAX) {
+    return { ok: false, retryAfterMs: entry.reset - now };
+  }
+  entry.count += 1;
+  return { ok: true };
+}
+
 export const requestPasswordReset = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => passwordResetSchema.parse(input))
   .handler(async ({ data }) => {
+    const rl = passwordResetRateLimit(data.email);
+    if (!rl.ok) {
+      const minutes = Math.max(1, Math.ceil(rl.retryAfterMs / 60000));
+      return {
+        ok: false as const,
+        error: `Você atingiu o limite de ${PASSWORD_RESET_MAX} pedidos de redefinição. Tente novamente em ${minutes} minuto(s).`,
+        retryAfterMs: rl.retryAfterMs,
+      };
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // Look up the user to personalize the email (and to avoid sending to non-users).
     const { data: list, error: listError } = await supabaseAdmin.auth.admin.listUsers();
