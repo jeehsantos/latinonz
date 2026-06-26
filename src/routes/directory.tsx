@@ -104,6 +104,50 @@ function DirectoryPage() {
     });
   }, [businesses, search, groupIds]);
 
+  const navigate = useNavigate({ from: "/directory" });
+  const page = Math.max(1, initial.page || 1);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const paginated = useMemo(
+    () => filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [filtered, currentPage],
+  );
+
+  // Reset to page 1 when filters change
+  const filterKeyRef = useRef("");
+  useEffect(() => {
+    const key = `${search.q}|${search.category}|${search.city}`;
+    if (filterKeyRef.current && filterKeyRef.current !== key && (initial.page ?? 1) !== 1) {
+      navigate({ search: (prev) => ({ ...prev, page: 1 }), replace: true });
+    }
+    filterKeyRef.current = key;
+  }, [search.q, search.category, search.city, navigate, initial.page]);
+
+  const goToPage = (p: number) => {
+    const next = Math.min(Math.max(1, p), totalPages);
+    navigate({ search: (prev) => ({ ...prev, page: next }) });
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const pageNumbers = useMemo(() => {
+    const pages: (number | "ellipsis")[] = [];
+    const add = (n: number) => pages.push(n);
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) add(i);
+    } else {
+      add(1);
+      if (currentPage > 3) pages.push("ellipsis");
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      for (let i = start; i <= end; i++) add(i);
+      if (currentPage < totalPages - 2) pages.push("ellipsis");
+      add(totalPages);
+    }
+    return pages;
+  }, [currentPage, totalPages]);
+
   return (
     <SiteShell>
       {/* Desktop hero */}
