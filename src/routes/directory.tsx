@@ -1,9 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
 import { MobileSearchBar } from "@/components/directory/MobileSearchBar";
@@ -14,10 +15,13 @@ import { adaptBusiness } from "@/lib/business.adapter";
 import { useCategories } from "@/hooks/useCategories";
 import { useI18n, usePageMetadata } from "@/lib/i18n";
 
+const PAGE_SIZE = 12;
+
 const directorySearchSchema = z.object({
   q: fallback(z.string(), "").default(""),
   category: fallback(z.string(), "").default(""),
   city: fallback(z.string(), "").default(""),
+  page: fallback(z.number().int().min(1), 1).default(1),
 });
 
 export const Route = createFileRoute("/directory")({
