@@ -7,7 +7,7 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
 import { MobileSearchBar } from "@/components/directory/MobileSearchBar";
 import { getBusinesses } from "@/lib/business.functions";
-import auckland from "@/assets/auckland-skyline.jpg.asset.json";
+
 import { adaptBusiness } from "@/lib/business.adapter";
 import { useCategories } from "@/hooks/useCategories";
 import { getIcon } from "@/lib/category-icons";
@@ -68,43 +68,51 @@ export function DirectoryHome() {
   return (
     <SiteShell>
       {/* Hero */}
-      <section className="relative text-white overflow-hidden w-full">
-        {/* Background image — full bleed */}
-        <img
-          src={auckland.url}
-          alt="Auckland skyline"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        {/* Yellow tint + dark vignette overlays */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse at top, rgba(250,204,21,0.28) 0%, rgba(10,10,10,0.55) 55%, rgba(5,5,5,0.85) 100%), radial-gradient(circle at bottom right, rgba(250,204,21,0.18), transparent 60%)",
-          }}
-        />
-        <div className="absolute inset-0 bg-black/35 pointer-events-none" />
+      <section className="relative text-white overflow-hidden w-full bg-black min-h-[400px] h-[45vh] md:min-h-[600px] md:h-[60vh] max-h-[700px] flex flex-col items-center">
+        {/* Background Image Setup */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <img
+            src="/hero.png"
+            alt="Hero background"
+            className="w-full h-full object-cover object-[75%_40%] md:object-[center_top] scale-[1.4] md:scale-100 origin-[80%_25%] md:origin-center transition-transform"
+          />
+          {/* Yellow tint + dark vignette overlays */}
+          <div
+            className="absolute inset-0 pointer-events-none z-0"
+            style={{
+              background:
+                "radial-gradient(ellipse at top left, rgba(250,204,21,0.28) 0%, rgba(10,10,10,0.55) 55%, rgba(5,5,5,0.85) 100%), radial-gradient(circle at bottom right, rgba(250,204,21,0.18), transparent 60%)",
+            }}
+          />
+          <div className="absolute inset-0 bg-black/35 pointer-events-none z-0" />
+        </div>
 
         {/* Desktop hero */}
-        <div className="hidden md:block relative max-w-6xl mx-auto px-5 sm:px-6 py-14 md:py-20 text-center">
-          <h1 className="font-['Barlow_Condensed'] font-black tracking-tight leading-[0.95] text-white uppercase text-5xl md:text-7xl whitespace-pre-line drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
+        <div className="hidden md:flex flex-col relative z-10 max-w-7xl mx-auto px-5 sm:px-6 py-14 md:py-20 flex-1 justify-center items-center w-full">
+          <h1 
+            className="self-start w-full font-black tracking-tight leading-[0.95] text-white uppercase text-[42px] lg:text-[56px] xl:text-[68px] 2xl:text-[76px] whitespace-pre-line drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)] mb-10 text-left"
+            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+          >
             {t("directory.home_headline_before")}
             {"\n"}
-            <span className="text-[#facc15]">{t("directory.home_headline_highlight")}</span>
+            <span className="text-[#FFC700]">{t("directory.home_headline_highlight")}</span>
           </h1>
-          <div className="mt-10 max-w-4xl mx-auto">
+          <div className="w-full max-w-4xl mx-auto">
             <SearchBar value={search} onChange={setSearch} onSubmit={handleSearchSubmit} />
           </div>
         </div>
 
         {/* Mobile hero — compact */}
-        <div className="md:hidden relative px-5 pt-8 pb-7">
-          <h1 className="font-['Barlow_Condensed'] text-[32px] font-black tracking-tight leading-[0.95] text-white uppercase whitespace-pre-line drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
+        <div className="md:hidden relative z-10 px-5 pt-36 pb-8 flex flex-col justify-start items-center w-full flex-1">
+          <h1 
+            className="self-start w-full font-black tracking-tight leading-[0.95] text-white uppercase text-[28px] sm:text-[36px] whitespace-pre-line drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)] mb-8 text-left"
+            style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+          >
             {t("directory.home_headline_before")}
             {"\n"}
-            <span className="text-[#facc15]">{t("directory.home_headline_highlight")}</span>
+            <span className="text-[#FFC700]">{t("directory.home_headline_highlight")}</span>
           </h1>
-          <div className="mt-5">
+          <div className="w-full mx-auto">
             <MobileSearchBar value={search} onChange={setSearch} />
           </div>
         </div>

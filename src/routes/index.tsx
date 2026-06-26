@@ -59,7 +59,7 @@ function HomePage() {
 }
 
 function WaitlistLanding() {
-  const [isWaitlistOpen, setIsWaitlistOpen] = useState(true);
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const { t } = useI18n();
 
   return (
