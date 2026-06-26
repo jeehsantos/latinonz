@@ -235,11 +235,59 @@ function DirectoryPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
-            {filtered.map((b) => (
-              <BusinessCard key={b.id} business={b} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+              {paginated.map((b) => (
+                <BusinessCard key={b.id} business={b} />
+              ))}
+            </div>
+            {totalPages > 1 && (
+              <nav
+                aria-label="Pagination"
+                className="mt-8 sm:mt-10 flex items-center justify-center gap-1.5 flex-wrap"
+              >
+                <button
+                  onClick={() => goToPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="inline-flex items-center gap-1 h-9 px-3 rounded-lg border border-white/10 bg-neutral-900 text-sm font-semibold text-neutral-200 hover:border-[#df991b] hover:text-[#df991b] disabled:opacity-40 disabled:cursor-not-allowed transition"
+                  aria-label="Previous page"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                {pageNumbers.map((p, i) =>
+                  p === "ellipsis" ? (
+                    <span
+                      key={`e-${i}`}
+                      className="h-9 w-9 inline-flex items-center justify-center text-neutral-500 text-sm"
+                    >
+                      …
+                    </span>
+                  ) : (
+                    <button
+                      key={p}
+                      onClick={() => goToPage(p)}
+                      aria-current={p === currentPage ? "page" : undefined}
+                      className={`h-9 min-w-9 px-3 rounded-lg border text-sm font-semibold transition ${
+                        p === currentPage
+                          ? "bg-[#df991b] text-black border-[#df991b]"
+                          : "bg-neutral-900 border-white/10 text-neutral-200 hover:border-[#df991b] hover:text-[#df991b]"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  ),
+                )}
+                <button
+                  onClick={() => goToPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="inline-flex items-center gap-1 h-9 px-3 rounded-lg border border-white/10 bg-neutral-900 text-sm font-semibold text-neutral-200 hover:border-[#df991b] hover:text-[#df991b] disabled:opacity-40 disabled:cursor-not-allowed transition"
+                  aria-label="Next page"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </nav>
+            )}
+          </>
         )}
       </section>
     </SiteShell>
