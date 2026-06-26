@@ -1,0 +1,386 @@
+commit 5a4fae020ec072aafd4b22fd688e022d279d88de
+Author: jeehsantos <jeehsantos@hotmail.com.br>
+Date:   Fri Jun 12 01:09:15 2026 +1200
+
+    update meta title and favicon
+
+diff --git a/src/routes/index.tsx b/src/routes/index.tsx
+index 377bc87..80d35b4 100644
+--- a/src/routes/index.tsx
++++ b/src/routes/index.tsx
+@@ -9,17 +9,17 @@ import logo from "@/assets/logo.png";
+ export const Route = createFileRoute("/")({
+   head: () => ({
+     meta: [
+-      { title: "Latino Connect — Negócios latinos na Nova Zelândia" },
++      { title: "Latino Connect — Latin businesses in New Zealand" },
+       {
+         name: "description",
+         content:
+-          "A plataforma que conecta a comunidade latina aos melhores negócios e serviços em Nova Zelândia. Entre na lista de espera.",
++          "The platform connecting the Latin community with the best businesses and services in New Zealand. Join the waitlist.",
+       },
+-      { property: "og:title", content: "Latino Connect — Negócios latinos na Nova Zelândia" },
++      { property: "og:title", content: "Latino Connect — Latin businesses in New Zealand" },
+       {
+         property: "og:description",
+         content:
+-          "Cadastre seu negócio latino e tenha acesso antecipado à plataforma Latino Connect.",
++          "Register your Latin business and get early access to the Latino Connect platform.",
+       },
+       { property: "og:type", content: "website" },
+       { property: "og:url", content: "https://latinoconnecthub.co.nz/" },
+@@ -33,7 +33,7 @@ export const Route = createFileRoute("/")({
+           "@type": "WebSite",
+           name: "Latino Connect",
+           url: "https://latinoconnecthub.co.nz/",
+-          inLanguage: "pt-BR",
++          inLanguage: "en",
+         }),
+       },
+       {
+
+commit 4213f1b5ed5ce71ff2ea17327a93966cd832753f
+Author: gpt-engineer-app[bot] <159125892+gpt-engineer-app[bot]@users.noreply.github.com>
+Date:   Sat May 30 11:40:06 2026 +0000
+
+    Changes
+    
+    Co-authored-by: jeehsantos <11323098+jeehsantos@users.noreply.github.com>
+
+diff --git a/src/routes/index.tsx b/src/routes/index.tsx
+index 1e21ef0..377bc87 100644
+--- a/src/routes/index.tsx
++++ b/src/routes/index.tsx
+@@ -143,7 +143,7 @@ function Landing() {
+             <div className="w-10 h-10 rounded-xl bg-[#df991b]/15 text-[#df991b] flex items-center justify-center font-black mb-4">
+               ★
+             </div>
+-            <h3 className="font-extrabold text-white mb-1">{f.title}</h3>
++            <h2 className="font-extrabold text-white mb-1 text-base">{f.title}</h2>
+             <p className="text-sm text-neutral-300">{f.body}</p>
+           </div>
+         ))}
+
+commit 400074c2a80cd8ce192aeb894979ab8736b7a7a1
+Author: gpt-engineer-app[bot] <159125892+gpt-engineer-app[bot]@users.noreply.github.com>
+Date:   Fri May 29 12:52:30 2026 +0000
+
+    Changes
+    
+    Co-authored-by: jeehsantos <11323098+jeehsantos@users.noreply.github.com>
+
+diff --git a/src/routes/index.tsx b/src/routes/index.tsx
+index 6f96b66..1e21ef0 100644
+--- a/src/routes/index.tsx
++++ b/src/routes/index.tsx
+@@ -63,7 +63,7 @@ function WaitlistLanding() {
+   const { t } = useI18n();
+ 
+   return (
+-    <div className="relative min-h-screen bg-white font-sans text-gray-800">
++    <div className="relative min-h-screen bg-neutral-900 font-sans text-neutral-100">
+       <div
+         className={`transition-all duration-500 ${
+           isWaitlistOpen ? "filter blur-md brightness-75 pointer-events-none select-none" : ""
+@@ -98,12 +98,12 @@ function Landing() {
+ 
+   return (
+     <div>
+-      <header className="bg-white">
++      <header className="bg-neutral-900">
+         <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+           <img src={logo} alt="Latino Connect Hub" className="h-6 md:h-12 w-auto" />
+ 
+-          <nav className="hidden md:flex items-center gap-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-full px-2 py-1.5">
+-            <a className="px-4 py-1.5 rounded-full bg-white shadow-sm">{t("nav.home")}</a>
++          <nav className="hidden md:flex items-center gap-2 text-sm font-semibold text-neutral-200 bg-white/5 rounded-full px-2 py-1.5">
++            <a className="px-4 py-1.5 rounded-full bg-neutral-900 shadow-sm">{t("nav.home")}</a>
+             <a className="px-4 py-1.5 rounded-full"> </a>
+             <a className="px-4 py-1.5 rounded-full">{t("nav.blog")}</a>
+           </nav>
+@@ -120,7 +120,7 @@ function Landing() {
+             }}
+           />
+           <div className="relative">
+-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white text-[10px] sm:text-xs font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-5 sm:mb-8 uppercase tracking-wider">
++            <div className="inline-flex items-center gap-2 bg-neutral-900/10 backdrop-blur-sm text-white text-[10px] sm:text-xs font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-5 sm:mb-8 uppercase tracking-wider">
+               <span className="w-1.5 h-1.5 rounded-full bg-[#df991b]" />
+               {t("hero.badge")}
+             </div>
+@@ -139,17 +139,17 @@ function Landing() {
+ 
+       <section className="max-w-6xl mx-auto px-5 sm:px-6 py-12 sm:pb-24 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+         {features.map((f) => (
+-          <div key={f.title} className="rounded-2xl border border-gray-100 p-5 sm:p-6 bg-gray-50/50">
++          <div key={f.title} className="rounded-2xl border border-white/10 p-5 sm:p-6 bg-neutral-950/50">
+             <div className="w-10 h-10 rounded-xl bg-[#df991b]/15 text-[#df991b] flex items-center justify-center font-black mb-4">
+               ★
+             </div>
+-            <h3 className="font-extrabold text-gray-900 mb-1">{f.title}</h3>
+-            <p className="text-sm text-gray-600">{f.body}</p>
++            <h3 className="font-extrabold text-white mb-1">{f.title}</h3>
++            <p className="text-sm text-neutral-300">{f.body}</p>
+           </div>
+         ))}
+       </section>
+ 
+-      <footer className="border-t border-gray-100 py-8 text-center text-xs text-gray-400">
++      <footer className="border-t border-white/10 py-8 text-center text-xs text-neutral-500">
+         © {new Date().getFullYear()} {t("footer")}
+       </footer>
+     </div>
+
+commit 734d2063d171b56e4c6c7a942f0e26f06cf70191
+Author: gpt-engineer-app[bot] <159125892+gpt-engineer-app[bot]@users.noreply.github.com>
+Date:   Fri May 29 12:52:19 2026 +0000
+
+    Changes
+    
+    Co-authored-by: jeehsantos <11323098+jeehsantos@users.noreply.github.com>
+
+diff --git a/src/routes/index.tsx b/src/routes/index.tsx
+index 74072a2..6f96b66 100644
+--- a/src/routes/index.tsx
++++ b/src/routes/index.tsx
+@@ -111,7 +111,7 @@ function Landing() {
+       </header>
+ 
+       <section>
+-        <div className="relative w-full overflow-hidden bg-white text-[#facc15] px-5 sm:px-6 py-16 sm:py-24 text-center">
++        <div className="relative w-full overflow-hidden bg-black text-[#facc15] px-5 sm:px-6 py-16 sm:py-24 text-center">
+           <div
+             className="absolute inset-0 pointer-events-none"
+             style={{
+
+commit 1c3e7a22e221f7cde42aa0de36ed7fc585777a7d
+Author: gpt-engineer-app[bot] <159125892+gpt-engineer-app[bot]@users.noreply.github.com>
+Date:   Fri May 29 12:51:16 2026 +0000
+
+    Changes
+    
+    Co-authored-by: jeehsantos <11323098+jeehsantos@users.noreply.github.com>
+
+diff --git a/src/routes/index.tsx b/src/routes/index.tsx
+index a916b70..74072a2 100644
+--- a/src/routes/index.tsx
++++ b/src/routes/index.tsx
+@@ -111,7 +111,7 @@ function Landing() {
+       </header>
+ 
+       <section>
+-        <div className="relative w-full overflow-hidden bg-white text-[#000000] px-5 sm:px-6 py-16 sm:py-24 text-center">
++        <div className="relative w-full overflow-hidden bg-white text-[#facc15] px-5 sm:px-6 py-16 sm:py-24 text-center">
+           <div
+             className="absolute inset-0 pointer-events-none"
+             style={{
+
+commit 33b05178f74e89ab98bf464b4beab8e767f66bc3
+Author: jeehsantos <jeehsantos@hotmail.com.br>
+Date:   Wed May 27 23:45:42 2026 +1200
+
+    change color
+
+diff --git a/src/routes/index.tsx b/src/routes/index.tsx
+index e5bdbb4..a916b70 100644
+--- a/src/routes/index.tsx
++++ b/src/routes/index.tsx
+@@ -111,7 +111,7 @@ function Landing() {
+       </header>
+ 
+       <section>
+-        <div className="relative w-full overflow-hidden bg-[#000000] text-white px-5 sm:px-6 py-16 sm:py-24 text-center">
++        <div className="relative w-full overflow-hidden bg-white text-[#000000] px-5 sm:px-6 py-16 sm:py-24 text-center">
+           <div
+             className="absolute inset-0 pointer-events-none"
+             style={{
+
+commit 6155769255fe5a0e18660205f28f0536c2b81b81
+Author: gpt-engineer-app[bot] <159125892+gpt-engineer-app[bot]@users.noreply.github.com>
+Date:   Wed May 27 10:57:05 2026 +0000
+
+    Changes
+    
+    Co-authored-by: jeehsantos <11323098+jeehsantos@users.noreply.github.com>
+
+diff --git a/src/routes/index.tsx b/src/routes/index.tsx
+index 395a78f..e5bdbb4 100644
+--- a/src/routes/index.tsx
++++ b/src/routes/index.tsx
+@@ -78,7 +78,7 @@ function WaitlistLanding() {
+       {!isWaitlistOpen && (
+         <button
+           onClick={() => setIsWaitlistOpen(true)}
+-          className="fixed bottom-8 right-8 z-40 bg-[#000000] text-white font-bold px-6 py-4 rounded-full hover:bg-[#1a1a1a] transition-colors animate-inflate"
++          className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-40 bg-[#df991b] text-white font-bold px-5 py-3 sm:px-6 sm:py-4 rounded-full hover:bg-[#c4861a] transition-colors animate-inflate text-sm sm:text-base"
+         >
+           {t("waitlist_button")}
+         </button>
+
+commit e4d95c2caf23b5e2232302aa1cd3281df0bbd7e7
+Author: gpt-engineer-app[bot] <159125892+gpt-engineer-app[bot]@users.noreply.github.com>
+Date:   Wed May 27 10:55:50 2026 +0000
+
+    Changes
+    
+    Co-authored-by: jeehsantos <11323098+jeehsantos@users.noreply.github.com>
+
+diff --git a/src/routes/index.tsx b/src/routes/index.tsx
+index bb5f91f..395a78f 100644
+--- a/src/routes/index.tsx
++++ b/src/routes/index.tsx
+@@ -111,36 +111,36 @@ function Landing() {
+       </header>
+ 
+       <section>
+-        <div className="relative w-full overflow-hidden bg-[#000000] text-white px-6 py-24 text-center">
++        <div className="relative w-full overflow-hidden bg-[#000000] text-white px-5 sm:px-6 py-16 sm:py-24 text-center">
+           <div
+             className="absolute inset-0 pointer-events-none"
+             style={{
+               background:
+-                "radial-gradient(circle at top left, rgba(239,198,78,0.25) 0%, rgba(15,61,36,0) 45%), radial-gradient(circle at bottom right, rgba(26,83,54,0.9) 0%, rgba(15,61,36,0) 55%), radial-gradient(ellipse at top, rgba(26,83,54,0.6) 0%, rgba(15,61,36,0) 70%)",
++                "radial-gradient(circle at top left, rgba(223,153,27,0.28) 0%, rgba(0,0,0,0) 45%), radial-gradient(circle at bottom right, rgba(223,153,27,0.18) 0%, rgba(0,0,0,0) 55%)",
+             }}
+           />
+           <div className="relative">
+-            <div className="inline-flex items-center gap-2 bg-black/30 backdrop-blur-sm text-white text-xs font-bold px-4 py-2 rounded-full mb-8 uppercase tracking-wider">
++            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white text-[10px] sm:text-xs font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-5 sm:mb-8 uppercase tracking-wider">
+               <span className="w-1.5 h-1.5 rounded-full bg-[#df991b]" />
+               {t("hero.badge")}
+             </div>
+-            <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
++            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
+               {t("hero.headline_1")}{" "}
+               <span className="text-[#df991b]">{t("hero.headline_highlight")}</span>
+               <br />
+               {t("hero.headline_2")}
+             </h1>
+-            <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">
++            <p className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg text-white/70 max-w-2xl mx-auto">
+               {t("hero.subheadline")}
+             </p>
+           </div>
+         </div>
+       </section>
+ 
+-      <section className="max-w-6xl mx-auto px-6 pb-24 grid md:grid-cols-3 gap-6">
++      <section className="max-w-6xl mx-auto px-5 sm:px-6 py-12 sm:pb-24 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+         {features.map((f) => (
+-          <div key={f.title} className="rounded-2xl border border-gray-100 p-6 bg-gray-50/50">
+-            <div className="w-10 h-10 rounded-xl bg-[#000000]/10 text-[#000000] flex items-center justify-center font-black mb-4">
++          <div key={f.title} className="rounded-2xl border border-gray-100 p-5 sm:p-6 bg-gray-50/50">
++            <div className="w-10 h-10 rounded-xl bg-[#df991b]/15 text-[#df991b] flex items-center justify-center font-black mb-4">
+               ★
+             </div>
+             <h3 className="font-extrabold text-gray-900 mb-1">{f.title}</h3>
+
+commit 9ec66e2ba48d3a382f1af0a8692b8ee2741be52b
+Author: gpt-engineer-app[bot] <159125892+gpt-engineer-app[bot]@users.noreply.github.com>
+Date:   Wed May 27 10:53:20 2026 +0000
+
+    Changes
+    
+    Co-authored-by: jeehsantos <11323098+jeehsantos@users.noreply.github.com>
+
+diff --git a/src/routes/index.tsx b/src/routes/index.tsx
+index bbcf71d..bb5f91f 100644
+--- a/src/routes/index.tsx
++++ b/src/routes/index.tsx
+@@ -78,7 +78,7 @@ function WaitlistLanding() {
+       {!isWaitlistOpen && (
+         <button
+           onClick={() => setIsWaitlistOpen(true)}
+-          className="fixed bottom-8 right-8 z-40 bg-[#1A5336] text-white font-bold px-6 py-4 rounded-full hover:bg-[#123F27] transition-colors animate-inflate"
++          className="fixed bottom-8 right-8 z-40 bg-[#000000] text-white font-bold px-6 py-4 rounded-full hover:bg-[#1a1a1a] transition-colors animate-inflate"
+         >
+           {t("waitlist_button")}
+         </button>
+@@ -111,7 +111,7 @@ function Landing() {
+       </header>
+ 
+       <section>
+-        <div className="relative w-full overflow-hidden bg-[#0F3D24] text-white px-6 py-24 text-center">
++        <div className="relative w-full overflow-hidden bg-[#000000] text-white px-6 py-24 text-center">
+           <div
+             className="absolute inset-0 pointer-events-none"
+             style={{
+@@ -121,12 +121,12 @@ function Landing() {
+           />
+           <div className="relative">
+             <div className="inline-flex items-center gap-2 bg-black/30 backdrop-blur-sm text-white text-xs font-bold px-4 py-2 rounded-full mb-8 uppercase tracking-wider">
+-              <span className="w-1.5 h-1.5 rounded-full bg-[#EFC64E]" />
++              <span className="w-1.5 h-1.5 rounded-full bg-[#df991b]" />
+               {t("hero.badge")}
+             </div>
+             <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
+               {t("hero.headline_1")}{" "}
+-              <span className="text-[#EFC64E]">{t("hero.headline_highlight")}</span>
++              <span className="text-[#df991b]">{t("hero.headline_highlight")}</span>
+               <br />
+               {t("hero.headline_2")}
+             </h1>
+@@ -140,7 +140,7 @@ function Landing() {
+       <section className="max-w-6xl mx-auto px-6 pb-24 grid md:grid-cols-3 gap-6">
+         {features.map((f) => (
+           <div key={f.title} className="rounded-2xl border border-gray-100 p-6 bg-gray-50/50">
+-            <div className="w-10 h-10 rounded-xl bg-[#1A5336]/10 text-[#1A5336] flex items-center justify-center font-black mb-4">
++            <div className="w-10 h-10 rounded-xl bg-[#000000]/10 text-[#000000] flex items-center justify-center font-black mb-4">
+               ★
+             </div>
+             <h3 className="font-extrabold text-gray-900 mb-1">{f.title}</h3>
+
+commit ed281321a3eb1f3c1c338daeb06b0149248f280c
+Author: jeehsantos <jeehsantos@hotmail.com.br>
+Date:   Sat May 23 02:08:03 2026 +1200
+
+    antigravity enhancements
+
+diff --git a/src/routes/index.tsx b/src/routes/index.tsx
+index e56a536..bbcf71d 100644
+--- a/src/routes/index.tsx
++++ b/src/routes/index.tsx
+@@ -1,7 +1,7 @@
+ import { createFileRoute } from "@tanstack/react-router";
+ import { useState } from "react";
+ import { WaitlistModal } from "@/components/WaitlistModal";
+-import { useI18n } from "@/lib/i18n";
++import { useI18n, usePageMetadata } from "@/lib/i18n";
+ import { useSiteMode } from "@/lib/site-mode";
+ import { DirectoryHome } from "@/components/directory/DirectoryHome";
+ import logo from "@/assets/logo.png";
+@@ -18,7 +18,8 @@ export const Route = createFileRoute("/")({
+       { property: "og:title", content: "Latino Connect — Negócios latinos na Nova Zelândia" },
+       {
+         property: "og:description",
+-        content: "Cadastre seu negócio latino e tenha acesso antecipado à plataforma Latino Connect.",
++        content:
++          "Cadastre seu negócio latino e tenha acesso antecipado à plataforma Latino Connect.",
+       },
+       { property: "og:type", content: "website" },
+       { property: "og:url", content: "https://latinoconnecthub.co.nz/" },
+@@ -52,6 +53,7 @@ export const Route = createFileRoute("/")({
+ 
+ function HomePage() {
+   const { mode } = useSiteMode();
++  usePageMetadata("metadata.home.title", "metadata.home.description");
+   if (mode === "live") return <DirectoryHome />;
+   return <WaitlistLanding />;
+ }
+@@ -123,11 +125,14 @@ function Landing() {
+               {t("hero.badge")}
+             </div>
+             <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
+-              {t("hero.headline_1")} <span className="text-[#EFC64E]">{t("hero.headline_highlight")}</span>
++              {t("hero.headline_1")}{" "}
++              <span className="text-[#EFC64E]">{t("hero.headline_highlight")}</span>
+               <br />
+               {t("hero.headline_2")}
+             </h1>
+-            <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">{t("hero.subheadline")}</p>
++            <p className="mt-6 text-base md:text-lg text-white/70 max-w-2xl mx-auto">
++              {t("hero.subheadline")}
++            </p>
+           </div>
+         </div>
+       </section>

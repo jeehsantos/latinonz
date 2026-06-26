@@ -1,0 +1,147 @@
+commit 85ebd5139baf020a0f9b2a6b850a9c87cb1f446b
+Author: gpt-engineer-app[bot] <159125892+gpt-engineer-app[bot]@users.noreply.github.com>
+Date:   Mon Jun 22 14:00:14 2026 +0000
+
+    Changes
+    
+    Co-authored-by: jeehsantos <11323098+jeehsantos@users.noreply.github.com>
+
+diff --git a/src/components/directory/DirectoryHome.tsx b/src/components/directory/DirectoryHome.tsx
+index e170383..f850ebc 100644
+--- a/src/components/directory/DirectoryHome.tsx
++++ b/src/components/directory/DirectoryHome.tsx
+@@ -314,12 +314,6 @@ function FeaturedCard({ business }: { business: Business }) {
+           <div className="text-6xl font-black text-white/10">{business.name.charAt(0)}</div>
+         )}
+ 
+-        {/* Plan badges top-left: BUSINESS */}
+-        <div className="absolute top-3 left-3 flex items-center gap-1.5">
+-          <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-1 rounded-md bg-[#FFC700] text-black shadow-[0_4px_14px_-4px_rgba(255,199,0,0.6)]">
+-            {business.type === "Empresa" ? t("business.badges.business") : t("business.badges.pro")}
+-          </span>
+-        </div>
+ 
+         {/* Rating top-right */}
+         <span className="absolute top-3 right-3 inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/15 text-white">
+@@ -348,13 +342,10 @@ function FeaturedCard({ business }: { business: Business }) {
+               {business.locations && business.locations.length > 0 ? business.locations.join(", ") : business.location}
+             </span>
+           </span>
+-          <div className="flex items-center justify-between gap-2">
+-            <span className="inline-flex items-center gap-1.5 text-[11px] text-neutral-400 min-w-0">
+-              <Tag size={12} className="shrink-0 text-[#FFC700]" />
+-              <span className="truncate">{categoryLabel}</span>
+-            </span>
+-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#FFC700] shrink-0">{t("business.badges.active")}</span>
+-          </div>
++          <span className="inline-flex items-center gap-1.5 text-[11px] text-neutral-400 min-w-0">
++            <Tag size={12} className="shrink-0 text-[#FFC700]" />
++            <span className="truncate">{categoryLabel}</span>
++          </span>
+         </div>
+       </div>
+     </Link>
+
+commit 82281534d5ee9b8fa96047f2ea0387cb1198f3a1
+Author: gpt-engineer-app[bot] <159125892+gpt-engineer-app[bot]@users.noreply.github.com>
+Date:   Mon Jun 22 13:56:33 2026 +0000
+
+    Changes
+    
+    Co-authored-by: jeehsantos <11323098+jeehsantos@users.noreply.github.com>
+
+diff --git a/src/components/directory/DirectoryHome.tsx b/src/components/directory/DirectoryHome.tsx
+index 4be1879..e170383 100644
+--- a/src/components/directory/DirectoryHome.tsx
++++ b/src/components/directory/DirectoryHome.tsx
+@@ -7,6 +7,7 @@ import { SiteShell } from "@/components/site/SiteShell";
+ import { SearchBar, type SearchValue } from "@/components/directory/SearchBar";
+ import { MobileSearchBar } from "@/components/directory/MobileSearchBar";
+ import { getBusinesses } from "@/lib/business.functions";
++import auckland from "@/assets/auckland-skyline.jpg.asset.json";
+ import { adaptBusiness } from "@/lib/business.adapter";
+ import { useCategories } from "@/hooks/useCategories";
+ import { getIcon } from "@/lib/category-icons";
+@@ -67,18 +68,28 @@ export function DirectoryHome() {
+   return (
+     <SiteShell>
+       {/* Hero */}
+-      <section
+-        className="relative text-white overflow-hidden"
+-        style={{
+-          background:
+-            "radial-gradient(ellipse at top, rgba(250,204,21,0.18) 0%, #0a0a0a 60%), radial-gradient(circle at bottom right, rgba(250,204,21,0.12), transparent 60%), #050505",
+-        }}
+-      >
+-        <div className="absolute inset-0 -z-0 opacity-[0.04] [background-image:linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] [background-size:48px_48px]" />
++      <section className="relative text-white overflow-hidden w-full">
++        {/* Background image — full bleed */}
++        <img
++          src={auckland.url}
++          alt="Auckland skyline"
++          className="absolute inset-0 w-full h-full object-cover"
++        />
++        {/* Yellow tint + dark vignette overlays */}
++        <div
++          className="absolute inset-0 pointer-events-none"
++          style={{
++            background:
++              "radial-gradient(ellipse at top, rgba(250,204,21,0.28) 0%, rgba(10,10,10,0.55) 55%, rgba(5,5,5,0.85) 100%), radial-gradient(circle at bottom right, rgba(250,204,21,0.18), transparent 60%)",
++          }}
++        />
++        <div className="absolute inset-0 bg-black/35 pointer-events-none" />
++
+         {/* Desktop hero */}
+-        <div className="hidden md:block relative max-w-6xl mx-auto px-5 sm:px-6 py-20 md:py-28 text-center">
+-          <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05] text-white uppercase">
++        <div className="hidden md:block relative max-w-6xl mx-auto px-5 sm:px-6 py-14 md:py-20 text-center">
++          <h1 className="font-['Barlow_Condensed'] font-black tracking-tight leading-[0.95] text-white uppercase text-5xl md:text-7xl whitespace-pre-line drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
+             {t("directory.home_headline_before")}
++            {"\n"}
+             <span className="text-[#facc15]">{t("directory.home_headline_highlight")}</span>
+           </h1>
+           <div className="mt-10 max-w-4xl mx-auto">
+@@ -88,8 +99,9 @@ export function DirectoryHome() {
+ 
+         {/* Mobile hero — compact */}
+         <div className="md:hidden relative px-5 pt-8 pb-7">
+-          <h1 className="text-[28px] font-black tracking-tight leading-[1.1] text-white uppercase">
++          <h1 className="font-['Barlow_Condensed'] text-[32px] font-black tracking-tight leading-[0.95] text-white uppercase whitespace-pre-line drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
+             {t("directory.home_headline_before")}
++            {"\n"}
+             <span className="text-[#facc15]">{t("directory.home_headline_highlight")}</span>
+           </h1>
+           <div className="mt-5">
+
+commit 10a11075394eca09231957ab91693201d7686a2d
+Author: gpt-engineer-app[bot] <159125892+gpt-engineer-app[bot]@users.noreply.github.com>
+Date:   Mon Jun 22 13:39:37 2026 +0000
+
+    Changes
+    
+    Co-authored-by: jeehsantos <11323098+jeehsantos@users.noreply.github.com>
+
+diff --git a/src/components/directory/DirectoryHome.tsx b/src/components/directory/DirectoryHome.tsx
+index 9388e60..4be1879 100644
+--- a/src/components/directory/DirectoryHome.tsx
++++ b/src/components/directory/DirectoryHome.tsx
+@@ -88,18 +88,10 @@ export function DirectoryHome() {
+ 
+         {/* Mobile hero — compact */}
+         <div className="md:hidden relative px-5 pt-8 pb-7">
+-          <div className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 text-white/90 text-[10px] font-bold px-2.5 py-1 rounded-full mb-3 uppercase tracking-[0.18em]">
+-            <span className="w-1 h-1 rounded-full bg-[#facc15]" />
+-            {t("directory.home_badge")}
+-          </div>
+-          <h1 className="text-[28px] font-black tracking-tight leading-[1.1] text-white">
++          <h1 className="text-[28px] font-black tracking-tight leading-[1.1] text-white uppercase">
+             {t("directory.home_headline_before")}
+             <span className="text-[#facc15]">{t("directory.home_headline_highlight")}</span>
+-            {t("directory.home_headline_after")}
+           </h1>
+-          <p className="mt-2.5 text-[13px] text-white/60 leading-snug">
+-            {t("directory.home_subheadline")}
+-          </p>
+           <div className="mt-5">
+             <MobileSearchBar value={search} onChange={setSearch} />
+           </div>
