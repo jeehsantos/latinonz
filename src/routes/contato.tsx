@@ -101,12 +101,12 @@ function ContatoPage() {
   return (
     <SiteShell>
       <div className="relative pt-12 pb-24 overflow-hidden">
-        <div className="absolute top-0 right-0 -z-10 w-[500px] h-[500px] bg-[#facc15]/10 rounded-full blur-3xl -mr-64 -mt-32" />
-        <div className="absolute bottom-0 left-0 -z-10 w-[400px] h-[400px] bg-[#facc15]/5/50 rounded-full blur-3xl -ml-32 -mb-32" />
+        <div className="absolute top-0 right-0 -z-10 w-[500px] h-[500px] bg-[#df991b]/10 rounded-full blur-3xl -mr-64 -mt-32" />
+        <div className="absolute bottom-0 left-0 -z-10 w-[400px] h-[400px] bg-[#df991b]/5/50 rounded-full blur-3xl -ml-32 -mb-32" />
 
         <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
           <div className="space-y-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#facc15]/10 text-[#facc15] rounded-full text-xs font-bold tracking-wider uppercase">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#df991b]/10 text-[#df991b] rounded-full text-xs font-bold tracking-wider uppercase">
               <span className="animate-pulse">●</span> {t("contact.badge")}
             </div>
 
@@ -130,7 +130,7 @@ function ContatoPage() {
                         >
                           <path
                             d="M2 8 Q 100 -2 198 8"
-                            stroke="#facc15"
+                            stroke="#df991b"
                             strokeWidth="4"
                             strokeLinecap="round"
                             fill="none"
@@ -151,7 +151,7 @@ function ContatoPage() {
               <h2 className="sr-only">{t("contact.email_label")}</h2>
               {contactItems.map(({ Icon, title, text }) => (
                 <div key={title} className="flex items-start gap-4 group">
-                  <div className="w-12 h-12 bg-neutral-900 rounded-2xl shadow-sm border border-white/10 flex items-center justify-center text-[#facc15] group-hover:bg-[#facc15] group-hover:text-black transition-all">
+                  <div className="w-12 h-12 bg-neutral-900 rounded-2xl shadow-sm border border-white/10 flex items-center justify-center text-[#df991b] group-hover:bg-[#df991b] group-hover:text-black transition-all">
                     <Icon size={20} aria-hidden="true" />
                   </div>
                   <div>
@@ -201,7 +201,7 @@ function ContatoPage() {
             <div className="bg-neutral-900 p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl shadow-black/40 border border-white/10 relative z-10">
               {submitted ? (
                 <div className="text-center py-12 space-y-6">
-                  <div className="w-20 h-20 bg-[#facc15]/10 rounded-full flex items-center justify-center mx-auto text-[#facc15] animate-bounce">
+                  <div className="w-20 h-20 bg-[#df991b]/10 rounded-full flex items-center justify-center mx-auto text-[#df991b] animate-bounce">
                     <CheckCircle2 size={40} />
                   </div>
                   <div className="space-y-2">
@@ -212,7 +212,7 @@ function ContatoPage() {
                   </div>
                   <button
                     onClick={handleReset}
-                    className="text-[#facc15] font-bold text-sm hover:underline"
+                    className="text-[#df991b] font-bold text-sm hover:underline"
                   >
                     {t("contact.success_resend")}
                   </button>
@@ -228,7 +228,7 @@ function ContatoPage() {
                       required
                       type="text"
                       placeholder={t("contact.field_name_placeholder")}
-                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all placeholder:text-neutral-400"
+                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#df991b]/20 focus:border-[#df991b] outline-none transition-all placeholder:text-neutral-400"
                       value={formData.nome}
                       onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
                     />
@@ -243,7 +243,7 @@ function ContatoPage() {
                       required
                       type="email"
                       placeholder={t("contact.field_email_placeholder")}
-                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all placeholder:text-neutral-400"
+                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#df991b]/20 focus:border-[#df991b] outline-none transition-all placeholder:text-neutral-400"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
@@ -263,7 +263,7 @@ function ContatoPage() {
                           onClick={() => setFormData({ ...formData, assunto: opt })}
                           className={`py-2 text-xs font-bold rounded-xl border transition-all ${
                             formData.assunto === opt
-                              ? "bg-[#facc15] text-black border-[#facc15]"
+                              ? "bg-[#df991b] text-black border-[#df991b]"
                               : "bg-neutral-900 text-slate-500 border-white/10 hover:border-slate-300"
                           }`}
                         >
@@ -282,7 +282,7 @@ function ContatoPage() {
                       required
                       rows={4}
                       placeholder={t("contact.field_message_placeholder")}
-                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#facc15]/20 focus:border-[#facc15] outline-none transition-all resize-none placeholder:text-neutral-400"
+                      className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-2xl focus:ring-4 focus:ring-[#df991b]/20 focus:border-[#df991b] outline-none transition-all resize-none placeholder:text-neutral-400"
                       value={formData.mensagem}
                       onChange={(e) => setFormData({ ...formData, mensagem: e.target.value })}
                     />
@@ -290,7 +290,7 @@ function ContatoPage() {
 
                   <button
                     disabled={isSubmitting}
-                    className="w-full bg-[#facc15] hover:bg-yellow-300 text-black font-bold py-5 rounded-2xl flex items-center justify-center gap-3 transition-all transform active:scale-[0.98] disabled:opacity-70 shadow-lg shadow-[#facc15]/20 group"
+                    className="w-full bg-[#df991b] hover:bg-yellow-300 text-black font-bold py-5 rounded-2xl flex items-center justify-center gap-3 transition-all transform active:scale-[0.98] disabled:opacity-70 shadow-lg shadow-[#df991b]/20 group"
                   >
                     {isSubmitting ? (
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -310,7 +310,7 @@ function ContatoPage() {
 
             <div className="absolute -bottom-6 -left-6 grid grid-cols-4 gap-2 opacity-20">
               {Array.from({ length: 12 }).map((_, i) => (
-                <div key={i} className="w-2 h-2 bg-[#facc15] rounded-full" />
+                <div key={i} className="w-2 h-2 bg-[#df991b] rounded-full" />
               ))}
             </div>
           </div>

@@ -375,7 +375,7 @@ function BusinessPage() {
         {business.phone && (
           <a
             href={`tel:${business.phone}`}
-            className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15] transition"
+            className="flex items-center gap-3 text-neutral-200 hover:text-[#df991b] transition"
           >
             <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0">
               <Phone size={14} />
@@ -388,7 +388,7 @@ function BusinessPage() {
             href={mapsUrl}
             target="_blank"
             rel="noreferrer"
-            className="flex items-start gap-3 text-neutral-200 hover:text-[#facc15] transition group"
+            className="flex items-start gap-3 text-neutral-200 hover:text-[#df991b] transition group"
           >
             <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0 mt-0.5">
               <MapPin size={14} />
@@ -399,14 +399,14 @@ function BusinessPage() {
             </span>
             <ExternalLink
               size={12}
-              className="text-neutral-500 group-hover:text-[#facc15] mt-1 shrink-0"
+              className="text-neutral-500 group-hover:text-[#df991b] mt-1 shrink-0"
             />
           </a>
         )}
         {business.email && (
           <a
             href={`mailto:${business.email}`}
-            className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15] transition"
+            className="flex items-center gap-3 text-neutral-200 hover:text-[#df991b] transition"
           >
             <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0">
               <Mail size={14} />
@@ -419,7 +419,7 @@ function BusinessPage() {
             href={business.facebookUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15] transition"
+            className="flex items-center gap-3 text-neutral-200 hover:text-[#df991b] transition"
           >
             <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0">
               <Facebook size={14} />
@@ -432,7 +432,7 @@ function BusinessPage() {
             href={business.instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 text-neutral-200 hover:text-[#facc15] transition"
+            className="flex items-center gap-3 text-neutral-200 hover:text-[#df991b] transition"
           >
             <span className="flex items-center justify-center h-9 w-9 rounded-full bg-white/5 shrink-0">
               <Instagram size={14} />
@@ -476,7 +476,7 @@ function BusinessPage() {
         <div className="relative max-w-7xl mx-auto px-6 pt-8 pb-10 md:pt-10 md:pb-12">
           <Link
             to="/directory"
-            className="inline-flex items-center text-sm text-white/60 hover:text-[#facc15] transition"
+            className="inline-flex items-center text-sm text-white/60 hover:text-[#df991b] transition"
           >
             {t("business.back_to_directory")}
           </Link>
@@ -488,7 +488,7 @@ function BusinessPage() {
             {/* Logo */}
             <div className="relative shrink-0 -mt-20 md:-mt-24">
               <div
-                className="absolute -inset-1 rounded-3xl bg-gradient-to-br from-[#facc15]/40 to-transparent blur-md"
+                className="absolute -inset-1 rounded-3xl bg-gradient-to-br from-[#df991b]/40 to-transparent blur-md"
                 aria-hidden
               />
               {business.logoUrl ? (
@@ -498,7 +498,7 @@ function BusinessPage() {
                   className="relative w-32 h-32 md:w-40 md:h-40 rounded-3xl object-cover bg-neutral-900 border-2 border-white/15 shadow-2xl"
                 />
               ) : (
-                <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-neutral-900 border-2 border-white/15 flex items-center justify-center text-5xl font-black text-[#facc15] shadow-2xl">
+                <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-neutral-900 border-2 border-white/15 flex items-center justify-center text-5xl font-black text-[#df991b] shadow-2xl">
                   {(business.name || "?").trim().charAt(0).toUpperCase()}
                 </div>
               )}
@@ -514,14 +514,14 @@ function BusinessPage() {
                   {displayType}
                 </span>
                 <span className="inline-flex items-center gap-1.5 text-sm font-bold text-white">
-                  <Star size={14} className="fill-[#facc15] text-[#facc15]" />
+                  <Star size={14} className="fill-[#df991b] text-[#df991b]" />
                   {business.rating.toFixed(1)}
                   <span className="text-white/50 font-normal">
                     ({business.reviewCount} {t("business.reviews_label")})
                   </span>
                 </span>
                 {business.fastResponder && (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-[#facc15] text-black px-2.5 py-1 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-[#df991b] text-black px-2.5 py-1 rounded-full">
                     <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
                     {t("business.fast_responder")}
                   </span>
@@ -532,7 +532,7 @@ function BusinessPage() {
               </h1>
               <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
                 <span className="inline-flex items-center gap-1.5 text-white/80">
-                  <MapPin size={14} className="text-[#facc15]" />
+                  <MapPin size={14} className="text-[#df991b]" />
                   {locations.length > 0 ? locations.join(", ") : business.location}
                 </span>
                 {business.website && (
@@ -540,7 +540,7 @@ function BusinessPage() {
                     href={business.website}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-white/80 hover:text-[#facc15] transition"
+                    className="inline-flex items-center gap-1.5 text-white/80 hover:text-[#df991b] transition"
                   >
                     <Globe size={14} />
                     {business.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
@@ -644,7 +644,7 @@ function BusinessPage() {
                               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                               {isLastTile && (
                                 <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-1 text-white">
-                                  <ImageIcon size={20} className="text-[#facc15]" />
+                                  <ImageIcon size={20} className="text-[#df991b]" />
                                   <span className="text-xs font-bold">{t("business.view_all_photos")}</span>
                                   <span className="text-[10px] text-white/70">
                                     {visiblePhotos.length} {t("business.photos_limit")}
@@ -690,11 +690,11 @@ function BusinessPage() {
                         key={i}
                         onClick={() => googleReviewsUrl && openGooglePopup(googleReviewsUrl)}
                         disabled={!googleReviewsUrl}
-                        className="text-left bg-neutral-900 border border-white/10 rounded-2xl p-5 hover:border-[#facc15]/40 transition disabled:cursor-default"
+                        className="text-left bg-neutral-900 border border-white/10 rounded-2xl p-5 hover:border-[#df991b]/40 transition disabled:cursor-default"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-center gap-3 min-w-0">
-                            <span className="flex items-center justify-center h-10 w-10 rounded-full bg-[#facc15] text-black text-sm font-extrabold shrink-0">
+                            <span className="flex items-center justify-center h-10 w-10 rounded-full bg-[#df991b] text-black text-sm font-extrabold shrink-0">
                               {initials || "?"}
                             </span>
                             <div className="min-w-0">
@@ -707,7 +707,7 @@ function BusinessPage() {
                                       size={12}
                                       className={
                                         j < r.rating
-                                          ? "fill-[#facc15] text-[#facc15]"
+                                          ? "fill-[#df991b] text-[#df991b]"
                                           : "text-white/15"
                                       }
                                     />
@@ -722,7 +722,7 @@ function BusinessPage() {
                             </div>
                           </div>
                           {isLatest && (
-                            <span className="text-[10px] font-bold uppercase tracking-wider bg-[#facc15] text-black px-2 py-0.5 rounded-full shrink-0">
+                            <span className="text-[10px] font-bold uppercase tracking-wider bg-[#df991b] text-black px-2 py-0.5 rounded-full shrink-0">
                               {t("business.latest_badge")}
                             </span>
                           )}
@@ -739,7 +739,7 @@ function BusinessPage() {
                     <button
                       type="button"
                       onClick={() => openGooglePopup(googleReviewsUrl)}
-                      className="inline-flex items-center gap-2 border border-[#facc15]/40 text-[#facc15] font-bold rounded-full px-5 py-2.5 text-sm hover:bg-[#facc15]/10 transition"
+                      className="inline-flex items-center gap-2 border border-[#df991b]/40 text-[#df991b] font-bold rounded-full px-5 py-2.5 text-sm hover:bg-[#df991b]/10 transition"
                     >
                       {t("business.read_all_reviews").replace("{n}", String(business.reviewCount))}
                     </button>
@@ -763,7 +763,7 @@ function BusinessPage() {
               className={`w-full inline-flex items-center justify-center gap-2 font-bold rounded-2xl py-3.5 text-sm transition shadow-lg ${
                 wantsWhatsappFlow
                   ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/20"
-                  : "bg-[#facc15] hover:bg-[#facc15]/90 text-black shadow-[#facc15]/20"
+                  : "bg-[#df991b] hover:bg-[#df991b]/90 text-black shadow-[#df991b]/20"
               }`}
             >
               <MessageCircle size={16} />
@@ -788,7 +788,7 @@ function BusinessPage() {
                           key={b.key}
                           className="inline-flex items-center gap-1.5 text-xs font-semibold bg-white/5 text-neutral-200 border border-white/10 px-3 py-1.5 rounded-full"
                         >
-                          <Check size={12} className="text-[#facc15]" />
+                          <Check size={12} className="text-[#df991b]" />
                           {b.label}
                         </span>
                       ))}
@@ -803,7 +803,7 @@ function BusinessPage() {
                             key={it.id}
                             className="inline-flex items-center gap-1.5 text-xs font-semibold bg-white/5 text-neutral-200 border border-white/10 px-3 py-1.5 rounded-full"
                           >
-                            <Icon size={12} className="text-[#facc15]" />
+                            <Icon size={12} className="text-[#df991b]" />
                             {it.title}
                           </span>
                         );
@@ -840,7 +840,7 @@ function BusinessPage() {
                         onClick={() => setActiveCity(c)}
                         className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition ${
                           activeCity === c
-                            ? "bg-black text-[#facc15] shadow-sm"
+                            ? "bg-black text-[#df991b] shadow-sm"
                             : "text-neutral-400 hover:text-neutral-200"
                         }`}
                       >
@@ -858,7 +858,7 @@ function BusinessPage() {
                       <div
                         key={`${h.location}-${h.day_key}`}
                         className={`flex justify-between items-center ${
-                          isToday ? "text-[#facc15] font-bold" : "text-neutral-300"
+                          isToday ? "text-[#df991b] font-bold" : "text-neutral-300"
                         }`}
                       >
                         <span>
@@ -906,14 +906,14 @@ function BusinessPage() {
                     }) => (
                       <div
                         key={c.id}
-                        className="bg-[#facc15]/10 border border-[#facc15]/30 rounded-xl p-3 flex flex-col"
+                        className="bg-[#df991b]/10 border border-[#df991b]/30 rounded-xl p-3 flex flex-col"
                       >
                         <div className="flex justify-between items-start mb-1.5 gap-2">
-                          <p className="font-extrabold text-[#facc15] tracking-wider text-sm">
+                          <p className="font-extrabold text-[#df991b] tracking-wider text-sm">
                             {c.code}
                           </p>
                           {c.discount_value ? (
-                            <span className="bg-[#facc15] text-black text-[10px] font-black px-2 py-0.5 rounded-md shrink-0">
+                            <span className="bg-[#df991b] text-black text-[10px] font-black px-2 py-0.5 rounded-md shrink-0">
                               {c.discount_type === "percent" ? `${c.discount_value}% OFF` : `$${c.discount_value} OFF`}
                             </span>
                           ) : null}
@@ -957,7 +957,7 @@ function BusinessPage() {
                 <p className="text-sm text-neutral-300">{t("business.lead_modal.success_body")}</p>
                 <button
                   onClick={() => setLeadOpen(false)}
-                  className="mt-2 bg-neutral-900 hover:bg-white/5 text-[#facc15] font-bold rounded-2xl py-2 px-5 text-sm"
+                  className="mt-2 bg-neutral-900 hover:bg-white/5 text-[#df991b] font-bold rounded-2xl py-2 px-5 text-sm"
                 >
                   {t("business.lead_modal.close")}
                 </button>
@@ -998,7 +998,7 @@ function BusinessPage() {
                 <button
                   type="submit"
                   disabled={leadStatus === "submitting"}
-                  className="w-full bg-neutral-900 hover:bg-white/5 disabled:opacity-50 text-[#facc15] font-bold rounded-2xl py-3 text-sm"
+                  className="w-full bg-neutral-900 hover:bg-white/5 disabled:opacity-50 text-[#df991b] font-bold rounded-2xl py-3 text-sm"
                 >
                   {leadStatus === "submitting" ? t("business.lead_modal.submitting") : t("business.lead_modal.submit")}
                 </button>
@@ -1076,7 +1076,7 @@ function BusinessNotFound() {
     <SiteShell>
       <div className="max-w-3xl mx-auto px-6 py-24 text-center">
         <h1 className="text-3xl font-black text-white">{t("business.not_found_title")}</h1>
-        <Link to="/directory" className="inline-flex mt-6 bg-black text-[#facc15] font-bold px-5 py-2.5 rounded-xl">
+        <Link to="/directory" className="inline-flex mt-6 bg-black text-[#df991b] font-bold px-5 py-2.5 rounded-xl">
           {t("business.back_to_directory_btn")}
         </Link>
       </div>

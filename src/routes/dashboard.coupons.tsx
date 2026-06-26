@@ -254,7 +254,7 @@ function CouponsPage() {
         {unlocked && (
           <button
             onClick={openCreate}
-            className="self-start sm:self-auto bg-[#facc15] hover:bg-[#fde047] text-neutral-900 font-bold rounded-xl px-4 py-2.5 text-sm flex items-center gap-2 whitespace-nowrap"
+            className="self-start sm:self-auto bg-[#df991b] hover:bg-[#c4861a] text-neutral-900 font-bold rounded-xl px-4 py-2.5 text-sm flex items-center gap-2 whitespace-nowrap"
           >
             <Plus size={16} /> {t("coupons.new_button")}
           </button>
@@ -489,7 +489,7 @@ function CouponsPage() {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full border-2 border-dashed border-white/10 rounded-2xl py-8 flex flex-col items-center gap-2 text-neutral-400 hover:text-white hover:border-[#facc15]/40 transition"
+                    className="w-full border-2 border-dashed border-white/10 rounded-2xl py-8 flex flex-col items-center gap-2 text-neutral-400 hover:text-white hover:border-[#df991b]/40 transition"
                   >
                     <ImagePlus size={24} />
                     <span className="text-sm font-semibold">{t("coupons.promo_upload_btn")}</span>
@@ -512,7 +512,7 @@ function CouponsPage() {
                   if (validate()) saveMutation.mutate();
                 }}
                 disabled={saveMutation.isPending}
-                className="bg-[#facc15] hover:bg-[#fde047] disabled:opacity-50 text-neutral-900 font-bold rounded-xl px-5 py-2.5 text-sm flex items-center gap-2"
+                className="bg-[#df991b] hover:bg-[#c4861a] disabled:opacity-50 text-neutral-900 font-bold rounded-xl px-5 py-2.5 text-sm flex items-center gap-2"
               >
                 <Upload size={14} />
                 {saveMutation.isPending
@@ -533,8 +533,8 @@ function CouponsPage() {
 
 function inputCls(invalid: boolean) {
   return cn(
-    "w-full bg-neutral-950 border rounded-xl px-3 py-2.5 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#facc15]/40 transition",
-    invalid ? "border-red-500/60" : "border-white/10 focus:border-[#facc15]/40",
+    "w-full bg-neutral-950 border rounded-xl px-3 py-2.5 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-[#df991b]/40 transition",
+    invalid ? "border-red-500/60" : "border-white/10 focus:border-[#df991b]/40",
   );
 }
 
@@ -584,11 +584,11 @@ function CouponCard({
         c.is_active ? "border-white/10" : "border-white/5 opacity-60",
       )}
     >
-      <div className="w-2 bg-[#facc15]" />
+      <div className="w-2 bg-[#df991b]" />
       <div className="flex-1 p-5">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Ticket className="text-[#facc15]" size={18} />
+            <Ticket className="text-[#df991b]" size={18} />
             {badge && (
               <span className="text-[11px] font-bold tracking-wider bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 rounded-full px-2 py-0.5">
                 {badge}
@@ -616,7 +616,7 @@ function CouponCard({
           </div>
         </div>
 
-        <p className="font-extrabold tracking-wider text-2xl mt-3 text-[#facc15]">{c.code}</p>
+        <p className="font-extrabold tracking-wider text-2xl mt-3 text-[#df991b]">{c.code}</p>
         <p className="text-sm font-semibold text-white mt-1">{c.title}</p>
         {c.description && (
           <p className="text-xs text-neutral-400 mt-1 line-clamp-2">{c.description}</p>

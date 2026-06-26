@@ -80,7 +80,7 @@ function AdminWaitlistPage() {
         </div>
         <div className="bg-neutral-900 px-4 py-3 rounded-xl border border-white/10 flex items-center gap-3">
           <div className="p-2 bg-[#000000] rounded-lg">
-            <Users size={18} className="text-[#facc15]" />
+            <Users size={18} className="text-[#df991b]" />
           </div>
           <div>
             <p className="text-xs text-neutral-400 font-bold uppercase">Total</p>
@@ -97,12 +97,12 @@ function AdminWaitlistPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Buscar..."
-              className="w-full bg-neutral-900 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm outline-none focus:border-[#facc15]"
+              className="w-full bg-neutral-900 border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-sm outline-none focus:border-[#df991b]"
             />
           </div>
           <button
             onClick={exportCsv}
-            className="text-sm font-semibold text-[#facc15] bg-[#000000] border border-[#facc15]/20 px-3 py-1.5 rounded-lg hover:bg-[#facc15]/10 flex items-center gap-2"
+            className="text-sm font-semibold text-[#df991b] bg-[#000000] border border-[#df991b]/20 px-3 py-1.5 rounded-lg hover:bg-[#df991b]/10 flex items-center gap-2"
           >
             <Download size={16} /> Exportar CSV
           </button>

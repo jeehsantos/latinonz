@@ -28,7 +28,7 @@ export function SiteHeader() {
               key={n.to}
               to={n.to}
               activeProps={{
-                className: "px-4 py-1.5 rounded-full bg-[#facc15] text-black shadow-sm",
+                className: "px-4 py-1.5 rounded-full bg-[#df991b] text-black shadow-sm",
               }}
               inactiveProps={{ className: "px-4 py-1.5 rounded-full hover:bg-neutral-900/10 hover:text-white" }}
             >
@@ -46,7 +46,7 @@ export function SiteHeader() {
           </Link>
           <Link
             to="/cadastro"
-            className="hidden md:inline-flex text-sm font-bold bg-[#facc15] text-black px-4 py-2 rounded-full hover:bg-yellow-300 transition"
+            className="hidden md:inline-flex text-sm font-bold bg-[#df991b] text-black px-4 py-2 rounded-full hover:bg-yellow-300 transition"
           >
             {t("nav.register")}
           </Link>
@@ -72,7 +72,7 @@ export function SiteHeader() {
               onClick={() => setMobileOpen(false)}
               activeProps={{
                 className:
-                  "block px-4 py-2.5 rounded-xl bg-[#facc15] text-black font-bold text-sm",
+                  "block px-4 py-2.5 rounded-xl bg-[#df991b] text-black font-bold text-sm",
               }}
               inactiveProps={{
                 className:
@@ -93,7 +93,7 @@ export function SiteHeader() {
             <Link
               to="/cadastro"
               onClick={() => setMobileOpen(false)}
-              className="block text-center px-4 py-2.5 rounded-xl bg-[#facc15] text-black font-bold text-sm hover:bg-yellow-300"
+              className="block text-center px-4 py-2.5 rounded-xl bg-[#df991b] text-black font-bold text-sm hover:bg-yellow-300"
             >
               {t("nav.register")}
             </Link>

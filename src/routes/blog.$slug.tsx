@@ -53,7 +53,7 @@ function BlogNotFound() {
         <h1 className="text-3xl font-black">{t("blog.not_found_title")}</h1>
         <Link
           to="/blog"
-          className="inline-flex mt-6 bg-black text-[#facc15] font-bold px-5 py-2.5 rounded-xl"
+          className="inline-flex mt-6 bg-black text-[#df991b] font-bold px-5 py-2.5 rounded-xl"
         >
           {t("blog.back_to_blog")}
         </Link>
@@ -76,10 +76,10 @@ function BlogArticle() {
   return (
     <SiteShell>
       <article className="max-w-3xl mx-auto px-6 py-16">
-        <Link to="/blog" className="text-sm text-neutral-400 hover:text-[#facc15]">
+        <Link to="/blog" className="text-sm text-neutral-400 hover:text-[#df991b]">
           {t("blog.back_to_blog")}
         </Link>
-        <p className="mt-6 text-xs font-bold uppercase tracking-wider text-[#facc15]">
+        <p className="mt-6 text-xs font-bold uppercase tracking-wider text-[#df991b]">
           {item.category}
         </p>
         <h1 className="mt-2 text-4xl font-black text-white">{item.title}</h1>

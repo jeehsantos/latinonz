@@ -89,8 +89,8 @@ function CheckoutSuccessPage() {
       <div className="max-w-md w-full bg-neutral-900 border border-white/10 rounded-3xl p-10 text-center">
         {status === "syncing" && (
           <>
-            <div className="mx-auto w-16 h-16 rounded-full bg-[#facc15]/10 flex items-center justify-center mb-6">
-              <Loader2 className="w-8 h-8 text-[#facc15] animate-spin" />
+            <div className="mx-auto w-16 h-16 rounded-full bg-[#df991b]/10 flex items-center justify-center mb-6">
+              <Loader2 className="w-8 h-8 text-[#df991b] animate-spin" />
             </div>
             <h1 className="text-2xl font-black text-white mb-2">Finalizing your subscription</h1>
             <p className="text-neutral-400 text-sm">
@@ -122,7 +122,7 @@ function CheckoutSuccessPage() {
             </p>
             <button
               onClick={() => navigate({ to: "/dashboard" })}
-              className="w-full bg-[#facc15] hover:bg-[#eab308] text-black font-bold rounded-2xl py-3 text-sm"
+              className="w-full bg-[#df991b] hover:bg-[#eab308] text-black font-bold rounded-2xl py-3 text-sm"
             >
               Go to dashboard
             </button>

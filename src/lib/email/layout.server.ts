@@ -7,7 +7,7 @@ const LOGO_URL =
   "https://cpttcriscektmbnjckjo.supabase.co/storage/v1/object/public/business-logos/brand%2Flatino-connect-logo.png";
 
 const BRAND = {
-  yellow: "#facc15",
+  yellow: "#df991b",
   yellowDark: "#df991b",
   ink: "#111111",
   body: "#374151",

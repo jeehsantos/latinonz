@@ -69,13 +69,13 @@ export function MobileDashboardNav({ pendingLeads = 0 }: { pendingLeads?: number
               <Link
                 to={it.to}
                 className={`relative flex flex-col items-center justify-center gap-1 py-2.5 min-h-[56px] text-[10px] font-semibold ${
-                  active ? "text-[#facc15]" : "text-neutral-400"
+                  active ? "text-[#df991b]" : "text-neutral-400"
                 }`}
               >
                 <Icon size={20} />
                 <span className="leading-none truncate max-w-[64px]">{it.label}</span>
                 {it.badge ? (
-                  <span className="absolute top-1 right-1/4 bg-[#facc15] text-black text-[9px] font-bold rounded-full min-w-[16px] h-4 px-1 flex items-center justify-center">
+                  <span className="absolute top-1 right-1/4 bg-[#df991b] text-black text-[9px] font-bold rounded-full min-w-[16px] h-4 px-1 flex items-center justify-center">
                     {it.badge}
                   </span>
                 ) : null}
@@ -106,9 +106,9 @@ export function MobileDashboardNav({ pendingLeads = 0 }: { pendingLeads?: number
                       key={it.to}
                       to={it.to}
                       onClick={() => setOpen(false)}
-                      className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-neutral-900 border border-white/10 hover:border-[#facc15]/60 text-neutral-200"
+                      className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-neutral-900 border border-white/10 hover:border-[#df991b]/60 text-neutral-200"
                     >
-                      <Icon size={22} className="text-[#facc15]" />
+                      <Icon size={22} className="text-[#df991b]" />
                       <span className="text-xs font-semibold text-center leading-tight">{it.label}</span>
                     </Link>
                   );

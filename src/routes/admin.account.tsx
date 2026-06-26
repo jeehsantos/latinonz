@@ -117,7 +117,7 @@ function AdminAccountPage() {
           <input
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
+            className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#df991b]"
           />
         </div>
         {profileMsg && (
@@ -130,7 +130,7 @@ function AdminAccountPage() {
         <button
           type="submit"
           disabled={savingProfile}
-          className="bg-neutral-900 hover:bg-white/5 disabled:opacity-60 text-[#facc15] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 text-sm"
+          className="bg-neutral-900 hover:bg-white/5 disabled:opacity-60 text-[#df991b] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 text-sm"
         >
           <Save size={16} /> {savingProfile ? "Salvando..." : "Salvar perfil"}
         </button>
@@ -152,7 +152,7 @@ function AdminAccountPage() {
               minLength={8}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
+              className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#df991b]"
             />
           </div>
           <div>
@@ -162,7 +162,7 @@ function AdminAccountPage() {
               minLength={8}
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
-              className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#facc15]"
+              className="mt-1 w-full bg-neutral-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#df991b]"
             />
           </div>
         </div>
@@ -174,7 +174,7 @@ function AdminAccountPage() {
         <button
           type="submit"
           disabled={savingPw}
-          className="bg-neutral-900 hover:bg-white/5 disabled:opacity-60 text-[#facc15] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 text-sm"
+          className="bg-neutral-900 hover:bg-white/5 disabled:opacity-60 text-[#df991b] font-bold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 text-sm"
         >
           <KeyRound size={16} /> {savingPw ? "Salvando..." : "Atualizar senha"}
         </button>

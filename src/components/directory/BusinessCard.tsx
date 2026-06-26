@@ -41,7 +41,7 @@ export function BusinessCard({ business }: { business: Business }) {
       </div>
 
       <div className="p-4 sm:p-5">
-        <h3 className="font-extrabold text-white group-hover:text-[#facc15] line-clamp-1">
+        <h3 className="font-extrabold text-white group-hover:text-[#df991b] line-clamp-1">
           {business.name}
         </h3>
         <p className="text-xs text-neutral-400 mt-0.5 line-clamp-1">{categoryLabel}</p>
