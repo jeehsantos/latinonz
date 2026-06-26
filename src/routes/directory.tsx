@@ -125,7 +125,7 @@ function DirectoryPage() {
 
   const goToPage = (p: number) => {
     const next = Math.min(Math.max(1, p), totalPages);
-    navigate({ search: (prev) => ({ ...prev, page: next }) });
+    navigate({ search: (prev: Record<string, unknown>) => ({ ...prev, page: next }) });
     if (typeof window !== "undefined") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
