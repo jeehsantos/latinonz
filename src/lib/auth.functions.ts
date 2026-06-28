@@ -272,14 +272,17 @@ export const requestPasswordReset = createServerFn({ method: "POST" })
       };
     }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    // Look up the user to personalize the email (and to avoid sending to non-users).
-    const { data: list, error: listError } = await supabaseAdmin.auth.admin.listUsers();
-    if (listError) {
-      console.error("requestPasswordReset list error", listError);
+    // Look up the user by email via an indexed RPC (scales to millions of users).
+    const { data: rows, error: lookupError } = await supabaseAdmin.rpc(
+      "get_auth_user_by_email",
+      { _email: data.email },
+    );
+    if (lookupError) {
+      console.error("requestPasswordReset lookup error", lookupError);
       // Don't reveal — respond ok regardless.
       return { ok: true as const };
     }
-    const user = list.users.find((u) => u.email?.toLowerCase() === data.email);
+    const user = rows?.[0];
     if (!user) {
       // Don't reveal whether the email exists.
       return { ok: true as const };
@@ -299,9 +302,10 @@ export const requestPasswordReset = createServerFn({ method: "POST" })
       link.properties.hashed_token,
     )}&type=recovery`;
 
+    const meta = (user.raw_user_meta_data ?? {}) as Record<string, unknown>;
     const ownerName =
-      (user.user_metadata?.owner_name as string | undefined) ??
-      (user.user_metadata?.business_name as string | undefined) ??
+      (typeof meta.owner_name === "string" && meta.owner_name) ||
+      (typeof meta.business_name === "string" && meta.business_name) ||
       null;
 
     // Look up the user's business for language preference.
