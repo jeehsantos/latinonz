@@ -133,13 +133,17 @@ export const resendActivation = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => resendActivationSchema.parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    // Look up user by email so we have the owner name for the email template.
-    const { data: list, error: listError } = await supabaseAdmin.auth.admin.listUsers();
-    if (listError) {
-      console.error("resendActivation list error", listError);
+    // Look up the user by email via an indexed RPC instead of paginating
+    // through every auth user (listUsers breaks at scale).
+    const { data: rows, error: lookupError } = await supabaseAdmin.rpc(
+      "get_auth_user_by_email",
+      { _email: data.email },
+    );
+    if (lookupError) {
+      console.error("resendActivation lookup error", lookupError);
       return { ok: false as const, error: "Não foi possível reenviar o e-mail." };
     }
-    const user = list.users.find((u) => u.email?.toLowerCase() === data.email);
+    const user = rows?.[0];
     if (!user) {
       // Don't reveal whether the email exists.
       return { ok: true as const };
