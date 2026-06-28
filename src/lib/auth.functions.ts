@@ -152,9 +152,10 @@ export const resendActivation = createServerFn({ method: "POST" })
       return { ok: false as const, error: "Esta conta já está ativada. Faça login." };
     }
 
+    const meta = (user.raw_user_meta_data ?? {}) as Record<string, unknown>;
     const ownerName =
-      (user.user_metadata?.owner_name as string | undefined) ??
-      (user.user_metadata?.business_name as string | undefined) ??
+      (typeof meta.owner_name === "string" && meta.owner_name) ||
+      (typeof meta.business_name === "string" && meta.business_name) ||
       "";
 
     try {
