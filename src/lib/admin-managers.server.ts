@@ -137,20 +137,19 @@ export async function listAdminManagers(input: {
   const nameById = new Map<string, string | null>();
 
   if (ids.length > 0) {
-    const { data: usersData, error: usersError } = await supabaseAdmin.auth.admin.listUsers({
-      page: 1,
-      perPage: 1000,
-    });
+    // Batch lookup by ID via indexed RPC — avoids paginating every auth user.
+    const { data: usersData, error: usersError } = await supabaseAdmin.rpc(
+      "get_auth_users_by_ids",
+      { _ids: ids },
+    );
 
     if (usersError) {
       throw new Error(usersError.message);
     }
 
-    for (const user of usersData.users) {
-      if (!ids.includes(user.id)) continue;
-
+    for (const user of usersData ?? []) {
       emailById.set(user.id, user.email ?? null);
-      const meta = (user.user_metadata ?? {}) as Record<string, unknown>;
+      const meta = (user.raw_user_meta_data ?? {}) as Record<string, unknown>;
       const metaName =
         (typeof meta.full_name === "string" && meta.full_name) ||
         (typeof meta.owner_name === "string" && meta.owner_name) ||
@@ -205,18 +204,16 @@ export async function inviteAdminManager(input: InviteManagerInput) {
       throw new Error(error.message);
     }
 
-    const { data: list, error: listError } = await supabaseAdmin.auth.admin.listUsers({
-      page: 1,
-      perPage: 1000,
-    });
+    const { data: existingRows, error: lookupError } = await supabaseAdmin.rpc(
+      "get_auth_user_by_email",
+      { _email: input.email },
+    );
 
-    if (listError) {
-      throw new Error(listError.message);
+    if (lookupError) {
+      throw new Error(lookupError.message);
     }
 
-    const existingUser = list.users.find(
-      (user) => (user.email ?? "").toLowerCase() === input.email.toLowerCase(),
-    );
+    const existingUser = existingRows?.[0];
     if (!existingUser) {
       throw new Error("User already exists but could not be located");
     }

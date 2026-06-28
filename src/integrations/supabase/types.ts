@@ -645,6 +645,23 @@ export type Database = {
           plan_tier: string
         }[]
       }
+      get_auth_user_by_email: {
+        Args: { _email: string }
+        Returns: {
+          email: string
+          email_confirmed_at: string
+          id: string
+          raw_user_meta_data: Json
+        }[]
+      }
+      get_auth_users_by_ids: {
+        Args: { _ids: string[] }
+        Returns: {
+          email: string
+          id: string
+          raw_user_meta_data: Json
+        }[]
+      }
       get_owner_plan_tier: { Args: { p_owner: string }; Returns: string }
       is_admin_or_manager: { Args: { _user_id: string }; Returns: boolean }
       list_admin_managers: {
