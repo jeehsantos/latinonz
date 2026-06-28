@@ -204,18 +204,16 @@ export async function inviteAdminManager(input: InviteManagerInput) {
       throw new Error(error.message);
     }
 
-    const { data: list, error: listError } = await supabaseAdmin.auth.admin.listUsers({
-      page: 1,
-      perPage: 1000,
-    });
+    const { data: existingRows, error: lookupError } = await supabaseAdmin.rpc(
+      "get_auth_user_by_email",
+      { _email: input.email },
+    );
 
-    if (listError) {
-      throw new Error(listError.message);
+    if (lookupError) {
+      throw new Error(lookupError.message);
     }
 
-    const existingUser = list.users.find(
-      (user) => (user.email ?? "").toLowerCase() === input.email.toLowerCase(),
-    );
+    const existingUser = existingRows?.[0];
     if (!existingUser) {
       throw new Error("User already exists but could not be located");
     }
