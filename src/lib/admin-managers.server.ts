@@ -137,20 +137,19 @@ export async function listAdminManagers(input: {
   const nameById = new Map<string, string | null>();
 
   if (ids.length > 0) {
-    const { data: usersData, error: usersError } = await supabaseAdmin.auth.admin.listUsers({
-      page: 1,
-      perPage: 1000,
-    });
+    // Batch lookup by ID via indexed RPC — avoids paginating every auth user.
+    const { data: usersData, error: usersError } = await supabaseAdmin.rpc(
+      "get_auth_users_by_ids",
+      { _ids: ids },
+    );
 
     if (usersError) {
       throw new Error(usersError.message);
     }
 
-    for (const user of usersData.users) {
-      if (!ids.includes(user.id)) continue;
-
+    for (const user of usersData ?? []) {
       emailById.set(user.id, user.email ?? null);
-      const meta = (user.user_metadata ?? {}) as Record<string, unknown>;
+      const meta = (user.raw_user_meta_data ?? {}) as Record<string, unknown>;
       const metaName =
         (typeof meta.full_name === "string" && meta.full_name) ||
         (typeof meta.owner_name === "string" && meta.owner_name) ||
